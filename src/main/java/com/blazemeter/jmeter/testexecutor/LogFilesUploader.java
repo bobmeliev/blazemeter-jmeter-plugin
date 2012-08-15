@@ -62,20 +62,14 @@ public class LogFilesUploader {
                 UploadLog();
             }
         }).start();
-//        timer=new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                UploadLog();
-//            }
-//        }, 1000, 10000);
+
     }
     private boolean uploadFinished;
     private void UploadLog() {
         uploadFinished=false;
         boolean last=true;
         while (isRunning || last) {
-            StringBuilder buff = new StringBuilder();
+            StringBuilder buff = new StringBuilder(4096);
             String line;
             try {
                 while ((line = reader.readLine()) != null) {

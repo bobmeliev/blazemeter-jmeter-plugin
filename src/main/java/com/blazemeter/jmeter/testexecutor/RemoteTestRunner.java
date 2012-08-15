@@ -9,10 +9,12 @@ import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.samplers.*;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
+import org.json.XML;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     private static final long serialVersionUID = 1L;
     public static final String LOCAL_TEST_STRING = "_local_";
     static boolean isTestStarted = false;
-    private static int instanceCount=0;
+    private static int instanceCount = 0;
 
     public RemoteTestRunner() {
         this(null);
@@ -30,14 +32,15 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     public RemoteSampleListener listener;
 
-    public boolean canRemove(){
+    public boolean canRemove() {
         BmLog.console("can remove? " + instanceCount);
         instanceCount--;
-        if(instanceCount==0){
+        if (instanceCount == 0) {
             BmTestManager.getInstance().hooksUnregistered();
         }
         return super.canRemove();
     }
+
     public RemoteTestRunner(RemoteSampleListener listener) {
         super();
 
@@ -110,7 +113,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
                 try {
                     listener.testStarted(host);
                 } catch (RemoteException e) {
-                    BmLog.error( e);
+                    BmLog.error(e);
                 }
             }
         }
@@ -151,25 +154,61 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         }
     }
 
+    private String escape(String str) {
+        int len = str.length();
+        StringWriter writer = new StringWriter((int) (len * 0.1));
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            switch (c) {
+                case '"':
+                    writer.write("&quot;");
+                    break;
+                case '&':
+                    writer.write("&amp;");
+                    break;
+                case '<':
+                    writer.write("&lt;");
+                    break;
+                case '>':
+                    writer.write("&gt;");
+                    break;
+                case '\'':
+                    writer.write("&apos;");
+                    break;
+                default:
+                    if (c > 0x7F) {
+                        writer.write("&#");
+                        writer.write(Integer.toString(c, 10));
+                        writer.write(';');
+                    } else {
+                        writer.write(c);
+                    }
+            }
+        }
+        return writer.toString();
+    }
+
     private String GetJtlString(SampleEvent evt) {
+
         SampleResult res = evt.getResult();
         String t = Long.toString(res.getTime());
         String lt = Long.toString(res.getLatency());
         String ts = Long.toString(res.getTimeStamp());
         String s = Boolean.toString(res.isSuccessful());
-        String lb = res.getSampleLabel();
-        String rc = res.getResponseCode();
-        String rm = res.getResponseMessage();
-        String tn = res.getThreadName();
-        String dt = res.getDataType();
+        String lb = escape(res.getSampleLabel());
+        String rc = escape(res.getResponseCode());
+        String rm = escape(res.getResponseMessage());
+        String tn = escape(res.getThreadName());
+        String dt = escape(res.getDataType());
         String by = Integer.toString(res.getBytes());
         String sc = Integer.toString(res.getSampleCount());
         String ec = Integer.toString(res.getErrorCount());
         String ng = Integer.toString(res.getGroupThreads());
         String na = Integer.toString(res.getAllThreads());
-        String hn = JMeterUtils.getLocalHostFullName();
+        String hn = XML.escape(JMeterUtils.getLocalHostFullName());
         String in = Long.toString(res.getIdleTime());
-        return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\"  lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
+
+        return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\" lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
     }
 
 

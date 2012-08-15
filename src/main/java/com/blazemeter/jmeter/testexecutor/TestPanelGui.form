@@ -66,8 +66,8 @@
             </constraints>
             <properties>
               <actionCommand value="Sign up to BlazeMeter!"/>
-              <label value="Sign up to BlazeMeter!"/>
-              <text value="Sign up to BlazeMeter!"/>
+              <label value="Sign up to BlazeMeter's free-tier. It's immediate and no credit card is required."/>
+              <text value="Sign up to BlazeMeter's free-tier. It's immediate and no credit card is required."/>
               <toolTipText value="Register/Login to BlazeMeter site and find your User Key on a profile page."/>
             </properties>
           </component>

@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.lang.reflect.Modifier;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -67,15 +68,17 @@ public class BmTestManager {
 
         TestInfo testInfo = getTestInfo();
         String userKey = getUserKey();
-        BmLog.console("Test is running" + testInfo);
+        BmLog.console("startTest" + testInfo);
 
         if (!isTestStarted) {
             if (testInfo == null || testInfo.id.isEmpty()) {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
                     BmLog.console("Running in nonGui mode!");
-                    return;
+                    projectName="untitled";
                 }
+
+                projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
                 if (testInfo.id.isEmpty()) {
                     BmLog.console("Could not get valid id,test will start without blazemeter.");

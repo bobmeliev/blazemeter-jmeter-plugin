@@ -261,8 +261,10 @@ public class BlazemeterApi {
         try {
             obj.put("data", buff);
             JSONObject jo = getJson(url, obj);
-            fileSize = (Integer) jo.get("file_size");
-
+            if(jo.has("file_size"))
+                fileSize = (Integer) jo.get("file_size");
+            else
+                BmLog.error("Failed to upload "+reportName);
         } catch (JSONException e) {
             BmLog.error(e);
         }

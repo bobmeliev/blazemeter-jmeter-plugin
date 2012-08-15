@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
 public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener {
     TestPanelGui gui;
 
-    private static final String PLUGINS_VERSION = "1.0 (beta)";
+    private static final String PLUGINS_VERSION = "1.01 (beta)";
 
     public RemoteTestRunnerGui() {
         super();

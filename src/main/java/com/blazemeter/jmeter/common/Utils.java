@@ -28,7 +28,6 @@ public class Utils {
     }
 
     public static String getFileContents(String fn) {
-        //String output = new Scanner(new File("file.txt")).useDelimiter("\\Z").next();
         StringBuilder contents = new StringBuilder();
         File aFile = new File(fn);
         try {
