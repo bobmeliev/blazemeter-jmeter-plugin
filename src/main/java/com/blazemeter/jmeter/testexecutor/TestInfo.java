@@ -14,6 +14,8 @@ public class TestInfo {
     public String name;
     public TestStatus status =null;
     public String error=null;
+    public int numberOfUsers;
+    public String location;
 
     public TestInfo(){
         this("","");
@@ -47,4 +49,11 @@ public class TestInfo {
         return Utils.isInteger(id) && error==null;
     }
 
+    public int getNumberOfUsers() {
+        return numberOfUsers;
+    }
+
+    public String getLocation() {
+        return location;
+    }
 }

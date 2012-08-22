@@ -2,10 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.blazemeter.jmeter.common.BlazemeterApi;
-import com.blazemeter.jmeter.common.BmLog;
-import com.blazemeter.jmeter.common.JMeterPluginUtils;
-import com.blazemeter.jmeter.common.Utils;
+import com.blazemeter.jmeter.common.*;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.visualizers.gui.AbstractListenerGui;
 
@@ -14,12 +11,13 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
-public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener {
-    TestPanelGui gui;
+public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener, BmTestManager.PluginUpdateReceived {
+    static TestPanelGui gui;
 
-    private static final String PLUGINS_VERSION = "1.01 (beta)";
 
     public RemoteTestRunnerGui() {
         super();
@@ -29,11 +27,16 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             return;
         }
         try {
-            gui = new TestPanelGui();
+            if(gui==null)
+            {
+                gui = new TestPanelGui();
+                System.out.println("init gui!?!?!");
+            }
         } catch (Exception e) {
             BmLog.error(e);
         }
         init();
+        BmTestManager.getInstance().pluginUpdateReceivedList.add(this);
     }
 
     public TestElement createTestElement() {
@@ -41,7 +44,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
-
+        BmTestManager.getInstance().checkForUpdates();
         RemoteTestRunner testRunner = new RemoteTestRunner();
         testRunner.setUserKey(BmTestManager.getInstance().getUserKey());
         testRunner.setTestInfo(BmTestManager.getInstance().getTestInfo());
@@ -81,7 +84,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
         gui.setReportName(runner.getReportName());
     }
-
+    JPanel versionPanel;
     private Component getTopPanel() {
         Container panel = makeTitlePanel();
 
@@ -97,20 +100,33 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         icon.addMouseListener(new Utils.URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
 
-        JLabel version = new JLabel("v" + PLUGINS_VERSION);
+        JLabel version = new JLabel("Version:" +JMeterPluginUtils.getPluginVersion().toString());
 
         version.setFont(version.getFont().deriveFont(Font.PLAIN).deriveFont(11F));
         version.setForeground(Color.GRAY);
+
+        GridBagConstraints gridBagConstraints;
+//        gridBagConstraints = new GridBagConstraints();
+//        gridBagConstraints.gridx = 0;
+//        gridBagConstraints.gridy = 0;
+//        gridBagConstraints.insets = new Insets(0, 1, 0, 0);
+
+        versionPanel= new JPanel();
+        versionPanel.setBackground(new Color(47, 41, 43));
+        versionPanel.setForeground(Color.GRAY);
+
+
 
         Container innerPanel = findComponentWithBorder((JComponent) panel, EtchedBorder.class);
         JPanel panelLink = new JPanel(new GridBagLayout());
         panelLink.setBackground(new Color(47, 41, 43));
 
-        GridBagConstraints gridBagConstraints;
+
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new Insets(0, 1, 0, 0);
+        gridBagConstraints.gridheight=2;
         panelLink.add(icon, gridBagConstraints);
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -123,8 +139,16 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new Insets(0, 0, 0, 4);
+        gridBagConstraints.insets = new Insets(2, 0, 0, 4);
+        gridBagConstraints.anchor = GridBagConstraints.EAST;
         panelLink.add(version, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new Insets(0, 0, 0, 4);
+
+        panelLink.add(versionPanel, gridBagConstraints);
 
         if (innerPanel != null) {
             innerPanel.add(panelLink);
@@ -174,6 +198,57 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
     @Override
     public void actionPerformed(ActionEvent e) {
+    }
+
+    @Override
+    public void onPluginUpdateReceived(final PluginUpdate update) {
+        if(update==null)
+            return;
+
+        versionPanel.removeAll();
+
+        JLabel newVersion = new JLabel(String.format("New version - %s, is available",update.getVersion().toString()));
+        newVersion.setForeground(Color.WHITE);
+        versionPanel.add(newVersion);
+        JLabel moreInfo = new JLabel();
+        moreInfo.setText("<html><u>More info</u></html>");
+        moreInfo.setToolTipText("Click here to see changes in new version");
+        moreInfo.setForeground(Color.WHITE);
+        moreInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        moreInfo.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null,
+                        "Main changes are:\n" +
+                                update.getChanges()+
+                                "\n\nFull list of changes can be viewed on our site,\nDo you want to see full list of changes?",
+                        "Changes list",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,null,null)){
+                    Utils.Navigate(update.getMoreInfoUrl());
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+        versionPanel.add(moreInfo);
+        JLabel download = new JLabel("<html><u>Download</u></html>");
+        download.setForeground(Color.WHITE);
+        download.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        download.setToolTipText("Click here to download new version");
+        download.addMouseListener(new Utils.URIOpener(update.getDownloadUrl()));
+        versionPanel.add(download);
     }
 }
 

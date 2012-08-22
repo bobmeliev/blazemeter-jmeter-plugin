@@ -36,8 +36,8 @@ public abstract class JMeterPluginUtils {
             return version;
     }
 
-    public static String getPluginVersion() {
-        return "1-r1208120000"; //YY-MM-DD-HH-SS
+    public static PluginVersion getPluginVersion() {
+        return new PluginVersion(1,50,"1208221400"); //YY-MM-DD-HH-SS
     }
 }
 

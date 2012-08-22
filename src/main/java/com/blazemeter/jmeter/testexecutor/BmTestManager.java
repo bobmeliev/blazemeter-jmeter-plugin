@@ -1,9 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.common.BlazemeterApi;
-import com.blazemeter.jmeter.common.BmLog;
-import com.blazemeter.jmeter.common.JMeterPluginUtils;
-import com.blazemeter.jmeter.common.TestStatus;
+import com.blazemeter.jmeter.common.*;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.gui.action.Command;
@@ -29,6 +26,8 @@ public class BmTestManager {
     private static final Object lock = new Object();
     private boolean isTestStarted = false;
     private String propUserKey;
+    private long lastUpdateCheck;
+
     public static BmTestManager getInstance() {
         if (instance == null)
             synchronized (lock) {
@@ -46,22 +45,24 @@ public class BmTestManager {
 
     public static int c = 0;
 
-    public boolean isTestRunning(){
+    public boolean isTestRunning() {
         return this.isTestStarted;
     }
+
     private BmTestManager() {
         c++;
         this.testInfo = new TestInfo();
         rpc = BlazemeterApi.getInstance();
-        this.propUserKey= JMeterUtils.getPropDefault("blazemeter.user_key", "");
+        this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
+        this.lastUpdateCheck = 1;//new Date().getTime() - 3540000; //now - 59 minutes
     }
 
-    public boolean isUserKeyFromProp(){
-        return this.propUserKey!=null && !this.propUserKey.isEmpty();
+    public boolean isUserKeyFromProp() {
+        return this.propUserKey != null && !this.propUserKey.isEmpty();
     }
 
     public void startTest() {
-        if(JMeterPluginUtils.inCloudConfig()){
+        if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("Start test will not run, Running in the cloud!");
             return;
         }
@@ -75,7 +76,7 @@ public class BmTestManager {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
                     BmLog.console("Running in nonGui mode!");
-                    projectName="untitled";
+                    projectName = "untitled";
                 }
 
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
@@ -118,7 +119,7 @@ public class BmTestManager {
     }
 
     public void setUserKey(String userKey) {
-        if(isUserKeyFromProp())
+        if (isUserKeyFromProp())
             return;
 
         if (this.userKey == null || !this.userKey.equals(userKey)) {
@@ -134,16 +135,15 @@ public class BmTestManager {
     }
 
     public String getUserKey() {
-        return isUserKeyFromProp()?propUserKey:userKey;
+        return isUserKeyFromProp() ? propUserKey : userKey;
     }
 
     public String getTestUrl() {
         String url = null;
-        if(testInfo != null && testInfo.isValid())
-        {
-            url = BlazemeterApi.BmUrlManager.getServerUrl()+"/node/"+testInfo.id;
-            if(isTestStarted){
-                url+="/gjtl";
+        if (testInfo != null && testInfo.isValid()) {
+            url = BlazemeterApi.BmUrlManager.getServerUrl() + "/node/" + testInfo.id;
+            if (isTestStarted) {
+                url += "/gjtl";
             }
         }
         return url;
@@ -152,13 +152,20 @@ public class BmTestManager {
     public void uploadJmx() {
         new Thread(new jmxUploader()).start();
     }
-    class jmxUploader implements Runnable{
+
+    public int runInTheCloud() {
+        int testId = -1;
+        testId = rpc.runInTheCloud(this.getUserKey(), this.getTestInfo().id);
+        this.isTestStarted = testId != -1;
+        return testId;
+    }
+
+    class jmxUploader implements Runnable {
 
         @Override
         public void run() {
             String projectPath = GuiPackage.getInstance().getTestPlanFile();
-            if(projectPath ==null || projectPath.isEmpty())
-            {
+            if (projectPath == null || projectPath.isEmpty()) {
                 BmLog.console("Cannot upload JMX,Project path is null or empty");
                 return;
             }
@@ -173,8 +180,8 @@ public class BmTestManager {
                     testInfo = BlazemeterApi.getInstance().createTest(getUserKey(), testName);
                     setTestInfo(testInfo);
                 } else {
-                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(getUserKey(), testInfo.id);
-                    if (ti.status==TestStatus.NotFound) {
+                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(getUserKey(), testInfo.id, true);
+                    if (ti.status == TestStatus.NotFound) {
                         testInfo = BlazemeterApi.getInstance().createTest(getUserKey(), testName);
                     }
                     setTestInfo(testInfo);
@@ -187,6 +194,7 @@ public class BmTestManager {
             }
         }
     }
+
     public interface TestUserKeyNotification {
         public void onTestUserKeyChanged(String userKey);
     }
@@ -225,6 +233,18 @@ public class BmTestManager {
         }
     }
 
+    public interface PluginUpdateReceived {
+        public void onPluginUpdateReceived(PluginUpdate update);
+    }
+
+    public List<PluginUpdateReceived> pluginUpdateReceivedList= new ArrayList<PluginUpdateReceived>();
+
+    public void NotifyPluginUpdateReceived(PluginUpdate update) {
+        for (PluginUpdateReceived ti : pluginUpdateReceivedList) {
+            ti.onPluginUpdateReceived(update);
+        }
+    }
+
     //    private static ActionListener pre_exit_listener;
     private static ActionListener pre_close_listener;
     private static ActionListener post_save_listener;
@@ -243,7 +263,7 @@ public class BmTestManager {
      * @throws ClassNotFoundException
      */
     public void hooksRegister() {
-        if(JMeterPluginUtils.inCloudConfig()){
+        if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("Running in the Cloud will not register hooks!");
             return;
         }
@@ -275,7 +295,7 @@ public class BmTestManager {
                 try {
                     doPostSaveActions(e);
                 } catch (Throwable ex) {
-                    BmLog.error( ex);
+                    BmLog.error(ex);
                 }
             }
 
@@ -348,9 +368,31 @@ public class BmTestManager {
             }
 
         } catch (Throwable ex) {
-            BmLog.error( ex);
+            BmLog.error(ex);
         }
         this.hooksRegistered = false;
     }
+
+
+    public void checkForUpdates() {
+        long now = new Date().getTime();
+        if (lastUpdateCheck + 3600000 > now)
+            return;
+
+        lastUpdateCheck = now;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PluginUpdate update = BlazemeterApi.getInstance().getUpdate(BmTestManager.getInstance().getUserKey());
+                if (update != null && update.getVersion().isNewerThan(JMeterPluginUtils.getPluginVersion())) {
+                    BmLog.console(String.format("Update found from %s to %s", JMeterPluginUtils.getPluginVersion().toString(true), update.getVersion().toString(true)));
+                    NotifyPluginUpdateReceived(update);
+                } else {
+                    BmLog.console("No update found");
+                }
+            }
+        }).start();
+    }
+
 
 }

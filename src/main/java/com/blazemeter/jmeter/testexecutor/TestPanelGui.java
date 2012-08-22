@@ -1,16 +1,12 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.common.BlazemeterApi;
-import com.blazemeter.jmeter.common.BmLog;
-import com.blazemeter.jmeter.common.TestStatus;
-import com.blazemeter.jmeter.common.Utils;
+import com.blazemeter.jmeter.common.*;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -35,8 +31,16 @@ public class TestPanelGui {
     private JButton createNewButton;
     private JButton goToTestPageButton;
     private JButton helpButton;
+    private JSlider numberOfUsersSlider;
+    private JTextField numberOfUserTextBox;
+    private JButton runInTheCloudButton;
+    private JTextField enginesDescription;
+    private JComboBox locationComboBox;
+    private JPanel cloudPanel;
+    private JButton saveSettingsInCloud;
+    private JButton runInTheCloud;
 
-    private void fetchUserTestsAsync() {
+    private void fetchUserTestsAsync(String id) {
         String userKey = BmTestManager.getInstance().getUserKey();
         if (userKey == null || userKey.isEmpty()) {
             JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
@@ -44,19 +48,25 @@ public class TestPanelGui {
         }
 
         testIdComboBox.removeAllItems();
-        testIdComboBox.addItem(NEW_TEST_ID);
-//        infoLabel.setText("Loading your tests list");
+        testIdComboBox.addItem("LOADING...");
+        testIdComboBox.setEnabled(false);
         BlazemeterApi.getInstance().getTestsAsync(userKey, new BlazemeterApi.TestContainerNotifier() {
             @Override
             public void testReceived(ArrayList<TestInfo> tests) {
+                testIdComboBox.removeAllItems();
+                testIdComboBox.setEnabled(true);
+                testIdComboBox.addItem(NEW_TEST_ID);
                 if (tests != null) {
                     for (TestInfo testInfo : tests) {
-                        testIdComboBox.addItem(testInfo);
+                        addTestId(testInfo, false);
                     }
                 }
-//                infoLabel.setText("Finished loading your tests list");
+                setTestInfo(BmTestManager.getInstance().getTestInfo());
             }
+
         });
+
+
     }
 
     public void setUserKey(String key) {
@@ -64,16 +74,11 @@ public class TestPanelGui {
         BmLog.console("set key" + key);
     }
 
-    public void addTestId(Object test) {
-        addTestId(test, false);
-    }
-
     public void addTestId(Object test, boolean selected) {
         testIdComboBox.addItem(test);
         if (selected) {
             testIdComboBox.setSelectedItem(test);
         }
-        BmLog.console("add item" + test.toString());
     }
 
     public TestPanelGui() {
@@ -85,6 +90,7 @@ public class TestPanelGui {
             userKeyTextField.setEnabled(false);
             userKeyTextField.setToolTipText("User key found in jmeter.properties file");
             signUpToBlazemeterButton.setVisible(false);
+            fetchUserTestsAsync(null);
         } else {
             userKeyTextField.addFocusListener(new FocusListener() {
                 String oldVal = "";
@@ -101,45 +107,35 @@ public class TestPanelGui {
                     if (!newVal.equals(oldVal)) {
                         BmTestManager.getInstance().setUserKey(newVal);
                         if (!newVal.isEmpty())
-                            fetchUserTestsAsync();
+                            fetchUserTestsAsync(null);
                     }
                 }
             });
         }
 
+
         testIdComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
-//                Long c = System.currentTimeMillis();
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
                     Object selected = testIdComboBox.getSelectedItem();
-//                    BmLog.console("selected" + selected.toString());
                     if (selected instanceof TestInfo) {
                         TestInfo testInfo = (TestInfo) selected;
                         BmTestManager.getInstance().setTestInfo(testInfo);
-                        configureFields(testInfo);
-//                        BmLog.console("testIdComboBox1 Took " + (System.currentTimeMillis() - c));
                     } else if (Utils.isInteger(selected.toString())) {
-//                        infoLabel.setText("Loading test " + selected.toString() + " info.");
-                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), selected.toString());
+                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), selected.toString(), true);
                         BmLog.console(ti.toString());
                         if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
-                            addTestId(ti);
-                            setTestInfo(ti);
+                            BmTestManager.getInstance().setTestInfo(ti);
                         } else {
-//                            infoLabel.setText("Test " + selected.toString() + " not found!");
                             JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
                             configureFields(null);
                         }
-//                        BmLog.console("testIdComboBox2 Took " + (System.currentTimeMillis() - c));
                     } else if (selected.toString().equals(NEW_TEST_ID)) {
+                        setTestInfo(null);
                         configureFields(null);
-//                        BmLog.console("testIdComboBox3 Took " + (System.currentTimeMillis() - c));
                     }
-
-
                 }
-//                BmLog.console("testIdComboBox111 Took " + (System.currentTimeMillis() - c));
             }
         });
 
@@ -147,14 +143,17 @@ public class TestPanelGui {
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                fetchUserTestsAsync();
+                String id = null;
+                if (testIdComboBox.getSelectedItem().getClass().equals(TestInfo.class))
+                    id = ((TestInfo) (testIdComboBox.getSelectedItem())).id;
+                fetchUserTestsAsync(id);
             }
         });
 
         signUpToBlazemeterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Navigate(BlazemeterApi.BmUrlManager.getServerUrl() + "/user");
+                Utils.Navigate(BlazemeterApi.BmUrlManager.getServerUrl() + "/user");
             }
         });
 
@@ -185,9 +184,8 @@ public class TestPanelGui {
         BmTestManager.getInstance().testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
-
                 if (testIdComboBox.getItemCount() == 1) {
-                    addTestId(testInfo);
+                    addTestId(testInfo, true);
                 }
                 setTestInfo(testInfo);
             }
@@ -241,34 +239,89 @@ public class TestPanelGui {
             public void actionPerformed(ActionEvent actionEvent) {
                 String url = BmTestManager.getInstance().getTestUrl();
                 if (url != null)
-                    Navigate(url);
+                    Utils.Navigate(url);
             }
         });
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Navigate(HELP_URL);
+                Utils.Navigate(HELP_URL);
             }
         });
         addTestId(NEW_TEST_ID, true);
+        numberOfUsersSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int numberOfUsers = numberOfUsersSlider.getValue();
+                int engines = 1;
+                numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
+                if (numberOfUsers <= 300) {
+                    enginesDescription.setText(engines + " MEDIUM engine");
+                } else if (numberOfUsers <= 2400) {
+                    engines = numberOfUsers / 300;
+                    if (numberOfUsers % 300 > 0) {
+                        engines++;
+                    }
+                    enginesDescription.setText(engines + " MEDIUM engines");
+                } else {
+
+                    engines = numberOfUsers / 600;
+                    if (numberOfUsers % 600 > 0) {
+                        engines++;
+                    }
+                    enginesDescription.setText(engines + " LARGE engines");
+
+                }
+            }
+        });
+
+        saveSettingsInCloud.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
+                        BmTestManager.getInstance().getTestInfo().id,
+                        locationComboBox.getSelectedItem().toString(),
+                        numberOfUsersSlider.getValue());
+
+            }
+        });
+        runInTheCloud.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = BmTestManager.getInstance().runInTheCloud();
+                if (id != -1) {
+                    String url = BmTestManager.getInstance().getTestUrl();
+                    if (url != null)
+                        Utils.Navigate(url);
+                }
+
+            }
+        });
     }
 
     private void setTestInfo(TestInfo testInfo) {
-        if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid())
+        if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testIdComboBox.setSelectedItem(NEW_TEST_ID);
-        else {
+            cloudPanel.setVisible(false);
+            configureFields(null);
+        } else {
             testIdComboBox.setSelectedItem(testInfo);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    updateCloudPanel();
+                }
+            }).start();
+            configureFields(testInfo);
         }
     }
 
-    private void Navigate(String url) {
-        try {
-            Desktop.getDesktop().browse(new URI(url));
-        } catch (IOException e) {
-            BmLog.error(e);
-        } catch (URISyntaxException e) {
-            BmLog.error(e);
-        }
+    private void updateCloudPanel() {
+        cloudPanel.setVisible(false);
+        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), BmTestManager.getInstance().getTestInfo().id, true);
+        this.numberOfUsersSlider.setValue(ti.getNumberOfUsers());
+        this.locationComboBox.setSelectedItem(ti.getLocation());
+        cloudPanel.setVisible(true);
     }
 
     private String getValidReportName(String name) {
@@ -312,6 +365,11 @@ public class TestPanelGui {
         String newName = getValidReportName(reportName);
         if (!newName.equals(reportNameTextField.getText()))
             reportNameTextField.setText(newName);
+    }
+
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 
 
@@ -436,12 +494,83 @@ public class TestPanelGui {
         reloadButton.setToolTipText("Reload tests list from server");
         reloadButton.setVerticalAlignment(0);
         panel4.add(reloadButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(24, 21), null, null, 0, false));
+        cloudPanel = new JPanel();
+        cloudPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(5, 28, new Insets(1, 1, 1, 1), -1, -1));
+        cloudPanel.setEnabled(true);
+        cloudPanel.setVisible(true);
+        mainPanel.add(cloudPanel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        cloudPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(SystemColor.windowBorder), "Run In The Cloud"));
+        final JLabel label5 = new JLabel();
+        label5.setRequestFocusEnabled(false);
+        label5.setText("Users #");
+        cloudPanel.add(label5, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
+        final JLabel label6 = new JLabel();
+        label6.setText("Location");
+        cloudPanel.add(label6, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel5 = new JPanel();
+        panel5.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        cloudPanel.add(panel5, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        numberOfUserTextBox = new JTextField();
+        numberOfUserTextBox.setEditable(true);
+        numberOfUserTextBox.setEnabled(false);
+        numberOfUserTextBox.setText("300");
+        numberOfUserTextBox.setToolTipText("Test id of current test");
+        panel5.add(numberOfUserTextBox, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(70, -1), new Dimension(70, -1), 0, false));
+        numberOfUsersSlider = new JSlider();
+        numberOfUsersSlider.setInverted(false);
+        numberOfUsersSlider.setMajorTickSpacing(1000);
+        numberOfUsersSlider.setMaximum(8400);
+        numberOfUsersSlider.setMinimum(0);
+        numberOfUsersSlider.setMinorTickSpacing(200);
+        numberOfUsersSlider.setPaintLabels(true);
+        numberOfUsersSlider.setPaintTicks(true);
+        numberOfUsersSlider.setValue(100);
+        numberOfUsersSlider.setValueIsAdjusting(false);
+        panel5.add(numberOfUsersSlider, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel6 = new JPanel();
+        panel6.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        cloudPanel.add(panel6, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        locationComboBox = new JComboBox();
+        locationComboBox.setDoubleBuffered(true);
+        locationComboBox.setEditable(false);
+        locationComboBox.setEnabled(true);
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        defaultComboBoxModel1.addElement("EU West (Ireland)");
+        defaultComboBoxModel1.addElement("US East (Virginia)");
+        defaultComboBoxModel1.addElement("US West (N.California)");
+        defaultComboBoxModel1.addElement("US West (Oregon)");
+        defaultComboBoxModel1.addElement("Asia Pacific (Singapore)");
+        defaultComboBoxModel1.addElement("Japan (Tokyo)");
+        defaultComboBoxModel1.addElement("South America (San Paulo)");
+        locationComboBox.setModel(defaultComboBoxModel1);
+        locationComboBox.setToolTipText("Select location");
+        panel6.add(locationComboBox, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
-        mainPanel.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(1, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        cloudPanel.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(4, 10, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        runInTheCloud = new JButton();
+        runInTheCloud.setText("Run In The Cloud!");
+        cloudPanel.add(runInTheCloud, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        saveSettingsInCloud = new JButton();
+        saveSettingsInCloud.setActionCommand("Run In The Cloud!");
+        saveSettingsInCloud.setEnabled(true);
+        saveSettingsInCloud.setHideActionText(false);
+        saveSettingsInCloud.setText("Save");
+        saveSettingsInCloud.setToolTipText("Navigate to test page on Blazemeter site");
+        saveSettingsInCloud.setVisible(true);
+        cloudPanel.add(saveSettingsInCloud, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, new Dimension(150, -1), 0, false));
+        final com.intellij.uiDesigner.core.Spacer spacer2 = new com.intellij.uiDesigner.core.Spacer();
+        cloudPanel.add(spacer2, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        enginesDescription = new JTextField();
+        enginesDescription.setEditable(false);
+        enginesDescription.setEnabled(false);
+        enginesDescription.setText("1 MEDIUM engine");
+        cloudPanel.add(enginesDescription, new com.intellij.uiDesigner.core.GridConstraints(0, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
         label3.setLabelFor(reportNameTextField);
         label4.setLabelFor(testIdComboBox);
+        label5.setLabelFor(testNameTextField);
+        label6.setLabelFor(testIdComboBox);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.common;
 
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,7 +18,7 @@ import java.net.URISyntaxException;
  * Time: 14:05
  */
 public class Utils {
-    public static boolean isInteger(String str){
+    public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
         } catch (NumberFormatException e) {
@@ -34,7 +35,7 @@ public class Utils {
             BufferedReader input = new BufferedReader(new FileReader(aFile));
             try {
                 String line;
-                String newline=System.getProperty("line.separator");
+                String newline = System.getProperty("line.separator");
                 while ((line = input.readLine()) != null) {
                     contents.append(line);
                     contents.append(newline);
@@ -47,6 +48,18 @@ public class Utils {
         return contents.toString();
     }
 
+    public static void Navigate(String url) {
+        if (java.awt.Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().browse(new URI(url));
+            } catch (IOException e) {
+                BmLog.error(e);
+            } catch (URISyntaxException e) {
+                BmLog.error(e);
+            }
+        }
+    }
+
     public static class URIOpener extends MouseAdapter {
         private final String uri;
 
@@ -57,19 +70,11 @@ public class Utils {
         @Override
         public void mouseClicked(MouseEvent e) {
             if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-                openInBrowser(uri);
+                Navigate(uri);
             }
         }
 
-        private static void openInBrowser(String string) {
-            if (java.awt.Desktop.isDesktopSupported()) {
-                try {
-                    java.awt.Desktop.getDesktop().browse(new URI(string));
-                } catch (IOException ignored) {
-                } catch (URISyntaxException ignored) {
-                }
-            }
-        }
+
         @Override
         public void mousePressed(MouseEvent e) {
         }

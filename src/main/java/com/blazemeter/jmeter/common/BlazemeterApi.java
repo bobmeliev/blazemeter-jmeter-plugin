@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class BlazemeterApi {
 
-    public static final String APP_KEY = "75bad111c06f4e10c514"; //TODO: change to 75bad111c06f4e10c001
+    public static final String APP_KEY = "75bad111c06f4e10c001"; //was:75bad111c06f4e10c514
     private BmUrlManager urlManager = new BmUrlManager();
 
     private static BlazemeterApi instance;
@@ -51,7 +51,7 @@ public class BlazemeterApi {
 
             int statusCode = response.getStatusLine().getStatusCode();
             String error = response.getStatusLine().getReasonPhrase();
-            if (statusCode!=200) {
+            if (statusCode != 200) {
                 BmLog.error(String.format("Wrong response : %d %s", statusCode, error));
             }
         } catch (IOException e) {
@@ -77,6 +77,7 @@ public class BlazemeterApi {
         }
         return jo;
     }
+
 
     //    public synchronized void getReports(String userKey, String id) throws IOException, JSONException {
 //        String url = this.urlManager.TestReport(APP_KEY, userKey, id);
@@ -128,13 +129,37 @@ public class BlazemeterApi {
         new Thread(new TestsFetcher(userKey, notifier)).start();
     }
 
+    public int runInTheCloud(String userKey, String testId) {
+        if (userKey == null || userKey.trim().isEmpty()) {
+            BmLog.console("startTestLocal userKey is empty");
+            return -1;
+        }
+
+        if (testId == null || testId.trim().isEmpty()) {
+            BmLog.console("testId is empty");
+            return -1;
+        }
+
+        String url = this.urlManager.testStart(APP_KEY, userKey, testId);
+        JSONObject jo = getJson(url, null);
+        try {
+            if (!jo.get("response_code").toString().equals("200"))
+                return -1;
+
+            return jo.getInt("test_id");
+        } catch (JSONException e) {
+            BmLog.error(e);
+            return -1;
+        }
+    }
+
     public synchronized ArrayList<TestInfo> getTests(String userKey) {
         if (userKey.trim().isEmpty()) {
             BmLog.console("getTests userKey is empty");
             return null;
         }
 
-        String url = this.urlManager.GetTests(APP_KEY, userKey, "all");
+        String url = this.urlManager.tetTests(APP_KEY, userKey, "all");
 
         JSONObject jo = getJson(url, null);
         JSONArray arr;
@@ -178,12 +203,12 @@ public class BlazemeterApi {
             return null;
         }
 
-        String url = this.urlManager.ScriptCreation(APP_KEY, userKey, testName);
+        String url = this.urlManager.scriptCreation(APP_KEY, userKey, testName);
         JSONObject properties = new JSONObject();
         try {
             JSONObject jo = new JSONObject();
-            jo.put("JMETER_VERSION",JMeterPluginUtils.getJmeterVersion());
-            properties.put("options",jo);
+            jo.put("JMETER_VERSION", JMeterPluginUtils.getJmeterVersion());
+            properties.put("options", jo);
         } catch (JSONException e) {
             BmLog.error(e);
         }
@@ -223,7 +248,7 @@ public class BlazemeterApi {
             return;
         }
 
-        String url = this.urlManager.ScriptUpload(APP_KEY, userKey, testId, fileName);
+        String url = this.urlManager.scriptUpload(APP_KEY, userKey, testId, fileName);
         JSONObject jmxData = new JSONObject();
         String fileCon = Utils.getFileContents(filePath);
 
@@ -255,16 +280,16 @@ public class BlazemeterApi {
         if (dataType.equals("jtl"))
             reportName = reportName.toLowerCase().endsWith(".jtl") ? reportName : reportName + ".jtl";
 
-        String url = this.urlManager.TestResultsJTLUpload(APP_KEY, userKey, testId, reportName, dataType);
+        String url = this.urlManager.testResultsJTLUpload(APP_KEY, userKey, testId, reportName, dataType);
 
         JSONObject obj = new JSONObject();
         try {
             obj.put("data", buff);
             JSONObject jo = getJson(url, obj);
-            if(jo.has("file_size"))
+            if (jo.has("file_size"))
                 fileSize = (Integer) jo.get("file_size");
             else
-                BmLog.error("Failed to upload "+reportName);
+                BmLog.error("Failed to upload " + reportName);
         } catch (JSONException e) {
             BmLog.error(e);
         }
@@ -273,7 +298,37 @@ public class BlazemeterApi {
         return fileSize;
     }
 
-    public TestInfo getTestRunStatus(String userKey, String testId) {
+    public boolean updateTestSettings(String userKey, String testId, String location, int users) {
+        if (userKey == null || userKey.trim().isEmpty()) {
+            BmLog.console("dataUpload userKey is empty");
+            return false;
+        }
+
+        if (testId == null || testId.trim().isEmpty()) {
+            BmLog.console("testId is empty");
+            return false;
+        }
+
+        String url = this.urlManager.testUpdateUrl(APP_KEY, userKey, testId);
+        JSONObject obj = new JSONObject();
+        try {
+            JSONObject options = new JSONObject();
+            options.put("LOCATION", location);
+            options.put("USERS", users);
+            obj.put("options", options);
+            JSONObject jo = getJson(url, obj);
+            if (jo.getInt("response_code") != 200)
+                BmLog.error("Failed to update" + testId);
+        } catch (JSONException e) {
+            BmLog.error(e);
+            return false;
+        }
+
+
+        return true;
+    }
+
+    public TestInfo getTestRunStatus(String userKey, String testId, boolean detailed) {
         TestInfo ti = new TestInfo();
 
         if (userKey == null || userKey.trim().isEmpty()) {
@@ -289,17 +344,21 @@ public class BlazemeterApi {
         }
 
         try {
-            String url = this.urlManager.TestStatus(APP_KEY, userKey, testId);
+            String url = this.urlManager.testStatus(APP_KEY, userKey, testId, detailed);
 
             JSONObject jo = getJson(url, null);
-            if (jo.getInt("response_code")==200){
+            if (jo.getInt("response_code") == 200) {
                 ti.id = jo.getString("test_id");
                 ti.name = jo.getString("test_name");
-                ti.status = jo.getString("status").equalsIgnoreCase("running") ?TestStatus.Running:TestStatus.NotRunning;
-            }
-            else {
-                ti.status = jo.getInt("response_code")==404?TestStatus.NotFound:TestStatus.Error;
-                ti.error=jo.getString("error");
+                ti.status = jo.getString("status").equalsIgnoreCase("running") ? TestStatus.Running : TestStatus.NotRunning;
+                JSONObject options = jo.getJSONObject("options");
+                if (options != null) {
+                    ti.numberOfUsers = options.getInt("USERS");
+                    ti.location = options.getString("LOCATION");
+                }
+            } else {
+                ti.status = jo.getInt("response_code") == 404 ? TestStatus.NotFound : TestStatus.Error;
+                ti.error = jo.getString("error");
             }
         } catch (JSONException e) {
             BmLog.error("status getting status", e);
@@ -310,6 +369,26 @@ public class BlazemeterApi {
         }
 
         return ti;
+    }
+
+    public PluginUpdate getUpdate(String userKey) {
+        PluginUpdate update = null;
+        try {
+            String url = this.urlManager.getUpdate(APP_KEY, userKey, JMeterPluginUtils.getPluginVersion().toString(true));
+
+            JSONObject jo = getJson(url, null);
+            if (jo.getInt("response_code") == 200) {
+                update = new PluginUpdate(new PluginVersion(jo.getInt("version_major"), jo.getInt("version_minor"), jo.getString("version_build")),
+                        jo.getString("download_url"),
+                        jo.getString("changes"),
+                        jo.getString("more_info_url"));
+            }
+        } catch (JSONException e) {
+            BmLog.error("status getting status", e);
+        } catch (Throwable e) {
+            BmLog.error("status getting status", e);
+        }
+        return update;
     }
 
     public synchronized void startTestLocal(String userKey, String testId) {
@@ -323,7 +402,7 @@ public class BlazemeterApi {
             return;
         }
 
-        String url = this.urlManager.TestStartLocal(APP_KEY, userKey, testId);
+        String url = this.urlManager.testStartLocal(APP_KEY, userKey, testId);
         getJson(url, null);
     }
 
@@ -344,7 +423,7 @@ public class BlazemeterApi {
             return;
         }
 
-        String url = this.urlManager.TestStop(APP_KEY, userKey, testId);
+        String url = this.urlManager.testStop(APP_KEY, userKey, testId);
         getJson(url, null);
     }
 
@@ -355,15 +434,16 @@ public class BlazemeterApi {
         public BmUrlManager() {
             SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
             BmLog.console("Server url is :" + SERVER_URL);
-            BmLog.console("Jmeter version :" +JMeterUtils.getJMeterVersion());
-            BmLog.console("Plugin version :" + JMeterPluginUtils.getPluginVersion());
+            BmLog.console("Jmeter version :" + JMeterUtils.getJMeterVersion());
+            BmLog.console("Plugin version :" + JMeterPluginUtils.getPluginVersion().toString(true));
         }
 
         public static String getServerUrl() {
             return SERVER_URL;
         }
 
-        public String TestStatus(String appKey, String userKey, String testId) {
+        public String testStatus(String appKey, String userKey, String testId, boolean detailed) {
+
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -371,10 +451,10 @@ public class BlazemeterApi {
             } catch (UnsupportedEncodingException e) {
                 BmLog.error(e);
             }
-            return String.format("%s/api/rest/blazemeter/testGetStatus/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
+            return String.format("%s/api/rest/blazemeter/testGetStatus/?app_key=%s&user_key=%s&test_id=%s&detailed=%s", SERVER_URL, appKey, userKey, testId, detailed);
         }
 
-        public String ScriptCreation(String appKey, String userKey, String testName) {
+        public String scriptCreation(String appKey, String userKey, String testName) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -385,7 +465,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testCreate/?app_key=%s&user_key=%s&test_name=%s", SERVER_URL, appKey, userKey, testName);
         }
 
-        public String ScriptUpload(String appKey, String userKey, String testId, String fileName) {
+        public String scriptUpload(String appKey, String userKey, String testId, String fileName) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -397,7 +477,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testScriptUpload/?app_key=%s&user_key=%s&test_id=%s&file_name=%s", SERVER_URL, appKey, userKey, testId, fileName);
         }
 
-        public String TestStartLocal(String appKey, String userKey, String testId) {
+        public String testStartLocal(String appKey, String userKey, String testId) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -408,7 +488,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testStartExternal/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
         }
 
-        public String TestStop(String appKey, String userKey, String testId) {
+        public String testStop(String appKey, String userKey, String testId) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -419,7 +499,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testStop/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
         }
 
-        public String TestResultsJTLUpload(String appKey, String userKey, String testId, String fileName, String dataType) {
+        public String testResultsJTLUpload(String appKey, String userKey, String testId, String fileName, String dataType) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -431,7 +511,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testDataUpload/?app_key=%s&user_key=%s&test_id=%s&file_name=%s&data_type=%s", SERVER_URL, appKey, userKey, testId, fileName, dataType);
         }
 
-        public String GetTests(String appKey, String userKey, String type) {
+        public String tetTests(String appKey, String userKey, String type) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -440,6 +520,39 @@ public class BlazemeterApi {
             }
 
             return String.format("%s/api/rest/blazemeter/getTests/?app_key=%s&user_key=%s&type=%s", SERVER_URL, appKey, userKey, type);
+        }
+
+        public String testUpdateUrl(String appKey, String userKey, String testId) {
+            try {
+                appKey = URLEncoder.encode(appKey, "UTF-8");
+                userKey = URLEncoder.encode(userKey, "UTF-8");
+                testId = URLEncoder.encode(testId, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                BmLog.error(e);
+            }
+            return String.format("%s/api/rest/blazemeter/testUpdate/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
+        }
+
+        public String testStart(String appKey, String userKey, String testId) {
+            try {
+                appKey = URLEncoder.encode(appKey, "UTF-8");
+                userKey = URLEncoder.encode(userKey, "UTF-8");
+                testId = URLEncoder.encode(testId, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                BmLog.error(e);
+            }
+            return String.format("%s/api/rest/blazemeter/testStart/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
+        }
+
+        public String getUpdate(String appKey, String userKey, String version) {
+            try {
+                appKey = URLEncoder.encode(appKey, "UTF-8");
+                userKey = URLEncoder.encode(userKey, "UTF-8");
+                version = URLEncoder.encode(version, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                BmLog.error(e);
+            }
+            return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, version);
         }
     }
 }
