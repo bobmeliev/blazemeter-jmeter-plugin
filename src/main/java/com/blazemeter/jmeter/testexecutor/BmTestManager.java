@@ -27,6 +27,9 @@ public class BmTestManager {
     private boolean isTestStarted = false;
     private String propUserKey;
     private long lastUpdateCheck;
+    private boolean isLocalRunMode = true;
+    private UserInfo userInfo;
+
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -54,7 +57,19 @@ public class BmTestManager {
         this.testInfo = new TestInfo();
         rpc = BlazemeterApi.getInstance();
         this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
-        this.lastUpdateCheck = 1;//new Date().getTime() - 3540000; //now - 59 minutes
+        this.lastUpdateCheck = 1;
+        this.testUserKeyNotificationListeners.add(new TestUserKeyNotification() {
+            @Override
+            public void onTestUserKeyChanged(String userKey) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getUserInfo(true);
+                    }
+                }).start();
+            }
+        });
+
     }
 
     public boolean isUserKeyFromProp() {
@@ -160,6 +175,30 @@ public class BmTestManager {
         return testId;
     }
 
+    public boolean getIsLocalRunMode() {
+        return isLocalRunMode;
+    }
+
+    public void setIsLocalRunMode(Boolean localRunMode) {
+        if (this.isLocalRunMode != localRunMode) {
+            this.isLocalRunMode = localRunMode;
+            NotifyRunModeChanged(localRunMode);
+        }
+    }
+
+
+    public UserInfo getUserInfo() {
+        return getUserInfo(false);
+    }
+
+    public UserInfo getUserInfo(boolean force) {
+        if (force || userInfo == null || userInfo.time + 3600000 < new Date().getTime()) {
+            userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
+            NotifyUserInfoChanged(userInfo);
+        }
+        return userInfo;
+    }
+
     class jmxUploader implements Runnable {
 
         @Override
@@ -206,6 +245,7 @@ public class BmTestManager {
         for (TestUserKeyNotification ti : testUserKeyNotificationListeners) {
             ti.onTestUserKeyChanged(userKey);
         }
+
     }
 
     public interface TestInfoNotification {
@@ -225,10 +265,10 @@ public class BmTestManager {
         public void onTestStatusChanged();
     }
 
-    public List<StatusChangedNotification> statusChangedNotifications = new ArrayList<StatusChangedNotification>();
+    public List<StatusChangedNotification> statusChangedNotificationListeners = new ArrayList<StatusChangedNotification>();
 
     public void NotifyStatusChanged() {
-        for (StatusChangedNotification ti : statusChangedNotifications) {
+        for (StatusChangedNotification ti : statusChangedNotificationListeners) {
             ti.onTestStatusChanged();
         }
     }
@@ -237,11 +277,36 @@ public class BmTestManager {
         public void onPluginUpdateReceived(PluginUpdate update);
     }
 
-    public List<PluginUpdateReceived> pluginUpdateReceivedList= new ArrayList<PluginUpdateReceived>();
+    public List<PluginUpdateReceived> pluginUpdateReceivedNotificationListeners = new ArrayList<PluginUpdateReceived>();
 
     public void NotifyPluginUpdateReceived(PluginUpdate update) {
-        for (PluginUpdateReceived ti : pluginUpdateReceivedList) {
+        for (PluginUpdateReceived ti : pluginUpdateReceivedNotificationListeners) {
             ti.onPluginUpdateReceived(update);
+        }
+    }
+
+
+    public interface RunModeChanged {
+        public void onRunModeChanged(boolean isLocalRunMode);
+    }
+
+    public List<RunModeChanged> runModeChangedNotificationListeners = new ArrayList<RunModeChanged>();
+
+    public void NotifyRunModeChanged(boolean isLocalRunMode) {
+        for (RunModeChanged rmc : runModeChangedNotificationListeners) {
+            rmc.onRunModeChanged(isLocalRunMode);
+        }
+    }
+
+    public interface UserInfoChanged {
+        public void onUserInfoChanged(UserInfo userInfo);
+    }
+
+    public List<UserInfoChanged> userInfoChangedNotificationListeners = new ArrayList<UserInfoChanged>();
+
+    public void NotifyUserInfoChanged(UserInfo userInfo) {
+        for (UserInfoChanged uic : userInfoChangedNotificationListeners) {
+            uic.onUserInfoChanged(userInfo);
         }
     }
 

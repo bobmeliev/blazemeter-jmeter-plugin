@@ -64,6 +64,15 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
                 setTestInfo(testInfo);
             }
         });
+
+        BmTestManager.getInstance().runModeChangedNotificationListeners.add(new BmTestManager.RunModeChanged() {
+            @Override
+            public void onRunModeChanged(boolean isLocalRunMode) {
+                setIsLocalRunMode(isLocalRunMode);
+            }
+        });
+
+
         instanceCount++;
         BmTestManager.getInstance().hooksRegister();
     }
@@ -87,6 +96,14 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     public void setUserKey(String userKey) {
         this.setProperty("userKey", userKey);
+    }
+
+    public void setIsLocalRunMode(boolean isLocalRun) {
+        this.setProperty("isLocalRun", isLocalRun);
+    }
+
+    public Boolean getIsLocalRunMode() {
+        return this.getPropertyAsBoolean("isLocalRun", true);
     }
 
     public String getReportName() {

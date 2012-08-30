@@ -1,6 +1,8 @@
 package com.blazemeter.jmeter.common;
 
+import com.blazemeter.jmeter.testexecutor.Overrides;
 import com.blazemeter.jmeter.testexecutor.TestInfo;
+import com.blazemeter.jmeter.testexecutor.UserInfo;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
@@ -78,33 +80,23 @@ public class BlazemeterApi {
         return jo;
     }
 
+    public UserInfo getUserInfo(String userKey) {
+        UserInfo userInfo = null;
+        try {
+            String url = this.urlManager.getUserInfo(APP_KEY, userKey);
 
-    //    public synchronized void getReports(String userKey, String id) throws IOException, JSONException {
-//        String url = this.urlManager.TestReport(APP_KEY, userKey, id);
-//
-//        JSONObject jo = getJson(url, null);
-//        ArrayList<JSONObject> arr = (ArrayList<JSONObject>) jo.get("reports");
-//        HashMap<String, String> rpt = new HashMap<String, String>();
-//
-//        for (JSONObject en : arr) {
-//            String zipurl = (String) en.get("zip_url");
-//            String date = (String) en.get("date");
-//            String test_url = (String) en.get("url");
-//            String title = (String) en.get("title");
-//
-//            if (rpt.containsKey(id)) {
-//                rpt.put("title", title);
-//                rpt.put("date", date);
-//                rpt.put("url", url);
-//                rpt.put("zipurl", zipurl);
-//            }
-//
-//            BmLog.console("zip URL " + zipurl);
-//            BmLog.console("Date of  Test Run " + date);
-//            BmLog.console("URL For  Test" + test_url);
-//            BmLog.console("Title" + title);
-//        }
-//    }
+            JSONObject jo = getJson(url, null);
+            if (jo.getInt("response_code") == 200) {
+                userInfo = new UserInfo(jo.getString("username"), jo.getString("mail"), jo.getInt("credits"), jo.getInt("max_users_limit"));
+            }
+        } catch (JSONException e) {
+            BmLog.error("status getting status", e);
+        } catch (Throwable e) {
+            BmLog.error("status getting status", e);
+        }
+        return userInfo;
+    }
+
 
     public interface TestContainerNotifier {
         public void testReceived(ArrayList<TestInfo> tests);
@@ -298,7 +290,7 @@ public class BlazemeterApi {
         return fileSize;
     }
 
-    public boolean updateTestSettings(String userKey, String testId, String location, int users) {
+    public boolean updateTestSettings(String userKey, String testId, String location, boolean override, int engines, String engineType, int usersPerEngine, int iterations, int rumpUp, int duration) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.console("dataUpload userKey is empty");
             return false;
@@ -313,8 +305,20 @@ public class BlazemeterApi {
         JSONObject obj = new JSONObject();
         try {
             JSONObject options = new JSONObject();
+            options.put("NUMBER_OF_ENGINES", engines);//engine
+            options.put("INSTANCE_TYPE", engineType);//engine
+            if (override) {
+                options.put("OVERRIDE", 1);
+                options.put("OVERRIDE_THREADS", usersPerEngine);//threads
+                options.put("OVERRIDE_ITERATIONS", iterations);//iter
+                options.put("OVERRIDE_RAMP_UP", rumpUp);//ranpup
+                options.put("OVERRIDE_DURATION", duration);//duration
+            } else {
+                options.put("OVERRIDE", 0);
+            }
+
             options.put("LOCATION", location);
-            options.put("USERS", users);
+//            options.put("USERS", 3000);
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
             if (jo.getInt("response_code") != 200)
@@ -355,6 +359,15 @@ public class BlazemeterApi {
                 if (options != null) {
                     ti.numberOfUsers = options.getInt("USERS");
                     ti.location = options.getString("LOCATION");
+                    ti.type = options.getString("TEST_TYPE");
+                    if (options.getBoolean("OVERRIDE")) {
+                        ti.overrides = new Overrides(
+                                options.getInt("OVERRIDE_DURATION")
+                                , options.getInt("OVERRIDE_ITERATIONS")
+                                , options.getInt("OVERRIDE_RAMP_UP")
+                                , options.getInt("OVERRIDE_THREADS")
+                        );
+                    }
                 }
             } else {
                 ti.status = jo.getInt("response_code") == 404 ? TestStatus.NotFound : TestStatus.Error;
@@ -553,6 +566,16 @@ public class BlazemeterApi {
                 BmLog.error(e);
             }
             return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, version);
+        }
+
+        public String getUserInfo(String appKey, String userKey) {
+            try {
+                appKey = URLEncoder.encode(appKey, "UTF-8");
+                userKey = URLEncoder.encode(userKey, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                BmLog.error(e);
+            }
+            return String.format("%s/api/rest/blazemeter/getUserInfo/?app_key=%s&user_key=%s", SERVER_URL, appKey, userKey);
         }
     }
 }

@@ -12,41 +12,44 @@ import com.blazemeter.jmeter.common.Utils;
 public class TestInfo {
     public String id;
     public String name;
-    public TestStatus status =null;
-    public String error=null;
+    public TestStatus status = null;
+    public String error = null;
     public int numberOfUsers;
     public String location;
+    public Overrides overrides;
+    public String engineType;
+    public String type;
 
-    public TestInfo(){
-        this("","");
+    public TestInfo() {
+        this("", "");
     }
 
     public TestInfo(String testName, String testId) {
-        this.name=testName;
-        this.id=testId;
+        this.name = testName;
+        this.id = testId;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
 
         String ret = String.format("%s - %s", id, name);
-        if(error!=null)
-            ret+="error: " + error;
+        if (error != null)
+            ret += "error: " + error;
         return ret;
     }
 
-    public boolean equals(TestInfo ti){
-        return  ti!=null &&
+    public boolean equals(TestInfo ti) {
+        return ti != null &&
                 ti.name.equals(ti.name) &&
                 ti.id.equals(this.id);
     }
 
-    public boolean isEmpty(){
-        return (id==null) && (name==null);
+    public boolean isEmpty() {
+        return (id == null) && (name == null);
     }
 
-    public boolean isValid(){
-        return Utils.isInteger(id) && error==null;
+    public boolean isValid() {
+        return Utils.isInteger(id) && error == null;
     }
 
     public int getNumberOfUsers() {

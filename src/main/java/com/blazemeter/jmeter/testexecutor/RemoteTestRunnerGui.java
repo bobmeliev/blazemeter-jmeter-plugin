@@ -30,13 +30,12 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             if(gui==null)
             {
                 gui = new TestPanelGui();
-                System.out.println("init gui!?!?!");
             }
         } catch (Exception e) {
             BmLog.error(e);
         }
         init();
-        BmTestManager.getInstance().pluginUpdateReceivedList.add(this);
+        BmTestManager.getInstance().pluginUpdateReceivedNotificationListeners.add(this);
     }
 
     public TestElement createTestElement() {
@@ -48,6 +47,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         RemoteTestRunner testRunner = new RemoteTestRunner();
         testRunner.setUserKey(BmTestManager.getInstance().getUserKey());
         testRunner.setTestInfo(BmTestManager.getInstance().getTestInfo());
+        testRunner.setIsLocalRunMode(BmTestManager.getInstance().getIsLocalRunMode());
         modifyTestElement(testRunner);
         return testRunner;
     }
@@ -60,8 +60,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         }
         super.configureTestElement(te);
         RemoteTestRunner runner = (RemoteTestRunner) te;
-//        runner.setUserKey(BmTestManager.getInstance().getUserKey());
-//        runner.setTestInfo(BmTestManager.getInstance().getTestInfo());
         runner.setReportName(gui.getReportName());
     }
 
@@ -82,6 +80,8 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         RemoteTestRunner runner = (RemoteTestRunner) element;
         BmTestManager.getInstance().setUserKey(runner.getUserKey());
         BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
+        BmTestManager.getInstance().setIsLocalRunMode(runner.getIsLocalRunMode());
+
         gui.setReportName(runner.getReportName());
     }
     JPanel versionPanel;
