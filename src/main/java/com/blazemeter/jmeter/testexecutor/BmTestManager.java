@@ -169,9 +169,12 @@ public class BmTestManager {
     }
 
     public int runInTheCloud() {
-        int testId = -1;
-        testId = rpc.runInTheCloud(this.getUserKey(), this.getTestInfo().id);
+        int testId = rpc.runInTheCloud(this.getUserKey(), this.getTestInfo().id);
         this.isTestStarted = testId != -1;
+        if (this.isTestStarted) {
+            this.testInfo.status = TestStatus.Running;
+            NotifyTestInfoChanged();
+        }
         return testId;
     }
 

@@ -82,6 +82,9 @@ public class BlazemeterApi {
 
     public UserInfo getUserInfo(String userKey) {
         UserInfo userInfo = null;
+        if (userKey == null || userKey.isEmpty())
+            return userInfo;
+
         try {
             String url = this.urlManager.getUserInfo(APP_KEY, userKey);
 
@@ -387,6 +390,7 @@ public class BlazemeterApi {
     public PluginUpdate getUpdate(String userKey) {
         PluginUpdate update = null;
         try {
+            userKey = userKey == null ? "" : userKey;
             String url = this.urlManager.getUpdate(APP_KEY, userKey, JMeterPluginUtils.getPluginVersion().toString(true));
 
             JSONObject jo = getJson(url, null);

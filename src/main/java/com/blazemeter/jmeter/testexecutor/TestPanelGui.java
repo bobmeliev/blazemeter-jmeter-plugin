@@ -42,7 +42,6 @@ public class TestPanelGui {
     private JTextField enginesDescription;
     private JComboBox locationComboBox;
     private JPanel cloudPanel;
-    private JButton saveSettingsInCloud;
     private JButton runInTheCloud;
     private JSpinner iterationsSpinner;
     private JSpinner durationSpinner;
@@ -55,7 +54,6 @@ public class TestPanelGui {
     private JPanel infoPanel;
     private JLabel infoLabel;
     private JLabel userInfoLabel;
-
 
 
     public TestPanelGui() {
@@ -271,55 +269,13 @@ public class TestPanelGui {
             }
         });
 
-        saveSettingsInCloud.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int numberOfUsers = numberOfUsersSlider.getValue();
-                int engines;
-                int userPerEngine;
-                String engineSize = "m1.medium";
-                if (numberOfUsers <= 300) {
-                    engines = 0;
-                    userPerEngine = numberOfUsers == 0 ? 1 : numberOfUsers;
-                } else {
-                    if (numberOfUsers <= 2400) {
-                        engines = numberOfUsers / 300;
-                        if (numberOfUsers % 300 > 0) {
-                            engines++;
-                        }
-                    } else {
-                        engines = numberOfUsers / 600;
-                        if (numberOfUsers % 600 > 0) {
-                            engines++;
-                        }
-                        engineSize = "m1.large";
-                    }
-                    userPerEngine = numberOfUsers / engines;
-                }
-
-                boolean doOverride = overrideCheckbox.isSelected();
-
-                int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
-                iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
-                int rumpUp = Integer.parseInt(rampupSpinner.getValue().toString());
-                int duration = Integer.parseInt(durationSpinner.getValue().toString());
-                duration = duration > 0 ? duration : -1;
-                String location = locationComboBox.getSelectedItem().toString();
-
-                BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
-                        BmTestManager.getInstance().getTestInfo().id,
-                        location, doOverride, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
-
-            }
-        });
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int id = BmTestManager.getInstance().runInTheCloud();
-                if (id != -1) {
-                    String url = BmTestManager.getInstance().getTestUrl();
-                    if (url != null)
-                        Utils.Navigate(url);
+                if ("start".equals(e.getActionCommand())) {
+                    BmTestManager.getInstance().stopTest();
+                } else {
+                    startInTheCloud();
                 }
 
             }
@@ -358,6 +314,54 @@ public class TestPanelGui {
                 durationSpinner.setEnabled(checked);
             }
         });
+    }
+
+    private void startInTheCloud() {
+        saveCloudTest();
+        int id = BmTestManager.getInstance().runInTheCloud();
+        if (id != -1) {
+            String url = BmTestManager.getInstance().getTestUrl();
+            if (url != null)
+                Utils.Navigate(url);
+        }
+    }
+
+    private void saveCloudTest() {
+        int numberOfUsers = numberOfUsersSlider.getValue();
+        int engines;
+        int userPerEngine;
+        String engineSize = "m1.medium";
+        if (numberOfUsers <= 300) {
+            engines = 0;
+            userPerEngine = numberOfUsers == 0 ? 1 : numberOfUsers;
+        } else {
+            if (numberOfUsers <= 2400) {
+                engines = numberOfUsers / 300;
+                if (numberOfUsers % 300 > 0) {
+                    engines++;
+                }
+            } else {
+                engines = numberOfUsers / 600;
+                if (numberOfUsers % 600 > 0) {
+                    engines++;
+                }
+                engineSize = "m1.large";
+            }
+            userPerEngine = numberOfUsers / engines;
+        }
+
+        boolean doOverride = overrideCheckbox.isSelected();
+
+        int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
+        iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
+        int rumpUp = Integer.parseInt(rampupSpinner.getValue().toString());
+        int duration = Integer.parseInt(durationSpinner.getValue().toString());
+        duration = duration > 0 ? duration : -1;
+        String location = locationComboBox.getSelectedItem().toString();
+
+        BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
+                BmTestManager.getInstance().getTestInfo().id,
+                location, doOverride, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
     }
 
     private void clearTestInfo() {
@@ -513,6 +517,8 @@ public class TestPanelGui {
             goToTestPageButton.setEnabled(false);
         }
 
+        runInTheCloud.setActionCommand(isRunning ? "stop" : "start");
+        runInTheCloud.setText(isRunning ? "Stop" : "Run In The Cloud!");
         testIdComboBox.setEnabled(!isRunning);
         reportNameTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
@@ -765,20 +771,12 @@ public class TestPanelGui {
         label9.setText("Duration (minutes)");
         panel10.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
         runInTheCloud = new JButton();
-        runInTheCloud.setActionCommand("Start");
+        runInTheCloud.setActionCommand("start");
         runInTheCloud.setFont(new Font(runInTheCloud.getFont().getName(), runInTheCloud.getFont().getStyle(), 16));
         runInTheCloud.setHideActionText(false);
         runInTheCloud.setInheritsPopupMenu(true);
         runInTheCloud.setText("Run In The Cloud!");
         cloudPanel.add(runInTheCloud, new GridConstraints(1, 3, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 100), null, null, 0, false));
-        saveSettingsInCloud = new JButton();
-        saveSettingsInCloud.setActionCommand("Run In The Cloud!");
-        saveSettingsInCloud.setEnabled(true);
-        saveSettingsInCloud.setHideActionText(false);
-        saveSettingsInCloud.setText("Save");
-        saveSettingsInCloud.setToolTipText("Navigate to test page on Blazemeter site");
-        saveSettingsInCloud.setVisible(true);
-        cloudPanel.add(saveSettingsInCloud, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, new Dimension(150, -1), 0, false));
         final Spacer spacer5 = new Spacer();
         cloudPanel.add(spacer5, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
         overrideCheckbox = new JCheckBox();
@@ -804,6 +802,7 @@ public class TestPanelGui {
         localPanel.add(spacer8, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
         infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        infoPanel.setVisible(false);
         mainPanel.add(infoPanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Run In The Cloud Settings"));
         final Spacer spacer9 = new Spacer();
