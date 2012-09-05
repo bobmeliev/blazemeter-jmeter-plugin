@@ -5,7 +5,6 @@
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -18,12 +17,15 @@
     <orderEntry type="library" name="Maven: org.apache.jmeter:jmeter-core:2.3.4" level="project" />
     <orderEntry type="library" name="Maven: org.apache.log.Logger:logger:2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jmeter:jmeter-jorphan:2.3.4" level="project" />
-    <javadoc-paths>
-      <root url="jar:///Library/Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Home/appledocs.jar!/" />
-      <root url="jar:///Library/Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Home/docs.jar!/" />
-      <root url="jar:///Library/Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Home/appledocs.jar!/appledoc/api" />
-      <root url="jar:///Library/Java/JavaVirtualMachines/1.6.0_29-b11-402.jdk/Contents/Home/src.jar!/src" />
-    </javadoc-paths>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/forms_rt.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

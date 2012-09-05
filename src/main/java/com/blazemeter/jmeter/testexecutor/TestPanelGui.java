@@ -50,7 +50,6 @@ public class TestPanelGui {
     private JRadioButton runLocal;
     private JPanel localPanel;
     private JPanel overridesPanel;
-    private JCheckBox overrideCheckbox;
     private JPanel infoPanel;
     private JLabel infoLabel;
     private JLabel userInfoLabel;
@@ -305,15 +304,6 @@ public class TestPanelGui {
         };
         runLocal.addActionListener(listener);
         runRemote.addActionListener(listener);
-        overrideCheckbox.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                boolean checked = overrideCheckbox.isSelected();
-                rampupSpinner.setEnabled(checked);
-                iterationsSpinner.setEnabled(checked);
-                durationSpinner.setEnabled(checked);
-            }
-        });
     }
 
     private void startInTheCloud() {
@@ -350,7 +340,7 @@ public class TestPanelGui {
             userPerEngine = numberOfUsers / engines;
         }
 
-        boolean doOverride = overrideCheckbox.isSelected();
+//        boolean doOverride = overrideCheckbox.isSelected();
 
         int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
         iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
@@ -361,7 +351,8 @@ public class TestPanelGui {
 
         BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
                 BmTestManager.getInstance().getTestInfo().id,
-                location, doOverride, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+                location,// doOverride,
+                engines, engineSize, userPerEngine, iterations, rumpUp, duration);
     }
 
     private void clearTestInfo() {
@@ -454,14 +445,9 @@ public class TestPanelGui {
                 if ("jmeter".equals(ti.type)) {
                     locationComboBox.setSelectedItem(ti.getLocation());
                     numberOfUsersSlider.setValue(ti.getNumberOfUsers());
-                    if (ti.overrides == null) {
-                        overrideCheckbox.setSelected(false);
-                    } else {
-                        overrideCheckbox.setSelected(true);
-                        rampupSpinner.setValue(ti.overrides.rampup);
-                        iterationsSpinner.setValue(ti.overrides.iterations);
-                        durationSpinner.setValue(ti.overrides.duration);
-                    }
+                    rampupSpinner.setValue(ti.overrides.rampup);
+                    iterationsSpinner.setValue(ti.overrides.iterations);
+                    durationSpinner.setValue(ti.overrides.duration);
                     if (ti.status == TestStatus.Running) {
                         runInTheCloud.setText("Stop Test");
                         runInTheCloud.setActionCommand("Stop");
@@ -779,10 +765,6 @@ public class TestPanelGui {
         cloudPanel.add(runInTheCloud, new GridConstraints(1, 3, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 100), null, null, 0, false));
         final Spacer spacer5 = new Spacer();
         cloudPanel.add(spacer5, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
-        overrideCheckbox = new JCheckBox();
-        overrideCheckbox.setSelected(true);
-        overrideCheckbox.setText("Override");
-        cloudPanel.add(overrideCheckbox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer6 = new Spacer();
         cloudPanel.add(spacer6, new GridConstraints(3, 10, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         localPanel = new JPanel();

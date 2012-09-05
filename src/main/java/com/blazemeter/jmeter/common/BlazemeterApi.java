@@ -293,7 +293,8 @@ public class BlazemeterApi {
         return fileSize;
     }
 
-    public boolean updateTestSettings(String userKey, String testId, String location, boolean override, int engines, String engineType, int usersPerEngine, int iterations, int rumpUp, int duration) {
+    public boolean updateTestSettings(String userKey, String testId, String location, //boolean override,
+                                      int engines, String engineType, int usersPerEngine, int iterations, int rumpUp, int duration) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.console("dataUpload userKey is empty");
             return false;
@@ -310,16 +311,10 @@ public class BlazemeterApi {
             JSONObject options = new JSONObject();
             options.put("NUMBER_OF_ENGINES", engines);//engine
             options.put("INSTANCE_TYPE", engineType);//engine
-            if (override) {
-                options.put("OVERRIDE", 1);
-                options.put("OVERRIDE_THREADS", usersPerEngine);//threads
-                options.put("OVERRIDE_ITERATIONS", iterations);//iter
-                options.put("OVERRIDE_RAMP_UP", rumpUp);//ranpup
-                options.put("OVERRIDE_DURATION", duration);//duration
-            } else {
-                options.put("OVERRIDE", 0);
-            }
-
+            options.put("OVERRIDE_THREADS", usersPerEngine);//threads
+            options.put("OVERRIDE_ITERATIONS", iterations);//iter
+            options.put("OVERRIDE_RAMP_UP", rumpUp);//ranpup
+            options.put("OVERRIDE_DURATION", duration);//duration
             options.put("LOCATION", location);
 //            options.put("USERS", 3000);
             obj.put("options", options);
