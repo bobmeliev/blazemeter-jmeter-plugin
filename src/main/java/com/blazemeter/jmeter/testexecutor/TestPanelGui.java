@@ -411,12 +411,11 @@ public class TestPanelGui {
             infoLabel.setText("Loading test info, please wait");
             infoPanel.setVisible(true);
             updateCloudPanel();
-            //cloudPanel.setVisible(true);
         }
     }
 
     private void setTestInfo(TestInfo testInfo) {
-        if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
+        if (testInfo ==     null || testInfo.isEmpty() || !testInfo.isValid()) {
             testIdComboBox.setSelectedItem(NEW_TEST_ID);
             cloudPanel.setVisible(false);
             configureFields(null);
