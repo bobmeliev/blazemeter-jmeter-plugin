@@ -4,7 +4,6 @@ import com.blazemeter.jmeter.testexecutor.Overrides;
 import com.blazemeter.jmeter.testexecutor.TestInfo;
 import com.blazemeter.jmeter.testexecutor.UserInfo;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -23,7 +22,6 @@ public class BlazemeterApi {
 
     public static final String APP_KEY = "75bad111c06f4e10c001"; //was:75bad111c06f4e10c514
     private BmUrlManager urlManager = new BmUrlManager();
-
     private static BlazemeterApi instance;
 
     public static BlazemeterApi getInstance() {
@@ -154,7 +152,7 @@ public class BlazemeterApi {
             return null;
         }
 
-        String url = this.urlManager.tetTests(APP_KEY, userKey, "all");
+        String url = this.urlManager.getTests(APP_KEY, userKey, "all");
 
         JSONObject jo = getJson(url, null);
         JSONArray arr;
@@ -228,9 +226,6 @@ public class BlazemeterApi {
      * @param testId   - test id
      * @param fileName - test name
      * @param filePath - jmx file path
-     * @return test id
-     * @throws java.io.IOException
-     * @throws org.json.JSONException
      */
     public synchronized void uploadJmx(String userKey, String testId, String fileName, String filePath) {
         if (userKey == null || userKey.trim().isEmpty()) {
@@ -390,10 +385,12 @@ public class BlazemeterApi {
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
-                update = new PluginUpdate(new PluginVersion(jo.getInt("version_major"), jo.getInt("version_minor"), jo.getString("version_build")),
-                        jo.getString("download_url"),
-                        jo.getString("changes"),
-                        jo.getString("more_info_url"));
+                update = new PluginUpdate(new PluginVersion(jo.getInt("version_major"),
+                                                            jo.getInt("version_minor"),
+                                                            jo.getString("version_build")),
+                                                            jo.getString("download_url"),
+                                                            jo.getString("changes"),
+                                                            jo.getString("more_info_url"));
             }
         } catch (JSONException e) {
             BmLog.error("status getting status", e);
@@ -421,8 +418,6 @@ public class BlazemeterApi {
     /**
      * @param userKey - user key
      * @param testId  - test id
-     * @throws IOException
-     * @throws ClientProtocolException
      */
     public void stopTest(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
@@ -498,7 +493,7 @@ public class BlazemeterApi {
                 BmLog.error(e);
             }
             return String.format("%s/api/rest/blazemeter/testStartExternal/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-        }
+            }
 
         public String testStop(String appKey, String userKey, String testId) {
             try {
@@ -523,7 +518,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testDataUpload/?app_key=%s&user_key=%s&test_id=%s&file_name=%s&data_type=%s", SERVER_URL, appKey, userKey, testId, fileName, dataType);
         }
 
-        public String tetTests(String appKey, String userKey, String type) {
+        public String getTests(String appKey, String userKey, String type) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");

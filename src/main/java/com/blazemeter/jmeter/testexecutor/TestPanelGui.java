@@ -340,7 +340,6 @@ public class TestPanelGui {
             userPerEngine = numberOfUsers / engines;
         }
 
-//        boolean doOverride = overrideCheckbox.isSelected();
 
         int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
         iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
@@ -351,8 +350,7 @@ public class TestPanelGui {
 
         BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
                 BmTestManager.getInstance().getTestInfo().id,
-                location,// doOverride,
-                engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+                location,engines, engineSize, userPerEngine, iterations, rumpUp, duration);
     }
 
     private void clearTestInfo() {
@@ -437,7 +435,7 @@ public class TestPanelGui {
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                cloudPanel.setVisible(false);
+                cloudPanel.setVisible(true);
                 TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), BmTestManager.getInstance().getTestInfo().id, true);
                 if (Thread.currentThread().isInterrupted())
                     return;
