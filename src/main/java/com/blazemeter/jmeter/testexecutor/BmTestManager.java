@@ -327,9 +327,6 @@ public class BmTestManager {
     private boolean hooksRegistered = false;
 
 
-    /**
-     * @throws ClassNotFoundException
-     */
     public void hooksRegister() {
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("Running in the Cloud will not register hooks!");
@@ -444,10 +441,10 @@ public class BmTestManager {
 
     public void checkForUpdates() {
         long now = new Date().getTime();
+        lastUpdateCheck = now;
         if (lastUpdateCheck + 3600000 > now)
             return;
 
-        lastUpdateCheck = now;
         new Thread(new Runnable() {
             @Override
             public void run() {

@@ -18,6 +18,9 @@ import java.net.URISyntaxException;
  * Time: 14:05
  */
 public class Utils {
+
+    public static String REQUEST_FEATURE_REPORT_BUG_URL ="http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
+
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);

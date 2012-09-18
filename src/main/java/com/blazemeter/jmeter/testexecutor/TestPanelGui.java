@@ -33,7 +33,6 @@ public class TestPanelGui {
     private JTextField testIdTextField;
     private JButton reloadButton;
     private JButton signUpToBlazemeterButton;
-    //    private JLabel infoLabel;
     private JButton createNewButton;
     private JButton goToTestPageButton;
     private JButton helpButton;
@@ -720,6 +719,10 @@ public class TestPanelGui {
         enginesDescription.setEditable(false);
         enginesDescription.setEnabled(false);
         enginesDescription.setText("1 MEDIUM engine");
+
+        /**
+         * add "Add files link"
+         */
         cloudPanel.add(enginesDescription, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         overridesPanel = new JPanel();
         overridesPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
