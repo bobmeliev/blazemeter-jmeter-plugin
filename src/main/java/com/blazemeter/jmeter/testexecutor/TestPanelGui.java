@@ -52,6 +52,7 @@ public class TestPanelGui {
     private JPanel infoPanel;
     private JLabel infoLabel;
     private JLabel userInfoLabel;
+    private JButton addFilesButton;
 
 
     public TestPanelGui() {
@@ -303,6 +304,14 @@ public class TestPanelGui {
         };
         runLocal.addActionListener(listener);
         runRemote.addActionListener(listener);
+        addFilesButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        String url = BmTestManager.getInstance().getTestUrl()+"/files";
+                        if (url != null)
+                            Utils.Navigate(url);
+                    }
+                });
     }
 
     private void startInTheCloud() {
@@ -719,10 +728,6 @@ public class TestPanelGui {
         enginesDescription.setEditable(false);
         enginesDescription.setEnabled(false);
         enginesDescription.setText("1 MEDIUM engine");
-
-        /**
-         * add "Add files link"
-         */
         cloudPanel.add(enginesDescription, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         overridesPanel = new JPanel();
         overridesPanel.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
