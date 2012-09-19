@@ -178,6 +178,15 @@ public class BmTestManager {
         return testId;
     }
 
+    public void stopInTheCloud(){
+         int stopSuccess=rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo().id);
+         testInfo = rpc.getTestRunStatus(this.getUserKey(), this.getTestInfo().id, false);
+        if(testInfo.status==TestStatus.NotRunning&&stopSuccess!=-1){
+            this.isTestStarted = testInfo.status==TestStatus.Running;
+            NotifyTestInfoChanged();
+        }
+    }
+
     public boolean getIsLocalRunMode() {
         return isLocalRunMode;
     }
@@ -316,7 +325,6 @@ public class BmTestManager {
     //    private static ActionListener pre_exit_listener;
     private static ActionListener pre_close_listener;
     private static ActionListener post_save_listener;
-    //    private static ActionListener pre_save_listener;
     private static Class<?> c_close;
     private static Class<?> c_save;
     private static Class<?> c_exit;

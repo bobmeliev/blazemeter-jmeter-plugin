@@ -235,11 +235,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
         JLabel newVersion = new JLabel(String.format("New version - %s, is available",update.getVersion().toString()));
         newVersion.setForeground(Color.WHITE);
-
-
-
-
-
         versionPanel.add(newVersion);
         JLabel moreInfo = new JLabel();
         moreInfo.setText("<html><u>More info</u></html>");

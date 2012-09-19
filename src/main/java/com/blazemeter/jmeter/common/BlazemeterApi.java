@@ -122,6 +122,31 @@ public class BlazemeterApi {
         new Thread(new TestsFetcher(userKey, notifier)).start();
     }
 
+
+    public int stopInTheCloud(String userKey, String testId){
+        if (userKey == null || userKey.trim().isEmpty()) {
+                    BmLog.console("stopTest userKey is empty");
+                    return -1;
+                }
+
+                if (testId == null || testId.trim().isEmpty()) {
+                    BmLog.console("testId is empty");
+                    return -1;
+                }
+
+                String url = this.urlManager.testStop(APP_KEY, userKey, testId);
+                JSONObject jo = getJson(url, null);
+                try {
+                    if (!jo.get("response_code").toString().equals("200"))
+                        return -1;
+
+                    return jo.getInt("response_code");
+                } catch (JSONException e) {
+                    BmLog.error(e);
+                    return -1;
+                }
+    }
+
     public int runInTheCloud(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.console("startTestLocal userKey is empty");

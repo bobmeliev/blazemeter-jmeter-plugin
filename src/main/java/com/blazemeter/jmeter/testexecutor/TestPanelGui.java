@@ -181,7 +181,7 @@ public class TestPanelGui {
             public void onUserInfoChanged(UserInfo userInfo) {
                 if (userInfo == null) {
                     userInfoLabel.setText("");
-                    clearTestInfo();
+                    clearTestInfo() ;
                 } else {
                     userInfoLabel.setText(userInfo.toString());
                     numberOfUsersSlider.setMaximum(userInfo.maxUsersLimit);
@@ -271,10 +271,12 @@ public class TestPanelGui {
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if ("start".equals(e.getActionCommand())) {
-                    BmTestManager.getInstance().stopTest();
-                } else {
+                if ("start".equals(e.getActionCommand().toLowerCase())) {
                     startInTheCloud();
+                } else {
+                    BmTestManager.getInstance().stopInTheCloud();
+                    configureFields(null);
+
                 }
 
             }
@@ -460,7 +462,7 @@ public class TestPanelGui {
                         runInTheCloud.setText("Run In The Cloud");
                         runInTheCloud.setActionCommand("Start");
                     }
-                    infoPanel.setVisible(false);
+                    infoPanel.setVisible(true);
                     cloudPanel.setVisible(true);
                 } else {
                     infoLabel.setText("This test could not be run from Jmeter Plugin");
