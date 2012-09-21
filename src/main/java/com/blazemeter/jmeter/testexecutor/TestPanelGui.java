@@ -453,8 +453,16 @@ public class TestPanelGui {
                     locationComboBox.setSelectedItem(ti.getLocation());
                     numberOfUsersSlider.setValue(ti.getNumberOfUsers());
                     rampupSpinner.setValue(ti.overrides.rampup);
-                    iterationsSpinner.setValue(ti.overrides.iterations);
-                    durationSpinner.setValue(ti.overrides.duration);
+                    if(ti.overrides.iterations==-1){
+                        iterationsSpinner.setValue(0);
+                    }else{
+                        iterationsSpinner.setValue(ti.overrides.iterations);
+                    }
+                    if(ti.overrides.duration==-1){
+                       durationSpinner.setValue(0);
+                         }else{
+                        durationSpinner.setValue(ti.overrides.duration);
+                    }
                     if (ti.status == TestStatus.Running) {
                         runInTheCloud.setText("Stop Test");
                         runInTheCloud.setActionCommand("Stop");
