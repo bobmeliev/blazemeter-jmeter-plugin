@@ -331,12 +331,12 @@ public class BlazemeterApi {
             JSONObject options = new JSONObject();
             options.put("NUMBER_OF_ENGINES", engines);//engine
             options.put("INSTANCE_TYPE", engineType);//engine
+            options.put("OVERRIDE", 1);
             options.put("OVERRIDE_THREADS", usersPerEngine);//threads
             options.put("OVERRIDE_ITERATIONS", iterations);//iter
             options.put("OVERRIDE_RAMP_UP", rumpUp);//ranpup
             options.put("OVERRIDE_DURATION", duration);//duration
             options.put("LOCATION", location);
-//            options.put("USERS", 3000);
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
             if (jo.getInt("response_code") != 200)

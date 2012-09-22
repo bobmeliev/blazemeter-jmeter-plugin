@@ -284,7 +284,7 @@ public class TestPanelGui {
 
 
         rampupSpinner.setModel(new SpinnerNumberModel(300, 0, 3600, 60));
-        iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 10));
+        iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
         durationSpinner.setModel(new SpinnerNumberModel(120, 0, 480, 60));
 
         BmTestManager.getInstance().runModeChangedNotificationListeners.add(new BmTestManager.RunModeChanged() {
@@ -353,6 +353,7 @@ public class TestPanelGui {
 
         int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
         iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
+
         int rumpUp = Integer.parseInt(rampupSpinner.getValue().toString());
         int duration = Integer.parseInt(durationSpinner.getValue().toString());
         duration = duration > 0 ? duration : -1;
