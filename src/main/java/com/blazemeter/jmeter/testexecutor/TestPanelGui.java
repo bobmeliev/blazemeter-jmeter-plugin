@@ -238,6 +238,21 @@ public class TestPanelGui {
             }
         });
         addTestId(NEW_TEST_ID, true);
+        numberOfUserTextBox.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent focusEvent) {
+                        int numberOfUsers=0;
+                        try{
+                            numberOfUsers = Integer.valueOf(numberOfUserTextBox.getText().trim());
+                           }catch(NumberFormatException e){
+                                  BmLog.error("You've tried to enter not integer. Please, correct mistake!");
+                                  numberOfUsers=0;
+                        }finally{
+                            numberOfUsersSlider.setValue(numberOfUsers);
+                        }
+                    }
+                });
+
         numberOfUsersSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {

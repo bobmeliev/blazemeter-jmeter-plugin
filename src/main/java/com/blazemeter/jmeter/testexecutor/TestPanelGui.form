@@ -333,9 +333,9 @@
                 </constraints>
                 <properties>
                   <editable value="true"/>
-                  <enabled value="false"/>
+                  <enabled value="true"/>
                   <text value="300"/>
-                  <toolTipText value="Test id of current test"/>
+                  <toolTipText value="Number of users for testing in cloud"/>
                 </properties>
               </component>
               <component id="d4d88" class="javax.swing.JSlider" binding="numberOfUsersSlider">
