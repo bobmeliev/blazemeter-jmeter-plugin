@@ -269,7 +269,7 @@
                 </constraints>
                 <properties>
                   <selected value="false"/>
-                  <text value="Run In The Cloud"/>
+                  <text value="Run in the Cloud"/>
                 </properties>
               </component>
             </children>
@@ -290,7 +290,7 @@
           <enabled value="true"/>
           <visible value="true"/>
         </properties>
-        <border type="none" title="Run In The Cloud Settings">
+        <border type="none" title="Run in the Cloud Settings">
           <color system-color="windowBorder"/>
         </border>
         <children>
@@ -523,7 +523,8 @@
               <font size="16"/>
               <hideActionText value="false"/>
               <inheritsPopupMenu value="true"/>
-              <text value="Run In The Cloud!"/>
+              <label value="Run in the Cloud!"/>
+              <text value="Run in the Cloud!"/>
             </properties>
           </component>
           <hspacer id="7df60">
@@ -545,7 +546,9 @@
               <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Add Files For Cloud Test"/>
+              <actionCommand value="Add Files for Cloud Test"/>
+              <label value="Add Files for Cloud Test"/>
+              <text value="Add Files for Cloud Test"/>
             </properties>
           </component>
           <component id="d312c" class="javax.swing.JLabel">
@@ -625,7 +628,7 @@
         <properties>
           <visible value="false"/>
         </properties>
-        <border type="none" title="Run In The Cloud Settings"/>
+        <border type="none" title="Run in the Cloud Settings"/>
         <children>
           <hspacer id="fc9ed">
             <constraints>
