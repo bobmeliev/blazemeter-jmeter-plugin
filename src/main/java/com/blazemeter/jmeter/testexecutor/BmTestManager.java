@@ -27,7 +27,7 @@ public class BmTestManager {
     private boolean isTestStarted = false;
     private String propUserKey;
     private long lastUpdateCheck;
-    private boolean isLocalRunMode = true;
+    private boolean isLocalRunMode = false;
     private UserInfo userInfo;
 
 

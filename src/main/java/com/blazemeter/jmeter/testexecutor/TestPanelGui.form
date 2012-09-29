@@ -254,7 +254,7 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <selected value="true"/>
+                  <selected value="false"/>
                   <text value="Locally (Reporting Only)"/>
                 </properties>
               </component>
@@ -268,7 +268,7 @@
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <selected value="false"/>
+                  <selected value="true"/>
                   <text value="Run in the Cloud"/>
                 </properties>
               </component>
@@ -379,7 +379,7 @@
                     <item value="US West (Oregon)"/>
                     <item value="Asia Pacific (Singapore)"/>
                     <item value="Japan (Tokyo)"/>
-                    <item value="South America (San Paulo)"/>
+                    <item value="South America (Sao Paulo)"/>
                   </model>
                   <toolTipText value="Select location"/>
                 </properties>
@@ -626,9 +626,9 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <visible value="false"/>
+          <visible value="true"/>
         </properties>
-        <border type="none" title="Run in the Cloud Settings"/>
+        <border type="none" title="Blazemeter System Messages:"/>
         <children>
           <hspacer id="fc9ed">
             <constraints>

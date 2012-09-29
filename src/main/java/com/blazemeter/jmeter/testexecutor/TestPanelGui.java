@@ -22,9 +22,11 @@ import java.util.ArrayList;
  * Time: 12:29
  */
 public class TestPanelGui {
-    public static final String NEW_TEST_ID = "---NEW---";
-    public static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
-    //    public static final String REGISTER_URL = "http://www.blazemeter.com/?utm_source=JMeter%2BApplication&utm_medium=cpc&utm_term=BlazeMeter%2BUploader%2BV1&utm_content=V1&utm_campaign=BMJMeterUploader";
+    private static final String NEW_TEST_ID = "---NEW---";
+    private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
+    private static final String SELECT_TEST="Please, select test from list";
+    private static final String LOADING_TEST_INFO="Loading test info, please wait";
+    private static final String CAN_NOT_BE_RUN="This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
     private JTextField userKeyTextField;
     private JTextField reportNameTextField;
     private JTextField testNameTextField;
@@ -305,7 +307,6 @@ public class TestPanelGui {
         BmTestManager.getInstance().runModeChangedNotificationListeners.add(new BmTestManager.RunModeChanged() {
             @Override
             public void onRunModeChanged(boolean isLocalRunMode) {
-                //if to break event driven infinite loop
                 runLocal.setSelected(isLocalRunMode);
                 runRemote.setSelected(!isLocalRunMode);
                 runModeChanged(isLocalRunMode);
@@ -432,7 +433,7 @@ public class TestPanelGui {
             localPanel.setVisible(true);
         } else {
             localPanel.setVisible(false);
-            infoLabel.setText("Loading test info, please wait");
+            infoLabel.setText(LOADING_TEST_INFO);
             infoPanel.setVisible(true);
             updateCloudPanel();
         }
@@ -441,7 +442,8 @@ public class TestPanelGui {
     private void setTestInfo(TestInfo testInfo) {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testIdComboBox.setSelectedItem(NEW_TEST_ID);
-            cloudPanel.setVisible(false);
+            cloudPanel.setVisible(true);
+            infoLabel.setText(SELECT_TEST);
             configureFields(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
@@ -489,8 +491,12 @@ public class TestPanelGui {
                     infoPanel.setVisible(true);
                     cloudPanel.setVisible(true);
                 } else {
-                    infoLabel.setText("This test could not be run from Jmeter Plugin");
-                }
+                    if(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID)){
+                        infoLabel.setText(SELECT_TEST);
+                    }else{
+                        infoLabel.setText(CAN_NOT_BE_RUN);
+                    }
+                 }
             }
         });
         updateCloudPanelThread.start();
