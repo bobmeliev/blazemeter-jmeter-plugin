@@ -27,6 +27,7 @@ public class TestPanelGui {
     private static final String SELECT_TEST="Please, select test from list";
     private static final String LOADING_TEST_INFO="Loading test info, please wait";
     private static final String CAN_NOT_BE_RUN="This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
+    private static final String TEST_INFO_IS_LOADED="Test info is loaded";
     private JTextField userKeyTextField;
     private JTextField reportNameTextField;
     private JTextField testNameTextField;
@@ -190,7 +191,8 @@ public class TestPanelGui {
                 }
             }
         });
-        signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.getInstance().getUserKey().isEmpty());
+        signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
+                                                                                                getInstance().getUserKey().isEmpty());
 
         reportNameTextField.addFocusListener(new FocusAdapter() {
             @Override
@@ -433,8 +435,6 @@ public class TestPanelGui {
             localPanel.setVisible(true);
         } else {
             localPanel.setVisible(false);
-            infoLabel.setText(LOADING_TEST_INFO);
-            infoPanel.setVisible(true);
             updateCloudPanel();
         }
     }
@@ -448,7 +448,11 @@ public class TestPanelGui {
         } else {
             testIdComboBox.setSelectedItem(testInfo);
             configureFields(testInfo);
+            infoLabel.setText(LOADING_TEST_INFO);
+            infoPanel.setVisible(true);
             runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
+            infoLabel.setText(TEST_INFO_IS_LOADED);
+
         }
     }
 
@@ -464,6 +468,7 @@ public class TestPanelGui {
             @Override
             public void run() {
                 cloudPanel.setVisible(true);
+                infoPanel.setVisible(true);
                 TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), BmTestManager.getInstance().getTestInfo().id, true);
                 if (Thread.currentThread().isInterrupted())
                     return;
@@ -488,7 +493,6 @@ public class TestPanelGui {
                         runInTheCloud.setText("Run in the Cloud");
                         runInTheCloud.setActionCommand("Start");
                     }
-                    infoPanel.setVisible(true);
                     cloudPanel.setVisible(true);
                 } else {
                     if(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID)){
