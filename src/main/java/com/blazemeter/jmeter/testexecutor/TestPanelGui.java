@@ -340,6 +340,7 @@ public class TestPanelGui {
         if (id != -1) {
             String url = BmTestManager.getInstance().getTestUrl();
             if (url != null)
+                url = url.substring(0,url.length()-5);
                 Utils.Navigate(url);
         }
     }
