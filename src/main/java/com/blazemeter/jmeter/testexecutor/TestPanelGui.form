@@ -334,7 +334,7 @@
                 <properties>
                   <editable value="true"/>
                   <enabled value="true"/>
-                  <text value="300"/>
+                  <text value="0"/>
                   <toolTipText value="Number of users for testing in cloud"/>
                 </properties>
               </component>
@@ -350,7 +350,7 @@
                   <minorTickSpacing value="200"/>
                   <paintLabels value="true"/>
                   <paintTicks value="true"/>
-                  <value value="100"/>
+                  <value value="0"/>
                   <valueIsAdjusting value="false"/>
                 </properties>
               </component>

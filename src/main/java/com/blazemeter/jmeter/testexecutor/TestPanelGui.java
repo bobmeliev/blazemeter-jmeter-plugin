@@ -302,9 +302,9 @@ public class TestPanelGui {
         });
 
 
-        rampupSpinner.setModel(new SpinnerNumberModel(300, 0, 3600, 60));
+        rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
-        durationSpinner.setModel(new SpinnerNumberModel(120, 0, 480, 60));
+        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
 
         BmTestManager.getInstance().runModeChangedNotificationListeners.add(new BmTestManager.RunModeChanged() {
             @Override
