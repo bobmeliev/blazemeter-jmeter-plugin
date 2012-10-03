@@ -486,7 +486,7 @@ public class TestPanelGui {
                         durationSpinner.setValue(0);
                     } else {
                         durationSpinner.setValue(ti.overrides.duration);
-                    }
+                    }//duplicated code with configure fields
                     if (ti.status == TestStatus.Running) {
                         runInTheCloud.setText("Stop Test");
                         runInTheCloud.setActionCommand("Stop");
@@ -544,7 +544,7 @@ public class TestPanelGui {
             createNewButton.setEnabled(!isRunning);
             goToTestPageButton.setEnabled(false);
         }
-
+            //duplicated code with updateCloudPanel
         runInTheCloud.setActionCommand(isRunning ? "stop" : "start");
         runInTheCloud.setText(isRunning ? "Stop" : "Run in the Cloud!");
         testIdComboBox.setEnabled(!isRunning);

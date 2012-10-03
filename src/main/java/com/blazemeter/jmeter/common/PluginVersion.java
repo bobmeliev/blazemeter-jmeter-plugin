@@ -11,7 +11,6 @@ public class PluginVersion {
     int minor;
     String build;
 
-    //test
     public PluginVersion(int major, int minor, String build) {
         this.major = major;
         this.minor = minor;
@@ -22,11 +21,11 @@ public class PluginVersion {
         return toString(false);
     }
 
-    public boolean isNewerThan(PluginVersion other) {
-        if (major == other.major) {
-            return minor > other.minor;
+    public boolean isNewerThan(PluginVersion installedPlugin) {
+        if (major == installedPlugin.major) {
+            return minor > installedPlugin.minor;
         }
-        return major < other.major;
+        return major > installedPlugin.major;
     }
 
     public String toString(boolean full) {

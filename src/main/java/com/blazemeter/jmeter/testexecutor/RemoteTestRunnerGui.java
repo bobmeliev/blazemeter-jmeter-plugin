@@ -269,13 +269,15 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             public void mouseExited(MouseEvent e) {}
         });
         versionPanel.add(moreInfo);
-        JLabel download = new JLabel("<html><u>Download&Install</u></html>");
+        JLabel download = new JLabel("<html><u>Download.</u> JMeter manual restart is needed </html>");
         download.setForeground(Color.WHITE);
         download.setCursor(new Cursor(Cursor.HAND_CURSOR));
         download.setToolTipText("Click here to download and install new version");
-        // should be changed to new Utils.PluginInstaller after Alon will provide direct URL to BlazemeterPlugin.jar
-        download.addMouseListener(new Utils.URIOpener(update.getDownloadUrl()));
+        Utils.PluginInstaller pluginInstaller = new Utils.PluginInstaller();
+        download.addMouseListener(pluginInstaller);
         versionPanel.add(download);
+
+
     }
 }
 

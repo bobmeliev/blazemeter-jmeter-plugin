@@ -4,12 +4,11 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +19,6 @@ import java.net.URISyntaxException;
 public class Utils {
 
     public static String REQUEST_FEATURE_REPORT_BUG_URL ="http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
-
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -62,9 +60,8 @@ public class Utils {
             }
         }
     }
-/*
-                                                ################  Uncomment after receiving URL to blazemeterPlugin.jar
-    public static void saveUrl(String filename, String urlString) throws MalformedURLException, IOException
+
+    public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException
             {
                 BufferedInputStream in = null;
                 FileOutputStream fout = null;
@@ -79,7 +76,14 @@ public class Utils {
                         {
                                 fout.write(data, 0, count);
                         }
-                }
+                }catch(MalformedURLException e){
+                      BmLog.error("Invalid updating URL!");
+                      return false;
+                      }
+                 catch (IOException e){
+                     BmLog.error("Unable to download and save file!");
+                     return false;
+                 }
                 finally
                 {
                         if (in != null)
@@ -87,35 +91,45 @@ public class Utils {
                         if (fout != null)
                                 fout.close();
                 }
+                return true;
             }
+/*
+
+        public static void restartJMeter(){
+            Thread  jmeterStartingDaemon;
+            jmeterStartingDaemon = new Thread(new Runnable() {
+                  @Override
+                  public void run() {
+                  final String JMETER_START_SCRIPT="jmeter.bat";
+                  final String[]command = {"cmd.exe",
+                               //      "C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.7\\lib\\ext",
+                                     JMETER_START_SCRIPT};
+
+                try{
+                    Runtime r = Runtime.getRuntime();
+                    Process p = r.exec(command);
+
+                    }catch(IOException e){
+                          BmLog.error("Unable to restart JMeter after updating plugin",e);
+                          }
+                }
+
+            });
+                jmeterStartingDaemon.setDaemon(true);
+                jmeterStartingDaemon.start();
+                System.exit(0);
+                try{
+                    jmeterStartingDaemon.sleep(3000);
+                }
+                catch(InterruptedException ie){
+                BmLog.error("Error while restarting JMeter");
+            }
+
+        }
 */
 
-    /**
-     * Should be finished after receving direct link to BlazemeterPlugin.jar
-
-    public static void restartJMeter(){
-          final String JMETER_START_SCRIPT="jmeter.bat";
-          final String[]command = {"cmd.exe",
-                                   "C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.7\\lib\\ext",
-                                   JMETER_START_SCRIPT};
-
-//          command[1]=JMETER_START_SCRIPT;
-//            final ProcessBuilder builder = new ProcessBuilder(command);
-        try{
-            Runtime r = Runtime.getRuntime();
-            Process p = r.exec(command);
-            //
-//            builder.start();
-            System.exit(0);
-
-        }catch(IOException e){
-            BmLog.error("Unable to restart JMeter after updating plugin",e);
-        }
-
-        }
 
 
-     */
 
     public static class URIOpener extends MouseAdapter {
         private final String uri;
@@ -147,28 +161,35 @@ public class Utils {
         public void mouseExited(MouseEvent e) {
         }
     }
-/*                                Finish after receiving direct link to BlazemeterPlugin.jar
+
     public static class PluginInstaller extends MouseAdapter{
 
-        private String PLUGIN_INSTALLER_URI="http://cloud.github.com/downloads/KentBeck/junit/junit-dep-4.11-SNAPSHOT-20120805-1225.jar";;
-        private String PLUGIN_ABSOLUTE_PATH="../lib/ext/blazemeter_jmeter_plugin.jar";
+        public PluginInstaller(){};
 
-        public PluginInstaller() {
-        }
+        private String PLUGIN_UPDATE_URI="http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/BlazemeterPlugin.jar";
+        private String PLUGIN_LOCAL_PATH="../lib/ext/blazemeter_jmeter_plugin.jar";
+        public static boolean isPluginDownloaded=false;
 
         @Override
         public void mouseClicked(MouseEvent e) {
             if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-               *//*try{                                                 ###### TBD with ALON
-                                                          Need direct link to gitHUB BlazmeterPlugin.jar.
-                   saveUrl(PLUGIN_ABSOLUTE_PATH,PLUGIN_INSTALLER_URI);
+
+//                restartJMeter();
+                try{
+
+                 isPluginDownloaded=saveUrl(PLUGIN_LOCAL_PATH,PLUGIN_UPDATE_URI);
                } catch(MalformedURLException exception){
                        BmLog.error("Wrong URL", exception);
                }
                  catch(IOException exception){
                        BmLog.error("Error while saving file", exception);
-               }
-                restartJMeter();*//*
+               } /*finally {
+                 if(isPluginDownloaded==true)
+                   {
+                   restartJMeter();
+                 }
+
+               }*/
             }
         }
 
@@ -188,5 +209,8 @@ public class Utils {
         public void mouseExited(MouseEvent e) {
         }
 
-    }*/
+
+    }
+
+
 }
