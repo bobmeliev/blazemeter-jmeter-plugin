@@ -106,7 +106,8 @@ public class TestPanelGui {
                         TestInfo testInfo = (TestInfo) selected;
                         BmTestManager.getInstance().setTestInfo(testInfo);
                     } else if (Utils.isInteger(selected.toString())) {
-                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), selected.toString(), true);
+                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+                                                                                   selected.toString(), true);
                         BmLog.console(ti.toString());
                         if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
                             BmTestManager.getInstance().setTestInfo(ti);
@@ -192,7 +193,9 @@ public class TestPanelGui {
             }
         });
         signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
-                                                                                                getInstance().getUserKey().isEmpty());
+                                                                                                getInstance().
+                                                                                                getUserKey().
+                                                                                                isEmpty());
 
         reportNameTextField.addFocusListener(new FocusAdapter() {
             @Override
@@ -205,6 +208,8 @@ public class TestPanelGui {
             }
         });
 
+/*
+             Updating test status from server every 30 seconds.
 
         BmTestManager.getInstance().statusChangedNotificationListeners.add(new BmTestManager.StatusChangedNotification() {
             @Override
@@ -224,6 +229,7 @@ public class TestPanelGui {
                 }
             }
         });
+*/
 
         configureFields(BmTestManager.getInstance().getTestInfo());
 
@@ -290,14 +296,17 @@ public class TestPanelGui {
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
                     startInTheCloud();
+                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+                                                                               BmTestManager.getInstance().getTestInfo().id, true);
+                    configureFields(ti);
                 } else {
                     BmTestManager.getInstance().stopInTheCloud();
                     configureFields(null);
-
                 }
-
+                updateCloudPanel();
             }
         });
 
@@ -457,44 +466,30 @@ public class TestPanelGui {
         }
     }
 
-    Thread updateCloudPanelThread;
+    private Thread updateCloudPanelThread;
 
     private void updateCloudPanel() {
         if (BmTestManager.getInstance().getIsLocalRunMode())
             return;
 
         interruptCloudPanelUpdate();
-
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), BmTestManager.getInstance().getTestInfo().id, true);
+        TestInfo  ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+                                                                           BmTestManager.getInstance().getTestInfo().id, true);
                 if (Thread.currentThread().isInterrupted())
                     return;
                 if ("jmeter".equals(ti.type)) {
                     locationComboBox.setSelectedItem(ti.getLocation());
                     numberOfUsersSlider.setValue(ti.getNumberOfUsers());
                     rampupSpinner.setValue(ti.overrides.rampup);
-                    if (ti.overrides.iterations == -1) {
-                        iterationsSpinner.setValue(0);
-                    } else {
-                        iterationsSpinner.setValue(ti.overrides.iterations);
-                    }
-                    if (ti.overrides.duration == -1) {
-                        durationSpinner.setValue(0);
-                    } else {
-                        durationSpinner.setValue(ti.overrides.duration);
-                    }
-
+                    iterationsSpinner.setValue(ti.overrides.iterations == -1?0:ti.overrides.iterations);
+                    durationSpinner.setValue(ti.overrides.duration == -1?0:ti.overrides.duration);
                     runInTheCloud.setActionCommand(ti.status == TestStatus.Running ? "stop" : "start");
                     runInTheCloud.setText(ti.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
-
                 } else {
-                    if(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID)){
-                        infoLabel.setText(SELECT_TEST);
-                    }else{
-                        infoLabel.setText(CAN_NOT_BE_RUN);
-                    }
+                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID)?SELECT_TEST:CAN_NOT_BE_RUN);
                  }
             }
         });
