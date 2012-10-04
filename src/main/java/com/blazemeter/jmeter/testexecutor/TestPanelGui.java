@@ -431,11 +431,13 @@ public class TestPanelGui {
 
     private void runModeChanged(boolean isLocalRun) {
         if (isLocalRun) {
+            localPanel.setVisible(true);
             cloudPanel.setVisible(false);
             infoPanel.setVisible(false);
-            localPanel.setVisible(true);
         } else {
             localPanel.setVisible(false);
+            cloudPanel.setVisible(true);
+            infoPanel.setVisible(true);
             updateCloudPanel();
         }
     }
@@ -443,14 +445,12 @@ public class TestPanelGui {
     private void setTestInfo(TestInfo testInfo) {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testIdComboBox.setSelectedItem(NEW_TEST_ID);
-            cloudPanel.setVisible(true);
             infoLabel.setText(SELECT_TEST);
             configureFields(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
             configureFields(testInfo);
             infoLabel.setText(LOADING_TEST_INFO);
-            infoPanel.setVisible(true);
             runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
             infoLabel.setText(TEST_INFO_IS_LOADED);
 
@@ -468,8 +468,6 @@ public class TestPanelGui {
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                cloudPanel.setVisible(true);
-                infoPanel.setVisible(true);
                 TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(), BmTestManager.getInstance().getTestInfo().id, true);
                 if (Thread.currentThread().isInterrupted())
                     return;
@@ -494,7 +492,6 @@ public class TestPanelGui {
                         runInTheCloud.setText("Run in the Cloud");
                         runInTheCloud.setActionCommand("Start");
                     }
-                    cloudPanel.setVisible(true);
                 } else {
                     if(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID)){
                         infoLabel.setText(SELECT_TEST);
