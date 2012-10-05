@@ -77,9 +77,11 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager.getInstance().hooksRegister();
     }
 
+    /*
     public TestInfo getTestInfo() {
         return new TestInfo(this.getPropertyAsString("testName", ""), this.getPropertyAsString("testId", ""));
     }
+    */
 
     public void setTestInfo(TestInfo testInfo) {
         if (testInfo == null)
@@ -101,10 +103,12 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     public void setIsLocalRunMode(boolean isLocalRun) {
         this.setProperty("isLocalRun", isLocalRun);
     }
+/*
 
     public Boolean getIsLocalRunMode() {
         return this.getPropertyAsBoolean("isLocalRun", true);
     }
+*/
 
     public String getReportName() {
         return this.getPropertyAsString("reportName", "sample.jtl");
