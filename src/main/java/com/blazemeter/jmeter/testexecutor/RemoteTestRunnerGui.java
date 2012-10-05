@@ -78,13 +78,20 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configure(element);
 
         RemoteTestRunner runner = (RemoteTestRunner) element;
-        BmTestManager.getInstance().setUserKey(runner.getUserKey());
-        //here isLocalRunMode=true is set. Attention!
-        // Bug https://blazemeter.atlassian.net/browse/BPC-78
-//        BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
-//        BmTestManager.getInstance().setIsLocalRunMode(runner.getIsLocalRunMode());
+/*
 
+        BmTestManager.getInstance().setUserKey(runner.getUserKey());
+        here isLocalRunMode=true is set. Attention!
+        Bug https://blazemeter.atlassian.net/browse/BPC-78
+        BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
+        BmTestManager.getInstance().setIsLocalRunMode(runner.getIsLocalRunMode());
+*/
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.setTestInfo(null);
         gui.setReportName(runner.getReportName());
+        gui.setTestInfo(bmTestManager.getTestInfo());
+
+
     }
     JPanel versionPanel;
     private Component getTopPanel() {

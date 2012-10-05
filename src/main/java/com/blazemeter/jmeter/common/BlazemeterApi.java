@@ -314,7 +314,8 @@ public class BlazemeterApi {
     }
 
     public boolean updateTestSettings(String userKey, String testId, String location, //boolean override,
-                                      int engines, String engineType, int usersPerEngine, int iterations, int rumpUp, int duration) {
+                                      int engines, String engineType, int usersPerEngine,
+                                      int iterations, int rumpUp, int duration) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.console("dataUpload userKey is empty");
             return false;
