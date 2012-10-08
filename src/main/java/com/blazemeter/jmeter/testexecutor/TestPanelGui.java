@@ -296,15 +296,22 @@ public class TestPanelGui {
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                int dialogButton;
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    startInTheCloud();
-                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                                                                               BmTestManager.getInstance().getTestInfo().id, true);
-                    configureFields(ti);
+                    dialogButton=JOptionPane.showConfirmDialog(mainPanel, "Do you want to start test?", "Start test?",
+                                                                           JOptionPane.YES_NO_OPTION);
+                    if(dialogButton == JOptionPane.YES_OPTION){
+                        startInTheCloud();
+                    }
+
                 } else {
-                    BmTestManager.getInstance().stopInTheCloud();
-                    configureFields(null);
+                    dialogButton=JOptionPane.showConfirmDialog(mainPanel, "Do you want to stop test?", "Stop test?",
+                                                                           JOptionPane.YES_NO_OPTION);
+                    if(dialogButton == JOptionPane.YES_OPTION){
+                        BmTestManager.getInstance().stopInTheCloud();
+                        configureFields(null);
+                    }
+
                 }
                 updateCloudPanel();
             }
@@ -359,11 +366,18 @@ public class TestPanelGui {
         saveCloudTest();
         int id = BmTestManager.getInstance().runInTheCloud();
         if (id != -1) {
+
             String url = BmTestManager.getInstance().getTestUrl();
             if (url != null)
                 url = url.substring(0,url.length()-5);
                 Utils.Navigate(url);
         }
+
+        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+                                                                   BmTestManager.getInstance().getTestInfo().id, true);
+        configureFields(ti);
+        BmTestManager.getInstance().setTestInfo(ti);
+
     }
 
     private void saveCloudTest() {
@@ -400,8 +414,8 @@ public class TestPanelGui {
         String location = locationComboBox.getSelectedItem().toString();
 
         BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
-                BmTestManager.getInstance().getTestInfo().id,
-                location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+                                                       BmTestManager.getInstance().getTestInfo().id,
+                                                       location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
     }
 
     private void clearTestInfo() {
@@ -428,6 +442,9 @@ public class TestPanelGui {
                     for (TestInfo testInfo : tests) {
                         addTestId(testInfo, false);
                     }
+
+                    }else{
+                    JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 }
                 setTestInfo(BmTestManager.getInstance().getTestInfo());
             }

@@ -92,7 +92,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="*"/>
+                  <text value="Enter your user key"/>
                   <toolTipText value="User key - can be found on your profile page , click &quot;?&quot; button for more info"/>
                 </properties>
               </component>
