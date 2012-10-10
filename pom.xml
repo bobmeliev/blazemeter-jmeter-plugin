@@ -10,8 +10,12 @@
         </repository>
     </repositories>
     <properties>
-        <jmeter.home>C:\Program Files\Apache Software Foundation\jakarta-jmeter-2.5.1</jmeter.home>
+        <!-- This is path to JMeter in local machine. Adjust it according to your configuration-->
+        <jmeter.home>C:\Program Files\Apache Software Foundation\apache-jmeter-2.8</jmeter.home>
+        <!-- This is path to Intellij IDEA in local machine. Adjust it according to your configuration-->
+        <idea.home>C:\Program Files\JetBrains\Intellij IDEA Community Edition 11.1.3</idea.home>
     </properties>
+
 
     <groupId>blazemeter_jmeter_plugin</groupId>
     <artifactId>blazemeter_jmeter_plugin</artifactId>
@@ -35,6 +39,14 @@
             <version>2.3.4</version>
             <scope>system</scope>
             <systemPath>${jmeter.home}/lib/ext/ApacheJMeter_core.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.intellij.uiDesigner</groupId>
+            <artifactId>forms_rt</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${idea.home}/lib/forms_rt.jar</systemPath>
         </dependency>
 
 

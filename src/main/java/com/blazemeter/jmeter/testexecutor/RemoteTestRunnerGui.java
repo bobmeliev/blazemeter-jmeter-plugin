@@ -87,7 +87,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         BmTestManager.getInstance().setIsLocalRunMode(runner.getIsLocalRunMode());
 */
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.setTestInfo(null);
+//        bmTestManager.setTestInfo(null);
         gui.setReportName(runner.getReportName());
         gui.setTestInfo(bmTestManager.getTestInfo());
 
