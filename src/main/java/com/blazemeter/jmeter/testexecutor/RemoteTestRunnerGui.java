@@ -83,13 +83,15 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         BmTestManager.getInstance().setUserKey(runner.getUserKey());
         here isLocalRunMode=true is set. Attention!
         Bug https://blazemeter.atlassian.net/browse/BPC-78
-        BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
+            BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
         BmTestManager.getInstance().setIsLocalRunMode(runner.getIsLocalRunMode());
 */
         BmTestManager bmTestManager = BmTestManager.getInstance();
-//        bmTestManager.setTestInfo(null);
+        TestInfo ti = bmTestManager.getTestInfo();
+        //bug https://blazemeter.atlassian.net/browse/BPC-81
+        gui.setTestInfo(ti);
+        //bug https://blazemeter.atlassian.net/browse/BPC-81
         gui.setReportName(runner.getReportName());
-        gui.setTestInfo(bmTestManager.getTestInfo());
 
 
     }

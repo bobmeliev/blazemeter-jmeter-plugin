@@ -29,7 +29,7 @@ public class BmTestManager {
     private long lastUpdateCheck;
     private boolean isLocalRunMode = false;
     private UserInfo userInfo;
-
+    private volatile TestInfo testInfo;
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -143,7 +143,7 @@ public class BmTestManager {
         }
     }
 
-    private TestInfo testInfo;
+
 
     public TestInfo getTestInfo() {
         return testInfo;

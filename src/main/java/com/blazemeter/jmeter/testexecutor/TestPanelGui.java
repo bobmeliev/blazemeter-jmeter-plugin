@@ -505,7 +505,8 @@ public class TestPanelGui {
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-        TestInfo  ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+            TestInfo  ti;
+            ti=BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                                                                            BmTestManager.getInstance().getTestInfo().id, true);
                 if (Thread.currentThread().isInterrupted())
                     return;
