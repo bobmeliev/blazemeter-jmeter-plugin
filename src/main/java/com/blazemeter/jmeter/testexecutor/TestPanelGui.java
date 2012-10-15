@@ -169,6 +169,7 @@ public class TestPanelGui {
                     addTestId(testInfo, true);
                 }
                 setTestInfo(testInfo);
+                updateCloudPanel();
             }
         });
 
@@ -447,6 +448,7 @@ public class TestPanelGui {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 }
                 setTestInfo(BmTestManager.getInstance().getTestInfo());
+                updateCloudPanel();
             }
 
         });
@@ -491,13 +493,12 @@ public class TestPanelGui {
             infoLabel.setText(LOADING_TEST_INFO);
             runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
             infoLabel.setText(TEST_INFO_IS_LOADED);
-            updateCloudPanel();
         }
     }
 
     private Thread updateCloudPanelThread;
 
-    private void updateCloudPanel() {
+    protected void updateCloudPanel() {
         if (BmTestManager.getInstance().getIsLocalRunMode())
             return;
 
@@ -505,9 +506,9 @@ public class TestPanelGui {
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-            TestInfo  ti;
-            ti=BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+            TestInfo  ti=BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                                                                            BmTestManager.getInstance().getTestInfo().id, true);
+                      BmTestManager.getInstance().setTestInfo(ti);
                 if (Thread.currentThread().isInterrupted())
                     return;
                 if ("jmeter".equals(ti.type)) {
@@ -524,6 +525,11 @@ public class TestPanelGui {
             }
         });
         updateCloudPanelThread.start();
+        try{
+            updateCloudPanelThread.join(10000);
+        }catch(InterruptedException e){
+            BmLog.error("Cloud Panel updating  process was interrupted");
+        }
 
     }
 
