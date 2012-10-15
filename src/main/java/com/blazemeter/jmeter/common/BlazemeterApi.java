@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.common;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.Overrides;
 import com.blazemeter.jmeter.testexecutor.TestInfo;
 import com.blazemeter.jmeter.testexecutor.UserInfo;
@@ -352,7 +353,7 @@ public class BlazemeterApi {
     }
 
     public TestInfo getTestRunStatus(String userKey, String testId, boolean detailed) {
-        TestInfo ti = new TestInfo();
+        TestInfo ti = BmTestManager.getInstance().getTestInfo();
 
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.console("getTestRunStatus userKey is empty");

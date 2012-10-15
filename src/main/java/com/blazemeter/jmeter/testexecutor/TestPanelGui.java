@@ -14,6 +14,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +29,7 @@ public class TestPanelGui {
     private static final String LOADING_TEST_INFO="Loading test info, please wait";
     private static final String CAN_NOT_BE_RUN="This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
     private static final String TEST_INFO_IS_LOADED="Test info is loaded";
+    private static long lastCloudPanelUpdate=0;
     private JTextField userKeyTextField;
     private JTextField reportNameTextField;
     private JTextField testNameTextField;
@@ -499,6 +501,12 @@ public class TestPanelGui {
     private Thread updateCloudPanelThread;
 
     protected void updateCloudPanel() {
+        long now = new Date().getTime();
+        if (lastCloudPanelUpdate + 1000 > now){
+            lastCloudPanelUpdate = now;
+            return;
+        }
+
         if (BmTestManager.getInstance().getIsLocalRunMode())
             return;
 
@@ -508,7 +516,7 @@ public class TestPanelGui {
             public void run() {
             TestInfo  ti=BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                                                                            BmTestManager.getInstance().getTestInfo().id, true);
-                      BmTestManager.getInstance().setTestInfo(ti);
+            BmTestManager.getInstance().setTestInfo(ti);
                 if (Thread.currentThread().isInterrupted())
                     return;
                 if ("jmeter".equals(ti.type)) {
@@ -525,12 +533,13 @@ public class TestPanelGui {
             }
         });
         updateCloudPanelThread.start();
+        /*
         try{
             updateCloudPanelThread.join(10000);
         }catch(InterruptedException e){
             BmLog.error("Cloud Panel updating  process was interrupted");
         }
-
+*/
     }
 
     private void interruptCloudPanelUpdate() {

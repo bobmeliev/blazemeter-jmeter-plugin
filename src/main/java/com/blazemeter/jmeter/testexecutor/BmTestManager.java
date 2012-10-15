@@ -126,7 +126,7 @@ public class BmTestManager {
 
     private String userKey;
 
-    public void setTestInfo(TestInfo testInfo) {
+    public synchronized void  setTestInfo(TestInfo testInfo) {
         if (this.testInfo == null || !this.testInfo.equals(testInfo)) {
             this.testInfo = testInfo;
             NotifyTestInfoChanged();
@@ -386,7 +386,6 @@ public class BmTestManager {
             @Override
             public synchronized void actionPerformed(ActionEvent e) {
                 BmTestManager.getInstance().hooksUnregistered();
-                BmTestManager.getInstance().destroy();
             }
 
         };
