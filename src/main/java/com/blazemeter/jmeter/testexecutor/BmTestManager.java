@@ -174,6 +174,7 @@ public class BmTestManager {
         if (this.isTestStarted) {
             this.testInfo.status = TestStatus.Running;
             NotifyTestInfoChanged();
+            NotifyStatusChanged();
         }
         return testId;
     }
@@ -184,6 +185,7 @@ public class BmTestManager {
         if(testInfo.status==TestStatus.NotRunning&&stopSuccess!=-1){
             this.isTestStarted = testInfo.status==TestStatus.Running;
             NotifyTestInfoChanged();
+            NotifyStatusChanged();
         }
     }
 

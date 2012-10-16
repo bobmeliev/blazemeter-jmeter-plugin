@@ -211,9 +211,7 @@ public class TestPanelGui {
             }
         });
 
-/*
 
-             Updating test status from server every 30 seconds.
 
 
 
@@ -224,11 +222,11 @@ public class TestPanelGui {
                 switch (ti.status) {
                     case Running:
                         runLocal.setEnabled(false);
-                        runInTheCloud.setEnabled(false);
+                        runRemote.setEnabled(false);
                         break;
                     case NotRunning:
-                        runLocal.setEnabled(false);
-                        runInTheCloud.setEnabled(false);
+                        runLocal.setEnabled(true);
+                        runRemote.setEnabled(true);
                         configureFields(ti);
                         break;
                     case NotFound:
@@ -240,7 +238,7 @@ public class TestPanelGui {
                 }
             }
         });
-*/
+
         configureFields(BmTestManager.getInstance().getTestInfo());
 
         goToTestPageButton.addActionListener(new ActionListener() {
@@ -552,13 +550,7 @@ public class TestPanelGui {
             }
         });
         updateCloudPanelThread.start();
-        /*
-        try{
-            updateCloudPanelThread.join(10000);
-        }catch(InterruptedException e){
-            BmLog.error("Cloud Panel updating  process was interrupted");
-        }
-*/
+
     }
 
     private void interruptCloudPanelUpdate() {
