@@ -212,7 +212,10 @@ public class TestPanelGui {
         });
 
 /*
+
              Updating test status from server every 30 seconds.
+
+
 
         BmTestManager.getInstance().statusChangedNotificationListeners.add(new BmTestManager.StatusChangedNotification() {
             @Override
@@ -220,7 +223,12 @@ public class TestPanelGui {
                 TestInfo ti = BmTestManager.getInstance().getTestInfo();
                 switch (ti.status) {
                     case Running:
+                        runLocal.setEnabled(false);
+                        runInTheCloud.setEnabled(false);
+                        break;
                     case NotRunning:
+                        runLocal.setEnabled(false);
+                        runInTheCloud.setEnabled(false);
                         configureFields(ti);
                         break;
                     case NotFound:
@@ -233,7 +241,6 @@ public class TestPanelGui {
             }
         });
 */
-
         configureFields(BmTestManager.getInstance().getTestInfo());
 
         goToTestPageButton.addActionListener(new ActionListener() {
@@ -305,6 +312,8 @@ public class TestPanelGui {
                                                                            JOptionPane.YES_NO_OPTION);
                     if(dialogButton == JOptionPane.YES_OPTION){
                         startInTheCloud();
+                        runLocal.setEnabled(false);
+                        enableCloudControls(false);
                     }
 
                 } else {
@@ -313,6 +322,8 @@ public class TestPanelGui {
                     if(dialogButton == JOptionPane.YES_OPTION){
                         BmTestManager.getInstance().stopInTheCloud();
                         configureFields(null);
+                        runLocal.setEnabled(true);
+                        enableCloudControls(true);
                     }
 
                 }
@@ -381,6 +392,15 @@ public class TestPanelGui {
         configureFields(ti);
         BmTestManager.getInstance().setTestInfo(ti);
 
+    }
+    private void enableCloudControls(boolean isEnabled){
+         locationComboBox.setEnabled(isEnabled);
+         numberOfUsersSlider.setEnabled(isEnabled);
+         numberOfUserTextBox.setEnabled(isEnabled);
+         rampupSpinner.setEnabled(isEnabled);
+         iterationsSpinner.setEnabled(isEnabled);
+         durationSpinner.setEnabled(isEnabled);
+         addFilesButton.setEnabled(isEnabled);
     }
 
     private void saveCloudTest() {
@@ -480,7 +500,6 @@ public class TestPanelGui {
             localPanel.setVisible(false);
             cloudPanel.setVisible(true);
             infoPanel.setVisible(true);
-
         }
     }
 

@@ -145,7 +145,7 @@ public class BmTestManager {
 
 
 
-    public TestInfo getTestInfo() {
+    public synchronized     TestInfo getTestInfo() {
         return testInfo;
     }
 

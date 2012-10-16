@@ -465,7 +465,7 @@ public class BlazemeterApi {
     public static class BmUrlManager {
         private static String SERVER_URL = "https://a.blazemeter.com";
 
-        public BmUrlManager() {
+        protected BmUrlManager() {
             SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
             BmLog.console("Server url is :" + SERVER_URL);
             BmLog.console("Jmeter version :" + JMeterUtils.getJMeterVersion());

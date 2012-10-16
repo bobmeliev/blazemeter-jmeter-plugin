@@ -17,17 +17,18 @@ public class TestInfo {
     public int numberOfUsers;
     public String location;
     public Overrides overrides;
-    public String engineType;
+//    public String engineType;
     public String type;
 
-    public TestInfo() {
-        this("", "");
-    }
 
-    public TestInfo(String testName, String testId) {
+    private TestInfo(String testName, String testId) {
         this.name = testName;
         this.id = testId;
     }
+
+    public TestInfo() {
+            this("", "");
+        }
 
     @Override
     public String toString() {
