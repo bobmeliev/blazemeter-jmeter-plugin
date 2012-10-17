@@ -96,30 +96,22 @@ public class Utils {
       This method closes JMeter and restarts it using daemon-thread.
     */
     public static void restartJMeter() {
-        Thread jmeterStartingDaemon;
-        jmeterStartingDaemon = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String JMETER_START_SCRIPT = "jmeter.bat";
-                final String[] command = {"cmd.exe", JMETER_START_SCRIPT};
+        final String CMD = "cmd.exe";
+        final String JMETER_START_SCRIPT = " C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.8\\bin\\jmeter.bat";
+        final String[] command = {CMD,"/C",JMETER_START_SCRIPT};
 
-                try {
-                    Runtime r = Runtime.getRuntime();
-                    Process p = r.exec(command);
 
-                } catch (IOException e) {
-                    BmLog.error("Unable to restart JMeter after updating plugin", e);
-                }
-            }
-
-        });
-        jmeterStartingDaemon.setDaemon(true);
-        jmeterStartingDaemon.start();
-        System.exit(0);
         try {
-            jmeterStartingDaemon.sleep(3000);
-        } catch (InterruptedException ie) {
-            BmLog.error("Error while restarting JMeter");
+            Process proc = Runtime.getRuntime().exec(command);
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(proc.getInputStream()));
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                BmLog.console(line);
+            }
+            System.exit(0);
+        } catch (IOException e) {
+            BmLog.error("jmeter.bat is not found - JMeter is not restarted");
         }
 
     }
