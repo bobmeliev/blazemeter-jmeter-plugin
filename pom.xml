@@ -8,13 +8,22 @@
             <id>Maven JMeter Plugin</id>
             <url>http://yciabaud.github.com/jmeter-maven-plugin/repository</url>
         </repository>
+        <repository>
+            <id>Maven 2</id>
+            <url>http://repo1.maven.org/maven2/</url>
+        </repository>
     </repositories>
     <properties>
         <!-- This is path to JMeter in local machine. Adjust it according to your configuration-->
         <jmeter.home>C:\Program Files\Apache Software Foundation\apache-jmeter-2.8</jmeter.home>
-        <!-- This is path to Intellij IDEA in local machine. Adjust it according to your configuration-->
-        <idea.home>C:\Program Files\JetBrains\Intellij IDEA Community Edition 11.1.3</idea.home>
     </properties>
+    <build>
+        <directory>target</directory>
+        <outputDirectory>target</outputDirectory>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <testOutputDirectory>target/test-classes</testOutputDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+    </build>
 
 
     <groupId>blazemeter_jmeter_plugin</groupId>
@@ -42,11 +51,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.intellij.uiDesigner</groupId>
+            <groupId>com.intellij</groupId>
             <artifactId>forms_rt</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${idea.home}/lib/forms_rt.jar</systemPath>
+            <version>7.0.3</version>
         </dependency>
 
 
@@ -72,4 +79,5 @@
         </dependency>
 
     </dependencies>
+
 </project>
