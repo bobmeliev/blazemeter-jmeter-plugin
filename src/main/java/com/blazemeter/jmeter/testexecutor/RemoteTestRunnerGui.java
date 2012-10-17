@@ -16,8 +16,13 @@ import java.awt.event.MouseListener;
 
 
 public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener, BmTestManager.PluginUpdateReceived {
-    static TestPanelGui gui;
+    private static TestPanelGui gui;
 
+    public static JPanel getVersionPanel() {
+        return versionPanel;
+    }
+
+    private static JPanel versionPanel;
 
     public RemoteTestRunnerGui() {
         super();
@@ -30,12 +35,14 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             if(gui==null)
             {
                 gui = new TestPanelGui();
+
             }
         } catch (Exception e) {
             BmLog.error(e);
         }
         init();
         BmTestManager.getInstance().pluginUpdateReceivedNotificationListeners.add(this);
+        BmTestManager.getInstance().checkForUpdates();
     }
 
     public TestElement createTestElement() {
@@ -43,7 +50,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
-        BmTestManager.getInstance().checkForUpdates();
+
         RemoteTestRunner testRunner = new RemoteTestRunner();
         testRunner.setUserKey(BmTestManager.getInstance().getUserKey());
         testRunner.setTestInfo(BmTestManager.getInstance().getTestInfo());
@@ -61,6 +68,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configureTestElement(te);
         RemoteTestRunner runner = (RemoteTestRunner) te;
         runner.setReportName(gui.getReportName());
+
     }
 
     @Override
@@ -78,6 +86,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configure(element);
 
         RemoteTestRunner runner = (RemoteTestRunner) element;
+
 /*
 
         BmTestManager.getInstance().setUserKey(runner.getUserKey());
@@ -100,7 +109,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
 
     }
-    JPanel versionPanel;
+
     private Component getTopPanel() {
         Container panel = makeTitlePanel();
 
@@ -285,10 +294,10 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             public void mouseExited(MouseEvent e) {}
         });
         versionPanel.add(moreInfo);
-        JLabel download = new JLabel("<html><u>Download.</u> JMeter manual restart is needed </html>");
+        JLabel download = new JLabel("<html><u>Download</u></html>");
         download.setForeground(Color.WHITE);
         download.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        download.setToolTipText("Click here to download and install new version");
+        download.setToolTipText("Click here to download new version");
         Utils.PluginInstaller pluginInstaller = new Utils.PluginInstaller();
         download.addMouseListener(pluginInstaller);
         versionPanel.add(download);

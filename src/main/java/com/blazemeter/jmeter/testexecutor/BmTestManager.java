@@ -449,10 +449,6 @@ public class BmTestManager {
 
 
     public void checkForUpdates() {
-        long now = new Date().getTime();
-        lastUpdateCheck = now;
-        if (lastUpdateCheck + 3600000 > now)
-            return;
         new Thread(new Runnable() {
             @Override
             public void run() {

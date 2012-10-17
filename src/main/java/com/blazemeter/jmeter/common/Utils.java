@@ -1,5 +1,8 @@
 package com.blazemeter.jmeter.common;
 
+import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
@@ -18,7 +21,8 @@ import java.net.URL;
  */
 public class Utils {
 
-    public static String REQUEST_FEATURE_REPORT_BUG_URL ="http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
+    public static String REQUEST_FEATURE_REPORT_BUG_URL = "http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
+
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -61,74 +65,64 @@ public class Utils {
         }
     }
 
-    public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException
-            {
-                BufferedInputStream in = null;
-                FileOutputStream fout = null;
-                try
-                {
-                        in = new BufferedInputStream(new URL(urlString).openStream());
-                        fout = new FileOutputStream(filename);
+    public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException {
+        BufferedInputStream in = null;
+        FileOutputStream fout = null;
+        try {
+            in = new BufferedInputStream(new URL(urlString).openStream());
+            fout = new FileOutputStream(filename);
 
-                        byte data[] = new byte[1024];
-                        int count;
-                        while ((count = in.read(data, 0, 1024)) != -1)
-                        {
-                                fout.write(data, 0, count);
-                        }
-                }catch(MalformedURLException e){
-                      BmLog.error("Invalid updating URL!");
-                      return false;
-                      }
-                 catch (IOException e){
-                     BmLog.error("Unable to download and save file!");
-                     return false;
-                 }
-                finally
-                {
-                        if (in != null)
-                                in.close();
-                        if (fout != null)
-                                fout.close();
-                }
-                return true;
+            byte data[] = new byte[1024];
+            int count;
+            while ((count = in.read(data, 0, 1024)) != -1) {
+                fout.write(data, 0, count);
             }
-/*
+        } catch (MalformedURLException e) {
+            BmLog.error("Invalid updating URL!");
+            return false;
+        } catch (IOException e) {
+            BmLog.error("Unable to download and save file!");
+            return false;
+        } finally {
+            if (in != null)
+                in.close();
+            if (fout != null)
+                fout.close();
+        }
+        return true;
+    }
 
-        public static void restartJMeter(){
-            Thread  jmeterStartingDaemon;
-            jmeterStartingDaemon = new Thread(new Runnable() {
-                  @Override
-                  public void run() {
-                  final String JMETER_START_SCRIPT="jmeter.bat";
-                  final String[]command = {"cmd.exe",
-                               //      "C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.7\\lib\\ext",
-                                     JMETER_START_SCRIPT};
+    /*
+      This method closes JMeter and restarts it using daemon-thread.
+    */
+    public static void restartJMeter() {
+        Thread jmeterStartingDaemon;
+        jmeterStartingDaemon = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String JMETER_START_SCRIPT = "jmeter.bat";
+                final String[] command = {"cmd.exe", JMETER_START_SCRIPT};
 
-                try{
+                try {
                     Runtime r = Runtime.getRuntime();
                     Process p = r.exec(command);
 
-                    }catch(IOException e){
-                          BmLog.error("Unable to restart JMeter after updating plugin",e);
-                          }
+                } catch (IOException e) {
+                    BmLog.error("Unable to restart JMeter after updating plugin", e);
                 }
-
-            });
-                jmeterStartingDaemon.setDaemon(true);
-                jmeterStartingDaemon.start();
-                System.exit(0);
-                try{
-                    jmeterStartingDaemon.sleep(3000);
-                }
-                catch(InterruptedException ie){
-                BmLog.error("Error while restarting JMeter");
             }
 
+        });
+        jmeterStartingDaemon.setDaemon(true);
+        jmeterStartingDaemon.start();
+        System.exit(0);
+        try {
+            jmeterStartingDaemon.sleep(3000);
+        } catch (InterruptedException ie) {
+            BmLog.error("Error while restarting JMeter");
         }
-*/
 
-
+    }
 
 
     public static class URIOpener extends MouseAdapter {
@@ -162,34 +156,34 @@ public class Utils {
         }
     }
 
-    public static class PluginInstaller extends MouseAdapter{
+    public static class PluginInstaller extends MouseAdapter {
 
-        public PluginInstaller(){};
+        public PluginInstaller() {
+        }
 
-        private String PLUGIN_UPDATE_URI="http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/BlazemeterPlugin.jar";
-        private String PLUGIN_LOCAL_PATH="../lib/ext/blazemeter_jmeter_plugin.jar";
-        public static boolean isPluginDownloaded=false;
+        ;
+
+        private String PLUGIN_UPDATE_URI = "http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/BlazemeterPlugin.jar";
+        private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter_jmeter_plugin.jar";
+        public static boolean isPluginDownloaded = false;
+        public static JPanel versionPanel = RemoteTestRunnerGui.getVersionPanel();
 
         @Override
         public void mouseClicked(MouseEvent e) {
             if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
 
+                try {
+
+                    isPluginDownloaded = saveUrl(PLUGIN_LOCAL_PATH, PLUGIN_UPDATE_URI);
+                    JOptionPane.showMessageDialog(versionPanel, "Please, restart JMeter manually to \n apply changes",
+                            "Manual restart is needed",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } catch (MalformedURLException exception) {
+                    BmLog.error("Wrong URL", exception);
+                } catch (IOException exception) {
+                    BmLog.error("Error while saving file", exception);
+                }
 //                restartJMeter();
-                try{
-
-                 isPluginDownloaded=saveUrl(PLUGIN_LOCAL_PATH,PLUGIN_UPDATE_URI);
-               } catch(MalformedURLException exception){
-                       BmLog.error("Wrong URL", exception);
-               }
-                 catch(IOException exception){
-                       BmLog.error("Error while saving file", exception);
-               } /*finally {
-                 if(isPluginDownloaded==true)
-                   {
-                   restartJMeter();
-                 }
-
-               }*/
             }
         }
 
@@ -209,8 +203,5 @@ public class Utils {
         public void mouseExited(MouseEvent e) {
         }
 
-
     }
-
-
 }
