@@ -312,7 +312,8 @@ public class TestPanelGui {
                     if (ti.status == TestStatus.NotFound) {
                         JOptionPane.showMessageDialog(mainPanel, "Test is not selected", "Select a test", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Do you want to start test?", "Start test?",
+                        dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
+                                "Start test?",
                                 JOptionPane.YES_NO_OPTION);
                         if (dialogButton == JOptionPane.YES_OPTION) {
                             startInTheCloud();
@@ -324,7 +325,8 @@ public class TestPanelGui {
 
 
                 } else {
-                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Do you want to stop test?", "Stop test?",
+                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to stop the test? ",
+                            "Stop test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         BmTestManager bmTestManager = BmTestManager.getInstance();
