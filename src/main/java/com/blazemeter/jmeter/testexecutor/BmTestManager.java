@@ -96,9 +96,12 @@ public class BmTestManager {
 
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
+                if(testInfo==null){
+                    BmLog.error("TestInfo is not set! Enter userkey and select a test!",new NullPointerException());
+                }
+
                 if (testInfo.id.isEmpty()) {
                     BmLog.console("Could not get valid id,test will start without blazemeter.");
-                    return;
                 }
 
                 setTestInfo(testInfo);
