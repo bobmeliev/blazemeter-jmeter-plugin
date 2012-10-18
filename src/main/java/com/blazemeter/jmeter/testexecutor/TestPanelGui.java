@@ -69,7 +69,6 @@ public class TestPanelGui {
             userKeyTextField.setEnabled(false);
             userKeyTextField.setToolTipText("User key found in jmeter.properties file");
             signUpToBlazemeterButton.setVisible(false);
-            fetchUserTestsAsync();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -535,10 +534,10 @@ public class TestPanelGui {
 
     protected void updateCloudPanel() {
         long now = new Date().getTime();
-        if (lastCloudPanelUpdate + 1000 > now) {
-            lastCloudPanelUpdate = now;
+        if (lastCloudPanelUpdate + 7000 > now) {
             return;
         }
+        lastCloudPanelUpdate = now;
 
         if (BmTestManager.getInstance().getIsLocalRunMode())
             return;

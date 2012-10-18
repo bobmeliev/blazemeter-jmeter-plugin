@@ -35,14 +35,13 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             if(gui==null)
             {
                 gui = new TestPanelGui();
-
-            }
+                 }
         } catch (Exception e) {
             BmLog.error(e);
         }
         init();
         BmTestManager.getInstance().pluginUpdateReceivedNotificationListeners.add(this);
-        BmTestManager.getInstance().checkForUpdates();
+
     }
 
     public TestElement createTestElement() {
@@ -50,7 +49,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
-
         RemoteTestRunner testRunner = new RemoteTestRunner();
         testRunner.setUserKey(BmTestManager.getInstance().getUserKey());
         testRunner.setTestInfo(BmTestManager.getInstance().getTestInfo());
@@ -86,22 +84,9 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configure(element);
 
         RemoteTestRunner runner = (RemoteTestRunner) element;
+        BmTestManager.getInstance().checkForUpdates();
 
-/*
-
-        BmTestManager.getInstance().setUserKey(runner.getUserKey());
-        here isLocalRunMode=true is set. Attention!
-
-        #############      Bug https://blazemeter.atlassian.net/browse/BPC-78
-
-        BmTestManager.getInstance().setTestInfo(runner.getTestInfo());
-        BmTestManager.getInstance().setIsLocalRunMode(runner.getIsLocalRunMode());
-
-        ############       Bug https://blazemeter.atlassian.net/browse/BPC-78
-*/      //bug https://blazemeter.atlassian.net/browse/BPC-81
         gui.updateCloudPanel();
-        //bug https://blazemeter.atlassian.net/browse/BPC-81
-
         BmTestManager bmTestManager = BmTestManager.getInstance();
         TestInfo ti = bmTestManager.getTestInfo();
         gui.setTestInfo(ti);
