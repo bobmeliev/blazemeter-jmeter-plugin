@@ -110,6 +110,8 @@ public class BmTestManager {
                 testInfo.status = TestStatus.Running;
                 isTestStarted = true;
                 NotifyStatusChanged();
+                NotifyTestInfoChanged();
+
             } catch (Throwable ex) {
                 BmLog.error("do Start Test", ex);
             }

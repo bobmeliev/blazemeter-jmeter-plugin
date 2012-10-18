@@ -156,7 +156,7 @@ public class BlazemeterApi {
 
         if (testId == null || testId.trim().isEmpty()) {
             BmLog.console("testId is empty");
-            return -1;
+            return -2;
         }
 
         String url = this.urlManager.testStart(APP_KEY, userKey, testId);

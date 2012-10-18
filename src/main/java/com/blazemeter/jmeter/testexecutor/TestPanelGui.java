@@ -25,16 +25,19 @@ import java.util.Date;
 public class TestPanelGui {
     private static final String NEW_TEST_ID = "---NEW---";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
-    private static final String SELECT_TEST="Please, select test from list";
-    private static final String LOADING_TEST_INFO="Loading test info, please wait";
-    private static final String CAN_NOT_BE_RUN="This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
-    private static final String TEST_INFO_IS_LOADED="Test info is loaded";
-    private static long lastCloudPanelUpdate=0;
+    private static final String SELECT_TEST = "Please, select test from list";
+    private static final String LOADING_TEST_INFO = "Loading test info, please wait";
+    private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
+    private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
+    private static long lastCloudPanelUpdate = 0;
     private JTextField userKeyTextField;
     private JTextField reportNameTextField;
     private JTextField testNameTextField;
     private JComboBox testIdComboBox;
-    public JPanel mainPanel;
+
+
+
+    private JPanel mainPanel;
     private JTextField testIdTextField;
     private JButton reloadButton;
     private JButton signUpToBlazemeterButton;
@@ -109,7 +112,7 @@ public class TestPanelGui {
                         BmTestManager.getInstance().setTestInfo(testInfo);
                     } else if (Utils.isInteger(selected.toString())) {
                         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                                                                                   selected.toString(), true);
+                                selected.toString(), true);
                         BmLog.console(ti.toString());
                         if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
                             BmTestManager.getInstance().setTestInfo(ti);
@@ -196,9 +199,9 @@ public class TestPanelGui {
             }
         });
         signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
-                                                                                                getInstance().
-                                                                                                getUserKey().
-                                                                                                isEmpty());
+                getInstance().
+                getUserKey().
+                isEmpty());
 
         reportNameTextField.addFocusListener(new FocusAdapter() {
             @Override
@@ -210,9 +213,6 @@ public class TestPanelGui {
                 }
             }
         });
-
-
-
 
 
         BmTestManager.getInstance().statusChangedNotificationListeners.add(new BmTestManager.StatusChangedNotification() {
@@ -229,12 +229,12 @@ public class TestPanelGui {
                         runRemote.setEnabled(true);
                         configureFields(ti);
                         break;
-                    case NotFound:
+                    /*case NotFound:        add actions to cases in below
                         JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
                         break;
                     case Error:
                         JOptionPane.showMessageDialog(mainPanel, ti.error, "Error", JOptionPane.ERROR_MESSAGE);
-                        break;
+                        break;*/
                 }
             }
         });
@@ -305,21 +305,31 @@ public class TestPanelGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int dialogButton;
+
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    dialogButton=JOptionPane.showConfirmDialog(mainPanel, "Do you want to start test?", "Start test?",
-                                                                           JOptionPane.YES_NO_OPTION);
-                    if(dialogButton == JOptionPane.YES_OPTION){
-                        startInTheCloud();
-                        runLocal.setEnabled(false);
-                        enableCloudControls(false);
+                    BmTestManager bmTestManager = BmTestManager.getInstance();
+                    TestInfo ti = bmTestManager.getTestInfo();
+                    if (ti.status == TestStatus.NotFound) {
+                        JOptionPane.showMessageDialog(mainPanel, "Test is not selected", "Select a test", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Do you want to start test?", "Start test?",
+                                JOptionPane.YES_NO_OPTION);
+                        if (dialogButton == JOptionPane.YES_OPTION) {
+                            startInTheCloud();
+                            runLocal.setEnabled(false);
+                            enableCloudControls(false);
+                        }
+
                     }
 
+
                 } else {
-                    dialogButton=JOptionPane.showConfirmDialog(mainPanel, "Do you want to stop test?", "Stop test?",
-                                                                           JOptionPane.YES_NO_OPTION);
-                    if(dialogButton == JOptionPane.YES_OPTION){
+                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Do you want to stop test?", "Stop test?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (dialogButton == JOptionPane.YES_OPTION) {
+                        BmTestManager bmTestManager = BmTestManager.getInstance();
                         BmTestManager.getInstance().stopInTheCloud();
-                        configureFields(null);
+                        configureFields(bmTestManager.getTestInfo());
                         runLocal.setEnabled(true);
                         enableCloudControls(true);
                     }
@@ -334,16 +344,16 @@ public class TestPanelGui {
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
         durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
 
-        final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged(){
-                   @Override
-                   public void onRunModeChanged(boolean isLocalRunMode){
-                       runLocal.setSelected(isLocalRunMode);
-                       runRemote.setSelected(!isLocalRunMode);
-                       runModeChanged(isLocalRunMode);
+        final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
+            @Override
+            public void onRunModeChanged(boolean isLocalRunMode) {
+                runLocal.setSelected(isLocalRunMode);
+                runRemote.setSelected(!isLocalRunMode);
+                runModeChanged(isLocalRunMode);
 
-                   }
-                };
-                BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
+            }
+        };
+        BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
 
         ActionListener listener = new ActionListener() {
             @Override
@@ -361,9 +371,6 @@ public class TestPanelGui {
         runRemote.addActionListener(listener);
 
 
-
-
-
         addFilesButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -373,6 +380,9 @@ public class TestPanelGui {
             }
         });
     }
+    public JPanel getMainPanel() {
+           return mainPanel;
+       }
 
     private void startInTheCloud() {
         saveCloudTest();
@@ -381,24 +391,30 @@ public class TestPanelGui {
 
             String url = BmTestManager.getInstance().getTestUrl();
             if (url != null)
-                url = url.substring(0,url.length()-5);
-                Utils.Navigate(url);
+                url = url.substring(0, url.length() - 5);
+            Utils.Navigate(url);
+        }
+        if (id == -2) {
+            JOptionPane.showMessageDialog(mainPanel,
+                    "Select test from drop-down list and \n try again", "testid is empty",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
 
         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                                                                   BmTestManager.getInstance().getTestInfo().id, true);
+                BmTestManager.getInstance().getTestInfo().id, true);
         configureFields(ti);
         BmTestManager.getInstance().setTestInfo(ti);
 
     }
-    private void enableCloudControls(boolean isEnabled){
-         locationComboBox.setEnabled(isEnabled);
-         numberOfUsersSlider.setEnabled(isEnabled);
-         numberOfUserTextBox.setEnabled(isEnabled);
-         rampupSpinner.setEnabled(isEnabled);
-         iterationsSpinner.setEnabled(isEnabled);
-         durationSpinner.setEnabled(isEnabled);
-         addFilesButton.setEnabled(isEnabled);
+
+    private void enableCloudControls(boolean isEnabled) {
+        locationComboBox.setEnabled(isEnabled);
+        numberOfUsersSlider.setEnabled(isEnabled);
+        numberOfUserTextBox.setEnabled(isEnabled);
+        rampupSpinner.setEnabled(isEnabled);
+        iterationsSpinner.setEnabled(isEnabled);
+        durationSpinner.setEnabled(isEnabled);
+        addFilesButton.setEnabled(isEnabled);
     }
 
     private void saveCloudTest() {
@@ -435,8 +451,8 @@ public class TestPanelGui {
         String location = locationComboBox.getSelectedItem().toString();
 
         BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
-                                                       BmTestManager.getInstance().getTestInfo().id,
-                                                       location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+                BmTestManager.getInstance().getTestInfo().id,
+                location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
     }
 
     private void clearTestInfo() {
@@ -464,7 +480,7 @@ public class TestPanelGui {
                         addTestId(testInfo, false);
                     }
 
-                    }else{
+                } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 }
                 setTestInfo(BmTestManager.getInstance().getTestInfo());
@@ -519,7 +535,7 @@ public class TestPanelGui {
 
     protected void updateCloudPanel() {
         long now = new Date().getTime();
-        if (lastCloudPanelUpdate + 1000 > now){
+        if (lastCloudPanelUpdate + 1000 > now) {
             lastCloudPanelUpdate = now;
             return;
         }
@@ -531,22 +547,22 @@ public class TestPanelGui {
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-            TestInfo  ti=BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                                                                           BmTestManager.getInstance().getTestInfo().id, true);
-            BmTestManager.getInstance().setTestInfo(ti);
+                TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+                        BmTestManager.getInstance().getTestInfo().id, true);
+                BmTestManager.getInstance().setTestInfo(ti);
                 if (Thread.currentThread().isInterrupted())
                     return;
                 if ("jmeter".equals(ti.type)) {
                     locationComboBox.setSelectedItem(ti.getLocation());
                     numberOfUsersSlider.setValue(ti.getNumberOfUsers());
                     rampupSpinner.setValue(ti.overrides.rampup);
-                    iterationsSpinner.setValue(ti.overrides.iterations == -1?0:ti.overrides.iterations);
-                    durationSpinner.setValue(ti.overrides.duration == -1?0:ti.overrides.duration);
+                    iterationsSpinner.setValue(ti.overrides.iterations == -1 ? 0 : ti.overrides.iterations);
+                    durationSpinner.setValue(ti.overrides.duration == -1 ? 0 : ti.overrides.duration);
                     runInTheCloud.setActionCommand(ti.status == TestStatus.Running ? "stop" : "start");
                     runInTheCloud.setText(ti.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
                 } else {
-                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID)?SELECT_TEST:CAN_NOT_BE_RUN);
-                 }
+                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID) ? SELECT_TEST : CAN_NOT_BE_RUN);
+                }
             }
         });
         updateCloudPanelThread.start();
@@ -611,7 +627,7 @@ public class TestPanelGui {
     }
 
 
- /**
+    /**
      * Method generated by IntelliJ IDEA GUI Designer
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!

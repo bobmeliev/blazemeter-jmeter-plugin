@@ -215,7 +215,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         setBorder(makeBorder());
         Box box = Box.createVerticalBox();
         box.add(getTopPanel(), BorderLayout.NORTH);
-        box.add(gui.mainPanel, BorderLayout.NORTH);
+        box.add(gui.getMainPanel(), BorderLayout.NORTH);
         add(box, BorderLayout.NORTH);
     }
 
