@@ -17,7 +17,6 @@ public class TestInfo {
     public int numberOfUsers;
     public String location;
     public Overrides overrides;
-//    public String engineType;
     public String type;
 
 

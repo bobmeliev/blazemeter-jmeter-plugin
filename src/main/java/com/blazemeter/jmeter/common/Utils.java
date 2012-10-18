@@ -153,7 +153,6 @@ public class Utils {
         public PluginInstaller() {
         }
 
-        ;
 
         private String PLUGIN_UPDATE_URI = "http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/BlazemeterPlugin.jar";
         private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter_jmeter_plugin.jar";

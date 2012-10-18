@@ -32,7 +32,6 @@ public class BlazemeterApi {
     }
 
     private BlazemeterApi() {
-//        BmLog.console("REST INTERFACE INIT");
     }
 
     private HttpResponse getResponse(String url, JSONObject data) throws IOException {

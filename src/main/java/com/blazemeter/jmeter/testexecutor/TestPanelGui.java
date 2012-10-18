@@ -34,9 +34,6 @@ public class TestPanelGui {
     private JTextField reportNameTextField;
     private JTextField testNameTextField;
     private JComboBox testIdComboBox;
-
-
-
     private JPanel mainPanel;
     private JTextField testIdTextField;
     private JButton reloadButton;
@@ -123,6 +120,7 @@ public class TestPanelGui {
                     } else if (selected.toString().equals(NEW_TEST_ID)) {
                         setTestInfo(null);
                         configureFields(null);
+                        resetCloudPanel();
                     }
                 }
             }
@@ -175,6 +173,8 @@ public class TestPanelGui {
                 }
                 setTestInfo(testInfo);
                 updateCloudPanel();
+                runInTheCloud.setEnabled(true);
+                addFilesButton.setEnabled(true);
             }
         });
 
@@ -229,12 +229,6 @@ public class TestPanelGui {
                         runRemote.setEnabled(true);
                         configureFields(ti);
                         break;
-                    /*case NotFound:        add actions to cases in below
-                        JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
-                        break;
-                    case Error:
-                        JOptionPane.showMessageDialog(mainPanel, ti.error, "Error", JOptionPane.ERROR_MESSAGE);
-                        break;*/
                 }
             }
         });
@@ -396,11 +390,6 @@ public class TestPanelGui {
                 url = url.substring(0, url.length() - 5);
             Utils.Navigate(url);
         }
-        if (id == -2) {
-            JOptionPane.showMessageDialog(mainPanel,
-                    "Select test from drop-down list and \n try again", "testid is empty",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
 
         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                 BmTestManager.getInstance().getTestInfo().id, true);
@@ -417,6 +406,16 @@ public class TestPanelGui {
         iterationsSpinner.setEnabled(isEnabled);
         durationSpinner.setEnabled(isEnabled);
         addFilesButton.setEnabled(isEnabled);
+    }
+
+    private void resetCloudPanel(){
+        numberOfUsersSlider.setValue(0);
+        numberOfUserTextBox.setText("0");
+        rampupSpinner.setValue(0);
+        iterationsSpinner.setValue(0);
+        durationSpinner.setValue(0);
+        runInTheCloud.setEnabled(false);
+        addFilesButton.setEnabled(false);
     }
 
     private void saveCloudTest() {
@@ -486,7 +485,6 @@ public class TestPanelGui {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 }
                 setTestInfo(BmTestManager.getInstance().getTestInfo());
-                updateCloudPanel();
             }
 
         });

@@ -520,6 +520,7 @@
             </constraints>
             <properties>
               <actionCommand value="start"/>
+              <enabled value="false"/>
               <font size="16"/>
               <hideActionText value="false"/>
               <inheritsPopupMenu value="true"/>
@@ -547,6 +548,7 @@
             </constraints>
             <properties>
               <actionCommand value="Add Files for Cloud Test"/>
+              <enabled value="false"/>
               <label value="Add Files for Cloud Test"/>
               <text value="Add Files for Cloud Test"/>
             </properties>
