@@ -54,8 +54,6 @@ public class Uploader {
             Name = name;
             synchronized (lock) {
                 data = new StringBuilder();
-//                data = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-//                        "<testResults version=\"1.2\">");
             }
             lastChunkUploaded = System.currentTimeMillis();
             status = new SamplingStatus();
@@ -90,7 +88,6 @@ public class Uploader {
                 if (toSend != null) {
                     try {
                         String reportName = URLEncoder.encode(this.Name, "UTF-8");
-//                    BlazemeterApi.getInstance().dataUpload(userKey, testId, reportName, toSend, "jtl");
                         new DataUploader(reportName, toSend).run();
 
                         this.lastChunkUploaded = System.currentTimeMillis();

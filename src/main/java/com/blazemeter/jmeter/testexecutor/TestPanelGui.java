@@ -302,20 +302,15 @@ public class TestPanelGui {
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     TestInfo ti = bmTestManager.getTestInfo();
-                    if (ti.status == TestStatus.NotFound) {
-                        JOptionPane.showMessageDialog(mainPanel, "Test is not selected", "Select a test", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
-                                "Start test?",
-                                JOptionPane.YES_NO_OPTION);
-                        if (dialogButton == JOptionPane.YES_OPTION) {
-                            startInTheCloud();
-                            runLocal.setEnabled(false);
-                            enableCloudControls(false);
-                        }
 
+                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
+                            "Start test?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (dialogButton == JOptionPane.YES_OPTION) {
+                        startInTheCloud();
+                        runLocal.setEnabled(false);
+                        enableCloudControls(false);
                     }
-
 
                 } else {
                     dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to stop the test? ",
@@ -375,9 +370,10 @@ public class TestPanelGui {
             }
         });
     }
+
     public JPanel getMainPanel() {
-           return mainPanel;
-       }
+        return mainPanel;
+    }
 
     private void startInTheCloud() {
         saveCloudTest();
@@ -407,7 +403,7 @@ public class TestPanelGui {
         addFilesButton.setEnabled(isEnabled);
     }
 
-    private void resetCloudPanel(){
+    private void resetCloudPanel() {
         numberOfUsersSlider.setValue(0);
         numberOfUserTextBox.setText("0");
         rampupSpinner.setValue(0);

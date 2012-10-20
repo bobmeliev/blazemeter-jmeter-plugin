@@ -30,6 +30,9 @@ public class BmTestManager {
     private boolean isLocalRunMode = false;
     private UserInfo userInfo;
     private volatile TestInfo testInfo;
+    private BlazemeterApi rpc;
+    public static int c = 0;
+    private String userKey;
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -44,9 +47,6 @@ public class BmTestManager {
         instance = null;
     }
 
-    private BlazemeterApi rpc;
-
-    public static int c = 0;
 
     public boolean isTestRunning() {
         return this.isTestStarted;
@@ -128,7 +128,6 @@ public class BmTestManager {
         Uploader.getInstance().Finalize();
     }
 
-    private String userKey;
 
     public synchronized void setTestInfo(TestInfo testInfo) {
         if (this.testInfo == null || !this.testInfo.equals(testInfo)) {
@@ -462,14 +461,14 @@ public class BmTestManager {
             @Override
             public void run() {
                 PluginUpdate update = BlazemeterApi.getInstance().getUpdate(BmTestManager.getInstance().getUserKey());
-                            if (update != null && update.getVersion().isNewerThan(JMeterPluginUtils.getPluginVersion())) {
-                                BmLog.console(String.format("Update found from %s to %s", JMeterPluginUtils.getPluginVersion().toString(true), update.getVersion().toString(true)));
-                                NotifyPluginUpdateReceived(update);
-                            } else {
-                                BmLog.console("No update found");
-                            }
-                        }
-                    }).start();
+                if (update != null && update.getVersion().isNewerThan(JMeterPluginUtils.getPluginVersion())) {
+                    BmLog.console(String.format("Update found from %s to %s", JMeterPluginUtils.getPluginVersion().toString(true), update.getVersion().toString(true)));
+                    NotifyPluginUpdateReceived(update);
+                } else {
+                    BmLog.console("No update found");
+                }
+            }
+        }).start();
 
 
     }
