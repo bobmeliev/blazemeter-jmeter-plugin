@@ -29,7 +29,6 @@ public class TestPanelGui {
     private static final String LOADING_TEST_INFO = "Loading test info, please wait";
     private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
     private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
-    private static String testURL;
     private static long lastCloudPanelUpdate = 0;
     private JTextField userKeyTextField;
     private JTextField reportNameTextField;
@@ -239,11 +238,8 @@ public class TestPanelGui {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String url = BmTestManager.getInstance().getTestUrl();
-                if (url != null) {
-                    url = url.substring(0, url.length() - 5);
+                if (url != null)
                     Utils.Navigate(url);
-                    testURL = url;
-                }
             }
         });
         helpButton.addActionListener(new ActionListener() {
@@ -311,11 +307,9 @@ public class TestPanelGui {
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
+                        startInTheCloud();
                         runLocal.setEnabled(false);
                         enableCloudControls(false);
-                        startInTheCloud();
-
-
                     }
 
                 } else {
@@ -376,51 +370,26 @@ public class TestPanelGui {
             }
         });
     }
-
     public JPanel getMainPanel() {
-        return mainPanel;
-    }
+           return mainPanel;
+       }
 
     private void startInTheCloud() {
         saveCloudTest();
         int id = BmTestManager.getInstance().runInTheCloud();
-        String url = "";
         if (id != -1) {
-            url = BmTestManager.getInstance().getTestUrl();
+
+            String url = BmTestManager.getInstance().getTestUrl();
             if (url != null)
                 url = url.substring(0, url.length() - 5);
-            testURL = url;
-            Utils.Navigate(testURL);
-            if (!Desktop.isDesktopSupported()) {
-                // creating JOptionPane with link to test on server;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //creating JLabel for link
-                        JLabel label = new JLabel();
-                        Font font = label.getFont();
-
-                        // create some css from the label's font(will be used in link)
-                        StringBuffer style = new StringBuffer("font-family:" + font.getFamily() + ";");
-                        style.append("font-weight:" + (font.isBold() ? "bold" : "normal") + ";");
-                        style.append("font-size:" + font.getSize() + "pt;");
-
-                        // Text that will be displayed on JOptionPane(with link)
-                        JEditorPane ep = new JEditorPane("text/html", "<html><body style=\"" + style + "\">" //
-                                + "Use url from below \n <a href=" + testURL + ">" + testURL + "</a>" //
-                                + "</body></html> \n" + "to view test");
-                        ep.setEditable(false);
-                        ep.setBackground(label.getBackground());
-                        JOptionPane.showMessageDialog(mainPanel, ep);
-                    }
-                }).start();
-            }
+            Utils.Navigate(url);
         }
 
         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                 BmTestManager.getInstance().getTestInfo().id, true);
         configureFields(ti);
         BmTestManager.getInstance().setTestInfo(ti);
+
     }
 
     private void enableCloudControls(boolean isEnabled) {
@@ -433,7 +402,7 @@ public class TestPanelGui {
         addFilesButton.setEnabled(isEnabled);
     }
 
-    private void resetCloudPanel() {
+    private void resetCloudPanel(){
         numberOfUsersSlider.setValue(0);
         numberOfUserTextBox.setText("0");
         rampupSpinner.setValue(0);
