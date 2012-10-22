@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class BlazemeterApi {
 
     public static final String APP_KEY = "75bad111c06f4e10c001"; //was:75bad111c06f4e10c514
-    private BmUrlManager urlManager = new BmUrlManager();
+    private BmUrlManager urlManager = BmUrlManager.getBmUrlManager();
     private static BlazemeterApi instance;
 
     public static BlazemeterApi getInstance() {
@@ -123,28 +123,28 @@ public class BlazemeterApi {
     }
 
 
-    public int stopInTheCloud(String userKey, String testId){
+    public int stopInTheCloud(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
-                    BmLog.console("stopTest userKey is empty");
-                    return -1;
-                }
+            BmLog.console("stopTest userKey is empty");
+            return -1;
+        }
 
-                if (testId == null || testId.trim().isEmpty()) {
-                    BmLog.console("testId is empty");
-                    return -1;
-                }
+        if (testId == null || testId.trim().isEmpty()) {
+            BmLog.console("testId is empty");
+            return -1;
+        }
 
-                String url = this.urlManager.testStop(APP_KEY, userKey, testId);
-                JSONObject jo = getJson(url, null);
-                try {
-                    if (!jo.get("response_code").toString().equals("200"))
-                        return -1;
+        String url = this.urlManager.testStop(APP_KEY, userKey, testId);
+        JSONObject jo = getJson(url, null);
+        try {
+            if (!jo.get("response_code").toString().equals("200"))
+                return -1;
 
-                    return jo.getInt("response_code");
-                } catch (JSONException e) {
-                    BmLog.error(e);
-                    return -1;
-                }
+            return jo.getInt("response_code");
+        } catch (JSONException e) {
+            BmLog.error(e);
+            return -1;
+        }
     }
 
     public int runInTheCloud(String userKey, String testId) {
@@ -412,11 +412,11 @@ public class BlazemeterApi {
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
                 update = new PluginUpdate(new PluginVersion(jo.getInt("version_major"),
-                                                            jo.getInt("version_minor"),
-                                                            jo.getString("version_build")),
-                                                            jo.getString("download_url"),
-                                                            jo.getString("changes"),
-                                                            jo.getString("more_info_url"));
+                        jo.getInt("version_minor"),
+                        jo.getString("version_build")),
+                        jo.getString("download_url"),
+                        jo.getString("changes"),
+                        jo.getString("more_info_url"));
             }
         } catch (JSONException e) {
             BmLog.error("status getting status", e);
@@ -463,12 +463,20 @@ public class BlazemeterApi {
 
     public static class BmUrlManager {
         private static String SERVER_URL = "https://a.blazemeter.com";
+        private static BmUrlManager bmUrlManager = null;
 
         protected BmUrlManager() {
             SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
             BmLog.console("Server url is :" + SERVER_URL);
             BmLog.console("Jmeter version :" + JMeterUtils.getJMeterVersion());
             BmLog.console("Plugin version :" + JMeterPluginUtils.getPluginVersion().toString(true));
+        }
+
+        protected static BmUrlManager getBmUrlManager() {
+            if (bmUrlManager == null)
+                bmUrlManager = new BmUrlManager();
+            return bmUrlManager;
+
         }
 
         public static String getServerUrl() {
@@ -519,7 +527,7 @@ public class BlazemeterApi {
                 BmLog.error(e);
             }
             return String.format("%s/api/rest/blazemeter/testStartExternal/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-            }
+        }
 
         public String testStop(String appKey, String userKey, String testId) {
             try {

@@ -32,10 +32,9 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             return;
         }
         try {
-            if(gui==null)
-            {
+            if (gui == null) {
                 gui = new TestPanelGui();
-                 }
+            }
         } catch (Exception e) {
             BmLog.error(e);
         }
@@ -82,12 +81,12 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             return;
         }
         super.configure(element);
+        BmTestManager bmTestManager = BmTestManager.getInstance();
 
         RemoteTestRunner runner = (RemoteTestRunner) element;
-        BmTestManager.getInstance().checkForUpdates();
-
+        bmTestManager.getInstance().checkForUpdates();
+        bmTestManager.checkConnection();
         gui.updateCloudPanel();
-        BmTestManager bmTestManager = BmTestManager.getInstance();
         TestInfo ti = bmTestManager.getTestInfo();
         gui.setTestInfo(ti);
         gui.setReportName(runner.getReportName());
@@ -110,18 +109,22 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         icon.addMouseListener(new Utils.URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
 
-        JLabel version = new JLabel("Version:" +JMeterPluginUtils.getPluginVersion().toString());
+        JLabel version = new JLabel("Version:" + JMeterPluginUtils.getPluginVersion().toString());
 
         version.setFont(version.getFont().deriveFont(Font.PLAIN).deriveFont(14F));
         version.setForeground(Color.GRAY);
 
 
-        versionPanel= new JPanel();
+        versionPanel = new JPanel();
         versionPanel.setBackground(new Color(47, 41, 43));
         versionPanel.setForeground(Color.GRAY);
         Container innerPanel = findComponentWithBorder((JComponent) panel, EtchedBorder.class);
         JPanel panelLink = new JPanel(new GridBagLayout());
         panelLink.setBackground(new Color(47, 41, 43));
+
+        JLabel connectionStatus = new JLabel();
+        connectionStatus.setText("Server is available");
+        connectionStatus.setForeground(Color.WHITE);
 
         JLabel reportBug = new JLabel();
         reportBug.setText("<html><u>Report a bug</u></html>");
@@ -143,8 +146,14 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new Insets(0, 1, 0, 0);
-        gridBagConstraints.gridheight=2;
+        gridBagConstraints.gridheight = 2;
         panelLink.add(icon, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = GridBagConstraints.EAST;
+        panelLink.add(connectionStatus, gridBagConstraints);
 
 
         gridBagConstraints = new GridBagConstraints();
@@ -165,7 +174,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         requestFeature.addMouseListener(new Utils.URIOpener(Utils.REQUEST_FEATURE_REPORT_BUG_URL));
 
 
-
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
@@ -181,9 +189,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints.insets = new Insets(0, 0, 0, 4);
 
         panelLink.add(versionPanel, gridBagConstraints);
-
-
-
 
 
         if (innerPanel != null) {
@@ -238,12 +243,12 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
     @Override
     public void onPluginUpdateReceived(final PluginUpdate update) {
-        if(update==null)
+        if (update == null)
             return;
 
         versionPanel.removeAll();
 
-        JLabel newVersion = new JLabel(String.format("New version - %s, is available",update.getVersion().toString()));
+        JLabel newVersion = new JLabel(String.format("New version - %s, is available", update.getVersion().toString()));
         newVersion.setForeground(Color.WHITE);
         versionPanel.add(newVersion);
         JLabel moreInfo = new JLabel();
@@ -254,29 +259,33 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         moreInfo.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null,
+                if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null,
                         "Main changes are:\n" +
-                                update.getChanges()+
+                                update.getChanges() +
                                 "\n\nFull list of changes can be viewed on our site,\nDo you want to see full list of changes?",
                         "Changes list",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.INFORMATION_MESSAGE,
-                        null,null,null)){
+                        null, null, null)) {
                     Utils.Navigate(update.getMoreInfoUrl());
                 }
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) {
+            }
 
             @Override
-            public void mouseReleased(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {
+            }
 
             @Override
-            public void mouseEntered(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {
+            }
 
             @Override
-            public void mouseExited(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {
+            }
         });
         versionPanel.add(moreInfo);
         JLabel download = new JLabel("<html><u>Download</u></html>");

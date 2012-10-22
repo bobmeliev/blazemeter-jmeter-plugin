@@ -10,7 +10,9 @@ import org.apache.jorphan.reflect.ClassFinder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -33,6 +35,10 @@ public class BmTestManager {
     private BlazemeterApi rpc;
     public static int c = 0;
     private String userKey;
+    private static ServerStatus serverStatus;
+    private long lastConnectionCheck = 0;
+
+    private enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -50,6 +56,41 @@ public class BmTestManager {
 
     public boolean isTestRunning() {
         return this.isTestStarted;
+    }
+
+    public void checkConnection() {
+        long now = new Date().getTime();
+        if (lastConnectionCheck + 30000 > now) {
+            return;
+        }
+        lastConnectionCheck = now;
+        String serverURL = BlazemeterApi.BmUrlManager.getServerUrl();
+        try {
+            URL url = new URL(serverURL);
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+            httpConn.setInstanceFollowRedirects(false);
+            httpConn.setRequestMethod("HEAD");
+            httpConn.setConnectTimeout(5000);
+            httpConn.connect();
+            BmLog.console("Connection with " + serverURL + " is OK.");
+            serverStatus = ServerStatus.AVAILABLE;
+            httpConn.disconnect();
+        } catch (SocketTimeoutException e) {
+            BmLog.error("Connection with " + serverURL + " was not established, server is unavailable");
+            serverStatus = ServerStatus.NOT_AVAILABLE;
+        } catch (MalformedURLException e) {
+            BmLog.error("SERVER URL is invalid! Check 'blazemeter.url' in jmeter.properties");
+            serverStatus = ServerStatus.NOT_AVAILABLE;
+        } catch (java.net.ConnectException e) {
+            BmLog.error(serverURL + "is down ");
+            serverStatus = ServerStatus.NOT_AVAILABLE;
+        } catch (ProtocolException e) {
+            BmLog.error("HTTP Request method was not set up for checking connection");
+            serverStatus = ServerStatus.NOT_AVAILABLE;
+        } catch (IOException e) {
+            BmLog.error("Connection with" + serverURL + "was not established, server is unavailable");
+            serverStatus = ServerStatus.NOT_AVAILABLE;
+        }
     }
 
     private BmTestManager() {
@@ -74,6 +115,7 @@ public class BmTestManager {
     public boolean isUserKeyFromProp() {
         return this.propUserKey != null && !this.propUserKey.isEmpty();
     }
+
 
     public void startTest() {
         if (JMeterPluginUtils.inCloudConfig()) {

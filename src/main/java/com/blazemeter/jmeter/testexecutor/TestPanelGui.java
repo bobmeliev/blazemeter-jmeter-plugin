@@ -370,9 +370,10 @@ public class TestPanelGui {
             }
         });
     }
+
     public JPanel getMainPanel() {
-           return mainPanel;
-       }
+        return mainPanel;
+    }
 
     private void startInTheCloud() {
         saveCloudTest();
@@ -402,7 +403,7 @@ public class TestPanelGui {
         addFilesButton.setEnabled(isEnabled);
     }
 
-    private void resetCloudPanel(){
+    private void resetCloudPanel() {
         numberOfUsersSlider.setValue(0);
         numberOfUserTextBox.setText("0");
         rampupSpinner.setValue(0);

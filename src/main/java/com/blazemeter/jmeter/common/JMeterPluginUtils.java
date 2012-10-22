@@ -29,15 +29,15 @@ public abstract class JMeterPluginUtils {
 
     public static String getJmeterVersion() {
         String version = JMeterUtils.getJMeterVersion();
-        int spaceIndex= version.indexOf(" ");
+        int spaceIndex = version.indexOf(" ");
         if (spaceIndex != -1)
-            return version.substring(0,spaceIndex);
+            return version.substring(0, spaceIndex);
         else
             return version;
     }
 
     public static PluginVersion getPluginVersion() {
-        return new PluginVersion(1,51,"1210031128"); //YY-MM-DD-HH-SS
+        return new PluginVersion(1, 52, "1211111128"); //YY-MM-DD-HH-SS
     }
 
 }
