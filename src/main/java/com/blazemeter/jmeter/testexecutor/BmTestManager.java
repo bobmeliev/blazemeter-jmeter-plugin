@@ -122,7 +122,6 @@ public class BmTestManager {
             BmLog.console("Start test will not run, Running in the cloud!");
             return;
         }
-
         TestInfo testInfo = getTestInfo();
         String userKey = getUserKey();
         BmLog.console("startTest" + testInfo);

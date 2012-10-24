@@ -120,10 +120,27 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             BmLog.console("testStarted ,Running in the cloud!");
             return;
         }
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        String userKey = bmTestManager.getUserKey();
+
+        if (userKey == null || userKey.isEmpty()) {
+            BmLog.error("UserKey is not found, test results won't be uploaded to server");
+            BmLog.console("UserKey is not found, test results won't be uploaded to server");
+            return;
+        }
+
         BmLog.console("Test started " + host);
         isTestStarted = true;
         if (LOCAL_TEST_STRING.equals(host)) {
-            BmTestManager.getInstance().startTest();
+            if (bmTestManager.getIsLocalRunMode()) {
+                bmTestManager.startTest();
+            } else {
+                BmLog.console("Switch Run Mode to Locally(only reporting)." +
+                        "Test is started without uploading report to server");
+                BmLog.error("Switch Run Mode to Locally(only reporting)." +
+                        "Test is started without uploading report to server");
+                return;
+            }
             Uploader.getInstance().SamplingStarted(getReportName());
         } else {
             if (listener != null) {
@@ -167,7 +184,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             String templateJTL = GetJtlString(evt);
             Uploader.getInstance().AddSample(getReportName(), templateJTL);
         } else {
-            BmLog.console("Got sample. not started !!!!!");
+            BmLog.console("Test was not started on server, sample will not be uploaded!");
         }
     }
 
