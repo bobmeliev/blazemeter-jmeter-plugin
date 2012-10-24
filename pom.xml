@@ -17,17 +17,8 @@
         <!-- This is path to JMeter in local machine. Adjust it according to your configuration-->
         <jmeter.home>C:\Program Files\Apache Software Foundation\apache-jmeter-2.8</jmeter.home>
     </properties>
-    <build>
-        <directory>target</directory>
-        <outputDirectory>target</outputDirectory>
-        <finalName>${project.artifactId}-${project.version}</finalName>
-        <testOutputDirectory>target/test-classes</testOutputDirectory>
-        <sourceDirectory>src/main/java</sourceDirectory>
-    </build>
-
-
-    <groupId>blazemeter_jmeter_plugin</groupId>
-    <artifactId>blazemeter_jmeter_plugin</artifactId>
+    <groupId>blazemeter_plugin</groupId>
+    <artifactId>blazemeter_plugin</artifactId>
     <version>1.0</version>
     <dependencies>
         <dependency>

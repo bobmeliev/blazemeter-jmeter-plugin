@@ -123,8 +123,8 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         panelLink.setBackground(new Color(47, 41, 43));
 
         JLabel connectionStatus = new JLabel();
-        connectionStatus.setText("Server is available");
-        connectionStatus.setForeground(Color.WHITE);
+        connectionStatus.setText("SERVER IS AVAILABLE");
+        connectionStatus.setForeground(Color.GREEN);
 
         JLabel reportBug = new JLabel();
         reportBug.setText("<html><u>Report a bug</u></html>");
@@ -152,15 +152,17 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.weightx = 0.95;
         gridBagConstraints.anchor = GridBagConstraints.EAST;
-        panelLink.add(connectionStatus, gridBagConstraints);
+//        panelLink.add(connectionStatus, gridBagConstraints);
 
 
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new Insets(2, 0, 0, 10);
+        gridBagConstraints.weightx = 0.02;
         gridBagConstraints.anchor = GridBagConstraints.EAST;
+        gridBagConstraints.insets = new Insets(2, 0, 0, 10);
         panelLink.add(reportBug, gridBagConstraints);
         reportBug.addMouseListener(new Utils.URIOpener(Utils.REQUEST_FEATURE_REPORT_BUG_URL));
 
@@ -168,8 +170,9 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new Insets(2, 0, 0, 10);
+        gridBagConstraints.weightx = 0.03;
         gridBagConstraints.anchor = GridBagConstraints.EAST;
+        gridBagConstraints.insets = new Insets(2, 0, 0, 10);
         panelLink.add(requestFeature, gridBagConstraints);
         requestFeature.addMouseListener(new Utils.URIOpener(Utils.REQUEST_FEATURE_REPORT_BUG_URL));
 
@@ -177,8 +180,8 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new Insets(2, 0, 0, 4);
         gridBagConstraints.anchor = GridBagConstraints.EAST;
+        gridBagConstraints.insets = new Insets(2, 0, 0, 4);
         panelLink.add(version, gridBagConstraints);
 
         gridBagConstraints = new GridBagConstraints();
@@ -187,7 +190,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.anchor = GridBagConstraints.CENTER;
         gridBagConstraints.insets = new Insets(0, 0, 0, 4);
-
         panelLink.add(versionPanel, gridBagConstraints);
 
 
