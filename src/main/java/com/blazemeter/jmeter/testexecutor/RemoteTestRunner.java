@@ -86,6 +86,14 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     }
 
+    public TestInfo getTestInfo() {
+        TestInfo testInfo = new TestInfo();
+        testInfo.name = this.getPropertyAsString("testName");
+        testInfo.id = this.getPropertyAsString("testId");
+        return testInfo;
+    }
+
+
     public String getUserKey() {
         return this.getPropertyAsString("userKey", "");
     }
