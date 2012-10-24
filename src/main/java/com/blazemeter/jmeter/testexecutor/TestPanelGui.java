@@ -120,6 +120,7 @@ public class TestPanelGui {
                         setTestInfo(null);
                         configureFields(null);
                         resetCloudPanel();
+                        enableCloudControls(false);
                     }
                 }
             }
@@ -174,6 +175,7 @@ public class TestPanelGui {
                 updateCloudPanel();
                 runInTheCloud.setEnabled(true);
                 addFilesButton.setEnabled(true);
+                enableCloudControls(true);
             }
         });
 
