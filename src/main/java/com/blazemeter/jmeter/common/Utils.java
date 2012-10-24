@@ -98,7 +98,7 @@ public class Utils {
     public static void restartJMeter() {
         final String CMD = "cmd.exe";
         final String JMETER_START_SCRIPT = " C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.8\\bin\\jmeter.bat";
-        final String[] command = {CMD,"/C",JMETER_START_SCRIPT};
+        final String[] command = {CMD, "/C", JMETER_START_SCRIPT};
 
 
         try {
@@ -154,8 +154,8 @@ public class Utils {
         }
 
 
-        private String PLUGIN_UPDATE_URI = "http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/BlazemeterPlugin.jar";
-        private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter_jmeter_plugin.jar";
+        private String PLUGIN_UPDATE_URI = "http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/blazemeter.jar";
+        private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter.jar";
         public static boolean isPluginDownloaded = false;
         public static JPanel versionPanel = RemoteTestRunnerGui.getVersionPanel();
 

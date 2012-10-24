@@ -593,7 +593,7 @@ public class BlazemeterApi {
             } catch (UnsupportedEncodingException e) {
                 BmLog.error(e);
             }
-            return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, version);
+            return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&current_version=%s", SERVER_URL, appKey, userKey, version);
         }
 
         public String getUserInfo(String appKey, String userKey) {
