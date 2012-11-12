@@ -86,7 +86,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         RemoteTestRunner runner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
         bmTestManager.checkConnection();
-        gui.updateCloudPanel();
+        gui.updateCloudPanel(7000);
         TestInfo ti = bmTestManager.getTestInfo();
 //        TestInfo ti = runner.getTestInfo();
         gui.setTestInfo(ti);

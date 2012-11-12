@@ -172,7 +172,7 @@ public class TestPanelGui {
                     addTestId(testInfo, true);
                 }
                 setTestInfo(testInfo);
-                updateCloudPanel();
+                updateCloudPanel(7000);
                 runInTheCloud.setEnabled(true);
                 addFilesButton.setEnabled(true);
                 enableCloudControls(true);
@@ -327,7 +327,7 @@ public class TestPanelGui {
                     }
 
                 }
-                updateCloudPanel();
+                updateCloudPanel(7000);
             }
         });
 
@@ -530,9 +530,13 @@ public class TestPanelGui {
 
     private Thread updateCloudPanelThread;
 
-    protected void updateCloudPanel() {
+    protected void updateCloudPanel(int lastCloudUpdatePeriod)  // just added int lastCloudUpdatePeriod
+    {
         long now = new Date().getTime();
-        if (lastCloudPanelUpdate + 7000 > now) {
+        /*if (lastCloudPanelUpdate + 7000 > now) {
+            return; BUG https://blazemeter.atlassian.net/browse/BPC-69
+        }*/
+        if (lastCloudPanelUpdate + lastCloudUpdatePeriod > now) {
             return;
         }
         lastCloudPanelUpdate = now;
@@ -571,10 +575,12 @@ public class TestPanelGui {
 
             if (updateCloudPanelThread.isAlive()) {
                 updateCloudPanelThread.interrupt();
-                BmLog.console("Thread is still alive!");
+                BmLog.console("UpdatingCloudPanelThread is still alive!");
             }
         }
     }
+
+    private Thread TestStatusChecker;    //this thread will start testStatusChecker with certain period
 
     private String getValidReportName(String name) {
         if (name == null || name.isEmpty()) {
