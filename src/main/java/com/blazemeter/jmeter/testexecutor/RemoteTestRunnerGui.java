@@ -88,7 +88,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         bmTestManager.checkConnection();
         gui.updateCloudPanel(7000);
         TestInfo ti = bmTestManager.getTestInfo();
-//        TestInfo ti = runner.getTestInfo();
         gui.setTestInfo(ti);
         gui.setReportName(runner.getReportName());
 

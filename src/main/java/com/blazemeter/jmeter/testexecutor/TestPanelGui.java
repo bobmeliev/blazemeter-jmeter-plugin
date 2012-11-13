@@ -97,7 +97,6 @@ public class TestPanelGui {
             });
         }
 
-
         testIdComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -118,6 +117,7 @@ public class TestPanelGui {
                         }
                     } else if (selected.toString().equals(NEW_TEST_ID)) {
                         setTestInfo(null);
+
                         configureFields(null);
                         resetCloudPanel();
                         enableCloudControls(false);
@@ -171,11 +171,23 @@ public class TestPanelGui {
                 if (testIdComboBox.getItemCount() == 1) {
                     addTestId(testInfo, true);
                 }
+                if (testInfo.status == TestStatus.Running) {
+                    runInTheCloud.setEnabled(false);
+                    addFilesButton.setEnabled(false);
+                    enableCloudControls(false);
+                } else {
+                    runInTheCloud.setEnabled(true);
+                    addFilesButton.setEnabled(true);
+                    enableCloudControls(true);
+                }
                 setTestInfo(testInfo);
-                updateCloudPanel(7000);
-                runInTheCloud.setEnabled(true);
-                addFilesButton.setEnabled(true);
-                enableCloudControls(true);
+                if ((testInfo != null) &
+                        (!testInfo.id.isEmpty() &
+                                (testStatusChecker == null || testStatusChecker.isInterrupted()))) {
+                    startTestStatusChecker();
+                } else {
+                    stopTestStatusChecker();
+                }
             }
         });
 
@@ -379,20 +391,22 @@ public class TestPanelGui {
 
     private void startInTheCloud() {
         saveCloudTest();
-        int id = BmTestManager.getInstance().runInTheCloud();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+
+        int id = bmTestManager.runInTheCloud();
         if (id != -1) {
 
-            String url = BmTestManager.getInstance().getTestUrl();
+            String url = bmTestManager.getTestUrl();
             if (url != null)
                 url = url.substring(0, url.length() - 5);
             Utils.Navigate(url);
         }
 
         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                BmTestManager.getInstance().getTestInfo().id, true);
+                bmTestManager.getTestInfo().id, true);
         configureFields(ti);
-        BmTestManager.getInstance().setTestInfo(ti);
-
+        bmTestManager.setTestInfo(ti);
+        bmTestManager.NotifyTestInfoChanged();
     }
 
     private void enableCloudControls(boolean isEnabled) {
@@ -414,6 +428,7 @@ public class TestPanelGui {
         runInTheCloud.setEnabled(false);
         addFilesButton.setEnabled(false);
     }
+
 
     private void saveCloudTest() {
         int numberOfUsers = numberOfUsersSlider.getValue();
@@ -533,9 +548,6 @@ public class TestPanelGui {
     protected void updateCloudPanel(int lastCloudUpdatePeriod)  // just added int lastCloudUpdatePeriod
     {
         long now = new Date().getTime();
-        /*if (lastCloudPanelUpdate + 7000 > now) {
-            return; BUG https://blazemeter.atlassian.net/browse/BPC-69
-        }*/
         if (lastCloudPanelUpdate + lastCloudUpdatePeriod > now) {
             return;
         }
@@ -550,7 +562,10 @@ public class TestPanelGui {
             public void run() {
                 TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                         BmTestManager.getInstance().getTestInfo().id, true);
-                BmTestManager.getInstance().setTestInfo(ti);
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                bmTestManager.setTestInfo(ti);
+                bmTestManager.NotifyTestInfoChanged();
+
                 if (Thread.currentThread().isInterrupted())
                     return;
                 if ("jmeter".equals(ti.type)) {
@@ -575,12 +590,45 @@ public class TestPanelGui {
 
             if (updateCloudPanelThread.isAlive()) {
                 updateCloudPanelThread.interrupt();
-                BmLog.console("UpdatingCloudPanelThread is still alive!");
+                BmLog.console("UpdatingCloudPanelThread is interrupted!");
             }
         }
     }
 
-    private Thread TestStatusChecker;    //this thread will start testStatusChecker with certain period
+    private Thread testStatusChecker;    //this thread will start testStatusChecker with certain period
+
+    private void startTestStatusChecker() {
+        testStatusChecker = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (testStatusChecker.isInterrupted()) {
+                    return;
+                }
+                while (true) {
+                    int testStatusCheckingPeriod = 30000;
+                    try {
+                        Thread.sleep(testStatusCheckingPeriod);
+                    } catch (InterruptedException e) {
+                        BmLog.console("TestStatusChecker was interrupted during sleeping");
+                    }
+                    updateCloudPanel(testStatusCheckingPeriod);
+
+                }
+            }
+        });
+        testStatusChecker.start();
+    }
+
+    private void stopTestStatusChecker() {
+        if (testStatusChecker != null) {
+
+            if (testStatusChecker.isAlive()) {
+                testStatusChecker.interrupt();
+                BmLog.console("TestStatusChecker is interrupted!");
+            }
+        }
+    }
+
 
     private String getValidReportName(String name) {
         if (name == null || name.isEmpty()) {
@@ -598,9 +646,13 @@ public class TestPanelGui {
         if (testInfo != null) {
             testNameTextField.setText(testInfo.name);
             testIdTextField.setText(testInfo.id);
-            testNameTextField.setEnabled(false);
-            createNewButton.setEnabled(false);
-            goToTestPageButton.setEnabled(true);
+            testNameTextField.setEnabled(!isRunning);
+            createNewButton.setEnabled(!isRunning);
+            goToTestPageButton.setEnabled(!isRunning);
+            /*    testNameTextField.setEnabled(false);
+                createNewButton.setEnabled(false);
+                goToTestPageButton.setEnabled(true);
+            */
         } else {
             testNameTextField.setText("");
             testIdTextField.setText("");
