@@ -89,7 +89,8 @@ public class TestPanelGui {
                     String newVal = userKeyTextField.getText();
                     signUpToBlazemeterButton.setEnabled(newVal.isEmpty());
                     if (!newVal.equals(oldVal)) {
-                        BmTestManager.getInstance().setUserKey(newVal);
+                        BmTestManager bmTestManager = BmTestManager.getInstance();
+                        bmTestManager.setUserKey(newVal);
                         if (!newVal.isEmpty())
                             fetchUserTestsAsync();
                     }
@@ -100,24 +101,30 @@ public class TestPanelGui {
         testIdComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
+                BmTestManager bmTestManager = BmTestManager.getInstance();
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
                     Object selected = testIdComboBox.getSelectedItem();
                     if (selected instanceof TestInfo) {
                         TestInfo testInfo = (TestInfo) selected;
-                        BmTestManager.getInstance().setTestInfo(testInfo);
+                        if (testInfo.name != NEW_TEST_ID & !testInfo.name.isEmpty()) {
+                            bmTestManager.setTestInfo(testInfo);
+                            updateCloudPanel(0);
+                        }
                     } else if (Utils.isInteger(selected.toString())) {
-                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
+                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
                                 selected.toString(), true);
                         BmLog.console(ti.toString());
                         if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
-                            BmTestManager.getInstance().setTestInfo(ti);
+                            bmTestManager.setTestInfo(ti);
                         } else {
                             JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
                             configureFields(null);
                         }
                     } else if (selected.toString().equals(NEW_TEST_ID)) {
-                        setTestInfo(null);
-
+                        TestInfo testInfo = new TestInfo();
+                        testInfo.name = NEW_TEST_ID;
+                        setTestInfo(testInfo);
+                        bmTestManager.setTestInfo(testInfo);
                         configureFields(null);
                         resetCloudPanel();
                         enableCloudControls(false);
@@ -172,20 +179,26 @@ public class TestPanelGui {
                     addTestId(testInfo, true);
                 }
                 if (testInfo.status == TestStatus.Running) {
-                    runInTheCloud.setEnabled(false);
+                    runInTheCloud.setEnabled(true);
                     addFilesButton.setEnabled(false);
                     enableCloudControls(false);
-                } else {
+                    runLocal.setEnabled(false);
+                    runRemote.setEnabled(false);
+                }
+
+                if (testInfo.status == TestStatus.NotRunning) {
                     runInTheCloud.setEnabled(true);
                     addFilesButton.setEnabled(true);
                     enableCloudControls(true);
+                    runLocal.setEnabled(true);
+                    runRemote.setEnabled(true);
                 }
                 setTestInfo(testInfo);
-                if ((testInfo != null) &
-                        (!testInfo.id.isEmpty() &
-                                (testStatusChecker == null || testStatusChecker.isInterrupted()))) {
+                if ((testInfo != null) & (testInfo.name != NEW_TEST_ID) & (!testInfo.name.isEmpty()) &
+                        (testStatusChecker == null || testStatusChecker.isInterrupted())) {
                     startTestStatusChecker();
-                } else {
+                }
+                if (testInfo.name == NEW_TEST_ID) {
                     stopTestStatusChecker();
                 }
             }
@@ -312,18 +325,16 @@ public class TestPanelGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int dialogButton;
+                BmTestManager bmTestManager = BmTestManager.getInstance();
 
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    BmTestManager bmTestManager = BmTestManager.getInstance();
-                    TestInfo ti = bmTestManager.getTestInfo();
 
                     dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         startInTheCloud();
-                        runLocal.setEnabled(false);
-                        enableCloudControls(false);
+                        bmTestManager.NotifyTestInfoChanged();
                     }
 
                 } else {
@@ -331,11 +342,8 @@ public class TestPanelGui {
                             "Stop test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
-                        BmTestManager bmTestManager = BmTestManager.getInstance();
-                        BmTestManager.getInstance().stopInTheCloud();
-                        configureFields(bmTestManager.getTestInfo());
-                        runLocal.setEnabled(true);
-                        enableCloudControls(true);
+                        bmTestManager.stopInTheCloud();
+                        bmTestManager.NotifyTestInfoChanged();
                     }
 
                 }
@@ -545,8 +553,7 @@ public class TestPanelGui {
 
     private Thread updateCloudPanelThread;
 
-    protected void updateCloudPanel(int lastCloudUpdatePeriod)  // just added int lastCloudUpdatePeriod
-    {
+    protected void updateCloudPanel(int lastCloudUpdatePeriod) {
         long now = new Date().getTime();
         if (lastCloudPanelUpdate + lastCloudUpdatePeriod > now) {
             return;
@@ -595,33 +602,46 @@ public class TestPanelGui {
         }
     }
 
-    private Thread testStatusChecker;    //this thread will start testStatusChecker with certain period
+    private Thread testStatusChecker;
+
 
     private void startTestStatusChecker() {
         testStatusChecker = new Thread(new Runnable() {
             @Override
             public void run() {
-                if (testStatusChecker.isInterrupted()) {
-                    return;
-                }
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        return;
+                    }
                     int testStatusCheckingPeriod = 30000;
                     try {
+
                         Thread.sleep(testStatusCheckingPeriod);
+
                     } catch (InterruptedException e) {
                         BmLog.console("TestStatusChecker was interrupted during sleeping");
+                        return;
+
+                    } finally {
+                        if (Thread.currentThread().isInterrupted()) {
+                            return;
+                        }
                     }
                     updateCloudPanel(testStatusCheckingPeriod);
 
                 }
+                if (Thread.currentThread().isInterrupted()) {
+                    return;
+                }
             }
-        });
+        }
+
+        );
         testStatusChecker.start();
     }
 
     private void stopTestStatusChecker() {
         if (testStatusChecker != null) {
-
             if (testStatusChecker.isAlive()) {
                 testStatusChecker.interrupt();
                 BmLog.console("TestStatusChecker is interrupted!");
@@ -641,18 +661,14 @@ public class TestPanelGui {
     }
 
     private void configureFields(TestInfo testInfo) {
-        boolean isRunning = BmTestManager.getInstance().isTestRunning();
+        boolean isRunning = (testInfo != null && testInfo.status == TestStatus.Running);
 
         if (testInfo != null) {
             testNameTextField.setText(testInfo.name);
             testIdTextField.setText(testInfo.id);
             testNameTextField.setEnabled(!isRunning);
             createNewButton.setEnabled(!isRunning);
-            goToTestPageButton.setEnabled(!isRunning);
-            /*    testNameTextField.setEnabled(false);
-                createNewButton.setEnabled(false);
-                goToTestPageButton.setEnabled(true);
-            */
+            goToTestPageButton.setEnabled(true);
         } else {
             testNameTextField.setText("");
             testIdTextField.setText("");
