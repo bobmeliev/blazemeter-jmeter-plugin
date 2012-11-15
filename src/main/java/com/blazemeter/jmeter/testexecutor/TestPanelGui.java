@@ -606,37 +606,35 @@ public class TestPanelGui {
 
 
     private void startTestStatusChecker() {
-        testStatusChecker = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!Thread.currentThread().isInterrupted()) {
-                    if (Thread.currentThread().isInterrupted()) {
-                        return;
-                    }
-                    int testStatusCheckingPeriod = 30000;
-                    try {
-
-                        Thread.sleep(testStatusCheckingPeriod);
-
-                    } catch (InterruptedException e) {
-                        BmLog.console("TestStatusChecker was interrupted during sleeping");
-                        return;
-
-                    } finally {
+        if (testStatusChecker == null) {
+            testStatusChecker = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (!Thread.currentThread().isInterrupted()) {
                         if (Thread.currentThread().isInterrupted()) {
                             return;
                         }
-                    }
-                    updateCloudPanel(testStatusCheckingPeriod);
+                        int testStatusCheckingPeriod = 30000;
+                        try {
+                            Thread.sleep(testStatusCheckingPeriod);
+                        } catch (InterruptedException e) {
+                            BmLog.console("TestStatusChecker was interrupted during sleeping");
+                            return;
 
-                }
-                if (Thread.currentThread().isInterrupted()) {
-                    return;
+                        } finally {
+                            if (Thread.currentThread().isInterrupted()) {
+                                return;
+                            }
+                        }
+                        updateCloudPanel(testStatusCheckingPeriod);
+                    }
+                    if (Thread.currentThread().isInterrupted()) {
+                        return;
+                    }
                 }
             }
+            );
         }
-
-        );
         testStatusChecker.start();
     }
 
@@ -644,6 +642,8 @@ public class TestPanelGui {
         if (testStatusChecker != null) {
             if (testStatusChecker.isAlive()) {
                 testStatusChecker.interrupt();
+                testStatusChecker = null;
+                System.gc();
                 BmLog.console("TestStatusChecker is interrupted!");
             }
         }
