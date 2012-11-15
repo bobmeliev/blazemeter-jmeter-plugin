@@ -49,7 +49,10 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             return;
         }
         this.listener = listener;
-//        BmLog.console("RemoteTestRunner create");
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.startCheckingConnection();
+
+//        BmLog.console("RemoteTestRunner is created");
 
         BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
             @Override

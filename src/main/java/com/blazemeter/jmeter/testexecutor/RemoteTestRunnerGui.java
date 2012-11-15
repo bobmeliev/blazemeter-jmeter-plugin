@@ -48,10 +48,11 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
+        BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner testRunner = new RemoteTestRunner();
-        testRunner.setUserKey(BmTestManager.getInstance().getUserKey());
-        testRunner.setTestInfo(BmTestManager.getInstance().getTestInfo());
-        testRunner.setIsLocalRunMode(BmTestManager.getInstance().getIsLocalRunMode());
+        testRunner.setUserKey(bmTestManager.getUserKey());
+        testRunner.setTestInfo(bmTestManager.getTestInfo());
+        testRunner.setIsLocalRunMode(bmTestManager.getIsLocalRunMode());
         modifyTestElement(testRunner);
         return testRunner;
     }
@@ -85,7 +86,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
         RemoteTestRunner runner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
-        bmTestManager.checkConnection();
         gui.updateCloudPanel(7000);
         TestInfo ti = bmTestManager.getTestInfo();
         gui.setTestInfo(ti);

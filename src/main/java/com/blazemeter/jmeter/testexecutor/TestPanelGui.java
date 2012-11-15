@@ -620,7 +620,6 @@ public class TestPanelGui {
                         } catch (InterruptedException e) {
                             BmLog.console("TestStatusChecker was interrupted during sleeping");
                             return;
-
                         } finally {
                             if (Thread.currentThread().isInterrupted()) {
                                 return;
