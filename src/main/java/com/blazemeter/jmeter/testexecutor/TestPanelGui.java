@@ -118,14 +118,14 @@ public class TestPanelGui {
                             bmTestManager.setTestInfo(ti);
                         } else {
                             JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
-                            configureFields(null);
+                            configureMainPanelControls(null);
                         }
                     } else if (selected.toString().equals(NEW_TEST_ID)) {
                         TestInfo testInfo = new TestInfo();
                         testInfo.name = NEW_TEST_ID;
                         setTestInfo(testInfo);
                         bmTestManager.setTestInfo(testInfo);
-                        configureFields(null);
+                        configureMainPanelControls(null);
                         resetCloudPanel();
                         enableCloudControls(false);
                     }
@@ -171,7 +171,7 @@ public class TestPanelGui {
 
             }
         });
-
+        //Here should be all changes of TestInfo processed
         BmTestManager.getInstance().testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
@@ -192,14 +192,15 @@ public class TestPanelGui {
                     enableCloudControls(true);
                     runLocal.setEnabled(true);
                     runRemote.setEnabled(true);
+                    configureMainPanelControls(testInfo);
                 }
                 setTestInfo(testInfo);
                 if ((testInfo != null) & (testInfo.name != NEW_TEST_ID) & (!testInfo.name.isEmpty()) &
                         (testStatusChecker == null || testStatusChecker.isInterrupted())) {
-                    startTestStatusChecker();
+                    startTestInfoChecker();
                 }
                 if (testInfo.name == NEW_TEST_ID) {
-                    stopTestStatusChecker();
+                    stopTestInfoChecker();
                 }
             }
         });
@@ -209,6 +210,26 @@ public class TestPanelGui {
             public void onTestUserKeyChanged(String userKey) {
                 setUserKey(userKey);
                 signUpToBlazemeterButton.setEnabled(userKey == null || userKey.isEmpty());
+            }
+        });
+
+        BmTestManager.getInstance().serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+            @Override
+            public void onServerStatusChanged() {
+                BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                switch (serverStatus) {
+                    case AVAILABLE:
+                        enableMainPanelControls(true);
+                        startTestInfoChecker();
+                        break;
+                    case NOT_AVAILABLE:
+                        enableMainPanelControls(false);
+                        enableCloudControls(false);
+                        runInTheCloud.setEnabled(false);
+                        stopTestInfoChecker();
+                        break;
+                }
+
             }
         });
 
@@ -240,26 +261,7 @@ public class TestPanelGui {
             }
         });
 
-
-        BmTestManager.getInstance().statusChangedNotificationListeners.add(new BmTestManager.StatusChangedNotification() {
-            @Override
-            public void onTestStatusChanged() {
-                TestInfo ti = BmTestManager.getInstance().getTestInfo();
-                switch (ti.status) {
-                    case Running:
-                        runLocal.setEnabled(false);
-                        runRemote.setEnabled(false);
-                        break;
-                    case NotRunning:
-                        runLocal.setEnabled(true);
-                        runRemote.setEnabled(true);
-                        configureFields(ti);
-                        break;
-                }
-            }
-        });
-
-        configureFields(BmTestManager.getInstance().getTestInfo());
+        configureMainPanelControls(BmTestManager.getInstance().getTestInfo());
 
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
@@ -412,7 +414,7 @@ public class TestPanelGui {
 
         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                 bmTestManager.getTestInfo().id, true);
-        configureFields(ti);
+        configureMainPanelControls(ti);
         bmTestManager.setTestInfo(ti);
         bmTestManager.NotifyTestInfoChanged();
     }
@@ -425,6 +427,20 @@ public class TestPanelGui {
         iterationsSpinner.setEnabled(isEnabled);
         durationSpinner.setEnabled(isEnabled);
         addFilesButton.setEnabled(isEnabled);
+    }
+
+    private void enableMainPanelControls(boolean isEnabled) {
+        testIdTextField.setEnabled(isEnabled);
+        testIdComboBox.setEnabled(isEnabled);
+        testNameTextField.setEnabled(isEnabled);
+        helpButton.setEnabled(isEnabled);
+        signUpToBlazemeterButton.setEnabled(isEnabled);
+        reloadButton.setEnabled(isEnabled);
+        createNewButton.setEnabled(isEnabled);
+        reportNameTextField.setEnabled(isEnabled);
+        goToTestPageButton.setEnabled(isEnabled);
+        runLocal.setEnabled(isEnabled);
+        runRemote.setEnabled(isEnabled);
     }
 
     private void resetCloudPanel() {
@@ -541,10 +557,10 @@ public class TestPanelGui {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testIdComboBox.setSelectedItem(NEW_TEST_ID);
             infoLabel.setText(SELECT_TEST);
-            configureFields(null);
+            configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
-            configureFields(testInfo);
+            configureMainPanelControls(testInfo);
             infoLabel.setText(LOADING_TEST_INFO);
             runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
             infoLabel.setText(TEST_INFO_IS_LOADED);
@@ -605,7 +621,7 @@ public class TestPanelGui {
     private Thread testStatusChecker;
 
 
-    private void startTestStatusChecker() {
+    private void startTestInfoChecker() {
         if (testStatusChecker == null) {
             testStatusChecker = new Thread(new Runnable() {
                 @Override
@@ -637,7 +653,7 @@ public class TestPanelGui {
         testStatusChecker.start();
     }
 
-    private void stopTestStatusChecker() {
+    private void stopTestInfoChecker() {
         if (testStatusChecker != null) {
             if (testStatusChecker.isAlive()) {
                 testStatusChecker.interrupt();
@@ -659,7 +675,7 @@ public class TestPanelGui {
         return name;
     }
 
-    private void configureFields(TestInfo testInfo) {
+    private void configureMainPanelControls(TestInfo testInfo) {
         boolean isRunning = (testInfo != null && testInfo.status == TestStatus.Running);
 
         if (testInfo != null) {

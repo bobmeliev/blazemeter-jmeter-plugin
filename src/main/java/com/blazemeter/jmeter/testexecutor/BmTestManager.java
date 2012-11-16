@@ -26,9 +26,11 @@ import java.util.*;
 public class BmTestManager {
     private static BmTestManager instance;
     private static final Object lock = new Object();
+    //review this field. Is it possible to remove it and use testInfo?
     private boolean isTestStarted = false;
     private String propUserKey;
     private long lastUpdateCheck = 0;
+    //review this field. Is it possible to remove it and use testInfo?
     private boolean isLocalRunMode = false;
     private UserInfo userInfo;
     private volatile TestInfo testInfo;
@@ -201,7 +203,7 @@ public class BmTestManager {
                 rpc.startTestLocal(userKey, testInfo.id);
                 testInfo.status = TestStatus.Running;
                 isTestStarted = true;
-                NotifyStatusChanged();
+//                NotifyStatusChanged();
                 NotifyTestInfoChanged();
 
             } catch (Throwable ex) {
@@ -214,7 +216,8 @@ public class BmTestManager {
     public void stopTest() {
         isTestStarted = false;
         testInfo.status = TestStatus.NotRunning;
-        NotifyStatusChanged();
+//        NotifyStatusChanged();
+        NotifyTestInfoChanged();
         Uploader.getInstance().Finalize();
     }
 
@@ -266,7 +269,6 @@ public class BmTestManager {
         if (this.isTestStarted) {
             this.testInfo.status = TestStatus.Running;
             NotifyTestInfoChanged();
-            NotifyStatusChanged();
         }
         return testId;
     }
@@ -277,7 +279,6 @@ public class BmTestManager {
         if (testInfo.status == TestStatus.NotRunning && stopSuccess != -1) {
             this.isTestStarted = testInfo.status == TestStatus.Running;
             NotifyTestInfoChanged();
-            NotifyStatusChanged();
         }
     }
 
@@ -367,17 +368,6 @@ public class BmTestManager {
         }
     }
 
-    public interface StatusChangedNotification {
-        public void onTestStatusChanged();
-    }
-
-    public List<StatusChangedNotification> statusChangedNotificationListeners = new ArrayList<StatusChangedNotification>();
-
-    public void NotifyStatusChanged() {
-        for (StatusChangedNotification ti : statusChangedNotificationListeners) {
-            ti.onTestStatusChanged();
-        }
-    }
 
     public interface PluginUpdateReceived {
         public void onPluginUpdateReceived(PluginUpdate update);
