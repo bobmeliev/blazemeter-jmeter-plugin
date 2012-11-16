@@ -35,9 +35,11 @@ public class BmTestManager {
     private BlazemeterApi rpc;
     public static int c = 0;
     private String userKey;
-    private static ServerStatus serverStatus;
 
-    private enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
+
+    private static ServerStatus serverStatus = ServerStatus.NOT_AVAILABLE;
+
+    protected enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -46,6 +48,10 @@ public class BmTestManager {
                     instance = new BmTestManager();
             }
         return instance;
+    }
+
+    public static ServerStatus getServerStatus() {
+        return serverStatus;
     }
 
     public void destroy() {
@@ -62,6 +68,8 @@ public class BmTestManager {
             @Override
             public void run() {
                 String serverURL = BlazemeterApi.BmUrlManager.getServerUrl();
+                ServerStatus latestServerStatus = serverStatus;
+
                 try {
                     URL url = new URL(serverURL);
                     HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
@@ -87,6 +95,10 @@ public class BmTestManager {
                 } catch (IOException e) {
                     BmLog.error("Connection with" + serverURL + "was not established, server is unavailable");
                     serverStatus = ServerStatus.NOT_AVAILABLE;
+                } finally {
+                    if (!latestServerStatus.equals(serverStatus)) {
+                        NotifyServerStatusChanged();
+                    }
                 }
             }
         }).start();
@@ -401,6 +413,18 @@ public class BmTestManager {
     public void NotifyUserInfoChanged(UserInfo userInfo) {
         for (UserInfoChanged uic : userInfoChangedNotificationListeners) {
             uic.onUserInfoChanged(userInfo);
+        }
+    }
+
+    public interface ServerStatusChangedNotification {
+        public void onServerStatusChanged();
+    }
+
+    public List<ServerStatusChangedNotification> serverStatusChangedNotificationListeners = new ArrayList<ServerStatusChangedNotification>();
+
+    public void NotifyServerStatusChanged() {
+        for (ServerStatusChangedNotification sscn : serverStatusChangedNotificationListeners) {
+            sscn.onServerStatusChanged();
         }
     }
 

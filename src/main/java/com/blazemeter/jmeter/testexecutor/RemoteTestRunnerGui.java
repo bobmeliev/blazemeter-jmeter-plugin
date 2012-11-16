@@ -17,6 +17,7 @@ import java.awt.event.MouseListener;
 
 public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener, BmTestManager.PluginUpdateReceived {
     private static TestPanelGui gui;
+    private static JLabel connectionStatus = new JLabel();
 
     public static JPanel getVersionPanel() {
         return versionPanel;
@@ -39,8 +40,28 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.error(e);
         }
         init();
-        BmTestManager.getInstance().pluginUpdateReceivedNotificationListeners.add(this);
+        connectionStatus.setText("SERVER IS NOT AVAILABLE");
+        connectionStatus.setForeground(Color.RED);
 
+        BmTestManager.getInstance().pluginUpdateReceivedNotificationListeners.add(this);
+        BmTestManager.getInstance().serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+            @Override
+            public void onServerStatusChanged() {
+                BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                switch (serverStatus) {
+                    case AVAILABLE:
+                        connectionStatus.setText("SERVER IS AVAILABLE");
+                        connectionStatus.setForeground(Color.GREEN);
+                        break;
+                    case NOT_AVAILABLE:
+                        connectionStatus.setText("SERVER IS NOT AVAILABLE");
+                        connectionStatus.setForeground(Color.RED);
+                        break;
+                }
+            }
+        }
+
+        );
     }
 
     public TestElement createTestElement() {
@@ -122,10 +143,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         JPanel panelLink = new JPanel(new GridBagLayout());
         panelLink.setBackground(new Color(47, 41, 43));
 
-        JLabel connectionStatus = new JLabel();
-        connectionStatus.setText("SERVER IS AVAILABLE");
-        connectionStatus.setForeground(Color.GREEN);
-
         JLabel reportBug = new JLabel();
         reportBug.setText("<html><u>Report a bug</u></html>");
         reportBug.setToolTipText("Click here to report a bug");
@@ -154,7 +171,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         gridBagConstraints.gridy = 0;
         gridBagConstraints.weightx = 0.95;
         gridBagConstraints.anchor = GridBagConstraints.EAST;
-//        panelLink.add(connectionStatus, gridBagConstraints);
+        panelLink.add(connectionStatus, gridBagConstraints);
 
 
         gridBagConstraints = new GridBagConstraints();
