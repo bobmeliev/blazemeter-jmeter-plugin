@@ -203,7 +203,6 @@ public class BmTestManager {
                 rpc.startTestLocal(userKey, testInfo.id);
                 testInfo.status = TestStatus.Running;
                 isTestStarted = true;
-//                NotifyStatusChanged();
                 NotifyTestInfoChanged();
 
             } catch (Throwable ex) {
@@ -216,7 +215,6 @@ public class BmTestManager {
     public void stopTest() {
         isTestStarted = false;
         testInfo.status = TestStatus.NotRunning;
-//        NotifyStatusChanged();
         NotifyTestInfoChanged();
         Uploader.getInstance().Finalize();
     }

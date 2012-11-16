@@ -196,7 +196,7 @@ public class TestPanelGui {
                 }
                 setTestInfo(testInfo);
                 if ((testInfo != null) & (testInfo.name != NEW_TEST_ID) & (!testInfo.name.isEmpty()) &
-                        (testStatusChecker == null || testStatusChecker.isInterrupted())) {
+                        (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                     startTestInfoChecker();
                 }
                 if (testInfo.name == NEW_TEST_ID) {
@@ -618,12 +618,12 @@ public class TestPanelGui {
         }
     }
 
-    private Thread testStatusChecker;
+    private Thread testInfoChecker;
 
 
     private void startTestInfoChecker() {
-        if (testStatusChecker == null) {
-            testStatusChecker = new Thread(new Runnable() {
+        if (testInfoChecker == null) {
+            testInfoChecker = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (!Thread.currentThread().isInterrupted()) {
@@ -650,14 +650,14 @@ public class TestPanelGui {
             }
             );
         }
-        testStatusChecker.start();
+        testInfoChecker.start();
     }
 
     private void stopTestInfoChecker() {
-        if (testStatusChecker != null) {
-            if (testStatusChecker.isAlive()) {
-                testStatusChecker.interrupt();
-                testStatusChecker = null;
+        if (testInfoChecker != null) {
+            if (testInfoChecker.isAlive()) {
+                testInfoChecker.interrupt();
+                testInfoChecker = null;
                 System.gc();
                 BmLog.console("TestStatusChecker is interrupted!");
             }
@@ -692,6 +692,7 @@ public class TestPanelGui {
             goToTestPageButton.setEnabled(false);
         }
         testIdComboBox.setEnabled(!isRunning);
+        testIdTextField.setEnabled(!isRunning);
         reportNameTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
     }
