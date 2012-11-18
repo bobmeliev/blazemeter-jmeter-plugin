@@ -26,11 +26,8 @@ import java.util.*;
 public class BmTestManager {
     private static BmTestManager instance;
     private static final Object lock = new Object();
-    //review this field. Is it possible to remove it and use testInfo?
-    private boolean isTestStarted = false;
     private String propUserKey;
     private long lastUpdateCheck = 0;
-    //review this field. Is it possible to remove it and use testInfo?
     private boolean isLocalRunMode = false;
     private UserInfo userInfo;
     private volatile TestInfo testInfo;
@@ -60,10 +57,6 @@ public class BmTestManager {
         instance = null;
     }
 
-
-    public boolean isTestRunning() {
-        return this.isTestStarted;
-    }
 
     private void checkConnection() {
         new Thread(new Runnable() {
@@ -170,15 +163,15 @@ public class BmTestManager {
 
     public void startTest() {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("Start test will not run, Running in the cloud!");
+            BmLog.console("Test will not be started, start test in the cloud");
             return;
         }
         TestInfo testInfo = getTestInfo();
         String userKey = getUserKey();
         BmLog.console("startTest" + testInfo);
 
-        if (!isTestStarted) {
-            if (testInfo == null || testInfo.id.isEmpty()) {
+        if (testInfo.status != TestStatus.Running) {
+            if (testInfo.id.isEmpty()) {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
                     BmLog.console("Running in nonGui mode!");
@@ -202,18 +195,16 @@ public class BmTestManager {
 
                 rpc.startTestLocal(userKey, testInfo.id);
                 testInfo.status = TestStatus.Running;
-                isTestStarted = true;
                 NotifyTestInfoChanged();
 
             } catch (Throwable ex) {
-                BmLog.error("do Start Test", ex);
+                BmLog.error("Test was not started locally", ex);
             }
         }
 
     }
 
     public void stopTest() {
-        isTestStarted = false;
         testInfo.status = TestStatus.NotRunning;
         NotifyTestInfoChanged();
         Uploader.getInstance().Finalize();
@@ -250,7 +241,7 @@ public class BmTestManager {
         String url = null;
         if (testInfo != null && testInfo.isValid()) {
             url = BlazemeterApi.BmUrlManager.getServerUrl() + "/node/" + testInfo.id;
-            if (isTestStarted) {
+            if (this.testInfo.status == TestStatus.Running) {
                 url += "/gjtl";
             }
         }
@@ -263,9 +254,8 @@ public class BmTestManager {
 
     public int runInTheCloud() {
         int testId = rpc.runInTheCloud(this.getUserKey(), this.getTestInfo().id);
-        this.isTestStarted = testId != -1;
-        if (this.isTestStarted) {
-            this.testInfo.status = TestStatus.Running;
+        this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
+        if (this.testInfo.status == TestStatus.Running) {
             NotifyTestInfoChanged();
         }
         return testId;
@@ -275,7 +265,6 @@ public class BmTestManager {
         int stopSuccess = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo().id);
         testInfo = rpc.getTestRunStatus(this.getUserKey(), this.getTestInfo().id, false);
         if (testInfo.status == TestStatus.NotRunning && stopSuccess != -1) {
-            this.isTestStarted = testInfo.status == TestStatus.Running;
             NotifyTestInfoChanged();
         }
     }
