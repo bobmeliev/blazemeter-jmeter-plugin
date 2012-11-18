@@ -109,10 +109,11 @@ public class BmTestManager {
                     while (!Thread.currentThread().isInterrupted()) {
                         if (Thread.currentThread().isInterrupted()) {
                             return;
+
                         }
+                        checkConnection();
                         try {
-                            checkConnection();
-                            serverConnectionChecker.sleep(30000);
+                            serverConnectionChecker.sleep(15000);
                         } catch (InterruptedException e) {
                             BmLog.console("Connection checker was interrupted during sleeping");
                             return;

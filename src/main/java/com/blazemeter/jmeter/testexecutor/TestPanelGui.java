@@ -219,8 +219,12 @@ public class TestPanelGui {
                 BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
                 switch (serverStatus) {
                     case AVAILABLE:
-                        enableMainPanelControls(true);
-                        startTestInfoChecker();
+                        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                        if (testInfo.status == TestStatus.Running) {
+                            startTestInfoChecker();
+                        } else {
+                            enableMainPanelControls(true);
+                        }
                         break;
                     case NOT_AVAILABLE:
                         enableMainPanelControls(false);
@@ -630,9 +634,9 @@ public class TestPanelGui {
                         if (Thread.currentThread().isInterrupted()) {
                             return;
                         }
-                        int testStatusCheckingPeriod = 30000;
+                        updateCloudPanel(0);
                         try {
-                            Thread.sleep(testStatusCheckingPeriod);
+                            Thread.sleep(30000);
                         } catch (InterruptedException e) {
                             BmLog.console("TestStatusChecker was interrupted during sleeping");
                             return;
@@ -641,7 +645,7 @@ public class TestPanelGui {
                                 return;
                             }
                         }
-                        updateCloudPanel(testStatusCheckingPeriod);
+
                     }
                     if (Thread.currentThread().isInterrupted()) {
                         return;
