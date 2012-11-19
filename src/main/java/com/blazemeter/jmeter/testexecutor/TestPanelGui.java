@@ -175,6 +175,9 @@ public class TestPanelGui {
         BmTestManager.getInstance().testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
+                if (testInfo == null) {
+                    return;
+                }
                 if (testIdComboBox.getItemCount() == 1) {
                     addTestId(testInfo, true);
                 }
@@ -502,7 +505,8 @@ public class TestPanelGui {
     }
 
     private void fetchUserTestsAsync() {
-        String userKey = BmTestManager.getInstance().getUserKey();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        String userKey = bmTestManager.getUserKey();
         if (userKey == null || userKey.isEmpty()) {
             JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
             return;
@@ -523,6 +527,7 @@ public class TestPanelGui {
 
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
+                    BmTestManager.getInstance().setUserKeyValid(false);
                 }
                 setTestInfo(BmTestManager.getInstance().getTestInfo());
             }

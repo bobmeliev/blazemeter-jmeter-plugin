@@ -34,7 +34,7 @@ public class BmTestManager {
     private BlazemeterApi rpc;
     public static int c = 0;
     private String userKey;
-
+    private boolean isUserKeyValid = false;
 
     private static ServerStatus serverStatus = ServerStatus.NOT_AVAILABLE;
 
@@ -51,6 +51,14 @@ public class BmTestManager {
 
     public static ServerStatus getServerStatus() {
         return serverStatus;
+    }
+
+    public boolean isUserKeyValid() {
+        return isUserKeyValid;
+    }
+
+    public void setUserKeyValid(boolean userKeyValid) {
+        isUserKeyValid = userKeyValid;
     }
 
     public void destroy() {

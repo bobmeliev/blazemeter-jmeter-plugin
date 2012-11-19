@@ -23,7 +23,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     private static final long serialVersionUID = 1L;
     public static final String LOCAL_TEST_STRING = "_local_";
-    static boolean isTestStarted = false;
+    static boolean isTestRunning = false;
     private static int instanceCount = 0;
 
     public RemoteTestRunner() {
@@ -131,9 +131,13 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             BmLog.console("UserKey is not found, test results won't be uploaded to server");
             return;
         }
-
+        if (!bmTestManager.isUserKeyValid()) {
+            BmLog.error("UserKey is invalid, test will be started without uploading results");
+            BmLog.console("UserKey is invalid, test will be started without uploading results");
+            return;
+        }
         BmLog.console("Test started " + host);
-        isTestStarted = true;
+        isTestRunning = true;
         if (LOCAL_TEST_STRING.equals(host)) {
             if (bmTestManager.getIsLocalRunMode()) {
                 bmTestManager.startTest();
@@ -161,7 +165,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     @Override
     public void testEnded(String host) {
         BmLog.console("Test End Event " + host);
-        isTestStarted = false;
+        isTestRunning = false;
         LogFilesUploader.getInstance().stopListening();
         if (LOCAL_TEST_STRING.equals(host))
             BmTestManager.getInstance().stopTest();
@@ -183,7 +187,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     @Override
     public synchronized void sampleOccurred(SampleEvent evt) {
-        if (isTestStarted) {
+        if (isTestRunning) {
             String templateJTL = GetJtlString(evt);
             Uploader.getInstance().AddSample(getReportName(), templateJTL);
         } else {
