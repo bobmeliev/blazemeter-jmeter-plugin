@@ -655,7 +655,7 @@ public class TestPanelGui {
                         }
                         updateCloudPanel(0);
                         try {
-                            Thread.sleep(20000);
+                            Thread.sleep(15000);
                         } catch (InterruptedException e) {
                             BmLog.console("TestStatusChecker was interrupted during sleeping");
                             return;

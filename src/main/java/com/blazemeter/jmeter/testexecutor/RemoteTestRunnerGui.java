@@ -85,9 +85,12 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             return;
         }
         super.configureTestElement(te);
-        RemoteTestRunner runner = (RemoteTestRunner) te;
-        runner.setReportName(gui.getReportName());
-
+        RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
+        remoteTestRunner.setReportName(gui.getReportName());
+        /*https://blazemeter.atlassian.net/browse/BPC-94
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        remoteTestRunner.setTestInfo(testInfo);*/
     }
 
     @Override
@@ -104,15 +107,18 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         }
         super.configure(element);
         BmTestManager bmTestManager = BmTestManager.getInstance();
-
-        RemoteTestRunner runner = (RemoteTestRunner) element;
+        RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
         gui.updateCloudPanel(7000);
-        TestInfo ti = bmTestManager.getTestInfo();
-        gui.setTestInfo(ti);
-        gui.setReportName(runner.getReportName());
-
-
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        gui.setTestInfo(testInfo);
+        /*https://blazemeter.atlassian.net/browse/BPC-94
+          TestInfo testInfo = remoteTestRunner.getTestInfo();
+          bmTestManager.setTestInfo(testInfo);
+          gui.updateCloudPanel(7000);
+          gui.setTestInfo(testInfo);
+        */
+        gui.setReportName(remoteTestRunner.getReportName());
     }
 
     private Component getTopPanel() {
