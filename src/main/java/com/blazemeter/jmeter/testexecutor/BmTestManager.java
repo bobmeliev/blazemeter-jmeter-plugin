@@ -220,9 +220,11 @@ public class BmTestManager {
     }
 
 
-    public synchronized void setTestInfo(TestInfo testInfo) {
+    public void setTestInfo(TestInfo testInfo) {
         if (this.testInfo == null || !this.testInfo.equals(testInfo)) {
-            this.testInfo = testInfo;
+            synchronized (this.testInfo) {
+                this.testInfo = testInfo;
+            }
             NotifyTestInfoChanged();
         }
     }

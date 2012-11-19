@@ -170,9 +170,10 @@ public class TestPanelGui {
                 TestInfo ti = BlazemeterApi.getInstance().createTest(userKey, testName);
                 if (ti != null && ti.status == null) {
                     addTestId(ti, true);
+                    BmTestManager.getInstance().setTestInfo(ti);
+                    BmTestManager.getInstance().uploadJmx();
                 }
 
-                BmTestManager.getInstance().uploadJmx();
 
             }
         });
@@ -601,6 +602,7 @@ public class TestPanelGui {
                 TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
                         BmTestManager.getInstance().getTestInfo().id, true);
                 BmTestManager bmTestManager = BmTestManager.getInstance();
+
                 bmTestManager.setTestInfo(ti);
                 bmTestManager.NotifyTestInfoChanged();
 
@@ -609,9 +611,15 @@ public class TestPanelGui {
                 if ("jmeter".equals(ti.type)) {
                     locationComboBox.setSelectedItem(ti.getLocation());
                     numberOfUsersSlider.setValue(ti.getNumberOfUsers());
-                    rampupSpinner.setValue(ti.overrides.rampup);
-                    iterationsSpinner.setValue(ti.overrides.iterations == -1 ? 0 : ti.overrides.iterations);
-                    durationSpinner.setValue(ti.overrides.duration == -1 ? 0 : ti.overrides.duration);
+                    if (ti.overrides != null) {
+                        rampupSpinner.setValue(ti.overrides.rampup);
+                        iterationsSpinner.setValue(ti.overrides.iterations == -1 ? 0 : ti.overrides.iterations);
+                        durationSpinner.setValue(ti.overrides.duration == -1 ? 0 : ti.overrides.duration);
+                    } else {
+                        rampupSpinner.setValue(0);
+                        iterationsSpinner.setValue(0);
+                        durationSpinner.setValue(0);
+                    }
                     runInTheCloud.setActionCommand(ti.status == TestStatus.Running ? "stop" : "start");
                     runInTheCloud.setText(ti.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
                 } else {
@@ -647,7 +655,7 @@ public class TestPanelGui {
                         }
                         updateCloudPanel(0);
                         try {
-                            Thread.sleep(30000);
+                            Thread.sleep(20000);
                         } catch (InterruptedException e) {
                             BmLog.console("TestStatusChecker was interrupted during sleeping");
                             return;
