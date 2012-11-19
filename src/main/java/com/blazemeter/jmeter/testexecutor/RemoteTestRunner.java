@@ -132,7 +132,6 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             return;
         }
         if (!bmTestManager.isUserKeyValid()) {
-            BmLog.error("UserKey is invalid, test will be started without uploading results");
             BmLog.console("UserKey is invalid, test will be started without uploading results");
             return;
         }
@@ -191,7 +190,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             String templateJTL = GetJtlString(evt);
             Uploader.getInstance().AddSample(getReportName(), templateJTL);
         } else {
-            BmLog.console("Test was not started on server, sample will not be uploaded!");
+            BmLog.console("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }
     }
 

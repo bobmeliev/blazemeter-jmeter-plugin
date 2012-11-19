@@ -61,8 +61,9 @@ public class TestPanelGui {
 
 
     public TestPanelGui() {
-        if (BmTestManager.getInstance().isUserKeyFromProp()) {
-            String key = BmTestManager.getInstance().getUserKey();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        if (bmTestManager.isUserKeyFromProp()) {
+            String key = bmTestManager.getUserKey();
             if (key.length() >= 20)
                 key = key.substring(0, 5) + "**********" + key.substring(14, key.length());
             setUserKey(key);
@@ -91,6 +92,10 @@ public class TestPanelGui {
                     if (!newVal.equals(oldVal)) {
                         BmTestManager bmTestManager = BmTestManager.getInstance();
                         bmTestManager.setUserKey(newVal);
+                        TestInfo testInfo = bmTestManager.getTestInfo();
+                        if (testInfo != null & testInfo.status == TestStatus.Running) {
+                            //JOptionPane - "Please, stop testing for changing test/disable UserKey field during test"
+                        }
                         if (!newVal.isEmpty())
                             fetchUserTestsAsync();
                     }
@@ -521,6 +526,7 @@ public class TestPanelGui {
                 testIdComboBox.setEnabled(true);
                 testIdComboBox.addItem(NEW_TEST_ID);
                 if (tests != null) {
+                    BmTestManager.getInstance().setUserKeyValid(true);
                     for (TestInfo testInfo : tests) {
                         addTestId(testInfo, false);
                     }
@@ -699,6 +705,9 @@ public class TestPanelGui {
             testNameTextField.setEnabled(!isRunning);
             createNewButton.setEnabled(!isRunning);
             goToTestPageButton.setEnabled(false);
+        }
+        if (!BmTestManager.getInstance().isUserKeyFromProp()) {
+            userKeyTextField.setEnabled(!isRunning);
         }
         testIdComboBox.setEnabled(!isRunning);
         testIdTextField.setEnabled(!isRunning);
