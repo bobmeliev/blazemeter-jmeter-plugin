@@ -794,7 +794,7 @@ public class TestPanelGui {
         helpButton.setHideActionText(false);
         helpButton.setHorizontalAlignment(0);
         helpButton.setHorizontalTextPosition(0);
-        helpButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/common/question.png")));
+        helpButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/question.png")));
         helpButton.setInheritsPopupMenu(true);
         helpButton.setMaximumSize(new Dimension(22, 22));
         helpButton.setMinimumSize(new Dimension(20, 20));
@@ -823,7 +823,7 @@ public class TestPanelGui {
         createNewButton.setHideActionText(false);
         createNewButton.setHorizontalAlignment(0);
         createNewButton.setHorizontalTextPosition(0);
-        createNewButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/common/plus.png")));
+        createNewButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/plus.png")));
         createNewButton.setMaximumSize(new Dimension(22, 22));
         createNewButton.setMinimumSize(new Dimension(20, 20));
         createNewButton.setPreferredSize(new Dimension(20, 20));
@@ -844,7 +844,7 @@ public class TestPanelGui {
         reloadButton.setEnabled(true);
         reloadButton.setFont(new Font("Tahoma", reloadButton.getFont().getStyle(), 16));
         reloadButton.setHorizontalTextPosition(0);
-        reloadButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/common/refresh.png")));
+        reloadButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/refresh.png")));
         reloadButton.setMaximumSize(new Dimension(20, 20));
         reloadButton.setMinimumSize(new Dimension(20, 20));
         reloadButton.setPreferredSize(new Dimension(20, 20));

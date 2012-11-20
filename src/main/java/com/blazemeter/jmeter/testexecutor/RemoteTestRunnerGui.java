@@ -132,7 +132,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
         icon.setIcon(
                 new ImageIcon(
-                        JMeterPluginUtils.class.getResource("/com/blazemeter/jmeter/common/BlazemeterLogoB.png")));
+                        JMeterPluginUtils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         icon.addMouseListener(new Utils.URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
 

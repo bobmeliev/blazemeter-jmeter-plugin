@@ -108,7 +108,7 @@
                   <hideActionText value="false"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="com/blazemeter/jmeter/common/question.png"/>
+                  <icon value="com/blazemeter/jmeter/images/question.png"/>
                   <inheritsPopupMenu value="true"/>
                   <maximumSize width="22" height="22"/>
                   <minimumSize width="20" height="20"/>
@@ -170,7 +170,7 @@
                   <hideActionText value="false"/>
                   <horizontalAlignment value="0"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="com/blazemeter/jmeter/common/plus.png"/>
+                  <icon value="com/blazemeter/jmeter/images/plus.png"/>
                   <maximumSize width="22" height="22"/>
                   <minimumSize width="20" height="20"/>
                   <preferredSize width="20" height="20"/>
@@ -210,7 +210,7 @@
                   <enabled value="true"/>
                   <font name="Tahoma" size="16"/>
                   <horizontalTextPosition value="0"/>
-                  <icon value="com/blazemeter/jmeter/common/refresh.png"/>
+                  <icon value="com/blazemeter/jmeter/images/refresh.png"/>
                   <maximumSize width="20" height="20"/>
                   <minimumSize width="20" height="20"/>
                   <preferredSize width="20" height="20"/>
