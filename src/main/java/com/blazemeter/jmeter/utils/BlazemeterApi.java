@@ -1,7 +1,7 @@
 package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.Overrides;
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.http.HttpResponse;

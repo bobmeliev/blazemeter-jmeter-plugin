@@ -1,6 +1,5 @@
-package com.blazemeter.jmeter.testexecutor;
+package com.blazemeter.jmeter.utils;
 
-import com.blazemeter.jmeter.utils.BmLog;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 

@@ -5,6 +5,8 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.JMeterPluginUtils;
+import com.blazemeter.jmeter.utils.LogFilesUploader;
+import com.blazemeter.jmeter.utils.Uploader;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.samplers.*;

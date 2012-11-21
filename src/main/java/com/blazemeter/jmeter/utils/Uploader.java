@@ -1,8 +1,8 @@
-package com.blazemeter.jmeter.testexecutor;
+package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.SamplingStatus;
 import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.utils.BlazemeterApi;
-import com.blazemeter.jmeter.utils.BmLog;
 import org.apache.jmeter.util.JMeterUtils;
 
 import java.net.URLEncoder;

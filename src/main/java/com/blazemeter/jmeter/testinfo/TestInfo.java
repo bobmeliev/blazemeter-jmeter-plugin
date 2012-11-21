@@ -1,6 +1,5 @@
 package com.blazemeter.jmeter.testinfo;
 
-import com.blazemeter.jmeter.testexecutor.Overrides;
 import com.blazemeter.jmeter.utils.TestStatus;
 import com.blazemeter.jmeter.utils.Utils;
 
