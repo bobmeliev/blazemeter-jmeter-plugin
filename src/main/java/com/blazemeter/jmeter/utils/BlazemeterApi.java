@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.common;
+package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.Overrides;

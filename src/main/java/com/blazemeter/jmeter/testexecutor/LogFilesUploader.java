@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.common.BmLog;
+import com.blazemeter.jmeter.utils.BmLog;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 
@@ -64,10 +64,12 @@ public class LogFilesUploader {
         }).start();
 
     }
+
     private boolean uploadFinished;
+
     private void UploadLog() {
-        uploadFinished=false;
-        boolean last=true;
+        uploadFinished = false;
+        boolean last = true;
         while (isRunning || last) {
             StringBuilder buff = new StringBuilder(4096);
             String line;
@@ -84,11 +86,12 @@ public class LogFilesUploader {
             }
             try {
                 Thread.sleep(10000);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
             last = !isRunning && !last;
 
         }
-        uploadFinished=true;
+        uploadFinished = true;
 
     }
 
@@ -97,10 +100,11 @@ public class LogFilesUploader {
             return;
 
         isRunning = false;
-        while (!this.uploadFinished){
+        while (!this.uploadFinished) {
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
         }
         try {
             reader.close();

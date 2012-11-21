@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.common;
+package com.blazemeter.jmeter.utils;
 
 //~--- non-JDK imports --------------------------------------------------------
 

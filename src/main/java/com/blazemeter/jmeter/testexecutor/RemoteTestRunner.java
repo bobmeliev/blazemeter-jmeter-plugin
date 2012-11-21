@@ -2,9 +2,9 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.blazemeter.jmeter.common.BmLog;
-import com.blazemeter.jmeter.common.JMeterPluginUtils;
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.JMeterPluginUtils;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.samplers.*;

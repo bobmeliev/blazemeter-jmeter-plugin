@@ -2,8 +2,8 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.blazemeter.jmeter.common.*;
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.visualizers.gui.AbstractListenerGui;
 

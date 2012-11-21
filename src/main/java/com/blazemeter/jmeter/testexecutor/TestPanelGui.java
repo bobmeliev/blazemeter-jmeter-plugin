@@ -1,11 +1,11 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.common.BlazemeterApi;
-import com.blazemeter.jmeter.common.BmLog;
-import com.blazemeter.jmeter.common.TestStatus;
-import com.blazemeter.jmeter.common.Utils;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import com.blazemeter.jmeter.utils.BlazemeterApi;
+import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.TestStatus;
+import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
