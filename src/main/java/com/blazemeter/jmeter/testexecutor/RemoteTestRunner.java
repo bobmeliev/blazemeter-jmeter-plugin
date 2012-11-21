@@ -4,6 +4,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.common.BmLog;
 import com.blazemeter.jmeter.common.JMeterPluginUtils;
+import com.blazemeter.jmeter.testinfo.TestInfo;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.samplers.*;

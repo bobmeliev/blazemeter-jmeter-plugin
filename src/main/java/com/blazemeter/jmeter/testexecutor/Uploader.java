@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.common.BlazemeterApi;
 import com.blazemeter.jmeter.common.BmLog;
+import com.blazemeter.jmeter.testinfo.TestInfo;
 import org.apache.jmeter.util.JMeterUtils;
 
 import java.net.URLEncoder;
@@ -27,7 +28,7 @@ public class Uploader {
 
         private final Object lock = new Object();
         private boolean stop = false;
-        private boolean isDone=false;
+        private boolean isDone = false;
 
         public void finish() {
             this.stop = true;
@@ -70,7 +71,7 @@ public class Uploader {
         private void upload() {
 
             boolean lastTime = true;
-            this.isDone=false;
+            this.isDone = false;
             long timeFromLastChunk;
             while (!this.stop || lastTime) {
                 timeFromLastChunk = System.currentTimeMillis() - this.lastChunkUploaded;
@@ -81,7 +82,7 @@ public class Uploader {
                     if (length > 0 && ((length > chunk_size) || (timeFromLastChunk > MaxUploadInterval))) {
                         toSend = this.data.toString();
                         this.data.setLength(0);
-                        BmLog.console(this.Name+" set data size:" + length);
+                        BmLog.console(this.Name + " set data size:" + length);
                     }
                 }
 
@@ -91,23 +92,23 @@ public class Uploader {
                         new DataUploader(reportName, toSend).run();
 
                         this.lastChunkUploaded = System.currentTimeMillis();
-                        BmLog.console(this.Name +"Chunk uploaded");
+                        BmLog.console(this.Name + "Chunk uploaded");
                     } catch (Exception ex) {
                         BmLog.error(ex.getMessage());
                     }
                     this.status.NumberOfSamples++;
                     this.status.FileSize += length;
-                }else {
-                    if(!this.stop)
+                } else {
+                    if (!this.stop)
                         try {
                             Thread.sleep(10000);
                         } catch (InterruptedException e) {
-                            BmLog.error("Problem sleeping!",e);
+                            BmLog.error("Problem sleeping!", e);
                         }
                 }
                 lastTime = this.stop && !lastTime;
             }
-            this.isDone=true;
+            this.isDone = true;
         }
     }
 

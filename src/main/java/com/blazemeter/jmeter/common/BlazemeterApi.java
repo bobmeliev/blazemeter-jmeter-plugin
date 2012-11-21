@@ -2,8 +2,8 @@ package com.blazemeter.jmeter.common;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.Overrides;
-import com.blazemeter.jmeter.testexecutor.TestInfo;
-import com.blazemeter.jmeter.testexecutor.UserInfo;
+import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
