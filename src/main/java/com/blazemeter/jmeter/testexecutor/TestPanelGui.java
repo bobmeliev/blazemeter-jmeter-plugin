@@ -585,9 +585,22 @@ public class TestPanelGui {
         }
     }
 
+    protected TestInfo getTestInfo() {
+        TestInfo testInfo = new TestInfo();
+        testInfo.id = testIdTextField.getText();
+        testInfo.name = testNameTextField.getText();
+        testInfo.status = runInTheCloud.getText().equals("Run in the Cloud!") ? TestStatus.NotRunning : TestStatus.Running;
+        testInfo.error = null;
+        testInfo.numberOfUsers = numberOfUsersSlider.getValue();
+        testInfo.location = locationComboBox.getSelectedItem().toString();
+        testInfo.overrides = null;
+        testInfo.type = "jmeter";
+        return testInfo;
+    }
+
     private Thread updateCloudPanelThread;
 
-    protected void updateCloudPanel(int lastCloudUpdatePeriod) {
+    private void updateCloudPanel(int lastCloudUpdatePeriod) {
         long now = new Date().getTime();
         if (lastCloudPanelUpdate + lastCloudUpdatePeriod > now) {
             return;
