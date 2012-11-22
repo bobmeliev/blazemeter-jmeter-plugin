@@ -23,13 +23,8 @@ import java.io.File;
  */
 public class TestInfoWriter {
     private static TestInfoWriter instance;
-    private TestInfo testInfo;
 
     private TestInfoWriter() {
-    }
-
-    public void setTestInfo(TestInfo testInfo) {
-        this.testInfo = testInfo;
     }
 
     public static TestInfoWriter getInstance() {
@@ -52,13 +47,13 @@ public class TestInfoWriter {
 
             // append id to testInfo and set value from field of testInfo
             Element idElement = testInfoDoc.createElement("id");
-            idElement.appendChild(testInfoDoc.createTextNode(testInfo.id));
+            idElement.appendChild(testInfoDoc.createTextNode(testInfo.id != null ? testInfo.id : ""));
             testInfoElement.appendChild(idElement);
 
 
             // append name to testInfo and set value from field of testInfo
             Element nameElement = testInfoDoc.createElement("name");
-            nameElement.appendChild(testInfoDoc.createTextNode(testInfo.name));
+            nameElement.appendChild(testInfoDoc.createTextNode(testInfo.name != null ? testInfo.name : ""));
             testInfoElement.appendChild(nameElement);
 
             // append status to testInfo and set value from field of testInfo
@@ -68,7 +63,7 @@ public class TestInfoWriter {
 
             // append error to testInfo and set value from field of testInfo
             Element errorElement = testInfoDoc.createElement("error");
-            errorElement.appendChild(testInfoDoc.createTextNode(testInfo.error));
+            errorElement.appendChild(testInfoDoc.createTextNode(testInfo.error != null ? testInfo.error : ""));
             testInfoElement.appendChild(errorElement);
 
             // append numberOfUsers to testInfo and set value from field of testInfo
@@ -92,11 +87,12 @@ public class TestInfoWriter {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(testInfoDoc);
-            File testInfoFile = new File("../lib/ext/testinfo.xml");
+            File testInfoFile = new File(System.getProperty("user.home") + "\\testinfo.xml");
+            testInfoFile.setWritable(true);
             StreamResult streamResult = new StreamResult(testInfoFile);
             transformer.transform(source, streamResult);
 
-            BmLog.console("TestInfo is saved!");
+            BmLog.console("TestInfo is saved to" + testInfoFile.getAbsolutePath());
 
         } catch (ParserConfigurationException pce) {
             BmLog.error("ParserConfiguraionException during saving testInfo");

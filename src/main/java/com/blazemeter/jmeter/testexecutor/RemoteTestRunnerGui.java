@@ -3,6 +3,8 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoReader;
+import com.blazemeter.jmeter.testinfo.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.visualizers.gui.AbstractListenerGui;
@@ -93,9 +95,9 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.setTestInfo(testInfo);
 
-        /*Set testInfo  to ../lib/ext/testinfo.xml
+        /*Set testInfo  to ../lib/ext/testinfo.xml*/
         TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
-        testInfoWriter.saveTestInfo(testInfo);*/
+        testInfoWriter.saveTestInfo(testInfo);
     }
 
     @Override
@@ -115,13 +117,14 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
         //Get TestInfo from BmTestManager;
-        TestInfo testInfo = bmTestManager.getTestInfo();
+//        TestInfo testInfo = bmTestManager.getTestInfo();
         /*
               get TestInfo from ../lib/ext/testinfo.xml and set it to BmTestManager and GUI;
-              TestInfoReader testInfoReader = TestInfoReader.getInstance();
-              TestInfo testInfo = testInfoReader.loadTestInfo();
-              bmTestManager.setTestInfo(testInfo);
         */
+        TestInfoReader testInfoReader = TestInfoReader.getInstance();
+        TestInfo testInfo = testInfoReader.loadTestInfo();
+        bmTestManager.setTestInfo(testInfo);
+
         gui.setTestInfo(testInfo);
         gui.setReportName(remoteTestRunner.getReportName());
     }

@@ -111,7 +111,6 @@ public class TestInfoReader extends DefaultHandler {
             BmLog.error("IOException is got!");
             BmLog.console("IOException is got!");
         }
-
         return testInfoReader.getTestInfo();
     }
 
