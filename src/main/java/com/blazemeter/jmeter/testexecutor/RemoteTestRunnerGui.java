@@ -88,15 +88,14 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configureTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
         remoteTestRunner.setReportName(gui.getReportName());
-
-//           Get testInfo from GUI and set it to BmTestManager;
+        TestInfo testInfo = gui.getTestInfo();
+        //Set testInfo to BmTestManager
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.setTestInfo(gui.getTestInfo());
+        bmTestManager.setTestInfo(testInfo);
 
-        /*https://blazemeter.atlassian.net/browse/BPC-94
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        TestInfo testInfo = bmTestManager.getTestInfo();
-        remoteTestRunner.setTestInfo(testInfo);*/
+        /*Set testInfo  to ../lib/ext/testinfo.xml
+        TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
+        testInfoWriter.saveTestInfo(testInfo);*/
     }
 
     @Override
@@ -115,14 +114,15 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
-        //get TestInfo from BmTestManager and set it to GUI;
+        //Get TestInfo from BmTestManager;
         TestInfo testInfo = bmTestManager.getTestInfo();
-        gui.setTestInfo(testInfo);
-        /*https://blazemeter.atlassian.net/browse/BPC-94
-          TestInfo testInfo = remoteTestRunner.getTestInfo();
-          bmTestManager.setTestInfo(testInfo);
-          gui.setTestInfo(testInfo);
+        /*
+              get TestInfo from ../lib/ext/testinfo.xml and set it to BmTestManager and GUI;
+              TestInfoReader testInfoReader = TestInfoReader.getInstance();
+              TestInfo testInfo = testInfoReader.loadTestInfo();
+              bmTestManager.setTestInfo(testInfo);
         */
+        gui.setTestInfo(testInfo);
         gui.setReportName(remoteTestRunner.getReportName());
     }
 

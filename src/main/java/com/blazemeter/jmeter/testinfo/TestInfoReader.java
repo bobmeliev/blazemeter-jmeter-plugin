@@ -6,6 +6,12 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: dzmitrykashlach
@@ -14,8 +20,25 @@ import org.xml.sax.helpers.DefaultHandler;
  * To change this template use File | Settings | File Templates.
  */
 public class TestInfoReader extends DefaultHandler {
-    TestInfo testInfo = new TestInfo();
-    String thisElement = "";
+    private static TestInfoReader instance;
+    private TestInfo testInfo;
+    private String currentElement;
+
+    private TestInfoReader() {
+        this.testInfo = new TestInfo();
+        this.currentElement = "";
+    }
+
+    public static TestInfoReader getInstance() {
+        if (instance == null) {
+            instance = new TestInfoReader();
+        }
+        return instance;
+    }
+
+    private TestInfo getTestInfo() {
+        return testInfo;
+    }
 
     @Override
     public void startDocument() throws SAXException {
@@ -24,23 +47,23 @@ public class TestInfoReader extends DefaultHandler {
 
     @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
-        thisElement = qName;
+        currentElement = qName;
     }
 
     @Override
     public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-        thisElement = "";
+        currentElement = "";
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        if (thisElement.equals("id")) {
+        if (currentElement.equals("id")) {
             testInfo.id = new String(ch, start, length);
         }
-        if (thisElement.equals("name")) {
+        if (currentElement.equals("name")) {
             testInfo.name = new String(ch, start, length);
         }
-        if (thisElement.equals("status")) {
+        if (currentElement.equals("status")) {
             String testInfo_status = new String(ch, start, length);
             if (testInfo_status.equals("Running")) {
                 testInfo.status = TestStatus.Running;
@@ -49,16 +72,16 @@ public class TestInfoReader extends DefaultHandler {
                 testInfo.status = TestStatus.NotRunning;
             }
         }
-        if (thisElement.equals("error")) {
+        if (currentElement.equals("error")) {
             testInfo.error = new String(ch, start, length);
         }
-        if (thisElement.equals("numberOfUsers")) {
+        if (currentElement.equals("numberOfUsers")) {
             testInfo.numberOfUsers = new Integer(new String(ch, start, length));
         }
-        if (thisElement.equals("location")) {
+        if (currentElement.equals("location")) {
             testInfo.location = new String(ch, start, length);
         }
-        if (thisElement.equals("type")) {
+        if (currentElement.equals("type")) {
             testInfo.type = new String(ch, start, length);
         }
 
@@ -69,6 +92,30 @@ public class TestInfoReader extends DefaultHandler {
     public void endDocument() {
         BmLog.console("Reading testInfo from file is finished");
     }
+
+    public TestInfo loadTestInfo() {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        TestInfoReader testInfoReader = TestInfoReader.getInstance();
+        try {
+            SAXParser saxParser = factory.newSAXParser();
+            File testInfoFile = new File("../lib/ext/testinfo.xml");
+            saxParser.parse(testInfoFile, testInfoReader);
+
+        } catch (ParserConfigurationException e) {
+            BmLog.error("ParseConfiguration exception is got!");
+            BmLog.console("ParseConfiguration exception is got!");
+        } catch (SAXException e) {
+            BmLog.error("SAXException is got!");
+            BmLog.console("SAXException is got!");
+        } catch (IOException e) {
+            BmLog.error("IOException is got!");
+            BmLog.console("IOException is got!");
+        }
+
+        return testInfoReader.getTestInfo();
+    }
+
+
 }
 
 
