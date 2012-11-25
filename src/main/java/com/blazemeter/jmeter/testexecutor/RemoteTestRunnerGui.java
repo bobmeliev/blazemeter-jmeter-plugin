@@ -45,9 +45,16 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         init();
         connectionStatus.setText("SERVER IS NOT AVAILABLE");
         connectionStatus.setForeground(Color.RED);
-
-        BmTestManager.getInstance().pluginUpdateReceivedNotificationListeners.add(this);
-        BmTestManager.getInstance().serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.pluginUpdateReceivedNotificationListeners.add(this);
+        //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
+        TestInfoReader testInfoReader = TestInfoReader.getInstance();
+        TestInfo testInfo = testInfoReader.loadTestInfo();
+        if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
+            bmTestManager.setTestInfo(testInfo);
+            testInfoReader.setTestInfoSet(false);
+        }
+        bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
             @Override
             public void onServerStatusChanged() {
                 BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
@@ -95,9 +102,10 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.setTestInfo(testInfo);
 
-        /*Set testInfo  to ../lib/ext/testinfo.xml*/
+        /*Write testInfo to System.getProperty("user.home") + "\\testinfo.xml"*/
         TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
-        testInfoWriter.saveTestInfo(testInfo);
+        //Subscribe TestInfoWriter for testInfoNotifications and remove direct call.
+        testInfoWriter.saveTestInfo();
     }
 
     @Override
@@ -117,14 +125,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
         //Get TestInfo from BmTestManager;
-//        TestInfo testInfo = bmTestManager.getTestInfo();
-        /*
-              get TestInfo from ../lib/ext/testinfo.xml and set it to BmTestManager and GUI;
-        */
-        TestInfoReader testInfoReader = TestInfoReader.getInstance();
-        TestInfo testInfo = testInfoReader.loadTestInfo();
-        bmTestManager.setTestInfo(testInfo);
-
+        TestInfo testInfo = bmTestManager.getTestInfo();
         gui.setTestInfo(testInfo);
         gui.setReportName(remoteTestRunner.getReportName());
     }

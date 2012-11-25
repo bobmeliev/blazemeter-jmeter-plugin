@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testinfo;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.utils.BmLog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -7,6 +8,7 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -23,6 +25,7 @@ import java.io.File;
  */
 public class TestInfoWriter {
     private static TestInfoWriter instance;
+    private static TestInfo testInfo;
 
     private TestInfoWriter() {
     }
@@ -34,74 +37,86 @@ public class TestInfoWriter {
         return instance;
     }
 
-    public void saveTestInfo(TestInfo testInfo) {
-        try {
+    public void saveTestInfo() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                if (testInfo.id == null | testInfo.id.isEmpty()) {
+                    return;
+                }
+                try {
 
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder testInfoBuilder = docFactory.newDocumentBuilder();
+                    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder testInfoBuilder = docFactory.newDocumentBuilder();
 
-            // create testInfo(root element)
-            Document testInfoDoc = testInfoBuilder.newDocument();
-            Element testInfoElement = testInfoDoc.createElement("testInfo");
-            testInfoDoc.appendChild(testInfoElement);
+                    // create testInfo(root element)
+                    Document testInfoDoc = testInfoBuilder.newDocument();
+                    Element testInfoElement = testInfoDoc.createElement("testInfo");
+                    testInfoDoc.appendChild(testInfoElement);
 
-            // append id to testInfo and set value from field of testInfo
-            Element idElement = testInfoDoc.createElement("id");
-            idElement.appendChild(testInfoDoc.createTextNode(testInfo.id != null ? testInfo.id : ""));
-            testInfoElement.appendChild(idElement);
-
-
-            // append name to testInfo and set value from field of testInfo
-            Element nameElement = testInfoDoc.createElement("name");
-            nameElement.appendChild(testInfoDoc.createTextNode(testInfo.name != null ? testInfo.name : ""));
-            testInfoElement.appendChild(nameElement);
-
-            // append status to testInfo and set value from field of testInfo
-            Element statusElement = testInfoDoc.createElement("status");
-            statusElement.appendChild(testInfoDoc.createTextNode(testInfo.status.toString()));
-            testInfoElement.appendChild(statusElement);
-
-            // append error to testInfo and set value from field of testInfo
-            Element errorElement = testInfoDoc.createElement("error");
-            errorElement.appendChild(testInfoDoc.createTextNode(testInfo.error != null ? testInfo.error : ""));
-            testInfoElement.appendChild(errorElement);
-
-            // append numberOfUsers to testInfo and set value from field of testInfo
-            Element numberOfUsersElement = testInfoDoc.createElement("numberOfUsers");
-            numberOfUsersElement.appendChild(testInfoDoc.createTextNode(String.valueOf(testInfo.numberOfUsers)));
-            testInfoElement.appendChild(numberOfUsersElement);
+                    // append id to testInfo and set value from field of testInfo
+                    Element idElement = testInfoDoc.createElement("id");
+                    idElement.appendChild(testInfoDoc.createTextNode(testInfo.id != null ? testInfo.id : ""));
+                    testInfoElement.appendChild(idElement);
 
 
-            // append location to testInfo and set value from field of testInfo
-            Element locationElement = testInfoDoc.createElement("location");
-            locationElement.appendChild(testInfoDoc.createTextNode(testInfo.location));
-            testInfoElement.appendChild(locationElement);
+                    // append name to testInfo and set value from field of testInfo
+                    Element nameElement = testInfoDoc.createElement("name");
+                    nameElement.appendChild(testInfoDoc.createTextNode(testInfo.name != null ? testInfo.name : ""));
+                    testInfoElement.appendChild(nameElement);
 
-            // append type to testInfo and set value from field of testInfo
-            Element typeElement = testInfoDoc.createElement("type");
-            typeElement.appendChild(testInfoDoc.createTextNode(testInfo.type));
-            testInfoElement.appendChild(typeElement);
+                    // append status to testInfo and set value from field of testInfo
+                    Element statusElement = testInfoDoc.createElement("status");
+                    statusElement.appendChild(testInfoDoc.createTextNode(testInfo.status.toString()));
+                    testInfoElement.appendChild(statusElement);
+
+                    // append error to testInfo and set value from field of testInfo
+                    Element errorElement = testInfoDoc.createElement("error");
+                    errorElement.appendChild(testInfoDoc.createTextNode(testInfo.error != null ? testInfo.error : ""));
+                    testInfoElement.appendChild(errorElement);
+
+                    // append numberOfUsers to testInfo and set value from field of testInfo
+                    Element numberOfUsersElement = testInfoDoc.createElement("numberOfUsers");
+                    numberOfUsersElement.appendChild(testInfoDoc.createTextNode(String.valueOf(testInfo.numberOfUsers)));
+                    testInfoElement.appendChild(numberOfUsersElement);
 
 
-            // write the content into ../lib/ext/testinfo.xml from output stream
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(testInfoDoc);
-            File testInfoFile = new File(System.getProperty("user.home") + "\\testinfo.xml");
-            testInfoFile.setWritable(true);
-            StreamResult streamResult = new StreamResult(testInfoFile);
-            transformer.transform(source, streamResult);
+                    // append location to testInfo and set value from field of testInfo
+                    Element locationElement = testInfoDoc.createElement("location");
+                    locationElement.appendChild(testInfoDoc.createTextNode(testInfo.location));
+                    testInfoElement.appendChild(locationElement);
 
-            BmLog.console("TestInfo is saved to" + testInfoFile.getAbsolutePath());
+                    // append type to testInfo and set value from field of testInfo
+                    Element typeElement = testInfoDoc.createElement("type");
+                    typeElement.appendChild(testInfoDoc.createTextNode(testInfo.type));
+                    testInfoElement.appendChild(typeElement);
 
-        } catch (ParserConfigurationException pce) {
-            BmLog.error("ParserConfiguraionException during saving testInfo");
-            BmLog.error(pce.getMessage());
-        } catch (TransformerException tfe) {
-            BmLog.error("TransformerException during saving testInfo");
-            BmLog.error(tfe.getMessage());
-        }
+
+                    // write the content into ../lib/ext/testinfo.xml from output stream
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                    DOMSource source = new DOMSource(testInfoDoc);
+                    File testInfoFile = new File(System.getProperty("user.home") + "\\testinfo.xml");
+                    StreamResult streamResult = new StreamResult(testInfoFile);
+                    transformer.transform(source, streamResult);
+
+                    BmLog.console("TestInfo is saved to " + testInfoFile.getAbsolutePath());
+
+                } catch (ParserConfigurationException pce) {
+                    BmLog.error("ParserConfiguraionException during saving testInfo");
+                    BmLog.error(pce.getMessage());
+                } catch (TransformerException tfe) {
+                    BmLog.error("TransformerException during saving testInfo");
+                    BmLog.error(tfe.getMessage());
+                }
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        }).start();
+
     }
+
 }
 
 

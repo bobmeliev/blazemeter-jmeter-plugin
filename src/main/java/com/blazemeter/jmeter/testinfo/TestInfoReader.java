@@ -20,13 +20,25 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class TestInfoReader extends DefaultHandler {
+
+
+    private boolean isTestInfoSet = false;
     private static TestInfoReader instance;
     private TestInfo testInfo;
     private String currentElement;
+    private static String testInfoFile = System.getProperty("user.home") + "\\testinfo.xml";
 
     private TestInfoReader() {
         this.testInfo = new TestInfo();
         this.currentElement = "";
+    }
+
+    public boolean isTestInfoSet() {
+        return isTestInfoSet;
+    }
+
+    public void setTestInfoSet(boolean testInfoSet) {
+        isTestInfoSet = testInfoSet;
     }
 
     public static TestInfoReader getInstance() {
@@ -42,7 +54,7 @@ public class TestInfoReader extends DefaultHandler {
 
     @Override
     public void startDocument() throws SAXException {
-        BmLog.console("Reading testInfo from file is started");
+        BmLog.console("Reading testInfo from file " + testInfoFile + " is started");
     }
 
     @Override
@@ -58,31 +70,31 @@ public class TestInfoReader extends DefaultHandler {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (currentElement.equals("id")) {
-            testInfo.id = new String(ch, start, length);
+            this.testInfo.id = new String(ch, start, length);
         }
         if (currentElement.equals("name")) {
-            testInfo.name = new String(ch, start, length);
+            this.testInfo.name = new String(ch, start, length);
         }
         if (currentElement.equals("status")) {
             String testInfo_status = new String(ch, start, length);
             if (testInfo_status.equals("Running")) {
-                testInfo.status = TestStatus.Running;
+                this.testInfo.status = TestStatus.Running;
             }
             if (testInfo_status.equals("Not_Running")) {
-                testInfo.status = TestStatus.NotRunning;
+                this.testInfo.status = TestStatus.NotRunning;
             }
         }
         if (currentElement.equals("error")) {
-            testInfo.error = new String(ch, start, length);
+            this.testInfo.error = new String(ch, start, length);
         }
         if (currentElement.equals("numberOfUsers")) {
-            testInfo.numberOfUsers = new Integer(new String(ch, start, length));
+            this.testInfo.numberOfUsers = new Integer(new String(ch, start, length));
         }
         if (currentElement.equals("location")) {
-            testInfo.location = new String(ch, start, length);
+            this.testInfo.location = new String(ch, start, length);
         }
         if (currentElement.equals("type")) {
-            testInfo.type = new String(ch, start, length);
+            this.testInfo.type = new String(ch, start, length);
         }
 
 
@@ -90,31 +102,34 @@ public class TestInfoReader extends DefaultHandler {
 
     @Override
     public void endDocument() {
-        BmLog.console("Reading testInfo from file is finished");
+        BmLog.console("Reading testInfo from file " + testInfoFile + " is finished");
     }
 
     public TestInfo loadTestInfo() {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
         TestInfoReader testInfoReader = TestInfoReader.getInstance();
-        try {
-            SAXParser saxParser = factory.newSAXParser();
-            File testInfoFile = new File("../lib/ext/testinfo.xml");
-            saxParser.parse(testInfoFile, testInfoReader);
+        if (!isTestInfoSet) {
 
-        } catch (ParserConfigurationException e) {
-            BmLog.error("ParseConfiguration exception is got!");
-            BmLog.console("ParseConfiguration exception is got!");
-        } catch (SAXException e) {
-            BmLog.error("SAXException is got!");
-            BmLog.console("SAXException is got!");
-        } catch (IOException e) {
-            BmLog.error("IOException is got!");
-            BmLog.console("IOException is got!");
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+
+            try {
+                SAXParser saxParser = factory.newSAXParser();
+                File testInfoFile_f = new File(testInfoFile);
+                saxParser.parse(testInfoFile_f, testInfoReader);
+
+            } catch (ParserConfigurationException e) {
+                BmLog.error("ParseConfiguration exception is got!");
+                BmLog.console("ParseConfiguration exception is got!");
+            } catch (SAXException e) {
+                BmLog.error("SAXException is got!");
+                BmLog.console("SAXException is got!");
+            } catch (IOException e) {
+                BmLog.error("IOException is got!");
+                BmLog.console("IOException is got!");
+            }
+
         }
         return testInfoReader.getTestInfo();
     }
-
-
 }
 
 
