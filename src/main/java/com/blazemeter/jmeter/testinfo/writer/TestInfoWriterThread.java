@@ -96,7 +96,6 @@ public class TestInfoWriterThread implements Runnable {
             BmLog.error("TransformerException during saving testInfo");
             BmLog.error(tfe.getMessage());
         }
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }
 

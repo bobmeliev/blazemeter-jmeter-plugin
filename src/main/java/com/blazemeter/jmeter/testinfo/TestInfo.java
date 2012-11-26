@@ -40,7 +40,7 @@ public class TestInfo {
 
     public boolean equals(TestInfo ti) {
         return ti != null &&
-                ti.name.equals(ti.name) &&
+                ti.name.equals(this.name) &&
                 ti.id.equals(this.id);
     }
 

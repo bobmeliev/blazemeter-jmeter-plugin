@@ -53,6 +53,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
             bmTestManager.setTestInfo(testInfo);
             testInfoReader.setTestInfoSet(true);
+            TestInfoWriter.getInstance().setTestInfo(testInfo);
         }
         bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
             @Override
@@ -97,13 +98,16 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configureTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
         remoteTestRunner.setReportName(gui.getReportName());
-        TestInfo testInfo = gui.getTestInfo();
-        //Set testInfo to BmTestManager
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.setTestInfo(testInfo);
-        /*Write testInfo to System.getProperty("user.home") + "\\testinfo.xml"*/
+        //Get testInfo from GUI;
+        TestInfo testInfo = gui.getTestInfo();
         TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
-        testInfoWriter.saveTestInfo();
+        //Save testInfo to testinfo.xml
+        if (!testInfo.equals(testInfoWriter.getTestInfo())) {
+            TestInfoWriter.getInstance().saveTestInfo(testInfo);
+        }
+        //Set testInfo to BmTestManager
+        bmTestManager.setTestInfo(testInfo);
     }
 
     @Override
