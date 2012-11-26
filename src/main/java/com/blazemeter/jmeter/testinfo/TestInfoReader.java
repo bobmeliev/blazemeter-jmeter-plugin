@@ -113,8 +113,8 @@ public class TestInfoReader extends DefaultHandler {
 
             try {
                 SAXParser saxParser = factory.newSAXParser();
-                File testInfoFile_f = new File(testInfoFile);
-                saxParser.parse(testInfoFile_f, testInfoReader);
+                File f_testInfoFile = new File(testInfoFile);
+                saxParser.parse(f_testInfoFile, testInfoReader);
 
             } catch (ParserConfigurationException e) {
                 BmLog.error("ParseConfiguration exception is got!");

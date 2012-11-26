@@ -4,7 +4,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoReader;
-import com.blazemeter.jmeter.testinfo.TestInfoWriter;
+import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.visualizers.gui.AbstractListenerGui;
@@ -52,7 +52,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         TestInfo testInfo = testInfoReader.loadTestInfo();
         if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
             bmTestManager.setTestInfo(testInfo);
-            testInfoReader.setTestInfoSet(false);
+            testInfoReader.setTestInfoSet(true);
         }
         bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
             @Override
@@ -101,10 +101,8 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         //Set testInfo to BmTestManager
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.setTestInfo(testInfo);
-
         /*Write testInfo to System.getProperty("user.home") + "\\testinfo.xml"*/
         TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
-        //Subscribe TestInfoWriter for testInfoNotifications and remove direct call.
         testInfoWriter.saveTestInfo();
     }
 
