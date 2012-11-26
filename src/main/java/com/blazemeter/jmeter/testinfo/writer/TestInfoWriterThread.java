@@ -90,11 +90,9 @@ public class TestInfoWriterThread implements Runnable {
             BmLog.console("TestInfo is saved to " + testInfoFile.getAbsolutePath());
 
         } catch (ParserConfigurationException pce) {
-            BmLog.error("ParserConfiguraionException during saving testInfo");
-            BmLog.error(pce.getMessage());
+            BmLog.error("ParserConfiguraionException during saving testInfo", pce);
         } catch (TransformerException tfe) {
-            BmLog.error("TransformerException during saving testInfo");
-            BmLog.error(tfe.getMessage());
+            BmLog.error("TransformerException during saving testInfo", tfe);
         }
     }
 }

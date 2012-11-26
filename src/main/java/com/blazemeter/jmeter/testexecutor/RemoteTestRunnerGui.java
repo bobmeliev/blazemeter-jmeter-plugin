@@ -106,6 +106,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         if (!testInfo.equals(testInfoWriter.getTestInfo())) {
             TestInfoWriter.getInstance().saveTestInfo(testInfo);
         }
+
         //Set testInfo to BmTestManager
         bmTestManager.setTestInfo(testInfo);
     }
