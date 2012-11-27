@@ -32,6 +32,7 @@ public class TestPanelGui {
     private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
     private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
     private static long lastCloudPanelUpdate = 0;
+    private static boolean areListenersInitialized = false;
     private JTextField userKeyTextField;
     private JTextField reportNameTextField;
     private JTextField testNameTextField;
@@ -63,47 +64,6 @@ public class TestPanelGui {
 
 
     public TestPanelGui() {
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        if (bmTestManager.isUserKeyFromProp()) {
-            String key = bmTestManager.getUserKey();
-            if (key.length() >= 20)
-                key = key.substring(0, 5) + "**********" + key.substring(14, key.length());
-            setUserKey(key);
-            userKeyTextField.setEnabled(false);
-            userKeyTextField.setToolTipText("User key found in jmeter.properties file");
-            signUpToBlazemeterButton.setVisible(false);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    BmTestManager.getInstance().getUserInfo();
-                }
-            });
-        } else {
-            userKeyTextField.addFocusListener(new FocusListener() {
-                String oldVal = "";
-
-                @Override
-                public void focusGained(FocusEvent focusEvent) {
-                    oldVal = userKeyTextField.getText();
-                }
-
-                @Override
-                public void focusLost(FocusEvent focusEvent) {
-                    String newVal = userKeyTextField.getText();
-                    signUpToBlazemeterButton.setEnabled(newVal.isEmpty());
-                    if (!newVal.equals(oldVal)) {
-                        BmTestManager bmTestManager = BmTestManager.getInstance();
-                        bmTestManager.setUserKey(newVal);
-                        TestInfo testInfo = bmTestManager.getTestInfo();
-                        if (testInfo != null & testInfo.status == TestStatus.Running) {
-                            //JOptionPane - "Please, stop testing for changing test/disable UserKey field during test"
-                        }
-                        if (!newVal.isEmpty())
-                            fetchUserTestsAsync();
-                    }
-                }
-            });
-        }
 
         testIdComboBox.addItemListener(new ItemListener() {
             @Override
@@ -179,42 +139,6 @@ public class TestPanelGui {
 
             }
         });
-        //Here should be all changes of TestInfo processed
-        BmTestManager.getInstance().testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
-            @Override
-            public void onTestInfoChanged(TestInfo testInfo) {
-                if (testInfo == null) {
-                    return;
-                }
-                if (testIdComboBox.getItemCount() == 1) {
-                    addTestId(testInfo, true);
-                }
-                if (testInfo.status == TestStatus.Running) {
-                    runInTheCloud.setEnabled(true);
-                    addFilesButton.setEnabled(false);
-                    enableCloudControls(false);
-                    runLocal.setEnabled(false);
-                    runRemote.setEnabled(false);
-                }
-
-                if (testInfo.status == TestStatus.NotRunning) {
-                    runInTheCloud.setEnabled(true);
-                    addFilesButton.setEnabled(true);
-                    enableCloudControls(true);
-                    runLocal.setEnabled(true);
-                    runRemote.setEnabled(true);
-                    configureMainPanelControls(testInfo);
-                }
-                setTestInfo(testInfo);
-                if ((testInfo != null) & (testInfo.name != NEW_TEST_ID) & (!testInfo.name.isEmpty()) &
-                        (testInfoChecker == null || testInfoChecker.isInterrupted())) {
-                    startTestInfoChecker();
-                }
-                if (testInfo.name == NEW_TEST_ID) {
-                    stopTestInfoChecker();
-                }
-            }
-        });
 
         BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
             @Override
@@ -224,29 +148,6 @@ public class TestPanelGui {
             }
         });
 
-        BmTestManager.getInstance().serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
-            @Override
-            public void onServerStatusChanged() {
-                BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
-                switch (serverStatus) {
-                    case AVAILABLE:
-                        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                        if (testInfo.status == TestStatus.Running) {
-                            startTestInfoChecker();
-                        } else {
-                            enableMainPanelControls(true);
-                        }
-                        break;
-                    case NOT_AVAILABLE:
-                        enableMainPanelControls(false);
-                        enableCloudControls(false);
-                        runInTheCloud.setEnabled(false);
-                        stopTestInfoChecker();
-                        break;
-                }
-
-            }
-        });
 
         BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new BmTestManager.UserInfoChanged() {
             @Override
@@ -260,6 +161,7 @@ public class TestPanelGui {
                 }
             }
         });
+
         signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
                 getInstance().
                 getUserKey().
@@ -510,6 +412,121 @@ public class TestPanelGui {
     private void clearTestInfo() {
         testIdComboBox.removeAllItems();
         BmTestManager.getInstance().setTestInfo(null);
+    }
+
+    /**
+     * Here some heavy GUI listeners are initialized;
+     */
+    public void initializeListeners() {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+
+        if (!areListenersInitialized) {
+
+
+            if (bmTestManager.isUserKeyFromProp()) {
+                String key = bmTestManager.getUserKey();
+                if (key.length() >= 20)
+                    key = key.substring(0, 5) + "**********" + key.substring(14, key.length());
+                setUserKey(key);
+                userKeyTextField.setEnabled(false);
+                userKeyTextField.setToolTipText("User key found in jmeter.properties file");
+                signUpToBlazemeterButton.setVisible(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BmTestManager.getInstance().getUserInfo();
+                    }
+                });
+            } else {
+                userKeyTextField.addFocusListener(new FocusListener() {
+                    String oldVal = "";
+
+                    @Override
+                    public void focusGained(FocusEvent focusEvent) {
+                        oldVal = userKeyTextField.getText();
+                    }
+
+                    @Override
+                    public void focusLost(FocusEvent focusEvent) {
+                        String newVal = userKeyTextField.getText();
+                        signUpToBlazemeterButton.setEnabled(newVal.isEmpty());
+                        if (!newVal.equals(oldVal)) {
+                            BmTestManager bmTestManager = BmTestManager.getInstance();
+                            bmTestManager.setUserKey(newVal);
+                            TestInfo testInfo = bmTestManager.getTestInfo();
+                            if (!newVal.isEmpty())
+                                fetchUserTestsAsync();
+                        }
+                    }
+                });
+            }
+
+            //Processing serverStatusChangedNotification
+            bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+                @Override
+                public void onServerStatusChanged() {
+                    BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                    switch (serverStatus) {
+                        case AVAILABLE:
+                            TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                            if (testInfo.status == TestStatus.Running) {
+                                startTestInfoChecker();
+                            } else {
+                                enableMainPanelControls(true);
+                            }
+                            break;
+                        case NOT_AVAILABLE:
+                            enableMainPanelControls(false);
+                            enableCloudControls(false);
+                            runInTheCloud.setEnabled(false);
+                            stopTestInfoChecker();
+                            break;
+                    }
+
+                }
+            });
+
+
+            //Here should be all changes of TestInfo processed
+            bmTestManager.testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
+                @Override
+                public void onTestInfoChanged(TestInfo testInfo) {
+                    if (testInfo == null) {
+                        return;
+                    }
+                    if (testIdComboBox.getItemCount() == 1) {
+                        addTestId(testInfo, true);
+                    }
+                    if (testInfo.status == TestStatus.Running) {
+                        runInTheCloud.setEnabled(true);
+                        addFilesButton.setEnabled(false);
+                        enableCloudControls(false);
+                        runLocal.setEnabled(false);
+                        runRemote.setEnabled(false);
+                    }
+
+                    if (testInfo.status == TestStatus.NotRunning) {
+                        runInTheCloud.setEnabled(true);
+                        addFilesButton.setEnabled(true);
+                        enableCloudControls(true);
+                        runLocal.setEnabled(true);
+                        runRemote.setEnabled(true);
+                        configureMainPanelControls(testInfo);
+                    }
+                    setTestInfo(testInfo);
+                    if ((testInfo != null) & (testInfo.name != NEW_TEST_ID) & (!testInfo.name.isEmpty()) &
+                            (testInfoChecker == null || testInfoChecker.isInterrupted())) {
+                        startTestInfoChecker();
+                    }
+                    if (testInfo.name == NEW_TEST_ID) {
+                        stopTestInfoChecker();
+                    }
+                }
+            });
+            areListenersInitialized = true;
+
+        }
+
     }
 
     private void fetchUserTestsAsync() {

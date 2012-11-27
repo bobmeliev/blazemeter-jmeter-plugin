@@ -21,6 +21,7 @@ import java.awt.event.MouseListener;
 public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener, BmTestManager.PluginUpdateReceived {
     private static TestPanelGui gui;
     private static JLabel connectionStatus = new JLabel();
+    private boolean areListenersInitialized = false;
 
     public static JPanel getVersionPanel() {
         return versionPanel;
@@ -43,36 +44,8 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.error(e);
         }
         init();
-        connectionStatus.setText("SERVER IS NOT AVAILABLE");
-        connectionStatus.setForeground(Color.RED);
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.pluginUpdateReceivedNotificationListeners.add(this);
-        //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
-        TestInfoReader testInfoReader = TestInfoReader.getInstance();
-        TestInfo testInfo = testInfoReader.loadTestInfo();
-        if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
-            bmTestManager.setTestInfo(testInfo);
-            testInfoReader.setTestInfoSet(true);
-            TestInfoWriter.getInstance().setTestInfo(testInfo);
-        }
-        bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
-            @Override
-            public void onServerStatusChanged() {
-                BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
-                switch (serverStatus) {
-                    case AVAILABLE:
-                        connectionStatus.setText("SERVER IS AVAILABLE");
-                        connectionStatus.setForeground(Color.GREEN);
-                        break;
-                    case NOT_AVAILABLE:
-                        connectionStatus.setText("SERVER IS NOT AVAILABLE");
-                        connectionStatus.setForeground(Color.RED);
-                        break;
-                }
-            }
-        }
-
-        );
+        connectionStatus.setText("SERVER IS AVAILABLE");
+        connectionStatus.setForeground(Color.GREEN);
     }
 
     public TestElement createTestElement() {
@@ -106,7 +79,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         if (!testInfo.equals(testInfoWriter.getTestInfo())) {
             TestInfoWriter.getInstance().saveTestInfo(testInfo);
         }
-
         //Set testInfo to BmTestManager
         bmTestManager.setTestInfo(testInfo);
     }
@@ -124,6 +96,10 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             return;
         }
         super.configure(element);
+        //initialize listeners on TestPanelGui
+        gui.initializeListeners();
+        //initialize RemoteTestRunnerGUI listener
+        initializeListeners();
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
         bmTestManager.getInstance().checkForUpdates();
@@ -252,6 +228,41 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
     public String getLabelResource() {
         return this.getClass().getCanonicalName();
+    }
+
+    private void initializeListeners() {
+        if (!areListenersInitialized) {
+            BmTestManager bmTestManager = BmTestManager.getInstance();
+            bmTestManager.pluginUpdateReceivedNotificationListeners.add(this);
+            //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
+            TestInfoReader testInfoReader = TestInfoReader.getInstance();
+            TestInfo testInfo = testInfoReader.loadTestInfo();
+            if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
+                bmTestManager.setTestInfo(testInfo);
+                testInfoReader.setTestInfoSet(true);
+                TestInfoWriter.getInstance().setTestInfo(testInfo);
+            }
+            bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+                @Override
+                public void onServerStatusChanged() {
+                    BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                    switch (serverStatus) {
+                        case AVAILABLE:
+                            connectionStatus.setText("SERVER IS AVAILABLE");
+                            connectionStatus.setForeground(Color.GREEN);
+                            break;
+                        case NOT_AVAILABLE:
+                            connectionStatus.setText("SERVER IS NOT AVAILABLE");
+                            connectionStatus.setForeground(Color.RED);
+                            break;
+                    }
+                }
+            }
+
+            );
+            areListenersInitialized = true;
+        }
+
     }
 
     private static Container findComponentWithBorder(JComponent panel, Class<?> aClass) {
