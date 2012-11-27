@@ -75,7 +75,6 @@ public class TestPanelGui {
                         TestInfo testInfo = (TestInfo) selected;
                         if (testInfo.name != NEW_TEST_ID & !testInfo.name.isEmpty()) {
                             bmTestManager.setTestInfo(testInfo);
-                            updateCloudPanel(0);
                         }
                     } else if (Utils.isInteger(selected.toString())) {
                         TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),

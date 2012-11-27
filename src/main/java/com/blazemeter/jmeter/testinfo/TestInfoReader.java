@@ -80,7 +80,7 @@ public class TestInfoReader extends DefaultHandler {
             if (testInfo_status.equals("Running")) {
                 this.testInfo.status = TestStatus.Running;
             }
-            if (testInfo_status.equals("Not_Running")) {
+            if (testInfo_status.equals("NotRunning")) {
                 this.testInfo.status = TestStatus.NotRunning;
             }
         }

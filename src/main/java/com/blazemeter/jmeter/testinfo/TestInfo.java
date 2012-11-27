@@ -41,7 +41,9 @@ public class TestInfo {
     public boolean equals(TestInfo ti) {
         return ti != null &&
                 ti.name.equals(this.name) &&
-                ti.id.equals(this.id);
+                ti.id.equals(this.id)
+                && ti.status.equals(this.status)
+                ;
     }
 
     public boolean isEmpty() {
