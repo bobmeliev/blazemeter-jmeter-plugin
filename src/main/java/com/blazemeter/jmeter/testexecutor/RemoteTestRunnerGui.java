@@ -76,7 +76,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         TestInfo testInfo = gui.getTestInfo();
         TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
         //Save testInfo to testinfo.xml
-        if (!testInfo.equals(testInfoWriter.getTestInfo())) {
+        if (!testInfo.equals(testInfoWriter.getTestInfo()) & !testInfo.name.isEmpty()) {
             TestInfoWriter.getInstance().saveTestInfo(testInfo);
         }
         //Set testInfo to BmTestManager
@@ -231,37 +231,43 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
     }
 
     private void initializeListeners() {
-        if (!areListenersInitialized) {
-            BmTestManager bmTestManager = BmTestManager.getInstance();
-            bmTestManager.pluginUpdateReceivedNotificationListeners.add(this);
-            //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
-            TestInfoReader testInfoReader = TestInfoReader.getInstance();
-            TestInfo testInfo = testInfoReader.loadTestInfo();
-            if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
-                bmTestManager.setTestInfo(testInfo);
-                testInfoReader.setTestInfoSet(true);
-                TestInfoWriter.getInstance().setTestInfo(testInfo);
-            }
-            bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
-                @Override
-                public void onServerStatusChanged() {
-                    BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
-                    switch (serverStatus) {
-                        case AVAILABLE:
-                            connectionStatus.setText("SERVER IS AVAILABLE");
-                            connectionStatus.setForeground(Color.GREEN);
-                            break;
-                        case NOT_AVAILABLE:
-                            connectionStatus.setText("SERVER IS NOT AVAILABLE");
-                            connectionStatus.setForeground(Color.RED);
-                            break;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!areListenersInitialized) {
+                    areListenersInitialized = true;
+                    BmTestManager bmTestManager = BmTestManager.getInstance();
+                    bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);
+                    //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
+                    TestInfoReader testInfoReader = TestInfoReader.getInstance();
+                    TestInfo testInfo = testInfoReader.loadTestInfo();
+                    if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
+                        bmTestManager.setTestInfo(testInfo);
+                        testInfoReader.setTestInfoSet(true);
+                        TestInfoWriter.getInstance().setTestInfo(testInfo);
                     }
+                    bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+                        @Override
+                        public void onServerStatusChanged() {
+                            BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                            switch (serverStatus) {
+                                case AVAILABLE:
+                                    connectionStatus.setText("SERVER IS AVAILABLE");
+                                    connectionStatus.setForeground(Color.GREEN);
+                                    break;
+                                case NOT_AVAILABLE:
+                                    connectionStatus.setText("SERVER IS NOT AVAILABLE");
+                                    connectionStatus.setForeground(Color.RED);
+                                    break;
+                            }
+                        }
+                    }
+
+                    );
+
                 }
             }
-
-            );
-            areListenersInitialized = true;
-        }
+        }).start();
 
     }
 

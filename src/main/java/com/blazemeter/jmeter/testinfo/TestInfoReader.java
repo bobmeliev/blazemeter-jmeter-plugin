@@ -116,14 +116,14 @@ public class TestInfoReader extends DefaultHandler {
                 File f_testInfoFile = new File(testInfoFile);
                 saxParser.parse(f_testInfoFile, testInfoReader);
 
-            } catch (ParserConfigurationException e) {
-                BmLog.error("ParseConfiguration exception is got!");
+            } catch (ParserConfigurationException pce) {
+                BmLog.error("ParseConfiguration exception is got!", pce);
                 BmLog.console("ParseConfiguration exception is got!");
-            } catch (SAXException e) {
-                BmLog.error("SAXException is got!");
+            } catch (SAXException se) {
+                BmLog.error("SAXException is got!", se);
                 BmLog.console("SAXException is got!");
-            } catch (IOException e) {
-                BmLog.error("IOException is got!");
+            } catch (IOException ioe) {
+                BmLog.error("IOException is got!", ioe);
                 BmLog.console("IOException is got!");
             }
 

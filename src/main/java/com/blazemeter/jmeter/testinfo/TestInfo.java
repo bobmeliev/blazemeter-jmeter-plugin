@@ -38,12 +38,15 @@ public class TestInfo {
         return ret;
     }
 
-    public boolean equals(TestInfo ti) {
-        return ti != null &&
-                ti.name.equals(this.name) &&
-                ti.id.equals(this.id)
-                && ti.status.equals(this.status)
-                ;
+    public boolean equals(TestInfo testInfo) {
+        boolean equals;
+        equals = (this == null & testInfo == null);
+        if (!equals) {
+            return equals;
+        }
+        return testInfo.name.equals(this.name) &&
+                testInfo.id.equals(this.id)
+                && testInfo.status.equals(this.status);
     }
 
     public boolean isEmpty() {
