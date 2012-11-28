@@ -103,7 +103,7 @@ public class Uploader {
                         try {
                             Thread.sleep(10000);
                         } catch (InterruptedException e) {
-                            BmLog.error("Problem sleeping!", e);
+                            BmLog.error("Thread was interrupted during sleeping!", e);
                         }
                 }
                 lastTime = this.stop && !lastTime;

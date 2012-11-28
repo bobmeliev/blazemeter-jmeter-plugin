@@ -55,8 +55,6 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.startCheckingConnection();
 
-//        BmLog.console("RemoteTestRunner is created");
-
         BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
             @Override
             public void onTestUserKeyChanged(String userKey) {
@@ -92,13 +90,6 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     }
 
-    public TestInfo getTestInfo() {
-        TestInfo testInfo = new TestInfo();
-        testInfo.name = this.getPropertyAsString("testName");
-        testInfo.id = this.getPropertyAsString("testId");
-        return testInfo;
-    }
-
 
     public String getUserKey() {
         return this.getPropertyAsString("userKey", "");
@@ -123,7 +114,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     @Override
     public void testStarted(String host) {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("testStarted ,Running in the cloud!");
+            BmLog.console("Test is started, running in the cloud!");
             return;
         }
         BmTestManager bmTestManager = BmTestManager.getInstance();
@@ -134,6 +125,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             BmLog.console("UserKey is not found, test results won't be uploaded to server");
             return;
         }
+        bmTestManager.setUserKeyValid(bmTestManager.getUserInfo() != null);
         if (!bmTestManager.isUserKeyValid()) {
             BmLog.console("UserKey is invalid, test will be started without uploading results");
             return;
@@ -166,7 +158,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     @Override
     public void testEnded(String host) {
-        BmLog.console("Test End Event " + host);
+        BmLog.console("Test is ended on " + host);
         isTestRunning = false;
         LogFilesUploader.getInstance().stopListening();
         if (LOCAL_TEST_STRING.equals(host))
