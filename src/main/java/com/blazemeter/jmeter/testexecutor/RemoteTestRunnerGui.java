@@ -243,6 +243,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
                     TestInfo testInfo = testInfoReader.loadTestInfo();
                     if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
                         bmTestManager.setTestInfo(testInfo);
+                        bmTestManager.NotifyTestInfoChanged();
                         testInfoReader.setTestInfoSet(true);
                         TestInfoWriter.getInstance().setTestInfo(testInfo);
                     }

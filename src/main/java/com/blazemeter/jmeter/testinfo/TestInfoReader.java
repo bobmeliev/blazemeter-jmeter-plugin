@@ -48,10 +48,6 @@ public class TestInfoReader extends DefaultHandler {
         return instance;
     }
 
-    private TestInfo getTestInfo() {
-        return testInfo;
-    }
-
     @Override
     public void startDocument() throws SAXException {
         BmLog.console("Reading testInfo from file " + testInfoFile + " is started");
@@ -117,18 +113,18 @@ public class TestInfoReader extends DefaultHandler {
                 saxParser.parse(f_testInfoFile, testInfoReader);
 
             } catch (ParserConfigurationException pce) {
-                BmLog.error("ParseConfiguration exception is got!", pce);
-                BmLog.console("ParseConfiguration exception is got!");
+                BmLog.console("ParseConfiguration Exception occurred. See log for details.");
+//                BmLog.error("ParseConfiguration Exception occurred. \n", pce);
             } catch (SAXException se) {
-                BmLog.error("SAXException is got!", se);
-                BmLog.console("SAXException is got!");
+                BmLog.console("File " + testInfoFile + " is empty. TestInfo was not read.");
+//                BmLog.error("SAXException occurred and testInfo was not read. \n", se);
             } catch (IOException ioe) {
-                BmLog.error("IOException is got!", ioe);
-                BmLog.console("IOException is got!");
+                BmLog.console("File " + testInfoFile + " was not found. TestInfo was not read.");
+//                BmLog.error("IOException occurred. \n", ioe);
             }
 
         }
-        return testInfoReader.getTestInfo();
+        return this.testInfo;
     }
 }
 

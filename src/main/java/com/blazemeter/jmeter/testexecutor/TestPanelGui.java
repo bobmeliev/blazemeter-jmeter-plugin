@@ -25,7 +25,7 @@ import java.util.Date;
  * Time: 12:29
  */
 public class TestPanelGui {
-    private static final String NEW_TEST_ID = "---NEW---";
+    private static final String NEW = "---NEW---";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
     private static final String SELECT_TEST = "Please, select test from list";
     private static final String LOADING_TEST_INFO = "Loading test info, please wait";
@@ -65,41 +65,6 @@ public class TestPanelGui {
 
     public TestPanelGui() {
 
-        testIdComboBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent itemEvent) {
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                    Object selected = testIdComboBox.getSelectedItem();
-                    if (selected instanceof TestInfo) {
-                        TestInfo testInfo = (TestInfo) selected;
-                        if (testInfo.name != NEW_TEST_ID & !testInfo.name.isEmpty()) {
-                            bmTestManager.setTestInfo(testInfo);
-                        }
-                    } else if (Utils.isInteger(selected.toString())) {
-                        TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-                                selected.toString(), true);
-                        BmLog.console(ti.toString());
-                        if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
-                            bmTestManager.setTestInfo(ti);
-                        } else {
-                            JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
-                            configureMainPanelControls(null);
-                        }
-                    } else if (selected.toString().equals(NEW_TEST_ID)) {
-                        TestInfo testInfo = new TestInfo();
-                        testInfo.name = NEW_TEST_ID;
-                        setTestInfo(testInfo);
-                        bmTestManager.setTestInfo(testInfo);
-                        configureMainPanelControls(null);
-                        resetCloudPanel();
-                        enableCloudControls(false);
-                    }
-                }
-            }
-        });
-
-
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -134,8 +99,6 @@ public class TestPanelGui {
                     BmTestManager.getInstance().setTestInfo(ti);
                     BmTestManager.getInstance().uploadJmx();
                 }
-
-
             }
         });
 
@@ -193,7 +156,7 @@ public class TestPanelGui {
                 Utils.Navigate(HELP_URL);
             }
         });
-        addTestId(NEW_TEST_ID, true);
+
         numberOfUserTextBox.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent focusEvent) {
@@ -263,7 +226,6 @@ public class TestPanelGui {
                         bmTestManager.stopInTheCloud();
                         bmTestManager.NotifyTestInfoChanged();
                     }
-
                 }
                 updateCloudPanel(7000);
             }
@@ -420,7 +382,40 @@ public class TestPanelGui {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
         if (!areListenersInitialized) {
-
+            areListenersInitialized = true;
+            testIdComboBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent itemEvent) {
+                    BmTestManager bmTestManager = BmTestManager.getInstance();
+                    if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+                        Object selected = testIdComboBox.getSelectedItem();
+                        if (selected instanceof TestInfo) {
+                            TestInfo testInfo = (TestInfo) selected;
+                            if (testInfo.name != NEW & !testInfo.name.isEmpty()) {
+                                bmTestManager.setTestInfo(testInfo);
+                                bmTestManager.NotifyTestInfoChanged();
+                            }
+                        } else if (Utils.isInteger(selected.toString())) {
+                            TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
+                                    selected.toString(), true);
+                            BmLog.console(ti.toString());
+                            if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
+                                bmTestManager.setTestInfo(ti);
+                                setTestInfo(ti);
+                                bmTestManager.NotifyTestInfoChanged();
+                            } else {
+                                JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
+                                bmTestManager.setTestInfo(null);
+                                bmTestManager.NotifyTestInfoChanged();
+                            }
+                        } else if (selected.toString().equals(NEW)) {
+                            TestInfo testInfo = new TestInfo();
+                            testInfo.name = NEW;
+                            bmTestManager.setTestInfo(testInfo);
+                        }
+                    }
+                }
+            });
 
             if (bmTestManager.isUserKeyFromProp()) {
                 String key = bmTestManager.getUserKey();
@@ -452,40 +447,12 @@ public class TestPanelGui {
                         if (!newVal.equals(oldVal)) {
                             BmTestManager bmTestManager = BmTestManager.getInstance();
                             bmTestManager.setUserKey(newVal);
-                            TestInfo testInfo = bmTestManager.getTestInfo();
                             if (!newVal.isEmpty())
                                 fetchUserTestsAsync();
                         }
                     }
                 });
             }
-
-            //Processing serverStatusChangedNotification
-            bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
-                @Override
-                public void onServerStatusChanged() {
-                    BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
-                    switch (serverStatus) {
-                        case AVAILABLE:
-                            TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                            if (testInfo.status == TestStatus.Running) {
-                                startTestInfoChecker();
-                            } else {
-                                enableMainPanelControls(true);
-                            }
-                            break;
-                        case NOT_AVAILABLE:
-                            enableMainPanelControls(false);
-                            enableCloudControls(false);
-                            runInTheCloud.setEnabled(false);
-                            stopTestInfoChecker();
-                            break;
-                    }
-
-                }
-            });
-
-
             //Here should be all changes of TestInfo processed
             bmTestManager.testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
                 @Override
@@ -513,19 +480,45 @@ public class TestPanelGui {
                         configureMainPanelControls(testInfo);
                     }
                     setTestInfo(testInfo);
-                    if ((testInfo != null) & (testInfo.name != NEW_TEST_ID) & (!testInfo.name.isEmpty()) &
+                    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                             (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                         startTestInfoChecker();
                     }
-                    if (testInfo.name == NEW_TEST_ID) {
+                    if (testInfo.name == NEW) {
                         stopTestInfoChecker();
+                        configureMainPanelControls(null);
+                        resetCloudPanel();
+                        enableCloudControls(false);
+
                     }
                 }
             });
-            areListenersInitialized = true;
 
+            //Processing serverStatusChangedNotification
+            bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+                @Override
+                public void onServerStatusChanged() {
+                    BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                    switch (serverStatus) {
+                        case AVAILABLE:
+                            TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                            if (testInfo.status == TestStatus.Running) {
+                                startTestInfoChecker();
+                            } else {
+                                enableMainPanelControls(true);
+                            }
+                            break;
+                        case NOT_AVAILABLE:
+                            enableMainPanelControls(false);
+                            enableCloudControls(false);
+                            runInTheCloud.setEnabled(false);
+                            stopTestInfoChecker();
+                            break;
+                    }
+
+                }
+            });
         }
-
     }
 
     private void fetchUserTestsAsync() {
@@ -543,22 +536,20 @@ public class TestPanelGui {
             public void testReceived(ArrayList<TestInfo> tests) {
                 testIdComboBox.removeAllItems();
                 testIdComboBox.setEnabled(true);
-                testIdComboBox.addItem(NEW_TEST_ID);
+                testIdComboBox.addItem(NEW);
+                testIdComboBox.setSelectedItem(NEW);
                 if (tests != null) {
                     BmTestManager.getInstance().setUserKeyValid(true);
-                    for (TestInfo testInfo : tests) {
-                        addTestId(testInfo, false);
+                    for (TestInfo ti : tests) {
+                        addTestId(ti, false);
                     }
 
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
                 }
-                setTestInfo(BmTestManager.getInstance().getTestInfo());
             }
-
         });
-
 
     }
 
@@ -589,7 +580,8 @@ public class TestPanelGui {
 
     protected void setTestInfo(TestInfo testInfo) {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
-            testIdComboBox.setSelectedItem(NEW_TEST_ID);
+            testInfo.name = NEW;
+            testIdComboBox.setSelectedItem(testInfo.name);
             infoLabel.setText(SELECT_TEST);
             configureMainPanelControls(null);
         } else {
@@ -654,7 +646,7 @@ public class TestPanelGui {
                     runInTheCloud.setActionCommand(ti.status == TestStatus.Running ? "stop" : "start");
                     runInTheCloud.setText(ti.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
                 } else {
-                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW_TEST_ID) ? SELECT_TEST : CAN_NOT_BE_RUN);
+                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
                 }
             }
         });
