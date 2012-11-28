@@ -409,9 +409,10 @@ public class TestPanelGui {
                                 bmTestManager.NotifyTestInfoChanged();
                             }
                         } else if (selected.toString().equals(NEW)) {
-                            TestInfo testInfo = new TestInfo();
-                            testInfo.name = NEW;
-                            bmTestManager.setTestInfo(testInfo);
+                            testIdComboBox.setSelectedItem(NEW);
+                            configureMainPanelControls(null);
+                            resetCloudPanel();
+                            enableCloudControls(false);
                         }
                     }
                 }
@@ -486,9 +487,6 @@ public class TestPanelGui {
                     }
                     if (testInfo.name == NEW) {
                         stopTestInfoChecker();
-                        configureMainPanelControls(null);
-                        resetCloudPanel();
-                        enableCloudControls(false);
 
                     }
                 }
@@ -550,7 +548,6 @@ public class TestPanelGui {
                 }
             }
         });
-
     }
 
     public void setUserKey(String key) {

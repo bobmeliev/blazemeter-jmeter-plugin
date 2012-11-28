@@ -15,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +26,7 @@ import java.io.File;
  */
 public class TestInfoWriterThread implements Runnable {
     private TestInfo testInfo;
+    private static String testInfoFile = System.getProperty("user.home") + "\\testinfo.xml";
 
     public TestInfoWriterThread(TestInfo testInfo) {
         this.testInfo = testInfo;
@@ -83,16 +85,23 @@ public class TestInfoWriterThread implements Runnable {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             DOMSource source = new DOMSource(testInfoDoc);
-            File testInfoFile = new File(System.getProperty("user.home") + "\\testinfo.xml");
-            StreamResult streamResult = new StreamResult(testInfoFile);
+
+            File f_testInfoFile = new File(testInfoFile);
+            if (!f_testInfoFile.exists()) {
+                f_testInfoFile.createNewFile();
+            }
+            StreamResult streamResult = new StreamResult(f_testInfoFile);
             transformer.transform(source, streamResult);
 
-            BmLog.console("TestInfo is saved to " + testInfoFile.getAbsolutePath());
+            BmLog.console("TestInfo is saved to " + testInfoFile);
 
         } catch (ParserConfigurationException pce) {
             BmLog.error("ParserConfiguraionException during saving testInfo", pce);
         } catch (TransformerException tfe) {
             BmLog.error("TransformerException during saving testInfo", tfe);
+
+        } catch (IOException ioe) {
+            BmLog.error("IOException during creating " + testInfoFile, ioe);
         }
     }
 }
