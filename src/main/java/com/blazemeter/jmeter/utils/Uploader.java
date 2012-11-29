@@ -92,7 +92,7 @@ public class Uploader {
                         new DataUploader(reportName, toSend).run();
 
                         this.lastChunkUploaded = System.currentTimeMillis();
-                        BmLog.console(this.Name + "Chunk uploaded");
+                        BmLog.console("Chunk uploaded: " + this.Name);
                     } catch (Exception ex) {
                         BmLog.error(ex.getMessage());
                     }

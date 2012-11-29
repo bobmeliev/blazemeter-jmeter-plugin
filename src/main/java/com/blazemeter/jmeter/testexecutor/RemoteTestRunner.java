@@ -25,7 +25,7 @@ import java.util.List;
 public class RemoteTestRunner extends AbstractListenerElement implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
     private static final long serialVersionUID = 1L;
-    public static final String LOCAL_TEST_STRING = "_local_";
+    public static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
     static boolean isTestRunning = false;
     private static int instanceCount = 0;
 
@@ -36,7 +36,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     public RemoteSampleListener listener;
 
     public boolean canRemove() {
-        BmLog.console("can remove? " + instanceCount);
+        BmLog.console("Are you sure that you want to remove? " + instanceCount);
         instanceCount--;
         if (instanceCount == 0) {
             BmTestManager.getInstance().hooksUnregistered();
@@ -48,7 +48,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         super();
 
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunner(),Running in the cloud!");
+            BmLog.console("RemoteTestRunner is running in the cloud!");
             return;
         }
         this.listener = listener;
@@ -158,11 +158,23 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     @Override
     public void testEnded(String host) {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
         BmLog.console("Test is ended on " + host);
         isTestRunning = false;
         LogFilesUploader.getInstance().stopListening();
-        if (LOCAL_TEST_STRING.equals(host))
-            BmTestManager.getInstance().stopTest();
+        if (LOCAL_TEST_STRING.equals(host)) {
+            bmTestManager.stopTest();
+            /* interrupting all threads after shutdown
+             https://blazemeter.atlassian.net/browse/BPC-48
+             */
+//            bmTestManager.stopCheckingConnection();
+            System.exit(0);
+            /* interrupting all threads after shutdown
+            https://blazemeter.atlassian.net/browse/BPC-48
+            */
+
+        }
+
     }
 
     @Override
