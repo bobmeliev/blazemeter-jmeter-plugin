@@ -37,6 +37,8 @@ public class BmTestManager {
     public static int c = 0;
     private String userKey;
     private boolean isUserKeyValid = false;
+    private static boolean isTestRunning = false;
+
 
     private static ServerStatus serverStatus = ServerStatus.NOT_AVAILABLE;
 
@@ -61,6 +63,14 @@ public class BmTestManager {
 
     public void setUserKeyValid(boolean userKeyValid) {
         isUserKeyValid = userKeyValid;
+    }
+
+    public static boolean isTestRunning() {
+        return isTestRunning;
+    }
+
+    public static void setTestRunning(boolean testRunning) {
+        isTestRunning = testRunning;
     }
 
     public void destroy() {
@@ -185,7 +195,7 @@ public class BmTestManager {
             if (testInfo.id.isEmpty()) {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
-                    BmLog.console("Running in nonGui mode!");
+                    BmLog.console("Running in NON-GUI mode!");
                     projectName = "untitled";
                 }
 

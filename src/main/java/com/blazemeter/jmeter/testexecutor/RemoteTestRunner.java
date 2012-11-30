@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.JMeterPluginUtils;
 import com.blazemeter.jmeter.utils.LogFilesUploader;
 import com.blazemeter.jmeter.utils.Uploader;
+import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.AbstractListenerElement;
 import org.apache.jmeter.samplers.*;
@@ -26,7 +27,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     private static final long serialVersionUID = 1L;
     public static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
-    static boolean isTestRunning = false;
+    //    static boolean isTestRunning = false;
     private static int instanceCount = 0;
 
     public RemoteTestRunner() {
@@ -130,8 +131,10 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             BmLog.console("UserKey is invalid, test will be started without uploading results");
             return;
         }
-        BmLog.console("Test started " + host);
-        isTestRunning = true;
+
+        BmLog.console("Test is started at " + host);
+        BmTestManager.setTestRunning(true);
+//        isTestRunning = true;
         if (LOCAL_TEST_STRING.equals(host)) {
             if (bmTestManager.getIsLocalRunMode()) {
                 bmTestManager.startTest();
@@ -159,16 +162,18 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     @Override
     public void testEnded(String host) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        BmLog.console("Test is ended on " + host);
-        isTestRunning = false;
+        BmLog.console("Test is ended at " + host);
+        BmTestManager.setTestRunning(false);
+//        isTestRunning = false;
         LogFilesUploader.getInstance().stopListening();
         if (LOCAL_TEST_STRING.equals(host)) {
             bmTestManager.stopTest();
             /* interrupting all threads after shutdown
              https://blazemeter.atlassian.net/browse/BPC-48
              */
-//            bmTestManager.stopCheckingConnection();
-            System.exit(0);
+            if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI))) {
+                System.exit(0);
+            }
             /* interrupting all threads after shutdown
             https://blazemeter.atlassian.net/browse/BPC-48
             */
@@ -193,7 +198,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     @Override
     public synchronized void sampleOccurred(SampleEvent evt) {
-        if (isTestRunning) {
+        if (BmTestManager.isTestRunning()/*isTestRunning*/) {
             String templateJTL = GetJtlString(evt);
             Uploader.getInstance().AddSample(getReportName(), templateJTL);
         } else {
