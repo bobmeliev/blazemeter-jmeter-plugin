@@ -27,7 +27,6 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     private static final long serialVersionUID = 1L;
     public static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
-    //    static boolean isTestRunning = false;
     private static int instanceCount = 0;
 
     public RemoteTestRunner() {
@@ -134,7 +133,6 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
         BmLog.console("Test is started at " + host);
         BmTestManager.setTestRunning(true);
-//        isTestRunning = true;
         if (LOCAL_TEST_STRING.equals(host)) {
             if (bmTestManager.getIsLocalRunMode()) {
                 bmTestManager.startTest();
@@ -164,20 +162,12 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BmLog.console("Test is ended at " + host);
         BmTestManager.setTestRunning(false);
-//        isTestRunning = false;
         LogFilesUploader.getInstance().stopListening();
         if (LOCAL_TEST_STRING.equals(host)) {
             bmTestManager.stopTest();
-            /* interrupting all threads after shutdown
-             https://blazemeter.atlassian.net/browse/BPC-48
-             */
             if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI))) {
                 System.exit(0);
             }
-            /* interrupting all threads after shutdown
-            https://blazemeter.atlassian.net/browse/BPC-48
-            */
-
         }
 
     }
@@ -198,7 +188,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
     @Override
     public synchronized void sampleOccurred(SampleEvent evt) {
-        if (BmTestManager.isTestRunning()/*isTestRunning*/) {
+        if (BmTestManager.isTestRunning()) {
             String templateJTL = GetJtlString(evt);
             Uploader.getInstance().AddSample(getReportName(), templateJTL);
         } else {
