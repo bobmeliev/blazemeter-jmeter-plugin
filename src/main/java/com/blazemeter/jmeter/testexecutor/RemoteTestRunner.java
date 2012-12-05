@@ -51,7 +51,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             BmLog.console("RemoteTestRunner is running in the cloud!");
             return;
         }
-        this.listener = listener;
+        this.listener = listener; // this.listener is not initialized
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.startCheckingConnection();
 
@@ -149,7 +149,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
                 try {
                     listener.testStarted(host);
                 } catch (RemoteException e) {
-                    BmLog.error(e);
+                    BmLog.error("Test was not started at " + host, e);
                 }
             }
         }

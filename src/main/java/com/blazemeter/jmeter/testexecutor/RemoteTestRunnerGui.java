@@ -54,7 +54,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             return null;
         }
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        RemoteTestRunner testRunner = new RemoteTestRunner();
+        RemoteTestRunner testRunner = new RemoteTestRunner();//pass RemoteSample Listener listener to constructor; https://blazemeter.atlassian.net/browse/BPC-36
         testRunner.setUserKey(bmTestManager.getUserKey());
         testRunner.setTestInfo(bmTestManager.getTestInfo());
         testRunner.setIsLocalRunMode(bmTestManager.getIsLocalRunMode());
