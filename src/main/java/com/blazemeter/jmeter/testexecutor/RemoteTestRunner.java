@@ -145,7 +145,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             }
             Uploader.getInstance().SamplingStarted(getReportName());
         } else {
-            if (listener != null) {
+            if (listener != null) {  //                 public RemoteSampleListener listener should be initialized;
                 try {
                     listener.testStarted(host);
                 } catch (RemoteException e) {
