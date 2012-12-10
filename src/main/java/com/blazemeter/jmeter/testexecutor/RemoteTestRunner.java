@@ -26,14 +26,18 @@ import java.util.List;
 public class RemoteTestRunner extends AbstractListenerElement implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
     private static final long serialVersionUID = 1L;
-    public static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
+    private static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
     private static int instanceCount = 0;
+    // What should we do with this listener?
+//    private RemoteSampleListener listener;
+/*
 
     public RemoteTestRunner() {
         this(null);
-    }
 
-    public RemoteSampleListener listener;
+    }
+*/
+
 
     public boolean canRemove() {
         BmLog.console("Are you sure that you want to remove? " + instanceCount);
@@ -44,14 +48,16 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         return super.canRemove();
     }
 
-    public RemoteTestRunner(RemoteSampleListener listener) {
+    public RemoteTestRunner(//RemoteSampleListener listener
+    ) {
         super();
 
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("RemoteTestRunner is running in the cloud!");
             return;
         }
-        this.listener = listener; // this.listener is not initialized
+//        this.listener = listener;
+
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.startCheckingConnection();
 
@@ -133,27 +139,36 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
         BmLog.console("Test is started at " + host);
         BmTestManager.setTestRunning(true);
-        if (LOCAL_TEST_STRING.equals(host)) {
-            if (bmTestManager.getIsLocalRunMode()) {
-                bmTestManager.startTest();
-            } else {
-                BmLog.console("Switch Run Mode to Locally(only reporting)." +
-                        "Test is started without uploading report to server");
-                BmLog.error("Switch Run Mode to Locally(only reporting)." +
-                        "Test is started without uploading report to server");
-                return;
-            }
-            Uploader.getInstance().SamplingStarted(getReportName());
+
+        if (bmTestManager.getIsLocalRunMode()) {
+            bmTestManager.startTest();
         } else {
-            if (listener != null) {  //                 public RemoteSampleListener listener should be initialized;
-                try {
-                    listener.testStarted(host);
-                } catch (RemoteException e) {
-                    BmLog.error("Test was not started at " + host, e);
-                }
-            }
+            BmLog.console("Switch Run Mode to Locally(only reporting)." +
+                    "Test is started without uploading report to server");
+            BmLog.error("Switch Run Mode to Locally(only reporting)." +
+                    "Test is started without uploading report to server");
+            return;
         }
+        Uploader.getInstance().SamplingStarted(getReportName());
         LogFilesUploader.getInstance().startListening();
+        /*
+           if (LOCAL_TEST_STRING.equals(host)) {
+        if (bmTestManager.getIsLocalRunMode()) {
+            bmTestManager.startTest();
+        } else {
+            BmLog.console("Switch Run Mode to Locally(only reporting)." +
+                    "Test is started without uploading report to server");
+            BmLog.error("Switch Run Mode to Locally(only reporting)." +
+                    "Test is started without uploading report to server");
+            return;
+        }
+
+
+            } else {
+               bmTestManager.startTest();
+           }
+        */   //change this logic to let listener run in distributed mode
+
     }
 
 
