@@ -4,15 +4,12 @@ import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 public class JMeterLogFilesUploader {
     private static JMeterLogFilesUploader instance;
     private BufferedReader jmeter_log_reader;
     private BufferedReader jmeter_server_log_reader;
     String jmeter_server_log_filename = null;
-
     private String jmeter_log_filename = null;
     private boolean uploadFinished;
     private boolean isRunning = false;
@@ -120,14 +117,7 @@ public class JMeterLogFilesUploader {
                     Uploader.getInstance().ForceUpload("console_" + jmeter_log_filename, buff.toString(), "log");
                 }
                 if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
-                    String hostIP = "";
-                    try {
-                        hostIP = InetAddress.getLocalHost().getHostAddress();
-
-                    } catch (UnknownHostException uhe) {
-
-                    }
-                    Uploader.getInstance().ForceUpload(hostIP + "_" + jmeter_log_filename, buff.toString(), "log");
+                    Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_log_filename, buff.toString(), "log");
                 }
             }
             try {
@@ -146,27 +136,20 @@ public class JMeterLogFilesUploader {
         uploadFinished = false;
         boolean last = true;
         while (isRunning || last) {
-            StringBuilder buff = new StringBuilder(4096);
-            String line;
+            StringBuilder jmeter_log_buff = new StringBuilder(4096);
+            String jmeter_log_line;
             try {
-                while ((line = jmeter_server_log_reader.readLine()) != null) {
-                    buff.append(line);
-                    buff.append("\n");
+                while ((jmeter_log_line = jmeter_server_log_reader.readLine()) != null) {
+                    jmeter_log_buff.append(jmeter_log_line);
+                    jmeter_log_buff.append("\n");
                 }
             } catch (IOException ioe) {
                 BmLog.error("Empty jmeter-server log file: " + ioe);
             } catch (NullPointerException npe) {
                 BmLog.error("JMeter server log file was not read: ", npe);
             }
-            if (buff.length() > 0) {
-                String hostIP = "";
-                try {
-                    hostIP = InetAddress.getLocalHost().getHostAddress();
-
-                } catch (UnknownHostException uhe) {
-
-                }
-                Uploader.getInstance().ForceUpload(hostIP + "_" + jmeter_server_log_filename, buff.toString(), "log");
+            if (jmeter_log_buff.length() > 0) {
+                Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_server_log_filename, jmeter_log_buff.toString(), "log");
 
             }
             try {

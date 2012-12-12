@@ -8,10 +8,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,6 +28,17 @@ public class Utils {
         }
         return true;
 
+    }
+
+    public static String getHostIP() {
+        String hostIP = "";
+        try {
+            hostIP = InetAddress.getLocalHost().getHostAddress();
+
+        } catch (UnknownHostException uhe) {
+
+        }
+        return hostIP;
     }
 
     public static String getFileContents(String fn) {
