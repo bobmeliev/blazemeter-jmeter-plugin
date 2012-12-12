@@ -7,23 +7,23 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class LogFilesUploader {
-    private static LogFilesUploader instance;
+public class JMeterLogFilesUploader {
+    private static JMeterLogFilesUploader instance;
     private BufferedReader jmeter_log_reader;
-    /* private BufferedReader jmeter_server_log_reader;
-     String jmeter_server_log_filename = null;
-    */
+    private BufferedReader jmeter_server_log_reader;
+    String jmeter_server_log_filename = null;
+
     private String jmeter_log_filename = null;
     private boolean uploadFinished;
     private boolean isRunning = false;
 
-    private LogFilesUploader() {
+    private JMeterLogFilesUploader() {
     }
 
 
-    public static LogFilesUploader getInstance() {
+    public static JMeterLogFilesUploader getInstance() {
         if (instance == null)
-            instance = new LogFilesUploader();
+            instance = new JMeterLogFilesUploader();
         return instance;
     }
 
@@ -45,11 +45,10 @@ public class LogFilesUploader {
         }
         return jmeter_log_filename;
     }
-/*
 
     public String getJMeterServerLogFilename() {
         if (jmeter_server_log_filename == null) {
-            String server_log_file_path = JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log");
+            String server_log_file_path = JMeterUtils.getProperty("server_log_file");
             if (server_log_file_path.equals(""))   //No log file!
                 return null;
 
@@ -64,20 +63,23 @@ public class LogFilesUploader {
         }
         return jmeter_server_log_filename;
     }
-*/
 
 
     public void startListening() {
         if (isRunning)
             return;
-
+        String jmeter_server_log_filename = "";
+        if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
+            jmeter_server_log_filename = getJMeterServerLogFilename();
+        }
         String jmeter_log_filename = getJMeterLogFilename();
+
         if (jmeter_log_filename == null)
             return;
 
         try {
             jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
-//            jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream("jmeter-server.log")));
+            jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_server_log_filename)));
         } catch (FileNotFoundException fnfe) {
             BmLog.console("Could not upload log file, file not found!");
             BmLog.error("Could not upload log file, file not found!", fnfe);
@@ -90,12 +92,12 @@ public class LogFilesUploader {
                 UploadJMeterLog();
             }
         }).start();
-        /*    new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 UploadJmeterServerLog();
             }
-        }).start();*/
+        }).start();
     }
 
 
@@ -139,7 +141,6 @@ public class LogFilesUploader {
 
     }
 
-/*
 
     private void UploadJmeterServerLog() {
         uploadFinished = false;
@@ -153,9 +154,9 @@ public class LogFilesUploader {
                     buff.append("\n");
                 }
             } catch (IOException ioe) {
-                BmLog.error("Empty jmeter-server log file: "+ioe);
-            } catch (NullPointerException npe){
-                BmLog.error("JMeter server log file was not read: ",npe);
+                BmLog.error("Empty jmeter-server log file: " + ioe);
+            } catch (NullPointerException npe) {
+                BmLog.error("JMeter server log file was not read: ", npe);
             }
             if (buff.length() > 0) {
                 String hostIP = "";
@@ -165,7 +166,7 @@ public class LogFilesUploader {
                 } catch (UnknownHostException uhe) {
 
                 }
-                Uploader.getInstance().ForceUpload(hostIP + "_" + jmeter_server_log_reader, buff.toString(), "log");
+                Uploader.getInstance().ForceUpload(hostIP + "_" + jmeter_server_log_filename, buff.toString(), "log");
 
             }
             try {
@@ -178,7 +179,6 @@ public class LogFilesUploader {
         uploadFinished = true;
 
     }
-*/
 
 
     public void stopListening() {

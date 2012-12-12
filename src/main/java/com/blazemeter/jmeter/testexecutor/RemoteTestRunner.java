@@ -4,8 +4,8 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.JMeterLogFilesUploader;
 import com.blazemeter.jmeter.utils.JMeterPluginUtils;
-import com.blazemeter.jmeter.utils.LogFilesUploader;
 import com.blazemeter.jmeter.utils.Uploader;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
@@ -150,7 +150,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             return;
         }
         Uploader.getInstance().SamplingStarted(getReportName());
-        LogFilesUploader.getInstance().startListening();
+        JMeterLogFilesUploader.getInstance().startListening();
         /*
            if (LOCAL_TEST_STRING.equals(host)) {
         if (bmTestManager.getIsLocalRunMode()) {
@@ -177,7 +177,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BmLog.console("Test is ended at " + host);
         BmTestManager.setTestRunning(false);
-        LogFilesUploader.getInstance().stopListening();
+        JMeterLogFilesUploader.getInstance().stopListening();
         if (LOCAL_TEST_STRING.equals(host)) {
             bmTestManager.stopTest();
             if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI))) {
