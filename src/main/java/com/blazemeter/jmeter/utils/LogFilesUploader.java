@@ -4,15 +4,22 @@ import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class LogFilesUploader {
     private static LogFilesUploader instance;
-    private BufferedReader reader;
+    private BufferedReader jmeter_log_reader;
+    /* private BufferedReader jmeter_server_log_reader;
+     String jmeter_server_log_filename = null;
+    */
+    private String jmeter_log_filename = null;
+    private boolean uploadFinished;
+    private boolean isRunning = false;
 
     private LogFilesUploader() {
     }
 
-    private boolean isRunning = false;
 
     public static LogFilesUploader getInstance() {
         if (instance == null)
@@ -20,60 +27,86 @@ public class LogFilesUploader {
         return instance;
     }
 
-    String filename = null;
 
-    public String getLogFilename() {
-        if (filename == null) {
-            String path = JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log");
-            if (path.equals(""))   //No log file!
+    public String getJMeterLogFilename() {
+        if (jmeter_log_filename == null) {
+            String log_file_path = JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log");
+            if (log_file_path.equals(""))   //No log file!
                 return null;
 
-            if (new File(path).exists()) {
-                filename = path;
+            if (new File(log_file_path).exists()) {
+                jmeter_log_filename = log_file_path;
             } else {
-                path = JMeterUtils.getJMeterBinDir() + "/" + path;
-                if (new File(path).exists())
-                    filename = path;
+                log_file_path = JMeterUtils.getJMeterBinDir() + "/" + log_file_path;
+                if (new File(log_file_path).exists())
+                    jmeter_log_filename = log_file_path;
             }
-            BmLog.console("Log file path is: " + filename);
+            BmLog.console("Log file path is: " + jmeter_log_filename);
         }
-        return filename;
+        return jmeter_log_filename;
     }
+/*
+
+    public String getJMeterServerLogFilename() {
+        if (jmeter_server_log_filename == null) {
+            String server_log_file_path = JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log");
+            if (server_log_file_path.equals(""))   //No log file!
+                return null;
+
+            if (new File(server_log_file_path).exists()) {
+                jmeter_server_log_filename = server_log_file_path;
+            } else {
+                server_log_file_path = JMeterUtils.getJMeterBinDir() + "/" + server_log_file_path;
+                if (new File(server_log_file_path).exists())
+                    jmeter_server_log_filename = server_log_file_path;
+            }
+            BmLog.console("Sever log file path is: " + jmeter_server_log_filename);
+        }
+        return jmeter_server_log_filename;
+    }
+*/
+
 
     public void startListening() {
         if (isRunning)
             return;
 
-        String filename = getLogFilename();
-        if (filename == null)
+        String jmeter_log_filename = getJMeterLogFilename();
+        if (jmeter_log_filename == null)
             return;
 
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(filename)));
-        } catch (FileNotFoundException e) {
+            jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
+//            jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream("jmeter-server.log")));
+        } catch (FileNotFoundException fnfe) {
             BmLog.console("Could not upload log file, file not found!");
+            BmLog.error("Could not upload log file, file not found!", fnfe);
         }
 
         isRunning = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UploadLog();
+                UploadJMeterLog();
             }
         }).start();
-
+        /*    new Thread(new Runnable() {
+            @Override
+            public void run() {
+                UploadJmeterServerLog();
+            }
+        }).start();*/
     }
 
-    private boolean uploadFinished;
 
-    private void UploadLog() {
+    private void UploadJMeterLog() {
         uploadFinished = false;
         boolean last = true;
         while (isRunning || last) {
             StringBuilder buff = new StringBuilder(4096);
             String line;
             try {
-                while ((line = reader.readLine()) != null) {
+                while ((line = jmeter_log_reader.readLine()) != null) {
                     buff.append(line);
                     buff.append("\n");
                 }
@@ -81,7 +114,19 @@ public class LogFilesUploader {
                 BmLog.error(e);
             }
             if (buff.length() > 0) {
-                Uploader.getInstance().ForceUpload(filename, buff.toString(), "log");
+                if (Thread.currentThread().getThreadGroup().getName().equals("main")) {
+                    Uploader.getInstance().ForceUpload("console_" + jmeter_log_filename, buff.toString(), "log");
+                }
+                if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
+                    String hostIP = "";
+                    try {
+                        hostIP = InetAddress.getLocalHost().getHostAddress();
+
+                    } catch (UnknownHostException uhe) {
+
+                    }
+                    Uploader.getInstance().ForceUpload(hostIP + "_" + jmeter_log_filename, buff.toString(), "log");
+                }
             }
             try {
                 Thread.sleep(10000);
@@ -93,6 +138,48 @@ public class LogFilesUploader {
         uploadFinished = true;
 
     }
+
+/*
+
+    private void UploadJmeterServerLog() {
+        uploadFinished = false;
+        boolean last = true;
+        while (isRunning || last) {
+            StringBuilder buff = new StringBuilder(4096);
+            String line;
+            try {
+                while ((line = jmeter_server_log_reader.readLine()) != null) {
+                    buff.append(line);
+                    buff.append("\n");
+                }
+            } catch (IOException ioe) {
+                BmLog.error("Empty jmeter-server log file: "+ioe);
+            } catch (NullPointerException npe){
+                BmLog.error("JMeter server log file was not read: ",npe);
+            }
+            if (buff.length() > 0) {
+                String hostIP = "";
+                try {
+                    hostIP = InetAddress.getLocalHost().getHostAddress();
+
+                } catch (UnknownHostException uhe) {
+
+                }
+                Uploader.getInstance().ForceUpload(hostIP + "_" + jmeter_server_log_reader, buff.toString(), "log");
+
+            }
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ignored) {
+            }
+            last = !isRunning && !last;
+
+        }
+        uploadFinished = true;
+
+    }
+*/
+
 
     public void stopListening() {
         if (!isRunning)
@@ -106,10 +193,8 @@ public class LogFilesUploader {
             }
         }
         try {
-            reader.close();
+            jmeter_log_reader.close();
         } catch (IOException ignored) {
         }
     }
-
-
 }
