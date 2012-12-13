@@ -3,10 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.JMeterLogFilesUploader;
-import com.blazemeter.jmeter.utils.JMeterPluginUtils;
-import com.blazemeter.jmeter.utils.Uploader;
+import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.AbstractListenerElement;
@@ -28,6 +25,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     private static final long serialVersionUID = 1L;
     private static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
     private static int instanceCount = 0;
+    private static boolean testUrlWasOpened = false;
 
 
     public boolean canRemove() {
@@ -131,6 +129,12 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
         if (bmTestManager.getIsLocalRunMode()) {
             bmTestManager.startTest();
+            if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI)) && (!testUrlWasOpened)) {
+                String url = bmTestManager.getTestUrl();
+                Utils.Navigate(url);
+                BmLog.console("Opening test URL: " + url);
+                testUrlWasOpened = true;
+            }
         } else {
             BmLog.console("Switch Run Mode to Locally(only reporting)." +
                     "Test is started without uploading report to server");
@@ -149,11 +153,9 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmLog.console("Test is ended at " + host);
         BmTestManager.setTestRunning(false);
         JMeterLogFilesUploader.getInstance().stopListening();
-        if (LOCAL_TEST_STRING.equals(host)) {
-            bmTestManager.stopTest();
-            if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI))) {
-                System.exit(0);
-            }
+        bmTestManager.stopTest();
+        if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI))) {
+            System.exit(0);
         }
 
     }
