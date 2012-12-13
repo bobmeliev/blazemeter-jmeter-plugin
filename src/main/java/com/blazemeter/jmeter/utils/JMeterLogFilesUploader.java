@@ -135,29 +135,33 @@ public class JMeterLogFilesUploader {
     private void UploadJmeterServerLog() {
         uploadFinished = false;
         boolean last = true;
-        while (isRunning || last) {
-            StringBuilder jmeter_log_buff = new StringBuilder(4096);
-            String jmeter_log_line;
-            try {
-                while ((jmeter_log_line = jmeter_server_log_reader.readLine()) != null) {
-                    jmeter_log_buff.append(jmeter_log_line);
-                    jmeter_log_buff.append("\n");
+        if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
+
+            while (isRunning || last) {
+                StringBuilder jmeter_log_buff = new StringBuilder(4096);
+                String jmeter_log_line;
+                try {
+                    while ((jmeter_log_line = jmeter_server_log_reader.readLine()) != null) {
+                        jmeter_log_buff.append(jmeter_log_line);
+                        jmeter_log_buff.append("\n");
+                    }
+                } catch (IOException ioe) {
+                    BmLog.error("Empty jmeter-server log file: " + ioe);
+                    BmLog.console("Empty jmeter-server log file. See log for details.");
+                } catch (NullPointerException npe) {
+                    BmLog.error("JMeter server log file was not read: ", npe);
+                    BmLog.console("JMeter server log file was not read. See log for details");
                 }
-            } catch (IOException ioe) {
-                BmLog.error("Empty jmeter-server log file: " + ioe);
-            } catch (NullPointerException npe) {
-                BmLog.error("JMeter server log file was not read: ", npe);
-            }
-            if (jmeter_log_buff.length() > 0) {
-                Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_server_log_filename, jmeter_log_buff.toString(), "log");
+                if (jmeter_log_buff.length() > 0) {
+                    Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_server_log_filename, jmeter_log_buff.toString(), "log");
+                }
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {
+                }
+                last = !isRunning && !last;
 
             }
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException ignored) {
-            }
-            last = !isRunning && !last;
-
         }
         uploadFinished = true;
 
