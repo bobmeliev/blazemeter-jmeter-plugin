@@ -344,14 +344,15 @@
                 </constraints>
                 <properties>
                   <inverted value="false"/>
-                  <majorTickSpacing value="1000"/>
-                  <maximum value="8400"/>
+                  <majorTickSpacing value="9000"/>
+                  <maximum value="36000"/>
                   <minimum value="0"/>
-                  <minorTickSpacing value="200"/>
+                  <minorTickSpacing value="3000"/>
                   <paintLabels value="true"/>
                   <paintTicks value="true"/>
+                  <snapToTicks value="false"/>
                   <value value="0"/>
-                  <valueIsAdjusting value="false"/>
+                  <valueIsAdjusting value="true"/>
                 </properties>
               </component>
             </children>
