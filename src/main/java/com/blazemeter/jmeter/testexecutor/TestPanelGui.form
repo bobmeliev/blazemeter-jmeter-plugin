@@ -288,7 +288,7 @@
         </constraints>
         <properties>
           <enabled value="true"/>
-          <visible value="true"/>
+          <visible value="false"/>
         </properties>
         <border type="none" title="Run in the Cloud Settings">
           <color system-color="windowBorder"/>

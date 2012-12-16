@@ -904,7 +904,7 @@ public class TestPanelGui {
         cloudPanel = new JPanel();
         cloudPanel.setLayout(new GridLayoutManager(4, 30, new Insets(1, 1, 1, 1), -1, -1));
         cloudPanel.setEnabled(true);
-        cloudPanel.setVisible(true);
+        cloudPanel.setVisible(false);
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         cloudPanel.setBorder(BorderFactory.createTitledBorder("Run in the Cloud Settings"));
         final JLabel label5 = new JLabel();
