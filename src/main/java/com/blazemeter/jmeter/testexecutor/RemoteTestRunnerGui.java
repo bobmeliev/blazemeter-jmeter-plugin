@@ -98,7 +98,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         super.configure(element);
         //initialize listeners on TestPanelGui
         gui.initializeListeners();
-        //initialize RemoteTestRunnerGUI listener
+        //initialize RemoteTestRunnerGUI
         initializeListeners();
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;

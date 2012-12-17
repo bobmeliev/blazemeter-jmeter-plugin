@@ -233,7 +233,7 @@ public class BmTestManager {
 
 
     public void setTestInfo(TestInfo testInfo) {
-        if (this.testInfo == null || !this.testInfo.equals(testInfo)) {
+        if (!this.testInfo.equals(testInfo)) {
             synchronized (this.testInfo) {
                 this.testInfo = testInfo;
             }

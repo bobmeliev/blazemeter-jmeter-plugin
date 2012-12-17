@@ -211,7 +211,11 @@ public class TestPanelGui {
                 BmTestManager bmTestManager = BmTestManager.getInstance();
 
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
-
+                    if (bmTestManager.getUserKey().isEmpty()) {
+                        JOptionPane.showMessageDialog(mainPanel, "Please, set up user key.",
+                                "User key is not set", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
                     dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
@@ -579,9 +583,11 @@ public class TestPanelGui {
 
     protected void setTestInfo(TestInfo testInfo) {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
+            testInfo = new TestInfo();
             testInfo.name = NEW;
             testIdComboBox.setSelectedItem(testInfo.name);
             infoLabel.setText(SELECT_TEST);
+//            configureMainPanelControls(testInfo);
             configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
@@ -614,7 +620,7 @@ public class TestPanelGui {
         }
         lastCloudPanelUpdate = now;
 
-        if (BmTestManager.getInstance().getIsLocalRunMode())
+        if (BmTestManager.getInstance().getIsLocalRunMode() | BmTestManager.getInstance().getUserKey().isEmpty())
             return;
 
         interruptCloudPanelUpdate();
