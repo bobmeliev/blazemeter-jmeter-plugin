@@ -162,7 +162,8 @@ public class Utils {
         }
 
 
-        private String PLUGIN_UPDATE_URI = "http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/blazemeter.jar";
+        private String PLUGIN_UPDATE_URI = "https://a.blazemeter.com/jmeter-plugin-download";
+        //"http://cloud.github.com/downloads/Blazemeter/blazemeter-jmeter-plugin/blazemeter.jar";
         private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter.jar";
         public static boolean isPluginDownloaded = false;
         public static JPanel versionPanel = RemoteTestRunnerGui.getVersionPanel();
