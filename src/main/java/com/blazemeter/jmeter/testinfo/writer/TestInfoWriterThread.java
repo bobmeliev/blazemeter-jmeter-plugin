@@ -26,7 +26,7 @@ import java.io.IOException;
  */
 public class TestInfoWriterThread implements Runnable {
     private TestInfo testInfo;
-    private static String testInfoFile = System.getProperty("user.home") + "\\testinfo.xml";
+    private static String testInfoFile = System.getProperty("user.home") + "/testinfo.xml";
 
     public TestInfoWriterThread(TestInfo testInfo) {
         this.testInfo = testInfo;

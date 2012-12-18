@@ -30,7 +30,7 @@ public class BmTestManager {
     private static final Object lock = new Object();
     private String propUserKey;
     private long lastUpdateCheck = 0;
-    private boolean isLocalRunMode = true;
+    private boolean isLocalRunMode = false;
     private UserInfo userInfo;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
