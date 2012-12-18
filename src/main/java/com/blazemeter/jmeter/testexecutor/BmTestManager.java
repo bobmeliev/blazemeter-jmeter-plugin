@@ -182,7 +182,7 @@ public class BmTestManager {
     }
 
 
-    public void startTest() {
+    public void startLocalTest() {
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("Test will not be started, start test in the cloud");
             return;

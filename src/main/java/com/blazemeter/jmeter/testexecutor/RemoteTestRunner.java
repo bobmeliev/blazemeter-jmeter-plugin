@@ -128,9 +128,8 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager.setTestRunning(true);
 
         if (bmTestManager.getIsLocalRunMode()) {
-            bmTestManager.startTest();
-            if (//Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI)) &&
-                    (!testUrlWasOpened)) {
+            bmTestManager.startLocalTest();
+            if (!testUrlWasOpened) {
                 String url = bmTestManager.getTestUrl();
                 Utils.Navigate(url);
                 BmLog.console("Opening test URL: " + url);

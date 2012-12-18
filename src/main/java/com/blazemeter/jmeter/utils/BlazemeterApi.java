@@ -64,6 +64,7 @@ public class BlazemeterApi {
     private JSONObject getJson(String url, JSONObject data) {
         JSONObject jo = null;
         try {
+
             HttpResponse response = getResponse(url, data);
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());
@@ -74,8 +75,9 @@ public class BlazemeterApi {
             BmLog.error("error while decoding Json", e);
         } catch (JSONException e) {
             BmLog.error("error while decoding Json", e);
+        } finally {
+            return jo;
         }
-        return jo;
     }
 
     public UserInfo getUserInfo(String userKey) {
@@ -426,19 +428,43 @@ public class BlazemeterApi {
         return update;
     }
 
-    public synchronized void startTestLocal(String userKey, String testId) {
+    public synchronized String startTestLocal(String userKey, String testId) {
+        String startTestResult = "";
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("startTestLocal userKey is empty");
-            return;
+            startTestResult = "Local(Reporting only) test was not started: userKey is empty";
+            BmLog.error(startTestResult);
+            BmLog.console(startTestResult);
+            return startTestResult;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
-            return;
+            startTestResult = "Local(Reporting only) test was not started: testID is empty";
+            BmLog.error(startTestResult);
+            BmLog.console(startTestResult);
+            return startTestResult;
         }
 
         String url = this.urlManager.testStartLocal(APP_KEY, userKey, testId);
-        getJson(url, null);
+        String errorMessage = null;
+        String errorCode = null;
+        try {
+            JSONObject jsonObject = getJson(url, null);
+            errorMessage = jsonObject.get("error").toString();
+            errorCode = jsonObject.get("response_code").toString();
+
+
+        } catch (JSONException je) {
+            BmLog.console("Error during processing JSON request.See log for details");
+            BmLog.error("Error during processing JSON request: ", je);
+        }
+
+        if (errorMessage.equals("Test already running, please stop it first") & errorCode.equals("500")) {
+            startTestResult = "Local(Reporting only) test was not started: " + errorMessage.toLowerCase();
+            BmLog.error(startTestResult);
+            BmLog.console(startTestResult);
+            return startTestResult;
+        }
+        return startTestResult;
     }
 
     /**
