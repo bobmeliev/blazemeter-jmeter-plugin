@@ -182,10 +182,13 @@ public class BmTestManager {
     }
 
 
-    public void startLocalTest() {
+    public String startLocalTest() {
+        String startLocalTestResult = "";
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("Test will not be started, start test in the cloud");
-            return;
+            startLocalTestResult = "Test will not be started, start test in the cloud";
+            BmLog.console(startLocalTestResult);
+            BmLog.error(startLocalTestResult);
+            return startLocalTestResult;
         }
         TestInfo testInfo = getTestInfo();
         String userKey = getUserKey();
@@ -213,16 +216,19 @@ public class BmTestManager {
             }
 
             try {
-
-                rpc.startTestLocal(userKey, testInfo.id);
+                startLocalTestResult = rpc.startTestLocal(userKey, testInfo.id);
+                if (startLocalTestResult.equals("Test already running, please stop it first")) {
+                    return startLocalTestResult;
+                }
                 testInfo.status = TestStatus.Running;
                 NotifyTestInfoChanged();
+                startLocalTestResult = "";
 
             } catch (Throwable ex) {
                 BmLog.error("Test was not started locally", ex);
             }
         }
-
+        return startLocalTestResult;
     }
 
     public void stopTest() {

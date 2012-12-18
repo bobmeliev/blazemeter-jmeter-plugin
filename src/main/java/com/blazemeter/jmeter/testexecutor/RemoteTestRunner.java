@@ -12,6 +12,7 @@ import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.XML;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     private static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
     private static int instanceCount = 0;
     private static boolean testUrlWasOpened = false;
-
+    private static String startLocalTestResult;
 
     public boolean canRemove() {
         BmLog.console("Are you sure that you want to remove? " + instanceCount);
@@ -84,6 +85,10 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     }
 
 
+    public static String getStartLocalTestResult() {
+        return startLocalTestResult;
+    }
+
     public String getUserKey() {
         return this.getPropertyAsString("userKey", "");
     }
@@ -128,7 +133,15 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager.setTestRunning(true);
 
         if (bmTestManager.getIsLocalRunMode()) {
-            bmTestManager.startLocalTest();
+            startLocalTestResult = bmTestManager.startLocalTest();
+            if (startLocalTestResult.equals("Test already running, please stop it first")) {
+                if (!JMeter.isNonGUI()) {
+                    JPanel testPanelGUIMainPanel = RemoteTestRunnerGui.getGui().getMainPanel();
+                    JOptionPane.showMessageDialog(testPanelGUIMainPanel,
+                            startLocalTestResult, "Unable to start test", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             if (!testUrlWasOpened) {
                 String url = bmTestManager.getTestUrl();
                 Utils.Navigate(url);

@@ -459,10 +459,9 @@ public class BlazemeterApi {
         }
 
         if (errorMessage.equals("Test already running, please stop it first") & errorCode.equals("500")) {
-            startTestResult = "Local(Reporting only) test was not started: " + errorMessage.toLowerCase();
-            BmLog.error(startTestResult);
-            BmLog.console(startTestResult);
-            return startTestResult;
+            BmLog.error("Local(Reporting only) test was not started: " + errorMessage.toLowerCase());
+            BmLog.console("Local(Reporting only) test was not started: " + errorMessage.toLowerCase());
+            return errorMessage;
         }
         return startTestResult;
     }

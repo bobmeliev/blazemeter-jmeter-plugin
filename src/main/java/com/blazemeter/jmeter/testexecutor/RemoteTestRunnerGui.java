@@ -48,6 +48,10 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         connectionStatus.setForeground(Color.GREEN);
     }
 
+    public static TestPanelGui getGui() {
+        return gui;
+    }
+
     public TestElement createTestElement() {
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
