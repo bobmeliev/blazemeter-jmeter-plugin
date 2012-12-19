@@ -28,7 +28,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     private static int instanceCount = 0;
     private static boolean testUrlWasOpened = false;
     private static String startLocalTestResult;
-    private static String ATTEMPTS_TO_START_TEST = "attempts_to_start_test";
+    private static String ATTEMPTS_TO_START_TEST = "blazemeter.attempts_to_start_test";
 
     public boolean canRemove() {
         BmLog.console("Are you sure that you want to remove? " + instanceCount);
