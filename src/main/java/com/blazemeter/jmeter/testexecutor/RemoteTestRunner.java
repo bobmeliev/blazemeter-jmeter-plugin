@@ -28,6 +28,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
     private static int instanceCount = 0;
     private static boolean testUrlWasOpened = false;
     private static String startLocalTestResult;
+    private static String ATTEMPTS_TO_START_TEST = "attempts_to_start_test";
 
     public boolean canRemove() {
         BmLog.console("Are you sure that you want to remove? " + instanceCount);
@@ -73,6 +74,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
 
         instanceCount++;
         BmTestManager.getInstance().hooksRegister();
+        JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "0");
     }
 
     public void setTestInfo(TestInfo testInfo) {
@@ -129,19 +131,23 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
             return;
         }
 
-        BmLog.console("Test is started at " + host);
-        BmTestManager.setTestRunning(true);
 
-        if (bmTestManager.getIsLocalRunMode()) {
+        if ((bmTestManager.getIsLocalRunMode() & (JMeterUtils.getProperty(ATTEMPTS_TO_START_TEST).equals("0")))) {
             startLocalTestResult = bmTestManager.startLocalTest();
             if (startLocalTestResult.equals("Test already running, please stop it first")) {
                 if (!JMeter.isNonGUI()) {
                     JPanel testPanelGUIMainPanel = RemoteTestRunnerGui.getGui().getMainPanel();
                     JOptionPane.showMessageDialog(testPanelGUIMainPanel,
-                            startLocalTestResult, "Unable to start test", JOptionPane.ERROR_MESSAGE);
+                            "Results can not be uploaded to server due to the following reason: "
+                                    + startLocalTestResult.toLowerCase(), "Unable to start uploading results", JOptionPane.ERROR_MESSAGE);
+                    JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "1");
                     return;
                 }
             }
+            BmLog.console("Test is started at " + host);
+            BmTestManager.setTestRunning(true);
+            JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "0");
+
             if (!testUrlWasOpened) {
                 String url = bmTestManager.getTestUrl();
                 Utils.Navigate(url);
@@ -149,10 +155,8 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
                 testUrlWasOpened = true;
             }
         } else {
-            BmLog.console("Switch Run Mode to Locally(only reporting)." +
-                    "Test is started without uploading report to server");
-            BmLog.error("Switch Run Mode to Locally(only reporting)." +
-                    "Test is started without uploading report to server");
+            BmLog.console("Test is started without uploading report to server");
+            BmLog.error("Test is started without uploading report to server");
             return;
         }
         Uploader.getInstance().SamplingStarted(getReportName());
@@ -167,7 +171,7 @@ public class RemoteTestRunner extends AbstractListenerElement implements SampleL
         BmTestManager.setTestRunning(false);
         JMeterLogFilesUploader.getInstance().stopListening();
         bmTestManager.stopTest();
-        if (Boolean.parseBoolean(System.getProperty(JMeter.JMETER_NON_GUI))) {
+        if (JMeter.isNonGUI()) {
             System.exit(0);
         }
         testUrlWasOpened = false;
