@@ -142,7 +142,6 @@ public class TestPanelGui {
             }
         });
 
-        configureMainPanelControls(BmTestManager.getInstance().getTestInfo());
 
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
@@ -587,7 +586,6 @@ public class TestPanelGui {
             testInfo.name = NEW;
             testIdComboBox.setSelectedItem(testInfo.name);
             infoLabel.setText(SELECT_TEST);
-//            configureMainPanelControls(testInfo);
             configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
@@ -653,10 +651,10 @@ public class TestPanelGui {
                 } else {
                     infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
                 }
+                configureMainPanelControls(ti);
             }
         });
         updateCloudPanelThread.start();
-
     }
 
     private void interruptCloudPanelUpdate() {
