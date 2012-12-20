@@ -26,7 +26,7 @@ public class TestInfoReader extends DefaultHandler {
     private static TestInfoReader instance;
     private TestInfo testInfo;
     private String currentElement;
-    private static String testInfoFile = System.getProperty("user.home") + "\\testinfo.xml";
+    private static String testInfoFile = TestInfo.getTestInfoFilePath();
 
     private TestInfoReader() {
         this.testInfo = new TestInfo();
@@ -114,13 +114,11 @@ public class TestInfoReader extends DefaultHandler {
 
             } catch (ParserConfigurationException pce) {
                 BmLog.console("ParseConfiguration Exception occurred. See log for details.");
-//                BmLog.error("ParseConfiguration Exception occurred. \n", pce);
+                BmLog.error("ParseConfiguration Exception occurred. \n", pce);
             } catch (SAXException se) {
                 BmLog.console("File " + testInfoFile + " is empty. TestInfo was not read.");
-//                BmLog.error("SAXException occurred and testInfo was not read. \n", se);
             } catch (IOException ioe) {
                 BmLog.console("File " + testInfoFile + " was not found. TestInfo was not read.");
-//                BmLog.error("IOException occurred. \n", ioe);
             }
 
         }

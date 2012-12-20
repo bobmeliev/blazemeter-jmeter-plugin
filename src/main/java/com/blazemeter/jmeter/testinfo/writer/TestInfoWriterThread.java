@@ -26,13 +26,14 @@ import java.io.IOException;
  */
 public class TestInfoWriterThread implements Runnable {
     private TestInfo testInfo;
-    private static String testInfoFile = System.getProperty("user.home") + "/testinfo.xml";
 
     public TestInfoWriterThread(TestInfo testInfo) {
         this.testInfo = testInfo;
     }
 
     public void run() {
+        String testInfoFile = TestInfo.getTestInfoFilePath();
+
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder testInfoBuilder = docFactory.newDocumentBuilder();
@@ -85,7 +86,6 @@ public class TestInfoWriterThread implements Runnable {
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             DOMSource source = new DOMSource(testInfoDoc);
-
             File f_testInfoFile = new File(testInfoFile);
             if (!f_testInfoFile.exists()) {
                 f_testInfoFile.createNewFile();
