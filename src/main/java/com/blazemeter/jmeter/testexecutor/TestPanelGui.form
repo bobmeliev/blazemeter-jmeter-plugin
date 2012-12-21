@@ -121,7 +121,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Enter your user keyErr"/>
+                  <text value="Enter your user key"/>
                   <toolTipText value="User key - can be found on your profile page , click &quot;?&quot; button for more info"/>
                 </properties>
               </component>
@@ -618,7 +618,7 @@
           </hspacer>
           <component id="505a3" class="javax.swing.JButton" binding="browseButton" default-binding="true">
             <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Browse"/>
@@ -634,7 +634,7 @@
           </component>
           <component id="16260" class="javax.swing.JCheckBox" binding="errorsCheckBox" default-binding="true">
             <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Errors"/>
@@ -642,7 +642,7 @@
           </component>
           <component id="5dc54" class="javax.swing.JCheckBox" binding="successesCheckBox" default-binding="true">
             <constraints>
-              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Successes"/>
@@ -650,7 +650,7 @@
           </component>
           <component id="ee7b6" class="javax.swing.JButton" binding="configureButton" default-binding="true">
             <constraints>
-              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Configure"/>
@@ -658,9 +658,10 @@
           </component>
           <component id="59efe" class="javax.swing.JTextField" binding="reportNameTextField" default-binding="true">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="400" height="22"/>
-                <maximum-size width="400" height="-1"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <minimum-size width="300" height="-1"/>
+                <preferred-size width="500" height="22"/>
+                <maximum-size width="1000" height="-1"/>
               </grid>
             </constraints>
             <properties>
