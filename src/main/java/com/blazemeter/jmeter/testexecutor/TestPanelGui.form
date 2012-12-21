@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.blazemeter.jmeter.testexecutor.TestPanelGui">
-  <grid id="70b7a" binding="mainPanel" layout-manager="GridLayoutManager" row-count="4" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="70b7a" binding="mainPanel" layout-manager="GridLayoutManager" row-count="4" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1538" height="751"/>
+      <xy x="20" y="20" width="1782" height="751"/>
     </constraints>
     <properties>
       <autoscrolls value="true"/>
@@ -13,7 +13,7 @@
       <grid id="c09b6" layout-manager="GridLayoutManager" row-count="6" column-count="18" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="1" left="1" bottom="1" right="1"/>
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="4" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="6" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <visible value="true"/>
@@ -92,7 +92,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <text value="Enter your user key"/>
+                  <text value="Enter your user keyErr"/>
                   <toolTipText value="User key - can be found on your profile page , click &quot;?&quot; button for more info"/>
                 </properties>
               </component>
@@ -410,7 +410,7 @@
               <text value="1 MEDIUM engine"/>
             </properties>
           </component>
-          <grid id="2e4d" binding="overridesPanel" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="2e4d" binding="overridesPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="4" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -418,7 +418,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <grid id="265f7" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="265f7" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -451,44 +451,44 @@
                       <text value="Rampup Period (seconds)"/>
                     </properties>
                   </component>
-                </children>
-              </grid>
-              <grid id="d35e2" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
-                <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties/>
-                <border type="none">
-                  <color swing-color="windowBorder"/>
-                </border>
-                <children>
-                  <component id="96e63" class="javax.swing.JSpinner" binding="iterationsSpinner">
+                  <grid id="d35e2" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                    <margin top="0" left="0" bottom="0" right="0"/>
                     <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                        <maximum-size width="100" height="-1"/>
-                      </grid>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
-                  </component>
-                  <component id="77663" class="javax.swing.JLabel">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                        <preferred-size width="67" height="28"/>
-                      </grid>
-                    </constraints>
-                    <properties>
-                      <labelFor value="ed43"/>
-                      <requestFocusEnabled value="false"/>
-                      <text value="# Iterations"/>
-                    </properties>
-                  </component>
+                    <border type="none">
+                      <color swing-color="windowBorder"/>
+                    </border>
+                    <children>
+                      <component id="96e63" class="javax.swing.JSpinner" binding="iterationsSpinner">
+                        <constraints>
+                          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                            <maximum-size width="100" height="-1"/>
+                          </grid>
+                        </constraints>
+                        <properties/>
+                      </component>
+                      <component id="77663" class="javax.swing.JLabel">
+                        <constraints>
+                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                            <preferred-size width="67" height="28"/>
+                          </grid>
+                        </constraints>
+                        <properties>
+                          <labelFor value="ed43"/>
+                          <requestFocusEnabled value="false"/>
+                          <text value="# Iterations"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
                 </children>
               </grid>
               <grid id="cd78e" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties/>
                 <border type="none">
@@ -587,31 +587,17 @@
           </hspacer>
         </children>
       </grid>
-      <grid id="d5baf" binding="localPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="d5baf" binding="localPanel" layout-manager="GridLayoutManager" row-count="2" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <enabled value="true"/>
-          <visible value="false"/>
+          <visible value="true"/>
         </properties>
         <border type="none" title="Local Run"/>
         <children>
-          <hspacer id="370b8">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
-          <component id="59efe" class="javax.swing.JTextField" binding="reportNameTextField" default-binding="true">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="sample.jtl"/>
-              <toolTipText value="Report name that listener will create and use for uploading statistics to it."/>
-            </properties>
-          </component>
           <component id="cfbf8" class="javax.swing.JLabel">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -630,6 +616,58 @@
               </grid>
             </constraints>
           </hspacer>
+          <component id="505a3" class="javax.swing.JButton" binding="browseButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Browse"/>
+            </properties>
+          </component>
+          <component id="3010c" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Log/Display Only:"/>
+            </properties>
+          </component>
+          <component id="16260" class="javax.swing.JCheckBox" binding="errorsCheckBox" default-binding="true">
+            <constraints>
+              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Errors"/>
+            </properties>
+          </component>
+          <component id="5dc54" class="javax.swing.JCheckBox" binding="successesCheckBox" default-binding="true">
+            <constraints>
+              <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Successes"/>
+            </properties>
+          </component>
+          <component id="ee7b6" class="javax.swing.JButton" binding="configureButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Configure"/>
+            </properties>
+          </component>
+          <component id="59efe" class="javax.swing.JTextField" binding="reportNameTextField" default-binding="true">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="400" height="22"/>
+                <maximum-size width="400" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value="sample.jtl"/>
+              <toolTipText value="Report name that listener will create and use for uploading statistics to it."/>
+            </properties>
+          </component>
         </children>
       </grid>
       <grid id="f89fa" binding="infoPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
