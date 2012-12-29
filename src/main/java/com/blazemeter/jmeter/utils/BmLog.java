@@ -16,6 +16,9 @@ import java.util.Date;
 public class BmLog {
     private static final boolean printConsole = JMeterUtils.getPropDefault("blazemeter.console_print", false);
     private static final boolean writeConsole = JMeterUtils.getPropDefault("blazemeter.console_write", false);
+//  https://blazemeter.atlassian.net/browse/BPC-118
+//    private static final boolean debugEnabled = JMeterUtils.getPropDefault("blazemeter.debug_enabled", false);
+
     private static final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
     private static Logger logger = LoggingManager.getLoggerFor("Blazemeter-plugin");
@@ -28,7 +31,13 @@ public class BmLog {
         if (writeConsole)
             logger.info(msg);
     }
+/*       https://blazemeter.atlassian.net/browse/BPC-118
+    public static void debug(String msg) {
+        if (debugEnabled) {
+            logger.debug(msg);
 
+        }
+    }*/
 
     public static void error(String msg) {
         error(msg, null);

@@ -622,6 +622,7 @@
             </constraints>
             <properties>
               <text value="Browse"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="3010c" class="javax.swing.JLabel">
@@ -630,6 +631,7 @@
             </constraints>
             <properties>
               <text value="Log/Display Only:"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="16260" class="javax.swing.JCheckBox" binding="errorsCheckBox" default-binding="true">
@@ -638,6 +640,7 @@
             </constraints>
             <properties>
               <text value="Errors"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="5dc54" class="javax.swing.JCheckBox" binding="successesCheckBox" default-binding="true">
@@ -646,6 +649,7 @@
             </constraints>
             <properties>
               <text value="Successes"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="ee7b6" class="javax.swing.JButton" binding="configureButton" default-binding="true">
@@ -654,6 +658,7 @@
             </constraints>
             <properties>
               <text value="Configure"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="59efe" class="javax.swing.JTextField" binding="reportNameTextField" default-binding="true">
