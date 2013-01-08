@@ -198,18 +198,19 @@ public class BmTestManager {
             if (testInfo.id.isEmpty()) {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
-                    BmLog.console("Running in NON-GUI mode!");
+                    BmLog.debug("Running in NON-GUI mode!");
                     projectName = "untitled";
                 }
 
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
+                BmLog.console("Starting local test...");
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
                 if (testInfo == null) {
                     BmLog.error("TestInfo is not set! Enter userkey and select a test!", new NullPointerException());
                 }
 
                 if (testInfo.id.isEmpty()) {
-                    BmLog.console("Could not get valid id,test will start without blazemeter.");
+                    BmLog.error("Could not get valid id,test will start without blazemeter.");
                 }
 
                 setTestInfo(testInfo);
@@ -232,6 +233,7 @@ public class BmTestManager {
     }
 
     public void stopTest() {
+        BmLog.console("Finishing test...");
         testInfo.status = TestStatus.NotRunning;
         NotifyTestInfoChanged();
         Uploader.getInstance().Finalize();
@@ -282,7 +284,9 @@ public class BmTestManager {
     }
 
     public int runInTheCloud() {
-        int testId = rpc.runInTheCloud(this.getUserKey(), this.getTestInfo().id);
+        TestInfo ti = this.getTestInfo();
+        BmLog.console("Starting test " + ti.id + "-" + ti.name);
+        int testId = rpc.runInTheCloud(this.getUserKey(), ti.id);
         this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
         if (this.testInfo.status == TestStatus.Running) {
             NotifyTestInfoChanged();
@@ -291,6 +295,8 @@ public class BmTestManager {
     }
 
     public void stopInTheCloud() {
+        TestInfo ti = this.getTestInfo();
+        BmLog.console("Finishing test " + ti.id + "-" + ti.name);
         int stopSuccess = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo().id);
         testInfo = rpc.getTestRunStatus(this.getUserKey(), this.getTestInfo().id, false);
         if (testInfo.status == TestStatus.NotRunning && stopSuccess != -1) {
@@ -316,6 +322,7 @@ public class BmTestManager {
 
     public UserInfo getUserInfo(boolean force) {
         if (force || userInfo == null || userInfo.time + 3600000 < new Date().getTime()) {
+            BmLog.console("Getting user information...");
             userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
             NotifyUserInfoChanged(userInfo);
         }

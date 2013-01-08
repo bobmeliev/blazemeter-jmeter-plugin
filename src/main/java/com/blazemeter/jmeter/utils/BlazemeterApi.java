@@ -36,7 +36,7 @@ public class BlazemeterApi {
 
     private HttpResponse getResponse(String url, JSONObject data) throws IOException {
 
-        BmLog.console("Requesting : " + url);
+        BmLog.debug("Requesting : " + url);
         HttpPost postRequest = new HttpPost(url);
         postRequest.setHeader("Accept", "application/json");
         postRequest.setHeader("Content-type", "application/json; charset=UTF-8");
@@ -68,7 +68,7 @@ public class BlazemeterApi {
             HttpResponse response = getResponse(url, data);
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());
-                BmLog.console(output);
+                BmLog.debug(output);
                 jo = new JSONObject(output);
             }
         } catch (IOException e) {
