@@ -93,7 +93,7 @@ public class TestInfoWriterThread implements Runnable {
             StreamResult streamResult = new StreamResult(f_testInfoFile);
             transformer.transform(source, streamResult);
 
-            BmLog.console("TestInfo is saved to " + testInfoFile);
+            BmLog.debug("TestInfo is saved to " + testInfoFile);
 
         } catch (ParserConfigurationException pce) {
             BmLog.error("ParserConfiguraionException during saving testInfo", pce);

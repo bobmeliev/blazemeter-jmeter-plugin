@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.utils;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
+import org.apache.log.Priority;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,30 +15,35 @@ import java.util.Date;
  * Time: 14:46
  */
 public class BmLog {
-    private static final boolean printConsole = JMeterUtils.getPropDefault("blazemeter.console_print", false);
-    private static final boolean writeConsole = JMeterUtils.getPropDefault("blazemeter.console_write", false);
-//  https://blazemeter.atlassian.net/browse/BPC-118
-//    private static final boolean debugEnabled = JMeterUtils.getPropDefault("blazemeter.debug_enabled", false);
+    private static final boolean writeToConsole = JMeterUtils.getPropDefault("blazemeter.console_write", false);
+    private static final boolean writeToLog = JMeterUtils.getPropDefault("blazemeter.log_write", false);
 
     private static final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-
     private static Logger logger = LoggingManager.getLoggerFor("Blazemeter-plugin");
+    private static final boolean debugEnabled = JMeterUtils.getPropDefault("blazemeter.debug_enabled", false);
 
     public static void console(String msg) {
-        if (printConsole) {
+        if (writeToConsole) {
             System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
         }
 
-        if (writeConsole)
+        if (writeToLog)
             logger.info(msg);
     }
-/*       https://blazemeter.atlassian.net/browse/BPC-118
+
     public static void debug(String msg) {
         if (debugEnabled) {
-            logger.debug(msg);
+            if (!logger.isDebugEnabled()) {
+                logger.setPriority(Priority.DEBUG);
+            }
+            if (writeToConsole) {
+                System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
+            }
+            if (writeToLog)
+                logger.debug(msg);
 
         }
-    }*/
+    }
 
     public static void error(String msg) {
         error(msg, null);
@@ -48,6 +54,12 @@ public class BmLog {
     }
 
     public static void error(String msg, Throwable ex) {
-        logger.error(msg, ex);
+        if (writeToConsole) {
+            System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
+        }
+        if (writeToLog)
+            logger.error(msg, ex);
+
+
     }
 }

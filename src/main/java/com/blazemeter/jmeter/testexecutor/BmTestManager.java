@@ -92,7 +92,7 @@ public class BmTestManager {
                     httpConn.setRequestMethod("HEAD");
                     httpConn.setConnectTimeout(5000);
                     httpConn.connect();
-                    BmLog.console("Connection with " + serverURL + " is OK.");
+                    BmLog.debug("Connection with " + serverURL + " is OK.");
                     serverStatus = ServerStatus.AVAILABLE;
                     httpConn.disconnect();
                 } catch (SocketTimeoutException e) {
@@ -135,7 +135,7 @@ public class BmTestManager {
                         try {
                             serverConnectionChecker.sleep(15000);
                         } catch (InterruptedException e) {
-                            BmLog.console("Connection checker was interrupted during sleeping");
+                            BmLog.debug("Connection checker was interrupted during sleeping");
                             return;
                         } finally {
                             if (Thread.currentThread().isInterrupted()) {
@@ -153,7 +153,7 @@ public class BmTestManager {
         if (serverConnectionChecker != null) {
             if (serverConnectionChecker.isAlive()) {
                 serverConnectionChecker.interrupt();
-                BmLog.console("ServerConnectionChecking Thread is interrupted!");
+                BmLog.debug("ServerConnectionChecking Thread is interrupted!");
             }
         }
     }
@@ -186,7 +186,7 @@ public class BmTestManager {
         String startLocalTestResult = "";
         if (JMeterPluginUtils.inCloudConfig()) {
             startLocalTestResult = "Test will not be started, start test in the cloud";
-            BmLog.console(startLocalTestResult);
+            BmLog.debug(startLocalTestResult);
             BmLog.error(startLocalTestResult);
             return startLocalTestResult;
         }

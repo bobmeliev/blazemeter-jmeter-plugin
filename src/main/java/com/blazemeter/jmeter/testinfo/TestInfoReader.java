@@ -50,7 +50,7 @@ public class TestInfoReader extends DefaultHandler {
 
     @Override
     public void startDocument() throws SAXException {
-        BmLog.console("Reading testInfo from file " + testInfoFile + " is started");
+        BmLog.debug("Reading testInfo from file " + testInfoFile + " is started");
     }
 
     @Override
@@ -98,7 +98,7 @@ public class TestInfoReader extends DefaultHandler {
 
     @Override
     public void endDocument() {
-        BmLog.console("Reading testInfo from file " + testInfoFile + " is finished");
+        BmLog.debug("Reading testInfo from file " + testInfoFile + " is finished");
     }
 
     public TestInfo loadTestInfo() {
@@ -116,9 +116,9 @@ public class TestInfoReader extends DefaultHandler {
                 BmLog.console("ParseConfiguration Exception occurred. See log for details.");
                 BmLog.error("ParseConfiguration Exception occurred. \n", pce);
             } catch (SAXException se) {
-                BmLog.console("File " + testInfoFile + " is empty. TestInfo was not read.");
+                BmLog.debug("File " + testInfoFile + " is empty. TestInfo was not read.");
             } catch (IOException ioe) {
-                BmLog.console("File " + testInfoFile + " was not found. TestInfo was not read.");
+                BmLog.debug("File " + testInfoFile + " was not found. TestInfo was not read.");
             }
 
         }

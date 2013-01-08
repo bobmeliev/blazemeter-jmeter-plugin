@@ -666,7 +666,7 @@ public class TestPanelGui {
 
             if (updateCloudPanelThread.isAlive()) {
                 updateCloudPanelThread.interrupt();
-                BmLog.console("UpdatingCloudPanelThread is interrupted!");
+                BmLog.debug("UpdatingCloudPanelThread is interrupted!");
             }
         }
     }
@@ -687,7 +687,7 @@ public class TestPanelGui {
                         try {
                             Thread.sleep(30000);
                         } catch (InterruptedException e) {
-                            BmLog.console("TestStatusChecker was interrupted during sleeping");
+                            BmLog.debug("TestStatusChecker was interrupted during sleeping");
                             return;
                         } finally {
                             if (Thread.currentThread().isInterrupted()) {
@@ -712,7 +712,7 @@ public class TestPanelGui {
                 testInfoChecker.interrupt();
                 testInfoChecker = null;
                 System.gc();
-                BmLog.console("TestStatusChecker is interrupted!");
+                BmLog.debug("TestStatusChecker is interrupted!");
             }
         }
     }
