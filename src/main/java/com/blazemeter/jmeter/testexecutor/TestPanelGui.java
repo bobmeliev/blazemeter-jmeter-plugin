@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
 
 /**
  * Created by IntelliJ IDEA.
@@ -122,10 +123,14 @@ public class TestPanelGui {
                     userInfoLabel.setText("");
                     clearTestInfo();
                 } else {
+                    //configure numberOfUserSlider depending on UserInfo
                     userInfoLabel.setText(userInfo.toString());
                     numberOfUsersSlider.setMaximum(userInfo.maxUsersLimit);
-                    //configure slider depending on UserInfo
-//                    numberOfUsersSlider.setMajorTickSpacing(3000);
+                    numberOfUsersSlider.setMinimum(0);
+                    numberOfUsersSlider.setMajorTickSpacing(userInfo.maxUsersLimit / 4);
+                    numberOfUsersSlider.setMinorTickSpacing(userInfo.maxUsersLimit / 12);
+                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
+                    numberOfUsersSlider.setLabelTable(labels);
                 }
             }
         });
@@ -440,7 +445,7 @@ public class TestPanelGui {
                     public void run() {
                         BmTestManager.getInstance().getUserInfo();
                     }
-                });
+                }).start();
             } else {
                 userKeyTextField.addFocusListener(new FocusListener() {
                     String oldVal = "";
@@ -939,6 +944,8 @@ public class TestPanelGui {
         numberOfUsersSlider.setMinorTickSpacing(3000);
         numberOfUsersSlider.setPaintLabels(true);
         numberOfUsersSlider.setPaintTicks(true);
+        numberOfUsersSlider.setPaintTrack(true);
+        numberOfUsersSlider.setRequestFocusEnabled(true);
         numberOfUsersSlider.setSnapToTicks(false);
         numberOfUsersSlider.setValue(0);
         numberOfUsersSlider.setValueIsAdjusting(true);

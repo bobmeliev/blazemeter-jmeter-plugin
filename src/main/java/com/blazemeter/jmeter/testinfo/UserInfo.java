@@ -13,14 +13,23 @@ public class UserInfo {
     public String email;
     public int credits;
     public int maxUsersLimit;
+    public int maxEnginesLimit;
+    public int maxThreadsMedium;
+    public int maxThreadsLarge;
+    public String plan;
+
     public long time;
 
-    public UserInfo(String userName, String email, int credits, int maxUsersLimit) {
+    public UserInfo(String userName, int credits, String email, int maxUsersLimit, int maxEnginesLimit, int maxThreadsMedium, int maxThreadsLarge, String plan) {
         time = new Date().getTime();
         this.userName = userName;
-        this.email = email;
         this.credits = credits;
+        this.email = email;
         this.maxUsersLimit = maxUsersLimit;
+        this.maxEnginesLimit = maxEnginesLimit;
+        this.maxThreadsMedium = maxThreadsMedium;
+        this.maxThreadsLarge = maxThreadsLarge;
+        this.plan = plan;
     }
 
     public String toString() {

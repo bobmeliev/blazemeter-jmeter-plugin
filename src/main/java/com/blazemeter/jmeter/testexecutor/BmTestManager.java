@@ -174,7 +174,6 @@ public class BmTestManager {
                 }).start();
             }
         });
-
     }
 
     public boolean isUserKeyFromProp() {

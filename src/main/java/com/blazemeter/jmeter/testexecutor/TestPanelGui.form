@@ -350,6 +350,8 @@
                   <minorTickSpacing value="3000"/>
                   <paintLabels value="true"/>
                   <paintTicks value="true"/>
+                  <paintTrack value="true"/>
+                  <requestFocusEnabled value="true"/>
                   <snapToTicks value="false"/>
                   <value value="0"/>
                   <valueIsAdjusting value="true"/>
