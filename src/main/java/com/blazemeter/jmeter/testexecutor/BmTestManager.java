@@ -335,7 +335,7 @@ public class BmTestManager {
         public void run() {
             String projectPath = GuiPackage.getInstance().getTestPlanFile();
             if (projectPath == null || projectPath.isEmpty()) {
-                BmLog.console("Cannot upload JMX,Project path is null or empty");
+                BmLog.debug("Cannot upload JMX,Project path is null or empty");
                 return;
             }
 
@@ -456,12 +456,11 @@ public class BmTestManager {
 
     public void hooksRegister() {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("Running in the Cloud will not register hooks!");
+            BmLog.debug("Running in the Cloud will not register hooks!");
             return;
         }
 
         if (this.hooksRegistered) {
-//            BmLog.console("Registering hooks, NO!");
             return;
         }
 

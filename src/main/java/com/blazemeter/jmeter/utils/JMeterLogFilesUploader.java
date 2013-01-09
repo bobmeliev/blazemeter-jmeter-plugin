@@ -78,7 +78,6 @@ public class JMeterLogFilesUploader {
             jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
             jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_server_log_filename)));
         } catch (FileNotFoundException fnfe) {
-            BmLog.console("Could not upload log file, file not found!");
             BmLog.error("Could not upload log file, file not found!", fnfe);
         }
 
@@ -110,7 +109,7 @@ public class JMeterLogFilesUploader {
                     buff.append("\n");
                 }
             } catch (IOException e) {
-                BmLog.error(e);
+                BmLog.error("Problems with reading " + jmeter_log_filename, e);
             }
             if (buff.length() > 0) {
                 if (Thread.currentThread().getThreadGroup().getName().equals("main")) {
@@ -147,10 +146,8 @@ public class JMeterLogFilesUploader {
                     }
                 } catch (IOException ioe) {
                     BmLog.error("Empty jmeter-server log file: " + ioe);
-                    BmLog.console("Empty jmeter-server log file. See log for details.");
                 } catch (NullPointerException npe) {
                     BmLog.error("JMeter server log file was not read: ", npe);
-                    BmLog.console("JMeter server log file was not read. See log for details");
                 }
                 if (jmeter_log_buff.length() > 0) {
                     Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_server_log_filename, jmeter_log_buff.toString(), "log");

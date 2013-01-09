@@ -82,7 +82,7 @@ public class Uploader {
                     if (length > 0 && ((length > chunk_size) || (timeFromLastChunk > MaxUploadInterval))) {
                         toSend = this.data.toString();
                         this.data.setLength(0);
-                        BmLog.console(this.Name + " set data size:" + length);
+                        BmLog.debug(this.Name + " set data size:" + length);
                     }
                 }
 
@@ -92,7 +92,7 @@ public class Uploader {
                         new DataUploader(reportName, toSend).run();
 
                         this.lastChunkUploaded = System.currentTimeMillis();
-                        BmLog.console("Chunk uploaded: " + this.Name);
+                        BmLog.debug("Chunk uploaded: " + this.Name);
                     } catch (Exception ex) {
                         BmLog.error(ex.getMessage());
                     }
@@ -170,7 +170,7 @@ public class Uploader {
             TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
             String userKey = BmTestManager.getInstance().getUserKey();
             String testId = testInfo.id;
-            BmLog.console(String.format("Data uploader sending report:%s , %d bytes  ", this.reportName, this.data.length()));
+            BmLog.debug(String.format("Data uploader sending report:%s , %d bytes  ", this.reportName, this.data.length()));
             BlazemeterApi.getInstance().dataUpload(userKey, testId, this.reportName, this.data, this.dataType);
         }
     }
@@ -192,7 +192,7 @@ public class Uploader {
             reports.get(filename).append(data);
 
         } else {
-            BmLog.console("Sampling not started yet! Count " + count);
+            BmLog.error("Sampling not started yet! Count " + count);
             if (count < 10) {
                 try {
                     Thread.sleep(5000);

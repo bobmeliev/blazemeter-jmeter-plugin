@@ -113,12 +113,11 @@ public class TestInfoReader extends DefaultHandler {
                 saxParser.parse(f_testInfoFile, testInfoReader);
 
             } catch (ParserConfigurationException pce) {
-                BmLog.console("ParseConfiguration Exception occurred. See log for details.");
                 BmLog.error("ParseConfiguration Exception occurred. \n", pce);
             } catch (SAXException se) {
-                BmLog.debug("File " + testInfoFile + " is empty. TestInfo was not read.");
+                BmLog.error("File " + testInfoFile + " is empty. TestInfo was not read.");
             } catch (IOException ioe) {
-                BmLog.debug("File " + testInfoFile + " was not found. TestInfo was not read.");
+                BmLog.error("File " + testInfoFile + " was not found. TestInfo was not read.");
             }
 
         }

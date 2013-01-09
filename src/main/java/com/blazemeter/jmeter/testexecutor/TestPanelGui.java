@@ -561,7 +561,7 @@ public class TestPanelGui {
 
     public void setUserKey(String key) {
         userKeyTextField.setText(key);
-        BmLog.console("set key" + key);
+        BmLog.debug("Setting user key" + key);
     }
 
     public void addTestId(Object test, boolean selected) {

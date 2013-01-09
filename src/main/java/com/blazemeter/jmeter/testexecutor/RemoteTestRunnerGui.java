@@ -32,7 +32,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
     public RemoteTestRunnerGui() {
         super();
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui(),Running in the cloud!");
+            BmLog.debug("RemoteTestRunnerGui(),Running in the cloud!");
             this.setEnabled(false);
             return;
         }
@@ -54,7 +54,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
     public TestElement createTestElement() {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
+            BmLog.debug("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
         BmTestManager bmTestManager = BmTestManager.getInstance();
@@ -69,7 +69,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
     @Override
     public void modifyTestElement(TestElement te) {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui.modifyTestElement,Running in the cloud!");
+            BmLog.debug("RemoteTestRunnerGui.modifyTestElement,Running in the cloud!");
             return;
         }
         super.configureTestElement(te);
@@ -96,7 +96,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
     @Override
     public void configure(TestElement element) {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui.Configure,Running in the cloud!");
+            BmLog.debug("RemoteTestRunnerGui.Configure,Running in the cloud!");
             return;
         }
         super.configure(element);

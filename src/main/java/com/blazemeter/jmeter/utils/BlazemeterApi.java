@@ -127,12 +127,12 @@ public class BlazemeterApi {
 
     public int stopInTheCloud(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("stopTest userKey is empty");
+            BmLog.debug("Test cannot be stopped in the cloud, userKey is empty");
             return -1;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("Test cannot be stopped in the cloud, testId is empty");
             return -1;
         }
 
@@ -151,12 +151,12 @@ public class BlazemeterApi {
 
     public int runInTheCloud(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("startTestLocal userKey is empty");
+            BmLog.debug("Test cannot be started in the cloud, userKey is empty");
             return -1;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("Test cannot be started in the cloud, testId is empty");
             return -2;
         }
 
@@ -175,7 +175,7 @@ public class BlazemeterApi {
 
     public synchronized ArrayList<TestInfo> getTests(String userKey) {
         if (userKey.trim().isEmpty()) {
-            BmLog.console("getTests userKey is empty");
+            BmLog.debug("List of tests cannot be received, userKey is empty");
             return null;
         }
 
@@ -219,7 +219,7 @@ public class BlazemeterApi {
 
     public synchronized TestInfo createTest(String userKey, String testName) {
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("createTest userKey is empty");
+            BmLog.debug("Test cannot be created, userKey is empty");
             return null;
         }
 
@@ -256,12 +256,12 @@ public class BlazemeterApi {
      */
     public synchronized void uploadJmx(String userKey, String testId, String fileName, String filePath) {
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("uploadJmx userKey is empty");
+            BmLog.debug("JMX cannot be uploaded, userKey is empty");
             return;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("JMX cannot be uploaded, testId is empty");
             return;
         }
 
@@ -281,12 +281,12 @@ public class BlazemeterApi {
     public synchronized int dataUpload(String userKey, String testId, String reportName, String buff, String dataType) {
 
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("dataUpload userKey is empty");
+            BmLog.debug("Data cannot be uploaded, userKey is empty");
             return -1;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("Data cannot be uploaded, testId is empty");
             return -1;
         }
 
@@ -319,12 +319,12 @@ public class BlazemeterApi {
                                       int engines, String engineType, int usersPerEngine,
                                       int iterations, int rumpUp, int duration) {
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("dataUpload userKey is empty");
+            BmLog.debug("Test settings cannot be updated, userKey is empty");
             return false;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("Test settings cannot be updated, testId is empty");
             return false;
         }
 
@@ -357,13 +357,13 @@ public class BlazemeterApi {
         TestInfo ti = BmTestManager.getInstance().getTestInfo();
 
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("getTestRunStatus userKey is empty");
+            BmLog.debug("TestRunStatus cannot be received, userKey is empty");
             ti.status = TestStatus.NotFound;
             return ti;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("TestRunStatus cannot be received, testId is empty");
             ti.status = TestStatus.NotFound;
             return ti;
         }
@@ -454,13 +454,11 @@ public class BlazemeterApi {
 
 
         } catch (JSONException je) {
-            BmLog.console("Error during processing JSON request.See log for details");
             BmLog.error("Error during processing JSON request: ", je);
         }
 
         if (errorMessage.equals("Test already running, please stop it first") & errorCode.equals("500")) {
             BmLog.error("Local(Reporting only) test was not started: " + errorMessage.toLowerCase());
-            BmLog.console("Local(Reporting only) test was not started: " + errorMessage.toLowerCase());
             return errorMessage;
         }
         return startTestResult;
@@ -472,12 +470,12 @@ public class BlazemeterApi {
      */
     public void stopTest(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.console("stopTest userKey is empty");
+            BmLog.debug("Test cannot be stopped, userKey is empty");
             return;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.console("testId is empty");
+            BmLog.debug("Test cannot be stopped, testId is empty");
             return;
         }
 
