@@ -9,19 +9,18 @@ import java.util.Date;
  * Time: 14:25
  */
 public class UserInfo {
-    public String userName;
-    public String email;
-    public int credits;
-    public int maxUsersLimit;
-    public int maxEnginesLimit;
-    public int maxThreadsMedium;
-    public int maxThreadsLarge;
-    public String plan;
-
-    public long time;
+    private String userName;
+    private String email;
+    private int credits;
+    private int maxUsersLimit;
+    private int maxEnginesLimit;
+    private int maxThreadsMedium;
+    private int maxThreadsLarge;
+    private String plan;
+    private long time;
 
     public UserInfo(String userName, int credits, String email, int maxUsersLimit, int maxEnginesLimit, int maxThreadsMedium, int maxThreadsLarge, String plan) {
-        time = new Date().getTime();
+        this.time = new Date().getTime();
         this.userName = userName;
         this.credits = credits;
         this.email = email;
@@ -30,6 +29,78 @@ public class UserInfo {
         this.maxThreadsMedium = maxThreadsMedium;
         this.maxThreadsLarge = maxThreadsLarge;
         this.plan = plan;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
+
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public int getMaxUsersLimit() {
+        return maxUsersLimit;
+    }
+
+    public void setMaxUsersLimit(int maxUsersLimit) {
+        this.maxUsersLimit = maxUsersLimit;
+    }
+
+    public int getMaxEnginesLimit() {
+        return maxEnginesLimit;
+    }
+
+    public void setMaxEnginesLimit(int maxEnginesLimit) {
+        this.maxEnginesLimit = maxEnginesLimit;
+    }
+
+    public int getMaxThreadsMedium() {
+        return maxThreadsMedium;
+    }
+
+    public void setMaxThreadsMedium(int maxThreadsMedium) {
+        this.maxThreadsMedium = maxThreadsMedium;
+    }
+
+    public int getMaxThreadsLarge() {
+        return maxThreadsLarge;
+    }
+
+    public void setMaxThreadsLarge(int maxThreadsLarge) {
+        this.maxThreadsLarge = maxThreadsLarge;
+    }
+
+    public String getPlan() {
+        return plan;
+    }
+
+    public void setPlan(String plan) {
+        this.plan = plan;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public String toString() {

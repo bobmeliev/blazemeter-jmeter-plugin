@@ -125,10 +125,10 @@ public class TestPanelGui {
                 } else {
                     //configure numberOfUserSlider depending on UserInfo
                     userInfoLabel.setText(userInfo.toString());
-                    numberOfUsersSlider.setMaximum(userInfo.maxUsersLimit);
+                    numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
                     numberOfUsersSlider.setMinimum(0);
-                    numberOfUsersSlider.setMajorTickSpacing(userInfo.maxUsersLimit / 4);
-                    numberOfUsersSlider.setMinorTickSpacing(userInfo.maxUsersLimit / 12);
+                    numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
+                    numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
                     Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
                     numberOfUsersSlider.setLabelTable(labels);
                 }
@@ -186,31 +186,20 @@ public class TestPanelGui {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int numberOfUsers = numberOfUsersSlider.getValue();
-                int engines = 1;
+                int engines;
+                String engineSize;
                 int userPerEngine;
-                String description;
-                if (numberOfUsers <= 300) {
-                    numberOfUsers = numberOfUsers < 1 ? 1 : numberOfUsers;
-                    description = "MEDIUM engine";
-                } else if (numberOfUsers <= 2400) {
-                    engines = numberOfUsers / 300;
-                    if (numberOfUsers % 300 > 0) {
-                        engines++;
-                    }
-                    description = "MEDIUM engines";
-                } else {
 
-                    engines = numberOfUsers / 600;
-                    if (numberOfUsers % 600 > 0) {
-                        engines++;
-                    }
-                    description = "LARGE engines";
-                }
-                userPerEngine = numberOfUsers / engines;
-                enginesDescription.setText(String.format("%d %s x %d users", engines, description, userPerEngine));
+                ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
+                engines = Integer.valueOf(enginesParameters.get(0));
+                engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
+                userPerEngine = Integer.valueOf(enginesParameters.get(2));
+
+                enginesDescription.setText(String.format("JMETER CONSOLE + %d %s x %d users", engines, engineSize, userPerEngine));
                 numberOfUserTextBox.setText(Integer.toString(userPerEngine * engines));
             }
         });
+
 
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
@@ -345,30 +334,57 @@ public class TestPanelGui {
         addFilesButton.setEnabled(false);
     }
 
-
-    private void saveCloudTest() {
-        int numberOfUsers = numberOfUsersSlider.getValue();
-        int engines;
-        int userPerEngine;
+    private ArrayList<String> calculateEnginesForTest(int numberOfUsers) {
+        ArrayList<String> enginesParameters = new ArrayList<String>(3);
+        int engines = 0;
         String engineSize = "m1.medium";
+        int userPerEngine = 0;
+
+        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
+        int max_engines_limit = userInfo.getMaxEnginesLimit();
+
+
         if (numberOfUsers <= 300) {
-            engines = 0;
             userPerEngine = numberOfUsers == 0 ? 1 : numberOfUsers;
         } else {
-            if (numberOfUsers <= 2400) {
-                engines = numberOfUsers / 300;
+            engines = numberOfUsers / 300;
+            if (engines < userInfo.getMaxEnginesLimit()) {
                 if (numberOfUsers % 300 > 0) {
                     engines++;
                 }
             } else {
+                engineSize = "m1.large";
                 engines = numberOfUsers / 600;
                 if (numberOfUsers % 600 > 0) {
                     engines++;
                 }
-                engineSize = "m1.large";
             }
             userPerEngine = numberOfUsers / engines;
+
+
         }
+
+        enginesParameters.add(String.valueOf(engines));
+        enginesParameters.add(engineSize);
+        enginesParameters.add(String.valueOf(userPerEngine));
+        return enginesParameters;
+
+
+    }
+
+
+    private void saveCloudTest() {
+        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
+        int max_engines_limit = userInfo.getMaxEnginesLimit();
+
+        int numberOfUsers = numberOfUsersSlider.getValue();
+
+        ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsersSlider.getValue());
+
+
+        int engines = Integer.valueOf(enginesParameters.get(0));
+        String engineSize = enginesParameters.get(1);
+        int userPerEngine = Integer.valueOf(enginesParameters.get(2));
 
 
         int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
@@ -976,7 +992,7 @@ public class TestPanelGui {
         enginesDescription = new JTextField();
         enginesDescription.setEditable(false);
         enginesDescription.setEnabled(false);
-        enginesDescription.setText("1 MEDIUM engine");
+        enginesDescription.setText("JMETER CONSOLE");
         cloudPanel.add(enginesDescription, new GridConstraints(0, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         overridesPanel = new JPanel();
         overridesPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));

@@ -409,7 +409,7 @@
             <properties>
               <editable value="false"/>
               <enabled value="false"/>
-              <text value="1 MEDIUM engine"/>
+              <text value="JMETER CONSOLE"/>
             </properties>
           </component>
           <grid id="2e4d" binding="overridesPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
