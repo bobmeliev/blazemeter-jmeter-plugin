@@ -397,7 +397,9 @@
           </grid>
           <hspacer id="9080b">
             <constraints>
-              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="180" height="-1"/>
+              </grid>
             </constraints>
           </hspacer>
           <component id="5d795" class="javax.swing.JTextField" binding="enginesDescription">
@@ -564,7 +566,9 @@
           </component>
           <component id="d312c" class="javax.swing.JLabel">
             <constraints>
-              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                <preferred-size width="80" height="-1"/>
+              </grid>
             </constraints>
             <properties>
               <text value="* 0 means &quot;FOREVER&quot;"/>
@@ -580,13 +584,6 @@
               <text value="* 0 means &quot;Limited by Test Session Time&quot;"/>
             </properties>
           </component>
-          <hspacer id="325f9">
-            <constraints>
-              <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="40" height="-1"/>
-              </grid>
-            </constraints>
-          </hspacer>
         </children>
       </grid>
       <grid id="d5baf" binding="localPanel" layout-manager="GridLayoutManager" row-count="2" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
