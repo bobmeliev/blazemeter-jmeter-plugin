@@ -188,15 +188,20 @@ public class TestPanelGui {
                 int numberOfUsers = numberOfUsersSlider.getValue();
                 int engines;
                 String engineSize;
-                int userPerEngine;
+                int usersPerEngine;
 
                 ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
                 engines = Integer.valueOf(enginesParameters.get(0));
                 engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
-                userPerEngine = Integer.valueOf(enginesParameters.get(2));
+                usersPerEngine = Integer.valueOf(enginesParameters.get(2));
+                if (numberOfUsers <= 300) {
+                    enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
 
-                enginesDescription.setText(String.format("JMETER CONSOLE + %d %s x %d users", engines, engineSize, userPerEngine));
-                numberOfUserTextBox.setText(Integer.toString(userPerEngine * engines));
+                } else {
+                    enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
+
+                }
+                numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
             }
         });
 
@@ -345,7 +350,7 @@ public class TestPanelGui {
 
 
         if (numberOfUsers <= 300) {
-            userPerEngine = numberOfUsers == 0 ? 1 : numberOfUsers;
+            userPerEngine = numberOfUsers;
         } else {
             engines = numberOfUsers / 300;
             if (engines < userInfo.getMaxEnginesLimit()) {
@@ -360,8 +365,6 @@ public class TestPanelGui {
                 }
             }
             userPerEngine = numberOfUsers / engines;
-
-
         }
 
         enginesParameters.add(String.valueOf(engines));
@@ -379,7 +382,7 @@ public class TestPanelGui {
 
         int numberOfUsers = numberOfUsersSlider.getValue();
 
-        ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsersSlider.getValue());
+        ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
 
 
         int engines = Integer.valueOf(enginesParameters.get(0));
