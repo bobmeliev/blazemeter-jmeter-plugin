@@ -6,8 +6,9 @@ import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoReader;
 import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
+import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
-import org.apache.jmeter.visualizers.gui.AbstractListenerGui;
+import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -18,21 +19,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
-public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionListener, BmTestManager.PluginUpdateReceived {
+public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, BmTestManager.PluginUpdateReceived {
     private static TestPanelGui gui;
     private static JLabel connectionStatus = new JLabel();
     private boolean areListenersInitialized = false;
+    private static JPanel versionPanel;
 
     public static JPanel getVersionPanel() {
         return versionPanel;
     }
 
-    private static JPanel versionPanel;
 
     public RemoteTestRunnerGui() {
         super();
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("RemoteTestRunnerGui(),Running in the cloud!");
+            BmLog.console("RemoteTestRunnerGui(),Running in the cloud!");
             this.setEnabled(false);
             return;
         }
@@ -44,17 +45,16 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
             BmLog.error(e);
         }
         init();
-        connectionStatus.setText("SERVER IS AVAILABLE");
-        connectionStatus.setForeground(Color.GREEN);
     }
 
     public static TestPanelGui getGui() {
         return gui;
     }
 
+
     public TestElement createTestElement() {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
+            BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
         BmTestManager bmTestManager = BmTestManager.getInstance();
@@ -69,7 +69,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
     @Override
     public void modifyTestElement(TestElement te) {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("RemoteTestRunnerGui.modifyTestElement,Running in the cloud!");
+            BmLog.console("RemoteTestRunnerGui.modifyTestElement,Running in the cloud!");
             return;
         }
         super.configureTestElement(te);
@@ -96,7 +96,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
     @Override
     public void configure(TestElement element) {
         if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("RemoteTestRunnerGui.Configure,Running in the cloud!");
+            BmLog.console("RemoteTestRunnerGui.Configure,Running in the cloud!");
             return;
         }
         super.configure(element);
@@ -224,6 +224,9 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         box.add(getTopPanel(), BorderLayout.NORTH);
         box.add(gui.getMainPanel(), BorderLayout.NORTH);
         add(box, BorderLayout.NORTH);
+        connectionStatus.setText("SERVER IS AVAILABLE");
+        connectionStatus.setForeground(Color.GREEN);
+
     }
 
     public String getStaticLabel() {
@@ -247,7 +250,6 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
                     TestInfo testInfo = testInfoReader.loadTestInfo();
                     if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
                         bmTestManager.setTestInfo(testInfo);
-//                        bmTestManager.NotifyTestInfoChanged();
                         testInfoReader.setTestInfoSet(true);
                         TestInfoWriter.getInstance().setTestInfo(testInfo);
                     }
@@ -295,6 +297,7 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
 
         return null;
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -355,6 +358,14 @@ public class RemoteTestRunnerGui extends AbstractListenerGui implements ActionLi
         download.addMouseListener(pluginInstaller);
         versionPanel.add(download);
 
+
+    }
+
+    public void add(SampleResult sample) {
+
+    }
+
+    public void clearData() {
 
     }
 }

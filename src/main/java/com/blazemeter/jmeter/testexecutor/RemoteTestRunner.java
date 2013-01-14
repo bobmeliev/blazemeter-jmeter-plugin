@@ -6,7 +6,7 @@ import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
-import org.apache.jmeter.reporters.AbstractListenerElement;
+import org.apache.jmeter.reporters.ResultCollector;
 import org.apache.jmeter.samplers.*;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
@@ -21,7 +21,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 //~--- JDK imports ------------------------------------------------------------
-public class RemoteTestRunner extends AbstractListenerElement implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
+public class RemoteTestRunner extends ResultCollector implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
     private static final long serialVersionUID = 1L;
     private static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
