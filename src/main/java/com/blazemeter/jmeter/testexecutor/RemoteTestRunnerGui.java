@@ -45,6 +45,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             BmLog.error(e);
         }
         init();
+        getFilePanel().setVisible(false);
     }
 
     public static TestPanelGui getGui() {

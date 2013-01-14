@@ -157,6 +157,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.debug("Test is started without uploading report to server");
             return;
         }
+        // reportName should be got from FilePanel
         Uploader.getInstance().SamplingStarted(getReportName());
         JMeterLogFilesUploader.getInstance().startListening();
     }

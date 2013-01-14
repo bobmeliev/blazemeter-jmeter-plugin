@@ -593,7 +593,7 @@
         </constraints>
         <properties>
           <enabled value="true"/>
-          <visible value="true"/>
+          <visible value="false"/>
         </properties>
         <border type="none" title="Local Run"/>
         <children>
@@ -671,6 +671,7 @@
             <properties>
               <text value="sample.jtl"/>
               <toolTipText value="Report name that listener will create and use for uploading statistics to it."/>
+              <visible value="true"/>
             </properties>
           </component>
         </children>

@@ -1057,7 +1057,7 @@ public class TestPanelGui {
         localPanel = new JPanel();
         localPanel.setLayout(new GridLayoutManager(2, 7, new Insets(0, 0, 0, 0), -1, -1));
         localPanel.setEnabled(true);
-        localPanel.setVisible(true);
+        localPanel.setVisible(false);
         mainPanel.add(localPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         localPanel.setBorder(BorderFactory.createTitledBorder("Local Run"));
         final JLabel label12 = new JLabel();
@@ -1088,6 +1088,7 @@ public class TestPanelGui {
         reportNameTextField = new JTextField();
         reportNameTextField.setText("sample.jtl");
         reportNameTextField.setToolTipText("Report name that listener will create and use for uploading statistics to it.");
+        reportNameTextField.setVisible(true);
         localPanel.add(reportNameTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, -1), new Dimension(400, 22), new Dimension(1000, -1), 0, false));
         infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
