@@ -344,10 +344,10 @@
                 </constraints>
                 <properties>
                   <inverted value="false"/>
-                  <majorTickSpacing value="9000"/>
-                  <maximum value="36000"/>
+                  <majorTickSpacing value="2100"/>
+                  <maximum value="8400"/>
                   <minimum value="0"/>
-                  <minorTickSpacing value="3000"/>
+                  <minorTickSpacing value="700"/>
                   <paintLabels value="true"/>
                   <paintTicks value="true"/>
                   <paintTrack value="true"/>

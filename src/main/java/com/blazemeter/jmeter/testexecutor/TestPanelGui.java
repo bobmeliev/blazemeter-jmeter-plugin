@@ -123,6 +123,10 @@ public class TestPanelGui {
                     userInfoLabel.setText("");
                     clearTestInfo();
                 } else {
+                    if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
+                        userInfo.setMaxUsersLimit(8400);
+                        userInfo.setMaxEnginesLimit(14);
+                    }
                     //configure numberOfUserSlider depending on UserInfo
                     userInfoLabel.setText(userInfo.toString());
                     numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
@@ -341,7 +345,7 @@ public class TestPanelGui {
 
     private ArrayList<String> calculateEnginesForTest(int numberOfUsers) {
         ArrayList<String> enginesParameters = new ArrayList<String>(3);
-        int engines = 0;
+        int engines = 1;
         String engineSize = "m1.medium";
         int userPerEngine = 0;
 
@@ -957,10 +961,10 @@ public class TestPanelGui {
         panel6.add(numberOfUserTextBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
         numberOfUsersSlider = new JSlider();
         numberOfUsersSlider.setInverted(false);
-        numberOfUsersSlider.setMajorTickSpacing(9000);
-        numberOfUsersSlider.setMaximum(36000);
+        numberOfUsersSlider.setMajorTickSpacing(2100);
+        numberOfUsersSlider.setMaximum(8400);
         numberOfUsersSlider.setMinimum(0);
-        numberOfUsersSlider.setMinorTickSpacing(3000);
+        numberOfUsersSlider.setMinorTickSpacing(700);
         numberOfUsersSlider.setPaintLabels(true);
         numberOfUsersSlider.setPaintTicks(true);
         numberOfUsersSlider.setPaintTrack(true);
