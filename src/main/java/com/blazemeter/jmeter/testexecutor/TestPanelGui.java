@@ -9,6 +9,11 @@ import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.jmeter.JMeter;
+import org.apache.jmeter.engine.StandardJMeterEngine;
+import org.apache.jmeter.gui.action.ActionRouter;
+import org.apache.jmeter.gui.action.Start;
+import org.apache.jmeter.gui.action.StopStoppables;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -509,14 +514,20 @@ public class TestPanelGui {
                         runRemote.setEnabled(false);
                     }
 
-                    if (testInfo.status == TestStatus.NotRunning) {
+                    if ((testInfo.status == TestStatus.NotRunning)) {
+                        if(BmTestManager.getInstance().getIsLocalRunMode()){
+                            StandardJMeterEngine.stopEngine();
+                        }
                         runInTheCloud.setEnabled(true);
                         addFilesButton.setEnabled(true);
                         enableCloudControls(true);
                         runLocal.setEnabled(true);
                         runRemote.setEnabled(true);
                         configureMainPanelControls(testInfo);
+
                     }
+
+
                     setTestInfo(testInfo);
                     if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                             (testInfoChecker == null || testInfoChecker.isInterrupted())) {
@@ -650,7 +661,7 @@ public class TestPanelGui {
         }
         lastCloudPanelUpdate = now;
 
-        if (BmTestManager.getInstance().getIsLocalRunMode() | BmTestManager.getInstance().getUserKey().isEmpty())
+        if (BmTestManager.getInstance().getUserKey().isEmpty())
             return;
 
         interruptCloudPanelUpdate();
