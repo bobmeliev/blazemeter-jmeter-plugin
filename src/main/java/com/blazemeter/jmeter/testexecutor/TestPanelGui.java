@@ -9,11 +9,7 @@ import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.StandardJMeterEngine;
-import org.apache.jmeter.gui.action.ActionRouter;
-import org.apache.jmeter.gui.action.Start;
-import org.apache.jmeter.gui.action.StopStoppables;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -71,6 +67,7 @@ public class TestPanelGui {
     private JCheckBox errorsCheckBox;
     private JCheckBox successesCheckBox;
     private JButton configureButton;
+    private JButton editJMXLocallyButton;
 
 
     public TestPanelGui() {
@@ -173,6 +170,19 @@ public class TestPanelGui {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Utils.Navigate(HELP_URL);
+            }
+        });
+
+        editJMXLocallyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
+                TestInfo testInfo = bmTestManager.getTestInfo();
+
+                blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.id);
+
+                //To change body of implemented methods use File | Settings | File Templates.
             }
         });
 
@@ -515,7 +525,7 @@ public class TestPanelGui {
                     }
 
                     if ((testInfo.status == TestStatus.NotRunning)) {
-                        if(BmTestManager.getInstance().getIsLocalRunMode()){
+                        if (BmTestManager.getInstance().getIsLocalRunMode()) {
                             StandardJMeterEngine.stopEngine();
                         }
                         runInTheCloud.setEnabled(true);

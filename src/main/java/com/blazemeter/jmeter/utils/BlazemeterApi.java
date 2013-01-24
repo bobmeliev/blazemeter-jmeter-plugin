@@ -5,6 +5,7 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -32,6 +33,26 @@ public class BlazemeterApi {
     }
 
     private BlazemeterApi() {
+    }
+
+    private HttpResponse getJMX(String url) {
+        BmLog.debug("Requesting : " + url);
+        HttpGet getRequest = new HttpGet(url);
+        getRequest.setHeader("Connection", "keep-alive");
+        getRequest.setHeader("Host", BmUrlManager.SERVER_URL.substring(8, BmUrlManager.SERVER_URL.length()));
+        HttpResponse response = null;
+        try {
+            response = new DefaultHttpClient().execute(getRequest);
+            int statusCode = response.getStatusLine().getStatusCode();
+            String error = response.getStatusLine().getReasonPhrase();
+            if (statusCode != 200) {
+                BmLog.error(String.format("Wrong response : %d %s", statusCode, error));
+            }
+
+        } catch (IOException ioe) {
+            BmLog.error("Wrong response", ioe);
+        }
+        return response;
     }
 
     private HttpResponse getResponse(String url, JSONObject data) throws IOException {
@@ -79,6 +100,23 @@ public class BlazemeterApi {
             return jo;
         }
     }
+
+    private String getJMXasString(String url) {
+        String jmxScript = null;
+        try {
+
+            HttpResponse response = getJMX(url);
+            if (response != null) {
+                jmxScript = EntityUtils.toString(response.getEntity());
+                BmLog.debug("JMX is downloaded from server");
+            }
+        } catch (IOException ioe) {
+            BmLog.error("error while decoding response from server", ioe);
+        } finally {
+            return jmxScript;
+        }
+    }
+
 
     public UserInfo getUserInfo(String userKey) {
         UserInfo userInfo = null;
@@ -287,6 +325,27 @@ public class BlazemeterApi {
 
         getJson(url, jmxData);
     }
+
+    /*
+       This method is used for downloading *.jmx from server to
+       local machine for editing in Jmeter.
+    */
+    public synchronized String downloadJmx(String userKey, String testId) {
+        if (userKey == null || userKey.trim().isEmpty()) {
+            BmLog.debug("JMX cannot be downloaded, userKey is empty");
+            return null;
+        }
+
+        if (testId == null || testId.trim().isEmpty()) {
+            BmLog.debug("JMX cannot be downloaded, testId is empty");
+            return null;
+        }
+
+        String url = this.urlManager.scriptDownload(APP_KEY, userKey, testId);
+        String jmx = getJMXasString(url);
+        return jmx;
+    }
+
 
     public synchronized int dataUpload(String userKey, String testId, String reportName, String buff, String dataType) {
 
@@ -549,6 +608,17 @@ public class BlazemeterApi {
                 BmLog.error(e);
             }
             return String.format("%s/api/rest/blazemeter/testScriptUpload/?app_key=%s&user_key=%s&test_id=%s&file_name=%s", SERVER_URL, appKey, userKey, testId, fileName);
+        }
+
+        public String scriptDownload(String appKey, String userKey, String testId) {
+            try {
+                appKey = URLEncoder.encode(appKey, "UTF-8");
+                userKey = URLEncoder.encode(userKey, "UTF-8");
+                testId = URLEncoder.encode(testId, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                BmLog.error(e);
+            }
+            return String.format("%s/api/rest/blazemeter/testScriptDownload/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
         }
 
         public String testStartLocal(String appKey, String userKey, String testId) {
