@@ -4,6 +4,8 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import org.apache.http.Header;
+import org.apache.http.HeaderIterator;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BlazemeterApi {
 
@@ -101,19 +104,32 @@ public class BlazemeterApi {
         }
     }
 
-    private String getJMXasString(String url) {
+    private List<String> getJMXasList(String url) {
+        List<String> jmx = new ArrayList<String>(2);
         String jmxScript = null;
+        String jmxScriptName = null;
         try {
-
             HttpResponse response = getJMX(url);
             if (response != null) {
+                HeaderIterator headerIterator = response.headerIterator();
+                while (headerIterator.hasNext()) {
+                    Header header = headerIterator.nextHeader();
+                    if (header.getName().equals("Content-Disposition")) {
+                        String headerValue = header.getValue();
+                        // added filename of *.jmx
+                        jmxScriptName = headerValue.substring(10, headerValue.length() - 1);
+                        jmx.add(jmxScriptName);
+                        BmLog.debug("JMX is downloaded from server");
+                    }
+                }
                 jmxScript = EntityUtils.toString(response.getEntity());
-                BmLog.debug("JMX is downloaded from server");
+                jmx.add(jmxScript);
+
             }
         } catch (IOException ioe) {
             BmLog.error("error while decoding response from server", ioe);
         } finally {
-            return jmxScript;
+            return jmx;
         }
     }
 
@@ -330,7 +346,7 @@ public class BlazemeterApi {
        This method is used for downloading *.jmx from server to
        local machine for editing in Jmeter.
     */
-    public synchronized String downloadJmx(String userKey, String testId) {
+    public synchronized List<String> downloadJmx(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("JMX cannot be downloaded, userKey is empty");
             return null;
@@ -342,7 +358,8 @@ public class BlazemeterApi {
         }
 
         String url = this.urlManager.scriptDownload(APP_KEY, userKey, testId);
-        String jmx = getJMXasString(url);
+
+        List<String> jmx = getJMXasList(url);
         return jmx;
     }
 

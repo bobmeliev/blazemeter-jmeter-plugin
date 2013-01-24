@@ -16,6 +16,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
@@ -179,10 +182,45 @@ public class TestPanelGui {
                 BmTestManager bmTestManager = BmTestManager.getInstance();
                 BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
                 TestInfo testInfo = bmTestManager.getTestInfo();
+                java.util.List<String> jmx = blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.id);
+                String jmxName = jmx.get(0);
+                FileOutputStream fileOutputStream = null;
+                File file;
 
-                blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.id);
+                try {
 
-                //To change body of implemented methods use File | Settings | File Templates.
+                    file = new File(System.getProperty("user.home") + "/" + jmxName);
+                    // if file doesnt exists, then create it
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    fileOutputStream = new FileOutputStream(file);
+
+                    // get the content in bytes
+                    byte[] jmxInBytes = jmx.get(1).getBytes();
+
+                    fileOutputStream.write(jmxInBytes);
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+
+                    BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
+                } catch (IOException ioe) {
+                    BmLog.error(ioe);
+                } finally {
+                    try {
+                        if (fileOutputStream != null) {
+                            fileOutputStream.close();
+                        }
+                    } catch (IOException fioe) {
+                        BmLog.error(fioe);
+                    }
+                }
+
+
+                // save jmx on the disk in user.dir with the name.equals(filename=)
+                // open jmx in JMeter for editing
+                // edit jmx
+                // wait until user clicksSaveButton and upload script back to server;
             }
         });
 
