@@ -285,6 +285,9 @@ public class BmTestManager {
     public int runInTheCloud() {
         TestInfo ti = this.getTestInfo();
         BmLog.console("Starting test " + ti.id + "-" + ti.name);
+
+        //promt user to save changes
+        // upload in test-plan to cloud;
         int testId = rpc.runInTheCloud(this.getUserKey(), ti.id);
         this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
         if (this.testInfo.status == TestStatus.Running) {

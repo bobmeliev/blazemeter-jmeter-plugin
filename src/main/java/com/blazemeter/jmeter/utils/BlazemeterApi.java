@@ -17,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -346,21 +348,45 @@ public class BlazemeterApi {
        This method is used for downloading *.jmx from server to
        local machine for editing in Jmeter.
     */
-    public synchronized List<String> downloadJmx(String userKey, String testId) {
+    public synchronized File downloadJmx(String userKey, String testId) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("JMX cannot be downloaded, userKey is empty");
             return null;
         }
-
         if (testId == null || testId.trim().isEmpty()) {
             BmLog.debug("JMX cannot be downloaded, testId is empty");
             return null;
         }
-
         String url = this.urlManager.scriptDownload(APP_KEY, userKey, testId);
-
         List<String> jmx = getJMXasList(url);
-        return jmx;
+        String jmxName = jmx.get(0);
+        FileOutputStream fileOutputStream = null;
+        File file = null;
+        try {
+            file = new File(System.getProperty("user.home") + "/" + jmxName);
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fileOutputStream = new FileOutputStream(file);
+            // get the content in bytes
+            byte[] jmxInBytes = jmx.get(1).getBytes();
+            fileOutputStream.write(jmxInBytes);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
+        } catch (IOException ioe) {
+            BmLog.error(ioe);
+        } finally {
+            try {
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException fioe) {
+                BmLog.error(fioe);
+            }
+        }
+        return file;
     }
 
 

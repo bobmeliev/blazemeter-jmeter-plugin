@@ -1,6 +1,11 @@
 package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
+import org.apache.jmeter.exceptions.IllegalUserActionException;
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.action.Load;
+import org.apache.jmeter.save.SaveService;
+import org.apache.jorphan.collections.HashTree;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,6 +77,27 @@ public class Utils {
             }
         }
     }
+
+    public static void openJMX(File file) {
+
+        FileInputStream reader = null;
+        try {
+
+            BmLog.debug("Loading file: " + file);
+            reader = new FileInputStream(file);
+            HashTree tree = SaveService.loadTree(reader);
+            GuiPackage.getInstance().setTestPlanFile(file.getAbsolutePath());
+            Load.insertLoadedTree(1, tree);
+
+        } catch (FileNotFoundException fnfe) {
+            BmLog.error("JMX file " + file.getName() + "was not found ", fnfe);
+        } catch (IllegalUserActionException iuae) {
+            BmLog.error(iuae);
+        } catch (Exception exc) {
+            BmLog.error(exc);
+        }
+    }
+
 
     public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException {
         BufferedInputStream in = null;

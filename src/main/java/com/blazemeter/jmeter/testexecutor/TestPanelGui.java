@@ -10,6 +10,10 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.apache.jmeter.engine.StandardJMeterEngine;
+import org.apache.jmeter.exceptions.IllegalUserActionException;
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.action.Save;
+import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -17,8 +21,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
@@ -179,49 +181,34 @@ public class TestPanelGui {
         editJMXLocallyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
-                TestInfo testInfo = bmTestManager.getTestInfo();
-                java.util.List<String> jmx = blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.id);
-                String jmxName = jmx.get(0);
-                FileOutputStream fileOutputStream = null;
-                File file;
-
-                try {
-
-                    file = new File(System.getProperty("user.home") + "/" + jmxName);
-                    // if file doesnt exists, then create it
-                    if (!file.exists()) {
-                        file.createNewFile();
-                    }
-                    fileOutputStream = new FileOutputStream(file);
-
-                    // get the content in bytes
-                    byte[] jmxInBytes = jmx.get(1).getBytes();
-
-                    fileOutputStream.write(jmxInBytes);
-                    fileOutputStream.flush();
-                    fileOutputStream.close();
-
-                    BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
-                } catch (IOException ioe) {
-                    BmLog.error(ioe);
-                } finally {
-                    try {
-                        if (fileOutputStream != null) {
-                            fileOutputStream.close();
+                GuiPackage guiPackage = GuiPackage.getInstance();
+                if (guiPackage.isDirty()) {
+                    int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
+                            "Do you want to save changes in current test-plan?",
+                            JMeterUtils.getResString("save?"),
+                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if (chosenOption == JOptionPane.CANCEL_OPTION) {
+                        return;
+                    } else if (chosenOption == JOptionPane.YES_OPTION) {
+                        Save save = new Save();
+                        try {
+                            save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "save_as"));
+                        } catch (IllegalUserActionException iuae) {
+                            BmLog.error("Can not save file," + iuae);
                         }
-                    } catch (IOException fioe) {
-                        BmLog.error(fioe);
+                        loadJMXFromCloud();
+                    } else if (chosenOption == JOptionPane.NO_OPTION) {
+                        loadJMXFromCloud();
                     }
                 }
-
-
-                // save jmx on the disk in user.dir with the name.equals(filename=)
-                // open jmx in JMeter for editing
-                // edit jmx
-                // wait until user clicksSaveButton and upload script back to server;
             }
+
+
+            // save jmx on the disk in user.dir with the name.equals(filename=)
+            // open jmx in JMeter for editing
+            // edit jmx
+            // wait until user clicksSaveButton and upload script back to server;
+
         });
 
         numberOfUserTextBox.addFocusListener(new FocusAdapter() {
@@ -360,6 +347,14 @@ public class TestPanelGui {
         configureMainPanelControls(ti);
         bmTestManager.setTestInfo(ti);
         bmTestManager.NotifyTestInfoChanged();
+    }
+
+    public void loadJMXFromCloud() {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        File file = blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.id);
+        Utils.openJMX(file);
     }
 
     private void enableCloudControls(boolean isEnabled) {
