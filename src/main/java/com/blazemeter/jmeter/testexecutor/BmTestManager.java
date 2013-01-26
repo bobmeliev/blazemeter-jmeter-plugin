@@ -3,12 +3,15 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.*;
+import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.gui.action.Command;
+import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.reflect.ClassFinder;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -204,6 +207,8 @@ public class BmTestManager {
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
                 BmLog.console("Starting local test...");
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
+                checkChangesInTestPlan();
+                uploadJmx();
                 if (testInfo == null) {
                     BmLog.error("TestInfo is not set! Enter userkey and select a test!", new NullPointerException());
                 }
@@ -282,12 +287,30 @@ public class BmTestManager {
         new Thread(new jmxUploader()).start();
     }
 
+    private void checkChangesInTestPlan() {
+        GuiPackage guiPackage = GuiPackage.getInstance();
+        if (guiPackage.isDirty()) {
+            int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
+                    "Do you want to save changes in current test-plan?",
+                    JMeterUtils.getResString("save?"),
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (chosenOption == JOptionPane.YES_OPTION) {
+                Save save = new Save();
+                try {
+                    save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "save"));
+                    GuiPackage.showInfoMessage("File is saved", "All changes are saved to " + guiPackage.getTestPlanFile());
+                } catch (IllegalUserActionException iuae) {
+                    BmLog.error("Can not save file," + iuae);
+                }
+            }
+        }
+    }
+
     public int runInTheCloud() {
         TestInfo ti = this.getTestInfo();
         BmLog.console("Starting test " + ti.id + "-" + ti.name);
-
-        //promt user to save changes
-        // upload in test-plan to cloud;
+        checkChangesInTestPlan();
+        uploadJmx();
         int testId = rpc.runInTheCloud(this.getUserKey(), ti.id);
         this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
         if (this.testInfo.status == TestStatus.Running) {

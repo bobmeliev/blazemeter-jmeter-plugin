@@ -181,6 +181,10 @@ public class TestPanelGui {
         editJMXLocallyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (BmTestManager.getInstance().getTestInfo().id.isEmpty()) {
+                    JMeterUtils.reportErrorToUser("JMX can not be downloaded: test id is empty", "Empty test id");
+                    return;
+                }
                 GuiPackage guiPackage = GuiPackage.getInstance();
                 if (guiPackage.isDirty()) {
                     int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
@@ -196,9 +200,9 @@ public class TestPanelGui {
                         } catch (IllegalUserActionException iuae) {
                             BmLog.error("Can not save file," + iuae);
                         }
-                        loadJMXFromCloud();
+                        downloadJMX();
                     } else if (chosenOption == JOptionPane.NO_OPTION) {
-                        loadJMXFromCloud();
+                        downloadJMX();
                     }
                 }
             }
@@ -258,8 +262,8 @@ public class TestPanelGui {
 
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
                     if (bmTestManager.getUserKey().isEmpty()) {
-                        JOptionPane.showMessageDialog(mainPanel, "Please, set up user key.",
-                                "User key is not set", JOptionPane.ERROR_MESSAGE);
+                        JMeterUtils.reportErrorToUser("Please, set up user key.",
+                                "User key is not set");
                         return;
                     }
                     dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
@@ -349,7 +353,7 @@ public class TestPanelGui {
         bmTestManager.NotifyTestInfoChanged();
     }
 
-    public void loadJMXFromCloud() {
+    public void downloadJMX() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
         TestInfo testInfo = bmTestManager.getTestInfo();
@@ -489,7 +493,7 @@ public class TestPanelGui {
                                 setTestInfo(ti);
                                 bmTestManager.NotifyTestInfoChanged();
                             } else {
-                                JOptionPane.showMessageDialog(mainPanel, ti.error, "Test not found error", JOptionPane.ERROR_MESSAGE);
+                                JMeterUtils.reportErrorToUser(ti.error, "Test not found error");
                                 bmTestManager.setTestInfo(null);
                                 bmTestManager.NotifyTestInfoChanged();
                             }
