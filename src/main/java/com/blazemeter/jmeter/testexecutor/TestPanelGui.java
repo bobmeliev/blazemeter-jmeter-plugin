@@ -83,7 +83,6 @@ public class TestPanelGui {
                 fetchUserTestsAsync();
             }
         });
-
         signUpToBlazemeterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -204,7 +203,10 @@ public class TestPanelGui {
                     } else if (chosenOption == JOptionPane.NO_OPTION) {
                         downloadJMX();
                     }
+                } else {
+                    downloadJMX();
                 }
+
             }
 
 
@@ -402,7 +404,6 @@ public class TestPanelGui {
         int userPerEngine = 0;
 
         UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
-        int max_engines_limit = userInfo.getMaxEnginesLimit();
 
 
         if (numberOfUsers <= 300) {
@@ -434,7 +435,6 @@ public class TestPanelGui {
 
     private void saveCloudTest() {
         UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
-        int max_engines_limit = userInfo.getMaxEnginesLimit();
 
         int numberOfUsers = numberOfUsersSlider.getValue();
 

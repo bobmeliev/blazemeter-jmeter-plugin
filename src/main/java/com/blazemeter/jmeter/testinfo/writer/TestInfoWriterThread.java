@@ -96,12 +96,12 @@ public class TestInfoWriterThread implements Runnable {
             BmLog.debug("TestInfo is saved to " + testInfoFile);
 
         } catch (ParserConfigurationException pce) {
-            BmLog.error("ParserConfiguraionException during saving testInfo", pce);
-        } catch (TransformerException tfe) {
-            BmLog.error("TransformerException during saving testInfo", tfe);
-
+            BmLog.error("ParserConfiguraionException during saving testInfo: testInfo is not saved", pce);
         } catch (IOException ioe) {
-            BmLog.error("IOException during creating " + testInfoFile, ioe);
+            BmLog.error("IOException during creating " + testInfoFile + " : testInfo is not saved", ioe);
+        } catch (TransformerException tfe) {
+            BmLog.error("TransformerException during saving testInfo: testInfo is not saved", tfe);
+
         }
     }
 }

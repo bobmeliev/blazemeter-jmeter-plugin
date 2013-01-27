@@ -207,8 +207,6 @@ public class BmTestManager {
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
                 BmLog.console("Starting local test...");
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
-                checkChangesInTestPlan();
-                uploadJmx();
                 if (testInfo == null) {
                     BmLog.error("TestInfo is not set! Enter userkey and select a test!", new NullPointerException());
                 }
@@ -221,6 +219,8 @@ public class BmTestManager {
             }
 
             try {
+                checkChangesInTestPlan();
+                uploadJmx();
                 startLocalTestResult = rpc.startTestLocal(userKey, testInfo.id);
                 if (startLocalTestResult.equals("Test already running, please stop it first")) {
                     return startLocalTestResult;
@@ -298,7 +298,7 @@ public class BmTestManager {
                 Save save = new Save();
                 try {
                     save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "save"));
-                    GuiPackage.showInfoMessage("File is saved", "All changes are saved to " + guiPackage.getTestPlanFile());
+                    GuiPackage.showInfoMessage("All changes are saved to " + guiPackage.getTestPlanFile(), "File is saved");
                 } catch (IllegalUserActionException iuae) {
                     BmLog.error("Can not save file," + iuae);
                 }
@@ -578,7 +578,6 @@ public class BmTestManager {
                         }
                         commandObjects.add(command);
                     }
-
                 }
             }
 
@@ -608,9 +607,5 @@ public class BmTestManager {
                 }
             }
         }).start();
-
-
     }
-
-
 }
