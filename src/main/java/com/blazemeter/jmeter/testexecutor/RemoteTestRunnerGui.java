@@ -45,7 +45,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             BmLog.error(e);
         }
         init();
-        getFilePanel().setVisible(false);
+        getFilePanel().setVisible(true);
     }
 
     public static TestPanelGui getGui() {
@@ -74,6 +74,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             return;
         }
         super.configureTestElement(te);
+        super.modifyTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
         remoteTestRunner.setReportName(gui.getReportName());
         BmTestManager bmTestManager = BmTestManager.getInstance();
