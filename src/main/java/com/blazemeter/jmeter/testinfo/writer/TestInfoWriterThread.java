@@ -90,18 +90,17 @@ public class TestInfoWriterThread implements Runnable {
             if (!f_testInfoFile.exists()) {
                 f_testInfoFile.createNewFile();
             }
-            StreamResult streamResult = new StreamResult(f_testInfoFile);
+            StreamResult streamResult = new StreamResult(f_testInfoFile.toURI().getPath());
             transformer.transform(source, streamResult);
 
             BmLog.debug("TestInfo is saved to " + testInfoFile);
 
         } catch (ParserConfigurationException pce) {
-            BmLog.error("ParserConfiguraionException during saving testInfo: testInfo is not saved", pce);
+            BmLog.error("ParserConfigurationException during saving testInfo: testInfo is not saved", pce);
         } catch (IOException ioe) {
             BmLog.error("IOException during creating " + testInfoFile + " : testInfo is not saved", ioe);
         } catch (TransformerException tfe) {
-            BmLog.error("TransformerException during saving testInfo: testInfo is not saved", tfe);
-
+            BmLog.error("TransformerException during saving testInfo: perhaps testInfo object was empty", tfe);
         }
     }
 }
