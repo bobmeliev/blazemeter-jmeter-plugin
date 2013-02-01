@@ -6,6 +6,7 @@ import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoReader;
 import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
+import org.apache.jmeter.gui.util.FilePanel;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
@@ -75,8 +76,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         }
         super.configureTestElement(te);
         super.modifyTestElement(te);
+        FilePanel filePanel = (FilePanel) getFilePanel();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
-        remoteTestRunner.setReportName(gui.getReportName());
+        remoteTestRunner.setReportName(filePanel.getFilename());
         BmTestManager bmTestManager = BmTestManager.getInstance();
         //Get testInfo from GUI;
         TestInfo testInfo = gui.getTestInfo();
@@ -112,7 +114,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         //Get TestInfo from BmTestManager;
         TestInfo testInfo = bmTestManager.getTestInfo();
         gui.setTestInfo(testInfo);
-        gui.setReportName(remoteTestRunner.getReportName());
     }
 
     private Component getTopPanel() {
