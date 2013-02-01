@@ -839,6 +839,7 @@ public class TestPanelGui {
         reloadButton.setEnabled(!isRunning);
     }
 
+/*
 
     public String getReportName() {
         return reportNameTextField.getText();
@@ -849,6 +850,7 @@ public class TestPanelGui {
         if (!newName.equals(reportNameTextField.getText()))
             reportNameTextField.setText(newName);
     }
+*/
 
 
     private void createUIComponents() {
