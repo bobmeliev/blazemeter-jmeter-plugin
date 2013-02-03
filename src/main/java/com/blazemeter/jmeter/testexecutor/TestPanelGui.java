@@ -41,7 +41,6 @@ public class TestPanelGui {
     private static long lastCloudPanelUpdate = 0;
     private static boolean areListenersInitialized = false;
     private JTextField userKeyTextField;
-    private JTextField reportNameTextField;
     private JTextField testNameTextField;
     private JComboBox testIdComboBox;
     private JPanel mainPanel;
@@ -62,16 +61,11 @@ public class TestPanelGui {
     private JSpinner rampupSpinner;
     private JRadioButton runRemote;
     private JRadioButton runLocal;
-    private JPanel localPanel;
     private JPanel overridesPanel;
     private JPanel infoPanel;
     private JLabel infoLabel;
     private JLabel userInfoLabel;
     private JButton addFilesButton;
-    private JButton browseButton;
-    private JCheckBox errorsCheckBox;
-    private JCheckBox successesCheckBox;
-    private JButton configureButton;
     private JButton editJMXLocallyButton;
 
 
@@ -150,18 +144,6 @@ public class TestPanelGui {
                 getInstance().
                 getUserKey().
                 isEmpty());
-
-        reportNameTextField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent focusEvent) {
-                String name = reportNameTextField.getText().trim();
-                String validName = getValidReportName(name);
-                if (!name.equals(validName)) {
-                    reportNameTextField.setText(validName);
-                }
-            }
-        });
-
 
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
@@ -383,7 +365,6 @@ public class TestPanelGui {
         signUpToBlazemeterButton.setEnabled(isEnabled);
         reloadButton.setEnabled(isEnabled);
         createNewButton.setEnabled(isEnabled);
-        reportNameTextField.setEnabled(isEnabled);
         goToTestPageButton.setEnabled(isEnabled);
         runLocal.setEnabled(isEnabled);
         runRemote.setEnabled(isEnabled);
@@ -662,11 +643,9 @@ public class TestPanelGui {
 
     private void runModeChanged(boolean isLocalRun) {
         if (isLocalRun) {
-            localPanel.setVisible(true);
             cloudPanel.setVisible(false);
             infoPanel.setVisible(false);
         } else {
-            localPanel.setVisible(false);
             cloudPanel.setVisible(true);
             infoPanel.setVisible(true);
         }
@@ -837,23 +816,8 @@ public class TestPanelGui {
         }
         testIdComboBox.setEnabled(!isRunning);
         testIdTextField.setEnabled(!isRunning);
-        reportNameTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
     }
-
-/*
-
-    public String getReportName() {
-        return reportNameTextField.getText();
-    }
-
-    public void setReportName(String reportName) {
-        String newName = getValidReportName(reportName);
-        if (!newName.equals(reportNameTextField.getText()))
-            reportNameTextField.setText(newName);
-    }
-*/
-
 
     private void createUIComponents() {
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
@@ -885,7 +849,7 @@ public class TestPanelGui {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(4, 6, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(3, 6, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAutoscrolls(true);
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(6, 18, new Insets(1, 1, 1, 1), -1, -1));
@@ -1012,7 +976,7 @@ public class TestPanelGui {
         cloudPanel.setLayout(new GridLayoutManager(5, 30, new Insets(1, 1, 1, 1), -1, -1));
         cloudPanel.setEnabled(true);
         cloudPanel.setVisible(true);
-        mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        mainPanel.add(cloudPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         cloudPanel.setBorder(BorderFactory.createTitledBorder("Run in the Cloud Settings"));
         final JLabel label5 = new JLabel();
         label5.setRequestFocusEnabled(false);
@@ -1120,51 +1084,15 @@ public class TestPanelGui {
         editJMXLocallyButton = new JButton();
         editJMXLocallyButton.setText("Edit JMX locally");
         cloudPanel.add(editJMXLocallyButton, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        localPanel = new JPanel();
-        localPanel.setLayout(new GridLayoutManager(2, 7, new Insets(0, 0, 0, 0), -1, -1));
-        localPanel.setEnabled(true);
-        localPanel.setVisible(false);
-        mainPanel.add(localPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        localPanel.setBorder(BorderFactory.createTitledBorder("Local Run"));
-        final JLabel label12 = new JLabel();
-        label12.setText("Report Name");
-        localPanel.add(label12, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer7 = new Spacer();
-        localPanel.add(spacer7, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
-        browseButton = new JButton();
-        browseButton.setText("Browse");
-        browseButton.setVisible(false);
-        localPanel.add(browseButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label13 = new JLabel();
-        label13.setText("Log/Display Only:");
-        label13.setVisible(false);
-        localPanel.add(label13, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        errorsCheckBox = new JCheckBox();
-        errorsCheckBox.setText("Errors");
-        errorsCheckBox.setVisible(false);
-        localPanel.add(errorsCheckBox, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        successesCheckBox = new JCheckBox();
-        successesCheckBox.setText("Successes");
-        successesCheckBox.setVisible(false);
-        localPanel.add(successesCheckBox, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        configureButton = new JButton();
-        configureButton.setText("Configure");
-        configureButton.setVisible(false);
-        localPanel.add(configureButton, new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        reportNameTextField = new JTextField();
-        reportNameTextField.setText("sample.jtl");
-        reportNameTextField.setToolTipText("Report name that listener will create and use for uploading statistics to it.");
-        reportNameTextField.setVisible(true);
-        localPanel.add(reportNameTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(300, -1), new Dimension(400, 22), new Dimension(1000, -1), 0, false));
         infoPanel = new JPanel();
         infoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         infoPanel.setVisible(true);
-        mainPanel.add(infoPanel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        mainPanel.add(infoPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         infoPanel.setBorder(BorderFactory.createTitledBorder("Blazemeter System Messages:"));
+        final Spacer spacer7 = new Spacer();
+        infoPanel.add(spacer7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
         final Spacer spacer8 = new Spacer();
-        infoPanel.add(spacer8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
-        final Spacer spacer9 = new Spacer();
-        infoPanel.add(spacer9, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        infoPanel.add(spacer8, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         infoLabel = new JLabel();
         infoLabel.setText("");
         infoLabel.setVerifyInputWhenFocusTarget(false);
@@ -1178,7 +1106,6 @@ public class TestPanelGui {
         label7.setLabelFor(testNameTextField);
         label8.setLabelFor(testNameTextField);
         label9.setLabelFor(testNameTextField);
-        label12.setLabelFor(reportNameTextField);
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();
         buttonGroup.add(runRemote);
