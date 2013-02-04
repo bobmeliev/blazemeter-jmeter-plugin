@@ -118,7 +118,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     private Component getTopPanel() {
         Container panel = makeTitlePanel();
-
         if (!Desktop.isDesktopSupported()) {
             return panel;
         }

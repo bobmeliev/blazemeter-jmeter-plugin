@@ -175,16 +175,17 @@ public class Uploader {
         }
     }
 
-    public synchronized void ForceUpload(String filename, String data, String dataType) {
+    public synchronized void forceUpload(String filename, String data, String dataType) {
+
         new DataUploader(filename, data, dataType).run();
     }
 
 
-    public synchronized void AddSample(String filename, String data) {
-        AddSample(filename, data, 0);
+    public synchronized void addSample(String filename, String data) {
+        addSample(filename, data, 0);
     }
 
-    public synchronized void AddSample(String filename, String data, int count) {
+    public synchronized void addSample(String filename, String data, int count) {
         if (!isRunning)
             return;
 
@@ -198,7 +199,7 @@ public class Uploader {
                     Thread.sleep(5000);
                 } catch (InterruptedException ignored) {
                 }
-                AddSample(filename, data, count + 1);
+                addSample(filename, data, count + 1);
             }
         }
 
@@ -206,7 +207,7 @@ public class Uploader {
 
     private static final Object lock = new Object();
 
-    public synchronized void SamplingStarted(String filename) {
+    public synchronized void samplingStarted(String filename) {
         BmLog.console("adding " + filename);
         synchronized (lock) {
             if (!reports.contains(filename))

@@ -544,7 +544,7 @@ public class TestPanelGui {
                         runRemote.setEnabled(false);
                     }
 
-                    if ((testInfo.status == TestStatus.NotRunning)) {
+                    if ((testInfo.status == TestStatus.NotRunning) & (BmTestManager.isTestRunning())) {
                         if (BmTestManager.getInstance().getIsLocalRunMode()) {
                             StandardJMeterEngine.stopEngine();
                         }

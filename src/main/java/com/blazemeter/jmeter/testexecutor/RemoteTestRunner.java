@@ -104,7 +104,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     }
 
     public String getReportName() {
-        return this.getPropertyAsString("reportName", "");
+        return this.getPropertyAsString("reportName", "report.jtl");
     }
 
     public void setReportName(String reportName) {
@@ -157,8 +157,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.debug("Test is started without uploading report to server");
             return;
         }
-        // reportName should be got from FilePanel
-        Uploader.getInstance().SamplingStarted(getReportName());
+        Uploader.getInstance().samplingStarted(getReportName());
         JMeterLogFilesUploader.getInstance().startListening();
     }
 
@@ -187,14 +186,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             b.append(GetJtlString(se));
             b.append("\n");
         }
-        Uploader.getInstance().AddSample(getReportName(), b.toString());
+        Uploader.getInstance().addSample(getReportName(), b.toString());
     }
 
     @Override
     public synchronized void sampleOccurred(SampleEvent evt) {
         if (BmTestManager.isTestRunning()) {
             String templateJTL = GetJtlString(evt);
-            Uploader.getInstance().AddSample(getReportName(), templateJTL);
+            Uploader.getInstance().addSample(getReportName(), templateJTL);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }

@@ -403,11 +403,20 @@ public class BlazemeterApi {
         }
 
         Integer fileSize = -1;
-
-
         reportName = reportName.trim().isEmpty() ? "sample" : reportName;
-        if (dataType.equals("jtl"))
+
+
+        if (dataType.equals("jtl")) {
             reportName = reportName.toLowerCase().endsWith(".jtl") ? reportName : reportName + ".jtl";
+            int lastIndex = -3;
+            if (Utils.isWindows()) {
+                lastIndex = reportName.lastIndexOf("%5C");
+            }
+            if (Utils.isMac() | Utils.isUnix()) {
+                lastIndex = reportName.lastIndexOf("%2F");
+            }
+            reportName = reportName.substring(lastIndex + 3, reportName.length());
+        }
 
         String url = this.urlManager.testResultsJTLUpload(APP_KEY, userKey, testId, reportName, dataType);
 
@@ -422,8 +431,6 @@ public class BlazemeterApi {
         } catch (JSONException e) {
             BmLog.error(e);
         }
-
-
         return fileSize;
     }
 

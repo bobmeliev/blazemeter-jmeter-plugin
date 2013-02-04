@@ -113,10 +113,10 @@ public class JMeterLogFilesUploader {
             }
             if (buff.length() > 0) {
                 if (Thread.currentThread().getThreadGroup().getName().equals("main")) {
-                    Uploader.getInstance().ForceUpload("console_" + jmeter_log_filename, buff.toString(), "log");
+                    Uploader.getInstance().forceUpload("console_" + jmeter_log_filename, buff.toString(), "log");
                 }
                 if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
-                    Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_log_filename, buff.toString(), "log");
+                    Uploader.getInstance().forceUpload(Utils.getHostIP() + "_" + jmeter_log_filename, buff.toString(), "log");
                 }
             }
             try {
@@ -150,7 +150,7 @@ public class JMeterLogFilesUploader {
                     BmLog.error("JMeter server log file was not read: ", npe);
                 }
                 if (jmeter_log_buff.length() > 0) {
-                    Uploader.getInstance().ForceUpload(Utils.getHostIP() + "_" + jmeter_server_log_filename, jmeter_log_buff.toString(), "log");
+                    Uploader.getInstance().forceUpload(Utils.getHostIP() + "_" + jmeter_server_log_filename, jmeter_log_buff.toString(), "log");
                 }
                 try {
                     Thread.sleep(10000);
