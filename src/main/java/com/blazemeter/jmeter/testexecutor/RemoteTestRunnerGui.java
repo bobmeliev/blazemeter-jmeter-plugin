@@ -6,7 +6,6 @@ import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoReader;
 import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
-import org.apache.jmeter.gui.util.FilePanel;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
@@ -46,7 +45,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             BmLog.error(e);
         }
         init();
-        getFilePanel().setVisible(true);
+        getFilePanel().setVisible(false);
     }
 
     public static TestPanelGui getGui() {
@@ -60,7 +59,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             return null;
         }
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        RemoteTestRunner testRunner = new RemoteTestRunner();//pass RemoteSample Listener listener to constructor; https://blazemeter.atlassian.net/browse/BPC-36
+        RemoteTestRunner testRunner = new RemoteTestRunner();
         testRunner.setUserKey(bmTestManager.getUserKey());
         testRunner.setTestInfo(bmTestManager.getTestInfo());
         testRunner.setIsLocalRunMode(bmTestManager.getIsLocalRunMode());
@@ -75,10 +74,11 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             return;
         }
         super.configureTestElement(te);
-        super.modifyTestElement(te);
-        FilePanel filePanel = (FilePanel) getFilePanel();
+        //should be removed after discussion with Alon
+//        super.modifyTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
-        remoteTestRunner.setReportName(filePanel.getFilename());
+        remoteTestRunner.setReportName("test_results.jtl");
+
         BmTestManager bmTestManager = BmTestManager.getInstance();
         //Get testInfo from GUI;
         TestInfo testInfo = gui.getTestInfo();

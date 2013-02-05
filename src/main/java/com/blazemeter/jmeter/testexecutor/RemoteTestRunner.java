@@ -104,7 +104,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     }
 
     public String getReportName() {
-        return this.getPropertyAsString("reportName", "report.jtl");
+        return this.getPropertyAsString("reportName", "test_results.jtl");
     }
 
     public void setReportName(String reportName) {
