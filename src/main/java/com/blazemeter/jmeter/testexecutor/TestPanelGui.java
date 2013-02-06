@@ -632,6 +632,10 @@ public class TestPanelGui {
         BmLog.debug("Setting user key" + key);
     }
 
+    public String getUserKey() {
+        return userKeyTextField.getText();
+    }
+
     public void addTestId(Object test, boolean selected) {
         testIdComboBox.addItem(test);
         if (selected) {

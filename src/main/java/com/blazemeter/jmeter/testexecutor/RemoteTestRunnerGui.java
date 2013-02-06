@@ -74,8 +74,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             return;
         }
         super.configureTestElement(te);
-        //should be removed after discussion with Alon
-//        super.modifyTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
         remoteTestRunner.setReportName("test_results.jtl");
 
@@ -249,11 +247,13 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                     bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);
                     //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
                     TestInfoReader testInfoReader = TestInfoReader.getInstance();
-                    TestInfo testInfo = testInfoReader.loadTestInfo();
-                    if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
-                        bmTestManager.setTestInfo(testInfo);
-                        testInfoReader.setTestInfoSet(true);
-                        TestInfoWriter.getInstance().setTestInfo(testInfo);
+                    if (!gui.getUserKey().equalsIgnoreCase("Enter your user key")) {
+                        TestInfo testInfo = testInfoReader.loadTestInfo();
+                        if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
+                            bmTestManager.setTestInfo(testInfo);
+                            testInfoReader.setTestInfoSet(true);
+                            TestInfoWriter.getInstance().setTestInfo(testInfo);
+                        }
                     }
                     bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
                         @Override
