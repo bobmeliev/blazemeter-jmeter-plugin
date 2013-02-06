@@ -65,35 +65,43 @@ public class JMeterLogFilesUploader {
     public void startListening() {
         if (isRunning)
             return;
-        String jmeter_server_log_filename = "";
-        if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
-            jmeter_server_log_filename = getJMeterServerLogFilename();
-        }
         String jmeter_log_filename = getJMeterLogFilename();
-
-        if (jmeter_log_filename == null)
-            return;
-
-        try {
-            jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
-            jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_server_log_filename)));
-        } catch (FileNotFoundException fnfe) {
-            BmLog.error("Could not upload log file, file not found!", fnfe);
+        if (jmeter_log_filename != null) {
+            try {
+                jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
+            } catch (FileNotFoundException fnfe) {
+                BmLog.error("Could not upload log file" + jmeter_log_filename + ", file not found!", fnfe);
+            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    UploadJMeterLog();
+                }
+            }).start();
+        } else {
+            BmLog.error("Jmeter log file was not defined in jmeter.properties");
         }
 
+
+        if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
+            String jmeter_server_log_filename = getJMeterServerLogFilename();
+            if (jmeter_server_log_filename != null) {
+                try {
+                    jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_server_log_filename)));
+                } catch (FileNotFoundException fnfe) {
+                    BmLog.error("Could not upload log file" + jmeter_server_log_filename + ", file not found!", fnfe);
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UploadJmeterServerLog();
+                    }
+                }).start();
+            } else {
+                BmLog.error("Jmeter server log file was not defined in jmeter.properties");
+            }
+        }
         isRunning = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                UploadJMeterLog();
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                UploadJmeterServerLog();
-            }
-        }).start();
     }
 
 

@@ -75,9 +75,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         }
         super.configureTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
-        remoteTestRunner.setReportName("test_results.jtl");
 
         BmTestManager bmTestManager = BmTestManager.getInstance();
+
         //Get testInfo from GUI;
         TestInfo testInfo = gui.getTestInfo();
         TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
@@ -87,6 +87,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         }
         //Set testInfo to BmTestManager
         bmTestManager.setTestInfo(testInfo);
+        remoteTestRunner.setReportName("test_" + testInfo.id + ".jtl");
+
     }
 
     @Override
@@ -107,7 +109,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         //initialize RemoteTestRunnerGUI
         initializeListeners();
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
+
         bmTestManager.getInstance().checkForUpdates();
         //Get TestInfo from BmTestManager;
         TestInfo testInfo = bmTestManager.getTestInfo();
@@ -271,7 +273,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                             }
                         }
                     }
-
                     );
 
                 }

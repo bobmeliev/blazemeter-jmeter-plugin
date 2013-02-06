@@ -18,7 +18,7 @@
         <properties>
           <visible value="true"/>
         </properties>
-        <border type="line" title="Info">
+        <border type="none" title="Info">
           <color system-color="windowBorder"/>
         </border>
         <children>
@@ -597,7 +597,9 @@
         <properties>
           <visible value="true"/>
         </properties>
-        <border type="none" title="Blazemeter System Messages:"/>
+        <border type="none" title="Blazemeter System Messages:">
+          <color color="-16777216"/>
+        </border>
         <children>
           <hspacer id="fc9ed">
             <constraints>
