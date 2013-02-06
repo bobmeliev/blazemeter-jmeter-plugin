@@ -544,8 +544,8 @@ public class TestPanelGui {
                         runRemote.setEnabled(false);
                     }
 
-                    if ((testInfo.status == TestStatus.NotRunning) & (BmTestManager.isTestRunning())) {
-                        if (BmTestManager.getInstance().getIsLocalRunMode()) {
+                    if ((testInfo.status == TestStatus.NotRunning)) {
+                        if (BmTestManager.getInstance().getIsLocalRunMode() & (BmTestManager.isTestRunning())) {
                             StandardJMeterEngine.stopEngine();
                         }
                         runInTheCloud.setEnabled(true);
@@ -569,7 +569,6 @@ public class TestPanelGui {
                     }
                 }
             });
-
             //Processing serverStatusChangedNotification
             bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
                 @Override

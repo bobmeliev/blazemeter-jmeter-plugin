@@ -284,7 +284,13 @@ public class BmTestManager {
     }
 
     public void uploadJmx() {
-        new Thread(new jmxUploader()).start();
+        Thread jmxUploader = new Thread(new jmxUploader());
+        jmxUploader.start();
+        try {
+            jmxUploader.join();
+        } catch (InterruptedException ie) {
+            BmLog.debug("JMX Uploader was interrupted");
+        }
     }
 
     private void checkChangesInTestPlan() {
