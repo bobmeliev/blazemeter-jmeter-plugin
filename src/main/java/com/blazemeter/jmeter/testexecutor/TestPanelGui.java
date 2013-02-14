@@ -33,6 +33,7 @@ import java.util.Dictionary;
  */
 public class TestPanelGui {
     private static final String NEW = "---NEW---";
+    private static final String EMPTY = "";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
     private static final String SELECT_TEST = "Please, select test from list";
     private static final String LOADING_TEST_INFO = "Loading test info, please wait";
@@ -88,10 +89,13 @@ public class TestPanelGui {
         createNewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                String userKey = BmTestManager.getInstance().getUserKey();
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                String userKey = bmTestManager.getUserKey();
                 if (userKey == null || userKey.isEmpty()) {
-                    JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
+                    JMeterUtils.reportErrorToUser("Please enter user key", "No user key");
+                    bmTestManager.setUserKeyValid(false);
                     return;
+
                 }
                 String testName = testNameTextField.getText().trim();
                 if (testName.isEmpty()) {
@@ -460,16 +464,16 @@ public class TestPanelGui {
                 public void itemStateChanged(ItemEvent itemEvent) {
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                        Object selected = testIdComboBox.getSelectedItem();
-                        if (selected instanceof TestInfo) {
-                            TestInfo testInfo = (TestInfo) selected;
+                        Object selectedTest = testIdComboBox.getSelectedItem();
+                        if (selectedTest instanceof TestInfo) {
+                            TestInfo testInfo = (TestInfo) selectedTest;
                             if (testInfo.name != NEW & !testInfo.name.isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
                                 bmTestManager.NotifyTestInfoChanged();
                             }
-                        } else if (Utils.isInteger(selected.toString())) {
+                        } else if (Utils.isInteger(selectedTest.toString())) {
                             TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-                                    selected.toString(), true);
+                                    selectedTest.toString(), true);
                             BmLog.console(ti.toString());
                             if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
                                 bmTestManager.setTestInfo(ti);
@@ -480,7 +484,7 @@ public class TestPanelGui {
                                 bmTestManager.setTestInfo(null);
                                 bmTestManager.NotifyTestInfoChanged();
                             }
-                        } else if (selected.toString().equals(NEW)) {
+                        } else if (selectedTest.toString().equals(NEW)) {
                             testIdComboBox.setSelectedItem(NEW);
                             configureMainPanelControls(null);
                             resetCloudPanel();
@@ -563,9 +567,8 @@ public class TestPanelGui {
                             (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                         startTestInfoChecker();
                     }
-                    if (testInfo.name == NEW) {
+                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
                         stopTestInfoChecker();
-
                     }
                 }
             });
@@ -611,9 +614,12 @@ public class TestPanelGui {
             public void testReceived(ArrayList<TestInfo> tests) {
                 testIdComboBox.removeAllItems();
                 testIdComboBox.setEnabled(true);
-                testIdComboBox.addItem(NEW);
-                testIdComboBox.setSelectedItem(NEW);
+                testIdComboBox.addItem(EMPTY);
+                testIdComboBox.setSelectedItem(EMPTY);
                 if (tests != null) {
+                    testIdComboBox.removeAllItems();
+                    testIdComboBox.addItem(NEW);
+                    testIdComboBox.setSelectedItem(NEW);
                     BmTestManager.getInstance().setUserKeyValid(true);
                     for (TestInfo ti : tests) {
                         addTestId(ti, false);
@@ -622,6 +628,9 @@ public class TestPanelGui {
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
+                    resetCloudPanel();
+                    enableCloudControls(false);
+                    testIdComboBox.setSelectedItem(EMPTY);
                 }
             }
         });
@@ -691,41 +700,50 @@ public class TestPanelGui {
             return;
         }
         lastCloudPanelUpdate = now;
-
-        if (BmTestManager.getInstance().getUserKey().isEmpty())
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        if (bmTestManager.getUserKey().isEmpty() || !bmTestManager.isUserKeyValid()) {
             return;
+
+        }
 
         interruptCloudPanelUpdate();
         updateCloudPanelThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                        BmTestManager.getInstance().getTestInfo().id, true);
                 BmTestManager bmTestManager = BmTestManager.getInstance();
+                TestInfo testInfo = bmTestManager.getTestInfo();
+                String testId = "";
+                if (testInfo != null) {
+                    testId = testInfo.id;
+                } else {
+                    testId = testIdComboBox.getSelectedItem().toString().split(" ")[0];
+                }
+                testInfo = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
+                        testId, true);
 
-                bmTestManager.setTestInfo(ti);
+                bmTestManager.setTestInfo(testInfo);
                 bmTestManager.NotifyTestInfoChanged();
 
                 if (Thread.currentThread().isInterrupted())
                     return;
-                if ("jmeter".equals(ti.type)) {
-                    locationComboBox.setSelectedItem(ti.getLocation());
-                    numberOfUsersSlider.setValue(ti.getNumberOfUsers());
-                    if (ti.overrides != null) {
-                        rampupSpinner.setValue(ti.overrides.rampup);
-                        iterationsSpinner.setValue(ti.overrides.iterations == -1 ? 0 : ti.overrides.iterations);
-                        durationSpinner.setValue(ti.overrides.duration == -1 ? 0 : ti.overrides.duration);
+                if ("jmeter".equals(testInfo.type)) {
+                    locationComboBox.setSelectedItem(testInfo.getLocation());
+                    numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
+                    if (testInfo.overrides != null) {
+                        rampupSpinner.setValue(testInfo.overrides.rampup);
+                        iterationsSpinner.setValue(testInfo.overrides.iterations == -1 ? 0 : testInfo.overrides.iterations);
+                        durationSpinner.setValue(testInfo.overrides.duration == -1 ? 0 : testInfo.overrides.duration);
                     } else {
                         rampupSpinner.setValue(0);
                         iterationsSpinner.setValue(0);
                         durationSpinner.setValue(0);
                     }
-                    runInTheCloud.setActionCommand(ti.status == TestStatus.Running ? "stop" : "start");
-                    runInTheCloud.setText(ti.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
+                    runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
+                    runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
                 } else {
                     infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
                 }
-                configureMainPanelControls(ti);
+                configureMainPanelControls(testInfo);
             }
         });
         updateCloudPanelThread.start();
@@ -787,17 +805,6 @@ public class TestPanelGui {
         }
     }
 
-
-    private String getValidReportName(String name) {
-        if (name == null || name.isEmpty()) {
-            return "sample.jtl";
-        }
-        if (!name.toLowerCase().endsWith(".jtl")) {
-            return name + ".jtl";
-        }
-        return name;
-    }
-
     private void configureMainPanelControls(TestInfo testInfo) {
         boolean isRunning = (testInfo != null && testInfo.status == TestStatus.Running);
 
@@ -837,9 +844,9 @@ public class TestPanelGui {
 
 
     {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
+        // GUI initializer generated by IntelliJ IDEA GUI Designer
+        // >>> IMPORTANT!! <<<
+        // DO NOT EDIT OR ADD ANY CODE HERE!
         $$$setupUI$$$();
     }
 
