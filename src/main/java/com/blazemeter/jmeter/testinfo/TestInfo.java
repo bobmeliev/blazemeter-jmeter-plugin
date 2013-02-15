@@ -45,8 +45,9 @@ public class TestInfo {
 
     public boolean equals(TestInfo testInfo) {
         boolean equals;
+
         equals = (this == null & testInfo == null);
-        if (!equals) {
+        if (!equals | (this == null & testInfo == null)) {
             return equals;
         }
         return testInfo.name.equals(this.name) &&

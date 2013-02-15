@@ -245,6 +245,9 @@ public class BmTestManager {
 
 
     public void setTestInfo(TestInfo testInfo) {
+        if (this.testInfo == null & testInfo == null) {
+            return;
+        }
         if (!this.testInfo.equals(testInfo)) {
             synchronized (this.testInfo) {
                 this.testInfo = testInfo;
@@ -313,11 +316,15 @@ public class BmTestManager {
     }
 
     public int runInTheCloud() {
-        TestInfo ti = this.getTestInfo();
-        BmLog.console("Starting test " + ti.id + "-" + ti.name);
+        TestInfo testInfo = this.getTestInfo();
+        if (testInfo == null) {
+            BmLog.error("TestInfo is null, test won't be started");
+            return -1;
+        }
+        BmLog.console("Starting test " + testInfo.id + "-" + testInfo.name);
         checkChangesInTestPlan();
         uploadJmx();
-        int testId = rpc.runInTheCloud(this.getUserKey(), ti.id);
+        int testId = rpc.runInTheCloud(this.getUserKey(), testInfo.id);
         this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
         if (this.testInfo.status == TestStatus.Running) {
             NotifyTestInfoChanged();

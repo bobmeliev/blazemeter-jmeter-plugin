@@ -194,7 +194,7 @@
                 </constraints>
                 <properties>
                   <doubleBuffered value="true"/>
-                  <editable value="true"/>
+                  <editable value="false"/>
                   <enabled value="true"/>
                   <toolTipText value="Enter test id  or select test from list , click refresh button if you want to load test list from the server."/>
                 </properties>
