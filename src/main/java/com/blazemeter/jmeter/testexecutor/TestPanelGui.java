@@ -450,7 +450,7 @@ public class TestPanelGui {
                     BmTestManager.getInstance().getTestInfo().id,
                     location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
         } else {
-            JMeterUtils.reportErrorToUser("Test is not selected", "Please, select test");
+            JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
         }
     }
 
@@ -721,13 +721,14 @@ public class TestPanelGui {
                 BmTestManager bmTestManager = BmTestManager.getInstance();
                 TestInfo testInfo = bmTestManager.getTestInfo();
                 String testId = "";
-                if (testInfo != null) {
-                    testId = testInfo.id;
-                } else {
+                if (testInfo == null) {
+                    testInfo = new TestInfo();
                     testId = testIdComboBox.getSelectedItem().toString().split(" ")[0];
+                    testInfo.id = testId;
+                    bmTestManager.setTestInfo(testInfo);
                 }
                 testInfo = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-                        testId, true);
+                        testInfo.id, true);
 
                 bmTestManager.setTestInfo(testInfo);
                 bmTestManager.NotifyTestInfoChanged();
