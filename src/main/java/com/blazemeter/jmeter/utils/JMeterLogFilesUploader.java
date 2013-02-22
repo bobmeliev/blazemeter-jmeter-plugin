@@ -46,7 +46,7 @@ public class JMeterLogFilesUploader {
     public String getJMeterServerLogFilename() {
         if (jmeter_server_log_filename == null) {
             String server_log_file_path = JMeterUtils.getProperty("server_log_file");
-            if (server_log_file_path.equals(""))   //No log file!
+            if (server_log_file_path == null || server_log_file_path.isEmpty())   //No log file!
                 return null;
 
             if (new File(server_log_file_path).exists()) {
@@ -79,7 +79,7 @@ public class JMeterLogFilesUploader {
                 }
             }).start();
         } else {
-            BmLog.error("Jmeter log file was not defined in jmeter.properties");
+            BmLog.error("Jmeter log file was not defined in jmeter.properties:jmeter server log will not be uploaded");
         }
 
 
