@@ -82,7 +82,9 @@ public class JMeterLogFilesUploader {
             BmLog.error("Jmeter log file was not defined in jmeter.properties:jmeter server log will not be uploaded");
         }
 
-
+        /* if ThreadGroup has name "RMI Runtime", than this jmeter instance is jmeter-server.
+          Only in this case we need to upload jmeter-server.log
+        */
         if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
             String jmeter_server_log_filename = getJMeterServerLogFilename();
             if (jmeter_server_log_filename != null) {
