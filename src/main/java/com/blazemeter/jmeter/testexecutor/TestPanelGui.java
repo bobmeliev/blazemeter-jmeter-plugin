@@ -389,7 +389,6 @@ public class TestPanelGui {
     }
 
     private ArrayList<String> calculateEnginesForTest(int numberOfUsers) {
-
         ArrayList<String> enginesParameters = new ArrayList<String>(3);
         int engines = 0;
         String engineSize = "m1.medium";
