@@ -17,8 +17,8 @@
         <!-- This is path to JMeter in local machine. Adjust it according to your  configuration-->
         <jmeter.home>/home/Applications/ASF/apache-jmeter-2.8</jmeter.home>
     </properties>
-    <groupId>blazemeter_plugin</groupId>
-    <artifactId>blazemeter_plugin</artifactId>
+    <groupId>blazemeter-jmeter-plugin</groupId>
+    <artifactId>blazemeter-jmeter-plugin</artifactId>
     <version>1.0</version>
     <dependencies>
         <dependency>
