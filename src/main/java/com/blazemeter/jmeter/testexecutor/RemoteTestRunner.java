@@ -20,6 +20,8 @@ import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import static com.blazemeter.jmeter.utils.Uploader.*;
+
 //~--- JDK imports ------------------------------------------------------------
 public class RemoteTestRunner extends ResultCollector implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
@@ -157,7 +159,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.debug("Test is started without uploading report to server");
             return;
         }
-        Uploader.getInstance().samplingStarted(getReportName());
+        getInstance().samplingStarted(getReportName());
         JMeterLogFilesUploader.getInstance().startListening();
     }
 
@@ -186,14 +188,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             b.append(GetJtlString(se));
             b.append("\n");
         }
-        Uploader.getInstance().addSample(getReportName(), b.toString());
+        getInstance().addSample(getReportName(), b.toString());
     }
 
     @Override
     public synchronized void sampleOccurred(SampleEvent evt) {
         if (BmTestManager.isTestRunning()) {
             String templateJTL = GetJtlString(evt);
-            Uploader.getInstance().addSample(getReportName(), templateJTL);
+            getInstance().addSample(getReportName(), templateJTL);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }

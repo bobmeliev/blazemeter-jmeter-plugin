@@ -23,6 +23,7 @@
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.log.Logger:logger:2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.jmeter:jmeter-jorphan:2.3.4" level="project" />
+    <orderEntry type="library" name="ApacheJMeter_core" level="project" />
   </component>
 </module>
 
