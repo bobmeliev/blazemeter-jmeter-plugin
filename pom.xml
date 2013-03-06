@@ -6,10 +6,6 @@
 
     <repositories>
         <repository>
-            <id>Maven JMeter Plugin</id>
-            <url>http://yciabaud.github.com/jmeter-maven-plugin/repository</url>
-        </repository>
-        <repository>
             <id>Maven 2</id>
             <url>http://repo1.maven.org/maven2/</url>
         </repository>
@@ -20,7 +16,7 @@
 
     <groupId>blazemeter-jmeter-plugin</groupId>
     <artifactId>blazemeter-jmeter-plugin</artifactId>
-    <version>1.0</version>
+    <version>1.53</version>
 
     <dependencies>
         <dependency>
