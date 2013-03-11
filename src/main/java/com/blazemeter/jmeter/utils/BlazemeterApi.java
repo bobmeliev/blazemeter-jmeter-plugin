@@ -444,6 +444,7 @@ public class BlazemeterApi {
         try {
             JSONObject options = new JSONObject();
             options.put("NUMBER_OF_ENGINES", engines);//engine
+            options.put("JMETER_VERSION", JMeterPluginUtils.getJmeterVersion());//engine
             options.put("INSTANCE_TYPE", engineType);//engine
             options.put("OVERRIDE", 1);
             options.put("OVERRIDE_THREADS", usersPerEngine);//threads

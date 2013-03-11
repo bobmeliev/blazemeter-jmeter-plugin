@@ -29,9 +29,9 @@ public abstract class JMeterPluginUtils {
 
     public static String getJmeterVersion() {
         String version = JMeterUtils.getJMeterVersion();
-        int spaceIndex = version.indexOf(" ");
-        if (spaceIndex != -1)
-            return version.substring(0, spaceIndex);
+        int hyphenIndex = version.indexOf("-");
+        if (hyphenIndex != -1)
+            return version.substring(0, hyphenIndex);
         else
             return version;
     }
