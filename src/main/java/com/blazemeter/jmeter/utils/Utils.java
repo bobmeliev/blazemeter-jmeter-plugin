@@ -1,10 +1,15 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.Load;
+import org.apache.jmeter.gui.tree.JMeterTreeModel;
+import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jorphan.collections.HashTree;
 
 import javax.swing.*;
@@ -14,6 +19,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -102,8 +109,27 @@ public class Utils {
             BmLog.debug("Loading file: " + file);
             reader = new FileInputStream(file);
             HashTree tree = SaveService.loadTree(reader);
-            GuiPackage.getInstance().setTestPlanFile(file.getAbsolutePath());
+            GuiPackage guiPackage = GuiPackage.getInstance();
+            guiPackage.setTestPlanFile(file.getAbsolutePath());
             Load.insertLoadedTree(1, tree);
+
+            JMeterTreeModel model = guiPackage.getTreeModel();
+            JMeterTreeNode node= (JMeterTreeNode)guiPackage.getTreeModel().getRoot();
+            JMeterTreeNode testPlanNode  = model.getNodesOfType(TestPlan.class).get(0);
+            List<JMeterTreeNode> nodes = Collections.list(testPlanNode.children());
+            Iterator<JMeterTreeNode> nodeIterator = nodes.iterator();
+            boolean containsRemoteTestRunner=false;
+            while(nodeIterator.hasNext()){
+                JMeterTreeNode nextNode = nodeIterator.next();
+                if(nextNode.getUserObject() instanceof RemoteTestRunner){
+                     containsRemoteTestRunner=true;
+                }
+            }
+
+            if(!containsRemoteTestRunner){
+                TestElement remoteTestRunner=guiPackage.createTestElement(RemoteTestRunnerGui.class, RemoteTestRunner.class);
+                model.addComponent(remoteTestRunner,testPlanNode);
+            }
 
         } catch (FileNotFoundException fnfe) {
             BmLog.error("JMX file " + file.getName() + "was not found ", fnfe);

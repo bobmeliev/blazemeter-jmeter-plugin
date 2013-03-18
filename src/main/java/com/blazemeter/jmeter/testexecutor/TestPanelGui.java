@@ -15,6 +15,7 @@ import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.util.JMeterUtils;
 
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -346,7 +347,7 @@ public class TestPanelGui {
         bmTestManager.NotifyTestInfoChanged();
     }
 
-    public void downloadJMX() {
+    private void downloadJMX() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
         TestInfo testInfo = bmTestManager.getTestInfo();
@@ -545,9 +546,18 @@ public class TestPanelGui {
                     if (testInfo == null) {
                         return;
                     }
-                    if (testIdComboBox.getItemCount() == 1) {
-                        addTestId(testInfo, true);
+
+                    DefaultComboBoxModel model = (DefaultComboBoxModel) testIdComboBox.getModel();
+                    int testItemIndex = model.getIndexOf(testInfo);
+                    if (testItemIndex == -1) {
+                        addTestId(testInfo,true);
+            /*
+                        TestInfo comboBoxTestInfo = (TestInfo) model.getElementAt(testItemIndex);
+                        if (!comboBoxTestInfo.id.equals(testInfo.id))
+                            addTestId(testInfo, true);
+            */
                     }
+
                     if (testInfo.status == TestStatus.Running) {
                         runInTheCloud.setEnabled(true);
                         addFilesButton.setEnabled(false);
@@ -606,6 +616,7 @@ public class TestPanelGui {
             });
         }
     }
+
 
     private void fetchUserTestsAsync() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
