@@ -547,15 +547,16 @@ public class TestPanelGui {
                         return;
                     }
 
-                    DefaultComboBoxModel model = (DefaultComboBoxModel) testIdComboBox.getModel();
-                    int testItemIndex = model.getIndexOf(testInfo);
-                    if (testItemIndex == -1) {
-                        addTestId(testInfo,true);
-            /*
-                        TestInfo comboBoxTestInfo = (TestInfo) model.getElementAt(testItemIndex);
-                        if (!comboBoxTestInfo.id.equals(testInfo.id))
-                            addTestId(testInfo, true);
-            */
+                    String item =testInfo.id+" - "+testInfo.name;
+                    boolean exists = false;
+
+                    for (int index = 0; index < testIdComboBox.getItemCount() && !exists; index++) {
+                        if (item.equals(testIdComboBox.getItemAt(index))) {
+                            exists = true;
+                        }
+                    }
+                    if (!exists&!testInfo.id.isEmpty()) {
+                         testIdComboBox.addItem(item);
                     }
 
                     if (testInfo.status == TestStatus.Running) {
@@ -578,7 +579,6 @@ public class TestPanelGui {
                         configureMainPanelControls(testInfo);
 
                     }
-
 
                     setTestInfo(testInfo);
                     if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
