@@ -234,12 +234,12 @@ public class TestPanelGui {
                 usersPerEngine = Integer.valueOf(enginesParameters.get(2));
                 if (numberOfUsers <= 300) {
                     enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
-
+                    numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
                 } else {
                     enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
+                    numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
 
                 }
-                numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
             }
         });
 
