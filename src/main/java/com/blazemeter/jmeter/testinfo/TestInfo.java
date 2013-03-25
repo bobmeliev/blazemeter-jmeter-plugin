@@ -18,7 +18,7 @@ public class TestInfo {
     public String location;
     public Overrides overrides;
     public String type;
-    private static String testInfoFilePath = System.getProperty("user.home") + "/testinfo.xml";
+    private final static String testInfoFilePath = System.getProperty("user.home") + "/testinfo.xml";
 
 
     private TestInfo(String testName, String testId) {
