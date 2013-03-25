@@ -245,7 +245,7 @@ public class BmTestManager {
 
 
     public void setTestInfo(TestInfo testInfo) {
-        if (this.testInfo == null & testInfo == null) {
+        if (testInfo == null) {
             return;
         }
         if (!this.testInfo.equals(testInfo)) {
