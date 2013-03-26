@@ -15,42 +15,7 @@
         </repository>
 
     </repositories>
-   <!-- <properties>
-        <jmeter.home>/home/dzmitrykashlach/Applications/ASF/apache-jmeter-2.9</jmeter.home>
-    </properties>
--->
     <build>
-
-        <!--<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>forms_rt</groupId>
-                                    <artifactId>forms_rt</artifactId>
-                                    <version>7.0.3</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>.</outputDirectory>
-                                    <destFileName>forms_rt.jar</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
--->
         <resources>
             <resource>
                 <targetPath>./com/blazemeter/jmeter/images</targetPath>
@@ -59,7 +24,6 @@
         </resources>
 
     </build>
-
 
 
     <dependencies>
@@ -98,14 +62,7 @@
             <artifactId>jorphan</artifactId>
             <version>2.6</version>
         </dependency>
-  <!--      <dependency>
-            <groupId>org.apache.jmeter</groupId>
-            <artifactId>jmeter-jorphan</artifactId>
-            <version>2.3.4</version>
-            <scope>system</scope>
-            <systemPath>${jmeter.home}/lib/jorphan.jar</systemPath>
-        </dependency>
-  -->      <dependency>
+        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
