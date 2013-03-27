@@ -133,15 +133,13 @@ public class TestPanelGui {
                         userInfo.setMaxEnginesLimit(14);
                     }
                     //configure numberOfUserSlider depending on UserInfo
-                    numberOfUsersSlider.setMinimum(1);
+                    numberOfUsersSlider.setMinimum(0);
                     userInfoLabel.setText(userInfo.toString());
                     numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
                     numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
                     numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
-                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing(), 0);
+                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
                     numberOfUsersSlider.setLabelTable(labels);
-
-
                 }
             }
         });
@@ -212,6 +210,9 @@ public class TestPanelGui {
                 int numberOfUsers = 0;
                 try {
                     numberOfUsers = Integer.valueOf(numberOfUserTextBox.getText().trim());
+                    if (numberOfUsers == 0) {
+                        numberOfUserTextBox.setText("1");
+                    }
                 } catch (NumberFormatException e) {
                     BmLog.error("You've tried to enter not integer. Please, correct mistake!");
                     numberOfUsers = 0;
@@ -239,7 +240,6 @@ public class TestPanelGui {
                 } else {
                     enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
                     numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
-
                 }
             }
         });
@@ -447,9 +447,15 @@ public class TestPanelGui {
         String location = locationComboBox.getSelectedItem().toString();
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         if (testInfo != null) {
+            if (userPerEngine == 0) {
+                JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
+                        " '1' will be saved");
+                userPerEngine = 1;
+            }
             BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
                     bmTestManager.getTestInfo().id,
                     location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+
         } else {
             JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
         }
