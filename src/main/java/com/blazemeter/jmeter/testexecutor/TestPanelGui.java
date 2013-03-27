@@ -15,7 +15,6 @@ import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.util.JMeterUtils;
 
-
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -73,7 +72,7 @@ public class TestPanelGui {
 
     public TestPanelGui() {
 
-        createUIComponents();
+        cconfigureUIComponents();
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -134,13 +133,15 @@ public class TestPanelGui {
                         userInfo.setMaxEnginesLimit(14);
                     }
                     //configure numberOfUserSlider depending on UserInfo
+                    numberOfUsersSlider.setMinimum(1);
                     userInfoLabel.setText(userInfo.toString());
                     numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
-                    numberOfUsersSlider.setMinimum(0);
                     numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
                     numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
-                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
+                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing(), 0);
                     numberOfUsersSlider.setLabelTable(labels);
+
+
                 }
             }
         });
@@ -426,8 +427,7 @@ public class TestPanelGui {
 
 
     private void saveCloudTest() {
-        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
-
+        BmTestManager bmTestManager = BmTestManager.getInstance();
         int numberOfUsers = numberOfUsersSlider.getValue();
 
         ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
@@ -447,8 +447,8 @@ public class TestPanelGui {
         String location = locationComboBox.getSelectedItem().toString();
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         if (testInfo != null) {
-            BlazemeterApi.getInstance().updateTestSettings(BmTestManager.getInstance().getUserKey(),
-                    BmTestManager.getInstance().getTestInfo().id,
+            BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
+                    bmTestManager.getTestInfo().id,
                     location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
         } else {
             JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
@@ -547,7 +547,7 @@ public class TestPanelGui {
                         return;
                     }
 
-                    String item =testInfo.id+" - "+testInfo.name;
+                    String item = testInfo.id + " - " + testInfo.name;
                     boolean exists = false;
 
                     for (int index = 0; index < testIdComboBox.getItemCount() && !exists; index++) {
@@ -555,8 +555,8 @@ public class TestPanelGui {
                             exists = true;
                         }
                     }
-                    if (!exists&!testInfo.id.isEmpty()) {
-                         testIdComboBox.addItem(item);
+                    if (!exists & !testInfo.id.isEmpty()) {
+                        testIdComboBox.addItem(item);
                     }
 
                     if (testInfo.status == TestStatus.Running) {
@@ -849,7 +849,7 @@ public class TestPanelGui {
         reloadButton.setEnabled(!isRunning);
     }
 
-    private void createUIComponents() {
+    private void cconfigureUIComponents() {
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("EU West (Ireland)");
         defaultComboBoxModel1.addElement("US East (Virginia)");

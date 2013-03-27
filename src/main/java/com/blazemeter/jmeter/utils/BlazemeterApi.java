@@ -459,6 +459,8 @@ public class BlazemeterApi {
         } catch (JSONException e) {
             BmLog.error(e);
             return false;
+        } catch (NullPointerException npe) {
+            BmLog.error("Invalid answer from server! Turn to customer support to resolve issue. See log for details", npe);
         }
 
 

@@ -373,7 +373,7 @@ public class BmTestManager {
         public void run() {
             String projectPath = GuiPackage.getInstance().getTestPlanFile();
             if (projectPath == null || projectPath.isEmpty()) {
-                BmLog.debug("Cannot upload JMX,Project path is null or empty");
+                BmLog.debug("Cannot upload JMX: test-plan is empty");
                 return;
             }
 

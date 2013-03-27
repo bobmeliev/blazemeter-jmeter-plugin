@@ -353,9 +353,14 @@
                   <paintTrack value="true"/>
                   <requestFocusEnabled value="true"/>
                   <snapToTicks value="false"/>
-                  <value value="0"/>
+                  <value value="1"/>
                   <valueIsAdjusting value="true"/>
                 </properties>
+                <clientProperties>
+                  <JSlider.isFilled class="java.lang.Boolean" value="false"/>
+                  <Slider.paintThumbArrowShape class="java.lang.Boolean" value="false"/>
+                  <html.disable class="java.lang.Boolean" value="false"/>
+                </clientProperties>
               </component>
             </children>
           </grid>
