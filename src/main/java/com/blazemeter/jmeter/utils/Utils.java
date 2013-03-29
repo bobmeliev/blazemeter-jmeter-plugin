@@ -19,7 +19,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -81,6 +82,8 @@ public class Utils {
                 BmLog.error(e);
             } catch (URISyntaxException e) {
                 BmLog.error(e);
+            } catch (NullPointerException npe) {
+                BmLog.error("URL is empty, nothing to open in browser", npe);
             }
         }
     }
@@ -114,21 +117,21 @@ public class Utils {
             Load.insertLoadedTree(1, tree);
 
             JMeterTreeModel model = guiPackage.getTreeModel();
-            JMeterTreeNode node= (JMeterTreeNode)guiPackage.getTreeModel().getRoot();
-            JMeterTreeNode testPlanNode  = model.getNodesOfType(TestPlan.class).get(0);
+            JMeterTreeNode node = (JMeterTreeNode) guiPackage.getTreeModel().getRoot();
+            JMeterTreeNode testPlanNode = model.getNodesOfType(TestPlan.class).get(0);
             List<JMeterTreeNode> nodes = Collections.list(testPlanNode.children());
             Iterator<JMeterTreeNode> nodeIterator = nodes.iterator();
-            boolean containsRemoteTestRunner=false;
-            while(nodeIterator.hasNext()){
+            boolean containsRemoteTestRunner = false;
+            while (nodeIterator.hasNext()) {
                 JMeterTreeNode nextNode = nodeIterator.next();
-                if(nextNode.getUserObject() instanceof RemoteTestRunner){
-                     containsRemoteTestRunner=true;
+                if (nextNode.getUserObject() instanceof RemoteTestRunner) {
+                    containsRemoteTestRunner = true;
                 }
             }
 
-            if(!containsRemoteTestRunner){
-                TestElement remoteTestRunner=guiPackage.createTestElement(RemoteTestRunnerGui.class, RemoteTestRunner.class);
-                model.addComponent(remoteTestRunner,testPlanNode);
+            if (!containsRemoteTestRunner) {
+                TestElement remoteTestRunner = guiPackage.createTestElement(RemoteTestRunnerGui.class, RemoteTestRunner.class);
+                model.addComponent(remoteTestRunner, testPlanNode);
             }
 
         } catch (FileNotFoundException fnfe) {

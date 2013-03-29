@@ -153,8 +153,11 @@ public class TestPanelGui {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 String url = BmTestManager.getInstance().getTestUrl();
-                if (url != null)
+                if (url != null) {
                     Utils.Navigate(url);
+                } else {
+                    JMeterUtils.reportErrorToUser("Test is not selected. Nothing to open.");
+                }
             }
         });
         helpButton.addActionListener(new ActionListener() {
@@ -253,8 +256,7 @@ public class TestPanelGui {
 
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
                     if (bmTestManager.getUserKey().isEmpty()) {
-                        JMeterUtils.reportErrorToUser("Please, set up user key.",
-                                "User key is not set");
+                        JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
                         return;
                     }
                     dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
@@ -577,11 +579,12 @@ public class TestPanelGui {
                         if (BmTestManager.getInstance().getIsLocalRunMode() & (BmTestManager.isTestRunning())) {
                             StandardJMeterEngine.stopEngine();
                         }
-                        runInTheCloud.setEnabled(true);
-                        addFilesButton.setEnabled(true);
-                        enableCloudControls(true);
-                        runLocal.setEnabled(true);
-                        runRemote.setEnabled(true);
+                        boolean isTestIdIempty = testInfo.id.isEmpty();
+                        runInTheCloud.setEnabled(!isTestIdIempty);
+                        addFilesButton.setEnabled(!isTestIdIempty);
+                        enableCloudControls(!isTestIdIempty);
+                        runLocal.setEnabled(!isTestIdIempty);
+                        runRemote.setEnabled(!isTestIdIempty);
                         configureMainPanelControls(testInfo);
 
                     }
@@ -839,7 +842,7 @@ public class TestPanelGui {
             testIdTextField.setText(testInfo.id);
             testNameTextField.setEnabled(!isRunning);
             createNewButton.setEnabled(!isRunning);
-            goToTestPageButton.setEnabled(true);
+            goToTestPageButton.setEnabled(!testInfo.id.isEmpty());
         } else {
             testNameTextField.setText("");
             testIdTextField.setText("");
