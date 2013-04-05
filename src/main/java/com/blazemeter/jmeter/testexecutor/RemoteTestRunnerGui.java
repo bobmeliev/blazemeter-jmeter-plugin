@@ -3,7 +3,6 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestInfoReader;
 import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.samplers.SampleResult;
@@ -105,9 +104,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         }
         super.configure(element);
         //initialize listeners on TestPanelGui
-        gui.initializeListeners();
+        gui.initListeners();
         //initialize RemoteTestRunnerGUI
-        initializeListeners();
+        initListeners();
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
         bmTestManager.getInstance().checkForUpdates();
@@ -239,24 +238,16 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         return this.getClass().getCanonicalName();
     }
 
-    private void initializeListeners() {
+    private void initListeners() {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 if (!areListenersInitialized) {
                     areListenersInitialized = true;
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);
-                    //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
-                    TestInfoReader testInfoReader = TestInfoReader.getInstance();
-                    if (!gui.getUserKey().equalsIgnoreCase("Enter your user key")) {
-                        TestInfo testInfo = testInfoReader.loadTestInfo();
-                        if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
-                            bmTestManager.setTestInfo(testInfo);
-                            testInfoReader.setTestInfoSet(true);
-                            TestInfoWriter.getInstance().setTestInfo(testInfo);
-                        }
-                    }
+
                     bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
                         @Override
                         public void onServerStatusChanged() {
@@ -278,7 +269,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 }
             }
         }).start();
-
     }
 
     private static Container findComponentWithBorder(JComponent panel, Class<?> aClass) {

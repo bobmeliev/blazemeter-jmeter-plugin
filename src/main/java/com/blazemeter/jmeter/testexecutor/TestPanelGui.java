@@ -1,7 +1,9 @@
 package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoReader;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.BlazemeterApi;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.TestStatus;
@@ -68,6 +70,7 @@ public class TestPanelGui {
     private JLabel userInfoLabel;
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
+    private TestInfo savedTestInfo;
 
 
     public TestPanelGui() {
@@ -471,7 +474,7 @@ public class TestPanelGui {
     /**
      * Here some heavy GUI listeners are initialized;
      */
-    public void initializeListeners() {
+    public void initListeners() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
         if (!areListenersInitialized) {
@@ -522,7 +525,23 @@ public class TestPanelGui {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        BmTestManager.getInstance().getUserInfo();
+                        //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
+                        TestInfoReader testInfoReader = TestInfoReader.getInstance();
+                        TestInfo testInfo = testInfoReader.loadTestInfo();
+                        if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
+                            BmTestManager.getInstance().setTestInfo(testInfo);
+                            testInfoReader.setTestInfoSet(true);
+                            TestInfoWriter.getInstance().setTestInfo(testInfo);
+                            savedTestInfo = testInfo;
+                        }
+                        fetchUserTestsAsync();
+                    }
+                }).start();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        BmTestManager.getInstance().getUserInfo();   //
                     }
                 }).start();
             } else {
@@ -652,7 +671,7 @@ public class TestPanelGui {
                     for (TestInfo ti : tests) {
                         addTestId(ti, false);
                     }
-
+                    addTestId(savedTestInfo, true);
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
@@ -662,6 +681,7 @@ public class TestPanelGui {
                 }
             }
         });
+
     }
 
     public void setUserKey(String key) {
