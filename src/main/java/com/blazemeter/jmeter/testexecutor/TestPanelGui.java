@@ -70,6 +70,7 @@ public class TestPanelGui {
     private JLabel userInfoLabel;
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
+    private JCheckBox uploadJMXBeforeStartingCheckBox;
     private TestInfo savedTestInfo;
 
 

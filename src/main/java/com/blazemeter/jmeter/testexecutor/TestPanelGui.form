@@ -592,6 +592,24 @@
               <text value="Edit JMX locally"/>
             </properties>
           </component>
+          <component id="1d925" class="javax.swing.JCheckBox" binding="uploadJMXBeforeStartingCheckBox" default-binding="true">
+            <constraints>
+              <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <borderPainted value="false"/>
+              <borderPaintedFlat value="true"/>
+              <doubleBuffered value="true"/>
+              <focusCycleRoot value="true"/>
+              <rolloverEnabled value="true"/>
+              <selected value="true"/>
+              <text value="Upload JMX before starting cloud test"/>
+              <visible value="true"/>
+            </properties>
+            <clientProperties>
+              <hideActionText class="java.lang.Boolean" value="false"/>
+            </clientProperties>
+          </component>
         </children>
       </grid>
       <grid id="f89fa" binding="infoPanel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
