@@ -12,7 +12,6 @@ import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.XML;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -87,11 +86,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     }
 
-
-    public static String getStartLocalTestResult() {
-        return startLocalTestResult;
-    }
-
     public String getUserKey() {
         return this.getPropertyAsString("userKey", "");
     }
@@ -134,12 +128,12 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
         if ((bmTestManager.getIsLocalRunMode() & (JMeterUtils.getProperty(ATTEMPTS_TO_START_TEST).equals("0")))) {
             startLocalTestResult = bmTestManager.startLocalTest();
-            if (startLocalTestResult.equals("Test already running, please stop it first")) {
+            if (!startLocalTestResult.isEmpty()) {
                 if (!JMeter.isNonGUI()) {
-                    JPanel testPanelGUIMainPanel = RemoteTestRunnerGui.getGui().getMainPanel();
-                    JOptionPane.showMessageDialog(testPanelGUIMainPanel,
-                            "Results can not be uploaded to server due to the following reason: "
-                                    + startLocalTestResult.toLowerCase(), "Unable to start uploading results", JOptionPane.ERROR_MESSAGE);
+                    JMeterUtils.reportErrorToUser("Results can not be uploaded to server due to the following reason: "
+                            + startLocalTestResult.toLowerCase(), "Unable to start uploading results");
+
+
                     JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "1");
                     return;
                 }

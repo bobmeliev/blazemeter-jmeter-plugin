@@ -23,6 +23,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     private static JLabel connectionStatus = new JLabel();
     private boolean areListenersInitialized = false;
     private static JPanel versionPanel;
+    private static String BLAZEMETER_LABEL = "BlazeMeter";
 
     public static JPanel getVersionPanel() {
         return versionPanel;
@@ -45,10 +46,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         }
         init();
         getFilePanel().setVisible(false);
-    }
-
-    public static TestPanelGui getGui() {
-        return gui;
     }
 
 
@@ -231,7 +228,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     }
 
     public String getStaticLabel() {
-        return "BlazeMeter";
+        return BLAZEMETER_LABEL;
     }
 
     public String getLabelResource() {

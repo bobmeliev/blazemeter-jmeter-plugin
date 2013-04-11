@@ -219,6 +219,13 @@ public class BmTestManager {
             }
 
             try {
+                String projectPath = GuiPackage.getInstance().getTestPlanFile();
+                if (projectPath == null || projectPath.isEmpty()) {
+                    startLocalTestResult = "Cannot start test: test-plan is empty";
+                    JMeterUtils.reportErrorToUser(startLocalTestResult);
+                    BmLog.debug(startLocalTestResult);
+                    return startLocalTestResult;
+                }
                 checkChangesInTestPlan();
                 uploadJmx();
                 startLocalTestResult = rpc.startTestLocal(userKey, testInfo.id);
@@ -372,11 +379,6 @@ public class BmTestManager {
         @Override
         public void run() {
             String projectPath = GuiPackage.getInstance().getTestPlanFile();
-            if (projectPath == null || projectPath.isEmpty()) {
-                BmLog.debug("Cannot upload JMX: test-plan is empty");
-                return;
-            }
-
             String filename = new File(projectPath).getName();
             String testName = testInfo.name;
             testName = testName.trim().isEmpty() ? filename : testName;
