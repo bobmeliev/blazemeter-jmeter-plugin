@@ -201,7 +201,7 @@ public class BmTestManager {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
                     BmLog.debug("Running in NON-GUI mode!");
-                    projectName = "untitled";
+                    projectName = "non-gui-test";
                 }
 
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
@@ -329,8 +329,6 @@ public class BmTestManager {
             return -1;
         }
         BmLog.console("Starting test " + testInfo.id + "-" + testInfo.name);
-        checkChangesInTestPlan();
-        uploadJmx();
         int testId = rpc.runInTheCloud(this.getUserKey(), testInfo.id);
         this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
         if (this.testInfo.status == TestStatus.Running) {

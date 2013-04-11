@@ -43,6 +43,7 @@ public class TestPanelGui {
     private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
     private static long lastCloudPanelUpdate = 0;
     private static boolean areListenersInitialized = false;
+    private static boolean UPLOAD_JMX = false;
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
     private JComboBox testIdComboBox;
@@ -70,13 +71,13 @@ public class TestPanelGui {
     private JLabel userInfoLabel;
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
-    private JCheckBox uploadJMXBeforeStartingCheckBox;
+    private JCheckBox uploadJMXCheckBox;
     private TestInfo savedTestInfo;
 
 
     public TestPanelGui() {
 
-        cconfigureUIComponents();
+        configureUIComponents();
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -267,6 +268,16 @@ public class TestPanelGui {
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
+
+                        String projectPath = GuiPackage.getInstance().getTestPlanFile();
+                        // TestPlan is empty and UPLOAD_JMX checkbox is set
+                        if (UPLOAD_JMX & (projectPath == null || projectPath.isEmpty())) {
+                            JMeterUtils.reportErrorToUser("Test plan is empty: nothing to upload");
+                        }
+                        // TestPlan is not empty and UPLOAD_JMX checkbox is set
+                        if (UPLOAD_JMX & !(projectPath == null || projectPath.isEmpty())) {
+                            bmTestManager.uploadJmx();
+                        }
                         startInTheCloud();
                         bmTestManager.NotifyTestInfoChanged();
                     }
@@ -371,6 +382,7 @@ public class TestPanelGui {
         durationSpinner.setEnabled(isEnabled);
         addFilesButton.setEnabled(isEnabled);
         editJMXLocallyButton.setEnabled(isEnabled);
+        uploadJMXCheckBox.setEnabled(isEnabled);
     }
 
     private void enableMainPanelControls(boolean isEnabled) {
@@ -643,6 +655,12 @@ public class TestPanelGui {
 
                 }
             });
+            uploadJMXCheckBox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    UPLOAD_JMX = uploadJMXCheckBox.isSelected();
+                }
+            });
         }
     }
 
@@ -879,7 +897,7 @@ public class TestPanelGui {
         reloadButton.setEnabled(!isRunning);
     }
 
-    private void cconfigureUIComponents() {
+    private void configureUIComponents() {
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("EU West (Ireland)");
         defaultComboBoxModel1.addElement("US East (Virginia)");
