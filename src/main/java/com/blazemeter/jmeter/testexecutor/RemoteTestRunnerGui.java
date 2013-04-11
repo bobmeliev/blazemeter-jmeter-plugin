@@ -54,6 +54,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
             return null;
         }
+
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner testRunner = new RemoteTestRunner();
         testRunner.setUserKey(bmTestManager.getUserKey());
