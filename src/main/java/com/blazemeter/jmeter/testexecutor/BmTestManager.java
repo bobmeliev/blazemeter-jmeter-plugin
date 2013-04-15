@@ -219,8 +219,7 @@ public class BmTestManager {
             }
 
             try {
-                String projectPath = GuiPackage.getInstance().getTestPlanFile();
-                if (projectPath == null || projectPath.isEmpty()) {
+                if (Utils.isTestPlanEmpty()) {
                     startLocalTestResult = "Cannot start test: test-plan is empty";
                     JMeterUtils.reportErrorToUser(startLocalTestResult);
                     BmLog.debug(startLocalTestResult);

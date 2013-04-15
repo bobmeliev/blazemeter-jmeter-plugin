@@ -10,6 +10,7 @@ import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestPlan;
+import org.apache.jmeter.threads.AbstractThreadGroup;
 import org.apache.jorphan.collections.HashTree;
 
 import javax.swing.*;
@@ -33,6 +34,11 @@ public class Utils {
 
     public static String REQUEST_FEATURE_REPORT_BUG_URL = "http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
 
+    private Utils() {
+    }
+
+    ;
+
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -52,6 +58,18 @@ public class Utils {
 
         }
         return hostIP;
+    }
+
+    /*
+      This method perform verification whether or not test plan contains
+      ThreadGroups. If test-plan does not contain any,
+      then "true" is returned, otherwise - "false";
+
+     */
+    public static boolean isTestPlanEmpty() {
+        JMeterTreeModel jMeterTreeModel = GuiPackage.getInstance().getTreeModel();
+        List<JMeterTreeNode> jMeterTreeNodes = jMeterTreeModel.getNodesOfType(AbstractThreadGroup.class);
+        return jMeterTreeNodes.size() == 0 ? true : false;
     }
 
     public static String getFileContents(String fn) {

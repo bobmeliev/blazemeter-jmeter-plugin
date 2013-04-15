@@ -108,6 +108,11 @@ public class TestPanelGui {
                     if (testName == null || testName.trim().isEmpty())
                         return;
                 }
+                if (Utils.isTestPlanEmpty()) {
+                    JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
+                    return;
+                }
+
                 TestInfo ti = BlazemeterApi.getInstance().createTest(userKey, testName);
                 if (ti != null && ti.status == null) {
                     addTestId(ti, true);
@@ -269,13 +274,12 @@ public class TestPanelGui {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
 
-                        String projectPath = GuiPackage.getInstance().getTestPlanFile();
                         // TestPlan is empty and UPLOAD_JMX checkbox is set
-                        if (UPLOAD_JMX & (projectPath == null || projectPath.isEmpty())) {
+                        if (UPLOAD_JMX & Utils.isTestPlanEmpty()) {
                             JMeterUtils.reportErrorToUser("Test plan is empty: nothing to upload");
                         }
                         // TestPlan is not empty and UPLOAD_JMX checkbox is set
-                        if (UPLOAD_JMX & !(projectPath == null || projectPath.isEmpty())) {
+                        if (UPLOAD_JMX & !Utils.isTestPlanEmpty()) {
                             bmTestManager.uploadJmx();
                         }
                         startInTheCloud();
@@ -294,7 +298,12 @@ public class TestPanelGui {
                 updateCloudPanel(7000);
             }
         });
-
+        uploadJMXCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                UPLOAD_JMX = uploadJMXCheckBox.isSelected();
+            }
+        });
 
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
@@ -655,12 +664,7 @@ public class TestPanelGui {
 
                 }
             });
-            uploadJMXCheckBox.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent e) {
-                    UPLOAD_JMX = uploadJMXCheckBox.isSelected();
-                }
-            });
+
         }
     }
 
