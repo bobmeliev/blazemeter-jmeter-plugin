@@ -123,6 +123,13 @@ public class JMeterLogFilesUploader {
             }
             if (buff.length() > 0) {
                 if (Thread.currentThread().getThreadGroup().getName().equals("main")) {
+
+                    if (Utils.isWindows()) {
+                        jmeter_log_filename = jmeter_log_filename.substring(jmeter_log_filename.lastIndexOf('\\') + 1);
+                    } else {
+                        jmeter_log_filename = jmeter_log_filename.substring(jmeter_log_filename.lastIndexOf('/') + 1);
+                    }
+
                     Uploader.getInstance().forceUpload("console_" + jmeter_log_filename, buff.toString(), "log");
                 }
                 if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {

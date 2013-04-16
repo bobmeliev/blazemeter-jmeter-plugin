@@ -108,11 +108,15 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void testStarted(String host) {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+
+        if (JMeter.isNonGUI()) {
+            bmTestManager.setIsLocalRunMode(true);
+        }
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.debug("Test is started, running in the cloud!");
             return;
         }
-        BmTestManager bmTestManager = BmTestManager.getInstance();
         String userKey = bmTestManager.getUserKey();
 
         if (userKey == null || userKey.isEmpty()) {
@@ -139,6 +143,8 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 }
             }
             BmLog.console("Test is started at " + host);
+
+
             BmTestManager.setTestRunning(true);
             JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "0");
 
