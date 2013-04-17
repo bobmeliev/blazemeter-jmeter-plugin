@@ -8,6 +8,7 @@ import org.apache.jmeter.gui.action.Load;
 import org.apache.jmeter.gui.tree.JMeterTreeModel;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.save.SaveService;
+import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.threads.AbstractThreadGroup;
@@ -67,9 +68,25 @@ public class Utils {
 
      */
     public static boolean isTestPlanEmpty() {
-        JMeterTreeModel jMeterTreeModel = GuiPackage.getInstance().getTreeModel();
+        boolean isTestPlanEmpty = true;
+        @SuppressWarnings("deprecation")
+        JMeterTreeModel jMeterTreeModel = new JMeterTreeModel(new Object());// Create non-GUI version to avoid headless problems
+        try {
+            FileServer fileServer = FileServer.getFileServer();
+            String scriptName = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
+            FileInputStream reader = new FileInputStream(scriptName);
+            HashTree tree = SaveService.loadTree(reader);
+            JMeterTreeNode root = (JMeterTreeNode) jMeterTreeModel.getRoot();
+            jMeterTreeModel.addSubTree(tree, root);
+
+        } catch (FileNotFoundException fnfe) {
+            BmLog.error("Script was not found: " + fnfe);
+        } catch (Exception e) {
+            BmLog.error("TestScript was not loaded: " + e);
+        }
         List<JMeterTreeNode> jMeterTreeNodes = jMeterTreeModel.getNodesOfType(AbstractThreadGroup.class);
-        return jMeterTreeNodes.size() == 0 ? true : false;
+        isTestPlanEmpty = jMeterTreeNodes.size() == 0 ? true : false;
+        return isTestPlanEmpty;
     }
 
     public static String getFileContents(String fn) {
