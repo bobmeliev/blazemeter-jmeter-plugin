@@ -794,7 +794,7 @@ public class TestPanelGui {
                         testInfo.id, true);
 
                 bmTestManager.setTestInfo(testInfo);
-                bmTestManager.NotifyTestInfoChanged();
+//                bmTestManager.NotifyTestInfoChanged();
 
                 if (Thread.currentThread().isInterrupted())
                     return;
