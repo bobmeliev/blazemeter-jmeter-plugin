@@ -3,11 +3,13 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.*;
+import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.gui.action.Command;
 import org.apache.jmeter.gui.action.Save;
+import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.reflect.ClassFinder;
 
@@ -225,7 +227,9 @@ public class BmTestManager {
                     BmLog.debug(startLocalTestResult);
                     return startLocalTestResult;
                 }
-                checkChangesInTestPlan();
+                if (!JMeter.isNonGUI()) {
+                    checkChangesInTestPlan();
+                }
                 uploadJmx();
                 startLocalTestResult = rpc.startTestLocal(userKey, testInfo.id);
                 if (startLocalTestResult.equals("Test already running, please stop it first")) {
@@ -375,7 +379,8 @@ public class BmTestManager {
 
         @Override
         public void run() {
-            String projectPath = GuiPackage.getInstance().getTestPlanFile();
+            FileServer fileServer = FileServer.getFileServer();
+            String projectPath = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
             String filename = new File(projectPath).getName();
             String testName = testInfo.name;
             testName = testName.trim().isEmpty() ? filename : testName;
