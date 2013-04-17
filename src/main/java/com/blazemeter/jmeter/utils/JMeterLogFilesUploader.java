@@ -122,13 +122,9 @@ public class JMeterLogFilesUploader {
                 BmLog.error("Problems with reading " + jmeter_log_filename, e);
             }
             if (buff.length() > 0) {
-                if (Thread.currentThread().getThreadGroup().getName().equals("main")) {
+                jmeter_log_filename = jmeter_log_filename.substring(jmeter_log_filename.lastIndexOf(System.getProperty("file.separator")) + 1);
 
-                    if (Utils.isWindows()) {
-                        jmeter_log_filename = jmeter_log_filename.substring(jmeter_log_filename.lastIndexOf('\\') + 1);
-                    } else {
-                        jmeter_log_filename = jmeter_log_filename.substring(jmeter_log_filename.lastIndexOf('/') + 1);
-                    }
+                if (Thread.currentThread().getThreadGroup().getName().equals("main")) {
 
                     Uploader.getInstance().forceUpload("console_" + jmeter_log_filename, buff.toString(), "log");
                 }
