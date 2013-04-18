@@ -638,6 +638,22 @@ public class TestPanelGui {
                     if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
                         stopTestInfoChecker();
                     }
+
+                    /*
+                      New TestInfoChecking mechanism
+                     */
+                    TestInfoChecker tiChecker = TestInfoChecker.getTestInfoChecker();
+                    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
+                            (tiChecker == null || tiChecker.isInterrupted())) {
+
+                        tiChecker.setTestId(testInfo.id);
+                        tiChecker.start();
+                    }
+                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
+                        tiChecker.stopChecker();
+                    }
+
+
                 }
             });
             //Processing serverStatusChangedNotification

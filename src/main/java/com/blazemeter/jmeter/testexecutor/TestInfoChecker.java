@@ -12,25 +12,33 @@ import com.blazemeter.jmeter.utils.BmLog;
  * To change this template use File | Settings | File Templates.
  */
 public class TestInfoChecker extends Thread {
-    private final int testId;
-    private final int updateInterval;
+    private String testId;
+    // Time interval for checking testInfo on server
+    private final int updateInterval = 30000;
     private static TestInfoChecker testInfoChecker = null;
 
-    private TestInfoChecker(int testId, int updateInterval) {
-        this.testId = testId;
-        this.updateInterval = updateInterval;
+
+    private TestInfoChecker() {
+        this.testId = null;
     }
 
-    public TestInfoChecker getTestInfoChecker(int testId, int updateInterval) {
+    public static TestInfoChecker getTestInfoChecker() {
         if (testInfoChecker == null) {
-            testInfoChecker = new TestInfoChecker(testId, updateInterval);
+            testInfoChecker = new TestInfoChecker();
         }
         return testInfoChecker;
     }
 
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
+    }
+
     @Override
     public void run() {
-        //To change body of implemented methods use File | Settings | File Templates.
         BmTestManager bmTestManager = BmTestManager.getInstance();
         while (!Thread.currentThread().isInterrupted()) {
             if (Thread.currentThread().isInterrupted()) {
@@ -38,22 +46,19 @@ public class TestInfoChecker extends Thread {
             }
 
             TestInfo testInfo = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-                    Integer.toString(this.testId), true);
+                    this.testId, true);
             bmTestManager.setTestInfo(testInfo);
 
-            //check testInfo
-            //   updateCloudPanel(0);
             try {
                 Thread.sleep(this.updateInterval);
             } catch (InterruptedException e) {
-                BmLog.debug("TestStatusChecker was interrupted during sleeping");
+                BmLog.debug("TestInfoChecker was interrupted during sleeping");
                 return;
             } finally {
                 if (Thread.currentThread().isInterrupted()) {
                     return;
                 }
             }
-
         }
         if (Thread.currentThread().isInterrupted()) {
             return;
@@ -66,7 +71,7 @@ public class TestInfoChecker extends Thread {
                 testInfoChecker.interrupt();
                 testInfoChecker = null;
                 System.gc();
-                BmLog.debug("TestStatusChecker is interrupted!");
+                BmLog.debug("TestInfoChecker is interrupted!");
             }
         }
     }
