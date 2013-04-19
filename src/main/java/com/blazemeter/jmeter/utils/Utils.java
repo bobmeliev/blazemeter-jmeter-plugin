@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
+import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.Load;
@@ -71,19 +72,25 @@ public class Utils {
         boolean isTestPlanEmpty = true;
         @SuppressWarnings("deprecation")
         JMeterTreeModel jMeterTreeModel = new JMeterTreeModel(new Object());// Create non-GUI version to avoid headless problems
-        try {
-            FileServer fileServer = FileServer.getFileServer();
-            String scriptName = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
-            FileInputStream reader = new FileInputStream(scriptName);
-            HashTree tree = SaveService.loadTree(reader);
-            JMeterTreeNode root = (JMeterTreeNode) jMeterTreeModel.getRoot();
-            jMeterTreeModel.addSubTree(tree, root);
 
-        } catch (FileNotFoundException fnfe) {
-            BmLog.error("Script was not found: " + fnfe);
-        } catch (Exception e) {
-            BmLog.error("TestScript was not loaded: " + e);
+        if (JMeter.isNonGUI()) {
+            try {
+                FileServer fileServer = FileServer.getFileServer();
+                String scriptName = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
+                FileInputStream reader = new FileInputStream(scriptName);
+                HashTree tree = SaveService.loadTree(reader);
+                JMeterTreeNode root = (JMeterTreeNode) jMeterTreeModel.getRoot();
+                jMeterTreeModel.addSubTree(tree, root);
+
+            } catch (FileNotFoundException fnfe) {
+                BmLog.error("Script was not found: " + fnfe);
+            } catch (Exception e) {
+                BmLog.error("TestScript was not loaded: " + e);
+            }
+        } else {
+            jMeterTreeModel = GuiPackage.getInstance().getTreeModel();
         }
+
         List<JMeterTreeNode> jMeterTreeNodes = jMeterTreeModel.getNodesOfType(AbstractThreadGroup.class);
         isTestPlanEmpty = jMeterTreeNodes.size() == 0 ? true : false;
         return isTestPlanEmpty;
