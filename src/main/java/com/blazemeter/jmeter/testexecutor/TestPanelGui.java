@@ -641,7 +641,6 @@ public class TestPanelGui {
 
                     /*
                       New TestInfoChecking mechanism
-                     */
                     TestInfoChecker tiChecker = TestInfoChecker.getTestInfoChecker();
                     if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                             (tiChecker == null || tiChecker.isInterrupted())) {
@@ -653,6 +652,7 @@ public class TestPanelGui {
                         tiChecker.stopChecker();
                     }
 
+                     */
 
                 }
             });
@@ -836,6 +836,52 @@ public class TestPanelGui {
         });
         updateCloudPanelThread.start();
     }
+
+    /*
+     This method will be used in testInfoNotificationListener.
+     TestInfo should be taken from BmTestManager
+     OR should this code be moved to setTestInfo()?
+     Move this code to setTestInfo and make it read testInfo from BmTestManager()
+    private void updateCloudPanel() {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        if (bmTestManager.getUserKey().isEmpty() || !bmTestManager.isUserKeyValid()) {
+            return;
+
+        }
+
+        interruptCloudPanelUpdate();
+        updateCloudPanelThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                TestInfo testInfo = bmTestManager.getTestInfo();
+
+                if (Thread.currentThread().isInterrupted())
+                    return;
+                if ("jmeter".equals(testInfo.type)) {
+                    locationComboBox.setSelectedItem(testInfo.getLocation());
+                    numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
+                    if (testInfo.overrides != null) {
+                        rampupSpinner.setValue(testInfo.overrides.rampup);
+                        iterationsSpinner.setValue(testInfo.overrides.iterations == -1 ? 0 : testInfo.overrides.iterations);
+                        durationSpinner.setValue(testInfo.overrides.duration == -1 ? 0 : testInfo.overrides.duration);
+                    } else {
+                        rampupSpinner.setValue(0);
+                        iterationsSpinner.setValue(0);
+                        durationSpinner.setValue(0);
+                    }
+                    runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
+                    runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
+                } else {
+                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
+                }
+                configureMainPanelControls(testInfo);
+            }
+        });
+        updateCloudPanelThread.start();
+    }
+     */
+
 
     private void interruptCloudPanelUpdate() {
         if (updateCloudPanelThread != null) {
