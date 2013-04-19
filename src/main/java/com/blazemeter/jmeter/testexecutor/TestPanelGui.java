@@ -768,7 +768,8 @@ public class TestPanelGui {
     }
 
     protected void updateTestInfo() {
-        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
             testInfo.name = NEW;
@@ -779,8 +780,31 @@ public class TestPanelGui {
             testIdComboBox.setSelectedItem(testInfo);
             configureMainPanelControls(testInfo);
             infoLabel.setText(LOADING_TEST_INFO);
-            runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
+            runModeChanged(bmTestManager.getIsLocalRunMode());
             infoLabel.setText(TEST_INFO_IS_LOADED);
+        }
+        if (!bmTestManager.getIsLocalRunMode()) {
+                   /*TODO
+                   Update cloud panel
+            if ("jmeter".equals(testInfo.type)) {
+                locationComboBox.setSelectedItem(testInfo.getLocation());
+                numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
+                if (testInfo.overrides != null) {
+                    rampupSpinner.setValue(testInfo.overrides.rampup);
+                    iterationsSpinner.setValue(testInfo.overrides.iterations == -1 ? 0 : testInfo.overrides.iterations);
+                    durationSpinner.setValue(testInfo.overrides.duration == -1 ? 0 : testInfo.overrides.duration);
+                } else {
+                    rampupSpinner.setValue(0);
+                    iterationsSpinner.setValue(0);
+                    durationSpinner.setValue(0);
+                }
+                runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
+                runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
+            } else {
+                infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
+            }
+                   */
+
         }
     }
 
