@@ -630,7 +630,8 @@ public class TestPanelGui {
 
                     }
 
-                    setTestInfo(testInfo);
+//                    setTestInfo(testInfo);
+                    updateTestInfo();
                     if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                             (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                         startTestInfoChecker();
@@ -766,6 +767,23 @@ public class TestPanelGui {
         }
     }
 
+    protected void updateTestInfo() {
+        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+        if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
+            testInfo = new TestInfo();
+            testInfo.name = NEW;
+            testIdComboBox.setSelectedItem(testInfo.name);
+            infoLabel.setText(SELECT_TEST);
+            configureMainPanelControls(null);
+        } else {
+            testIdComboBox.setSelectedItem(testInfo);
+            configureMainPanelControls(testInfo);
+            infoLabel.setText(LOADING_TEST_INFO);
+            runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
+            infoLabel.setText(TEST_INFO_IS_LOADED);
+        }
+    }
+
     protected TestInfo getTestInfo() {
         TestInfo testInfo = new TestInfo();
         testInfo.id = testIdTextField.getText();
@@ -810,7 +828,6 @@ public class TestPanelGui {
                         testInfo.id, true);
 
                 bmTestManager.setTestInfo(testInfo);
-//                bmTestManager.NotifyTestInfoChanged();
 
                 if (Thread.currentThread().isInterrupted())
                     return;
