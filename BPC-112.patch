@@ -1,0 +1,44 @@
+Index: src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 6f4307de73e5629852acfdc0eab016cbde21f323)
++++ src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision )
+@@ -511,7 +511,7 @@
+                             TestInfo testInfo = (TestInfo) selectedTest;
+                             if (testInfo.name != NEW & !testInfo.name.isEmpty()) {
+                                 bmTestManager.setTestInfo(testInfo);
+-                                bmTestManager.NotifyTestInfoChanged();
++//                                bmTestManager.NotifyTestInfoChanged();
+                             }
+                         } else if (Utils.isInteger(selectedTest.toString())) {
+                             TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
+Index: src/main/java/com/blazemeter/jmeter/testexecutor/BmTestManager.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/com/blazemeter/jmeter/testexecutor/BmTestManager.java	(revision 6f4307de73e5629852acfdc0eab016cbde21f323)
++++ src/main/java/com/blazemeter/jmeter/testexecutor/BmTestManager.java	(revision )
+@@ -255,6 +255,11 @@
+ 
+ 
+     public void setTestInfo(TestInfo testInfo) {
++        synchronized (this.testInfo) {
++            this.testInfo = testInfo;
++        }
++        NotifyTestInfoChanged();
++        /*
+         if (testInfo == null) {
+             return;
+         }
+@@ -263,7 +268,7 @@
+                 this.testInfo = testInfo;
+             }
+             NotifyTestInfoChanged();
+-        }
++        }*/
+     }
+ 
+     public void setUserKey(String userKey) {
