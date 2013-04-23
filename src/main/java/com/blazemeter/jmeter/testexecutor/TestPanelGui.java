@@ -520,17 +520,22 @@ public class TestPanelGui {
                             if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
                                 bmTestManager.setTestInfo(ti);
                                 setTestInfo(ti);
-                                bmTestManager.NotifyTestInfoChanged();
+//                                bmTestManager.NotifyTestInfoChanged();
                             } else {
                                 JMeterUtils.reportErrorToUser(ti.error, "Test not found error");
+/*
                                 bmTestManager.setTestInfo(null);
                                 bmTestManager.NotifyTestInfoChanged();
+*/
                             }
                         } else if (selectedTest.toString().equals(NEW)) {
                             testIdComboBox.setSelectedItem(NEW);
                             configureMainPanelControls(null);
                             resetCloudPanel();
                             enableCloudControls(false);
+                            TestInfo testInfo = new TestInfo();
+                            testInfo.setName(NEW);
+                            bmTestManager.setTestInfo(testInfo);
                         }
                     }
                 }
@@ -636,7 +641,7 @@ public class TestPanelGui {
                             (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                         startTestInfoChecker();
                     }
-                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
+                    if (testInfo.name.equals(NEW)) {
                         stopTestInfoChecker();
                     }
 
