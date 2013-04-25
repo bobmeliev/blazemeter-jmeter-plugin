@@ -644,21 +644,17 @@ public class TestPanelGui {
                     if (testInfo.name.equals(NEW)) {
                         stopTestInfoChecker();
                     }
+/*
 
-                    /*
-                      New TestInfoChecking mechanism
-                    TestInfoChecker tiChecker = TestInfoChecker.getTestInfoChecker();
-                    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
-                            (tiChecker == null || tiChecker.isInterrupted())) {
+                   if ((testInfo.name != NEW)) {
 
-                        tiChecker.setTestId(testInfo.id);
-                        tiChecker.start();
                     }
+
                     if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
-                        tiChecker.stopChecker();
-                    }
 
-                     */
+                    }
+*/
+
 
                 }
             });
