@@ -3,122 +3,44 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision fe1b54c3ade1fca853a40e5a3a2fbcd7d5a405f9)
+--- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 152b310fddd1e79f076cd3ed7715862a262a0c1d)
 +++ src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision )
-@@ -637,28 +637,34 @@
+@@ -1,6 +1,7 @@
+ package com.blazemeter.jmeter.testexecutor;
+ 
+ import com.blazemeter.jmeter.testinfo.TestInfo;
++import com.blazemeter.jmeter.testinfo.TestInfoController;
+ import com.blazemeter.jmeter.testinfo.TestInfoReader;
+ import com.blazemeter.jmeter.testinfo.UserInfo;
+ import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
+@@ -637,6 +638,8 @@
  
  //                    setTestInfo(testInfo);
                      updateTestInfo();
--                    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
-+                /*    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
++/*
++
+                     if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                              (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                          startTestInfoChecker();
-                     }
+@@ -644,16 +647,17 @@
                      if (testInfo.name.equals(NEW)) {
                          stopTestInfoChecker();
                      }
--
+-/*
+ 
+-                   if ((testInfo.name != NEW)) {
 +*/
--                    /*
-+                   /*
-                       New TestInfoChecking mechanism
-+
-+                   */
-                     TestInfoChecker tiChecker = TestInfoChecker.getTestInfoChecker();
--                    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
--                            (tiChecker == null || tiChecker.isInterrupted())) {
+ 
 +                    if ((testInfo.name != NEW) & (!testInfo.name.isEmpty())) {
- 
-+                        if (!tiChecker.isInterrupted() & tiChecker.isAlive()) {
-+                            tiChecker.interrupt();
-+                            tiChecker = null;
-+                            tiChecker = TestInfoChecker.getTestInfoChecker();
-+                        }
-                         tiChecker.setTestId(testInfo.id);
-                         tiChecker.start();
-+
-                     }
--                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
--                        tiChecker.stopChecker();
-+                    if (testInfo.name.equals(NEW)) {
-+                        TestInfoChecker.stopChecker();
++                        TestInfoController.stop();
++                        TestInfoController.start(testInfo.id);
                      }
  
--                     */
+                     if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
+-
++                        TestInfoController.stop();
+                     }
+-*/
+ 
  
                  }
-             });
-Index: src/main/java/com/blazemeter/jmeter/testexecutor/TestInfoChecker.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- src/main/java/com/blazemeter/jmeter/testexecutor/TestInfoChecker.java	(revision fe1b54c3ade1fca853a40e5a3a2fbcd7d5a405f9)
-+++ src/main/java/com/blazemeter/jmeter/testexecutor/TestInfoChecker.java	(revision )
-@@ -18,10 +18,11 @@
-     private static TestInfoChecker testInfoChecker = null;
- 
- 
--    private TestInfoChecker() {
-+    public TestInfoChecker() {
-         this.testId = null;
-     }
- 
-+
-     public static TestInfoChecker getTestInfoChecker() {
-         if (testInfoChecker == null) {
-             testInfoChecker = new TestInfoChecker();
-@@ -40,39 +41,34 @@
-     @Override
-     public void run() {
-         BmTestManager bmTestManager = BmTestManager.getInstance();
--        while (!Thread.currentThread().isInterrupted()) {
--            if (Thread.currentThread().isInterrupted()) {
--                return;
-+        while (!isInterrupted()) {
-+            try {
-+                if (isInterrupted()) {
-+                    throw new InterruptedException();
--            }
-+                }
- 
--            TestInfo testInfo = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
--                    this.testId, true);
--            bmTestManager.setTestInfo(testInfo);
-+                TestInfo testInfo = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-+                        this.testId, true);
-+                bmTestManager.setTestInfo(testInfo);
- 
--            try {
-                 Thread.sleep(this.updateInterval);
-             } catch (InterruptedException e) {
-                 BmLog.debug("TestInfoChecker was interrupted during sleeping");
-                 return;
-             } finally {
--                if (Thread.currentThread().isInterrupted()) {
-+                if (isInterrupted()) {
-                     return;
-                 }
-             }
-         }
--        if (Thread.currentThread().isInterrupted()) {
-+        if (isInterrupted()) {
-             return;
-         }
-     }
- 
--    public void stopChecker() {
--        if (testInfoChecker != null) {
--            if (testInfoChecker.isAlive()) {
-+    public static void stopChecker() {
--                testInfoChecker.interrupt();
-+        testInfoChecker.interrupt();
--                testInfoChecker = null;
--                System.gc();
-+//        Thread.currentThread().interrupt();
--                BmLog.debug("TestInfoChecker is interrupted!");
-+        BmLog.debug("TestInfoChecker is interrupted!");
--            }
--        }
-     }
- }
