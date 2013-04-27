@@ -4,9 +4,6 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.utils.BlazemeterApi;
 import com.blazemeter.jmeter.utils.BmLog;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 /**
  * Created with IntelliJ IDEA.
  * User: dzmitrykashlach
@@ -16,10 +13,9 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class TestInfoChecker extends Thread {
     private String testId;
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public TestInfoChecker() {
-        this.testId = null;
+    protected TestInfoChecker(String testId) {
+        this.testId = testId;
     }
 
     public String getTestId() {
