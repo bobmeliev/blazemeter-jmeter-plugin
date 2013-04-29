@@ -29,11 +29,12 @@ public abstract class JMeterPluginUtils {
 
     public static String getJmeterVersion() {
         String version = JMeterUtils.getJMeterVersion();
+
         int hyphenIndex = version.indexOf("-");
         if (hyphenIndex != -1)
             return version.substring(0, hyphenIndex);
         else
-            return version;
+            return version.substring(0, 3);
     }
 
     public static PluginVersion getPluginVersion() {
