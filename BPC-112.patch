@@ -3,7 +3,7 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 152b310fddd1e79f076cd3ed7715862a262a0c1d)
+--- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 8e2001c8a512169af4069d4cd0f209667edb629a)
 +++ src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision )
 @@ -1,6 +1,7 @@
  package com.blazemeter.jmeter.testexecutor;
