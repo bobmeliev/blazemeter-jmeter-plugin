@@ -625,12 +625,20 @@ public class TestPanelGui {
                         if (BmTestManager.getInstance().getIsLocalRunMode() & (BmTestManager.isTestRunning())) {
                             StandardJMeterEngine.stopEngine();
                         }
-                        boolean isTestIdIempty = testInfo.id.isEmpty();
-                        runInTheCloud.setEnabled(!isTestIdIempty);
-                        addFilesButton.setEnabled(!isTestIdIempty);
-                        enableCloudControls(!isTestIdIempty);
-                        runLocal.setEnabled(!isTestIdIempty);
-                        runRemote.setEnabled(!isTestIdIempty);
+                        boolean isTestIdEmpty = testInfo.id.isEmpty();
+                        runInTheCloud.setEnabled(!isTestIdEmpty);
+                        addFilesButton.setEnabled(!isTestIdEmpty);
+                        enableCloudControls(!isTestIdEmpty);
+
+                        if (BmTestManager.getInstance().isUserKeyFromProp()) {
+                            runLocal.setEnabled(!isTestIdEmpty);
+                            runRemote.setEnabled(!isTestIdEmpty);
+
+                        } else {
+                            runLocal.setEnabled(true);
+                            runRemote.setEnabled(true);
+                        }
+
                         configureMainPanelControls(testInfo);
 
                     }
