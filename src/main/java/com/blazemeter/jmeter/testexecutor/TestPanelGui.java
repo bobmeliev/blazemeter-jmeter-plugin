@@ -276,7 +276,7 @@ public class TestPanelGui {
 
                         // TestPlan is empty and UPLOAD_JMX checkbox is set
                         if (UPLOAD_JMX & Utils.isTestPlanEmpty()) {
-                            JMeterUtils.reportErrorToUser("Test plan is empty: nothing to upload");
+                            JMeterUtils.reportErrorToUser("Test plan is empty, cloud test will be started without updating script");
                         }
                         // TestPlan is not empty and UPLOAD_JMX checkbox is set
                         if (UPLOAD_JMX & !Utils.isTestPlanEmpty()) {
