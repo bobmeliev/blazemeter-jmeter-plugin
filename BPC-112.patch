@@ -3,7 +3,7 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 8e2001c8a512169af4069d4cd0f209667edb629a)
+--- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision fa884bf81e2aeb8bb22501eb8c3d3d291c71ec06)
 +++ src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision )
 @@ -1,6 +1,7 @@
  package com.blazemeter.jmeter.testexecutor;
@@ -13,7 +13,19 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  import com.blazemeter.jmeter.testinfo.TestInfoReader;
  import com.blazemeter.jmeter.testinfo.UserInfo;
  import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
-@@ -637,6 +638,8 @@
+@@ -41,8 +42,11 @@
+     private static final String LOADING_TEST_INFO = "Loading test info, please wait";
+     private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
+     private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
++    private static String TEST_ID = "";
+     private static long lastCloudPanelUpdate = 0;
++    // change to JMeter property
+     private static boolean areListenersInitialized = false;
++    // change to JMeter property
+     private static boolean UPLOAD_JMX = false;
+     private JTextField userKeyTextField;
+     private JTextField testNameTextField;
+@@ -645,6 +649,8 @@
  
  //                    setTestInfo(testInfo);
                      updateTestInfo();
@@ -22,7 +34,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                      if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                              (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                          startTestInfoChecker();
-@@ -644,16 +647,17 @@
+@@ -652,16 +658,24 @@
                      if (testInfo.name.equals(NEW)) {
                          stopTestInfoChecker();
                      }
@@ -32,12 +44,20 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +*/
  
 +                    if ((testInfo.name != NEW) & (!testInfo.name.isEmpty())) {
-+                        TestInfoController.stop();
++                        if (testInfo != null && !TEST_ID.equals(testInfo.id)) {
++                            TEST_ID = testInfo.id;
++                            TestInfoController.stop();
++
++                        } else {
++                            return;
+-                    }
++                        }
 +                        TestInfoController.start(testInfo.id);
-                     }
  
-                     if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
--
+-                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
++                    }
+ 
++                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
 +                        TestInfoController.stop();
                      }
 -*/
