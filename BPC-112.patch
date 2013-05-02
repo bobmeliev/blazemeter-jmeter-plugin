@@ -3,7 +3,7 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision fa884bf81e2aeb8bb22501eb8c3d3d291c71ec06)
+--- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 3ed14ecd6f25e4e99015c7b174a61ea6ce327e0e)
 +++ src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision )
 @@ -1,6 +1,7 @@
  package com.blazemeter.jmeter.testexecutor;
@@ -25,7 +25,30 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
      private static boolean UPLOAD_JMX = false;
      private JTextField userKeyTextField;
      private JTextField testNameTextField;
-@@ -645,6 +649,8 @@
+@@ -552,6 +556,14 @@
+                 new Thread(new Runnable() {
+                     @Override
+                     public void run() {
++                        fetchUserTestsAsync();
++
++                    }
++                }).start();
++
++                new Thread(new Runnable() {
++                    @Override
++                    public void run() {
+                         //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
+                         TestInfoReader testInfoReader = TestInfoReader.getInstance();
+                         TestInfo testInfo = testInfoReader.loadTestInfo();
+@@ -561,7 +573,6 @@
+                             TestInfoWriter.getInstance().setTestInfo(testInfo);
+                             savedTestInfo = testInfo;
+                         }
+-                        fetchUserTestsAsync();
+                     }
+                 }).start();
+ 
+@@ -645,6 +656,8 @@
  
  //                    setTestInfo(testInfo);
                      updateTestInfo();
@@ -34,7 +57,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                      if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
                              (testInfoChecker == null || testInfoChecker.isInterrupted())) {
                          startTestInfoChecker();
-@@ -652,16 +658,24 @@
+@@ -652,16 +665,24 @@
                      if (testInfo.name.equals(NEW)) {
                          stopTestInfoChecker();
                      }
@@ -64,3 +87,15 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
  
                  }
+@@ -728,6 +749,11 @@
+                     enableCloudControls(false);
+                     testIdComboBox.setSelectedItem(EMPTY);
+                 }
++                /*
++                  after setting NEW TestInfoController was stopped.
++                  We need to start it once again.
++                */
++                TestInfoController.start(TEST_ID);
+             }
+         });
+ 
