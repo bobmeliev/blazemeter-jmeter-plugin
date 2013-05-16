@@ -13,7 +13,7 @@ import com.blazemeter.jmeter.utils.BlazemeterApi;
 public class TestInfoChecker implements Runnable {
     private String testId;
 
-    protected TestInfoChecker(String testId) {
+    public TestInfoChecker(String testId) {
         this.testId = testId;
     }
 
