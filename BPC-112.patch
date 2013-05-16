@@ -3,7 +3,7 @@ IDEA additional info:
 Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 <+>UTF-8
 ===================================================================
---- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 3ed14ecd6f25e4e99015c7b174a61ea6ce327e0e)
+--- src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision 3e0dd33988eb413a0b1541594e94b648e5dc65f6)
 +++ src/main/java/com/blazemeter/jmeter/testexecutor/TestPanelGui.java	(revision )
 @@ -1,6 +1,7 @@
  package com.blazemeter.jmeter.testexecutor;
@@ -99,3 +99,22 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
              }
          });
  
+@@ -794,7 +820,9 @@
+         }
+         if (!bmTestManager.getIsLocalRunMode()) {
+                    /*TODO
++
+                    Update cloud panel
++                   */
+             if ("jmeter".equals(testInfo.type)) {
+                 locationComboBox.setSelectedItem(testInfo.getLocation());
+                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
+@@ -812,7 +840,7 @@
+             } else {
+                 infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
+             }
+-                   */
++
+ 
+         }
+     }
