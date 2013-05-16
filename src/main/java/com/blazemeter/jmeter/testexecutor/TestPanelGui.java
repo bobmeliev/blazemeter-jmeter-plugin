@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.TestInfoReader;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
@@ -41,8 +42,11 @@ public class TestPanelGui {
     private static final String LOADING_TEST_INFO = "Loading test info, please wait";
     private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
     private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
+    private static String TEST_ID = "";
     private static long lastCloudPanelUpdate = 0;
+    // change to JMeter property
     private static boolean areListenersInitialized = false;
+    // change to JMeter property
     private static boolean UPLOAD_JMX = false;
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -295,6 +299,7 @@ public class TestPanelGui {
                         bmTestManager.NotifyTestInfoChanged();
                     }
                 }
+                // should be replaced according to new mechnism of testInfoChecking
                 updateCloudPanel(7000);
             }
         });
@@ -520,13 +525,8 @@ public class TestPanelGui {
                             if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
                                 bmTestManager.setTestInfo(ti);
                                 setTestInfo(ti);
-//                                bmTestManager.NotifyTestInfoChanged();
                             } else {
                                 JMeterUtils.reportErrorToUser(ti.error, "Test not found error");
-/*
-                                bmTestManager.setTestInfo(null);
-                                bmTestManager.NotifyTestInfoChanged();
-*/
                             }
                         } else if (selectedTest.toString().equals(NEW)) {
                             testIdComboBox.setSelectedItem(NEW);
@@ -552,6 +552,14 @@ public class TestPanelGui {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        fetchUserTestsAsync();
+
+                    }
+                }).start();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
                         //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
                         TestInfoReader testInfoReader = TestInfoReader.getInstance();
                         TestInfo testInfo = testInfoReader.loadTestInfo();
@@ -561,7 +569,6 @@ public class TestPanelGui {
                             TestInfoWriter.getInstance().setTestInfo(testInfo);
                             savedTestInfo = testInfo;
                         }
-                        fetchUserTestsAsync();
                     }
                 }).start();
 
@@ -643,25 +650,23 @@ public class TestPanelGui {
 
                     }
 
-//                    setTestInfo(testInfo);
                     updateTestInfo();
-                    if ((testInfo != null) & (testInfo.name != NEW) & (!testInfo.name.isEmpty()) &
-                            (testInfoChecker == null || testInfoChecker.isInterrupted())) {
-                        startTestInfoChecker();
-                    }
-                    if (testInfo.name.equals(NEW)) {
-                        stopTestInfoChecker();
-                    }
-/*
 
-                   if ((testInfo.name != NEW)) {
+                    if ((testInfo.name != NEW) & (!testInfo.name.isEmpty())) {
+                        if (testInfo != null && !TEST_ID.equals(testInfo.id)) {
+                            TEST_ID = testInfo.id;
+                            TestInfoController.stop();
+
+                        } else {
+                            return;
+                        }
+                        TestInfoController.start(testInfo.id);
 
                     }
 
                     if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
-
+                        TestInfoController.stop();
                     }
-*/
 
 
                 }
@@ -710,8 +715,6 @@ public class TestPanelGui {
             public void testReceived(ArrayList<TestInfo> tests) {
                 testIdComboBox.removeAllItems();
                 testIdComboBox.setEnabled(true);
-                testIdComboBox.addItem(EMPTY);
-                testIdComboBox.setSelectedItem(EMPTY);
                 if (tests != null) {
                     testIdComboBox.removeAllItems();
                     testIdComboBox.addItem(NEW);
@@ -728,6 +731,11 @@ public class TestPanelGui {
                     enableCloudControls(false);
                     testIdComboBox.setSelectedItem(EMPTY);
                 }
+                /*
+                  after setting NEW TestInfoController was stopped.
+                  We need to start it once again.
+                */
+                TestInfoController.start(TEST_ID);
             }
         });
 
@@ -794,7 +802,9 @@ public class TestPanelGui {
         }
         if (!bmTestManager.getIsLocalRunMode()) {
                    /*TODO
+
                    Update cloud panel
+                   */
             if ("jmeter".equals(testInfo.type)) {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
@@ -812,7 +822,7 @@ public class TestPanelGui {
             } else {
                 infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
             }
-                   */
+
 
         }
     }
