@@ -1,9 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestInfoController;
-import com.blazemeter.jmeter.testinfo.TestInfoReader;
-import com.blazemeter.jmeter.testinfo.UserInfo;
+import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.BlazemeterApi;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -25,7 +22,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Dictionary;
 
 /**
@@ -299,8 +295,7 @@ public class TestPanelGui {
                         bmTestManager.NotifyTestInfoChanged();
                     }
                 }
-                // should be replaced according to new mechnism of testInfoChecking
-                updateCloudPanel(7000);
+                new Thread(new TestInfoChecker(testIdTextField.getText())).start();
             }
         });
         uploadJMXCheckBox.addItemListener(new ItemListener() {
@@ -679,17 +674,17 @@ public class TestPanelGui {
                     switch (serverStatus) {
                         case AVAILABLE:
                             TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                            if (testInfo.status == TestStatus.Running) {
-                                startTestInfoChecker();
-                            } else {
-                                enableMainPanelControls(true);
-                            }
+                            TestInfoController.start(testInfo.id);
+                            boolean testIsRunning = testInfo.status == TestStatus.Running;
+                            enableMainPanelControls(testIsRunning);
+                            enableCloudControls(testIsRunning);
+                            runInTheCloud.setEnabled(testIsRunning);
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);
                             enableCloudControls(false);
                             runInTheCloud.setEnabled(false);
-                            stopTestInfoChecker();
+                            TestInfoController.stop();
                             break;
                     }
 
@@ -801,10 +796,7 @@ public class TestPanelGui {
             infoLabel.setText(TEST_INFO_IS_LOADED);
         }
         if (!bmTestManager.getIsLocalRunMode()) {
-                   /*TODO
-
-                   Update cloud panel
-                   */
+            // update Cloud panel
             if ("jmeter".equals(testInfo.type)) {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
@@ -838,165 +830,6 @@ public class TestPanelGui {
         testInfo.overrides = null;
         testInfo.type = "jmeter";
         return testInfo;
-    }
-
-    private Thread updateCloudPanelThread;
-
-    private void updateCloudPanel(int lastCloudUpdatePeriod) {
-        long now = new Date().getTime();
-        if (lastCloudPanelUpdate + lastCloudUpdatePeriod > now) {
-            return;
-        }
-        lastCloudPanelUpdate = now;
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        if (bmTestManager.getUserKey().isEmpty() || !bmTestManager.isUserKeyValid()) {
-            return;
-
-        }
-
-        interruptCloudPanelUpdate();
-        updateCloudPanelThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                TestInfo testInfo = bmTestManager.getTestInfo();
-                String testId = "";
-                if (testInfo == null) {
-                    testInfo = new TestInfo();
-                    testId = testIdComboBox.getSelectedItem().toString().split(" ")[0];
-                    testInfo.id = testId;
-                    bmTestManager.setTestInfo(testInfo);
-                }
-                testInfo = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-                        testInfo.id, true);
-
-                bmTestManager.setTestInfo(testInfo);
-
-                if (Thread.currentThread().isInterrupted())
-                    return;
-                if ("jmeter".equals(testInfo.type)) {
-                    locationComboBox.setSelectedItem(testInfo.getLocation());
-                    numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
-                    if (testInfo.overrides != null) {
-                        rampupSpinner.setValue(testInfo.overrides.rampup);
-                        iterationsSpinner.setValue(testInfo.overrides.iterations == -1 ? 0 : testInfo.overrides.iterations);
-                        durationSpinner.setValue(testInfo.overrides.duration == -1 ? 0 : testInfo.overrides.duration);
-                    } else {
-                        rampupSpinner.setValue(0);
-                        iterationsSpinner.setValue(0);
-                        durationSpinner.setValue(0);
-                    }
-                    runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
-                    runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
-                } else {
-                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
-                }
-                configureMainPanelControls(testInfo);
-            }
-        });
-        updateCloudPanelThread.start();
-    }
-
-    /*
-     This method will be used in testInfoNotificationListener.
-     TestInfo should be taken from BmTestManager
-     OR should this code be moved to setTestInfo()?
-     Move this code to setTestInfo and make it read testInfo from BmTestManager()
-    private void updateCloudPanel() {
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        if (bmTestManager.getUserKey().isEmpty() || !bmTestManager.isUserKeyValid()) {
-            return;
-
-        }
-
-        interruptCloudPanelUpdate();
-        updateCloudPanelThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                TestInfo testInfo = bmTestManager.getTestInfo();
-
-                if (Thread.currentThread().isInterrupted())
-                    return;
-                if ("jmeter".equals(testInfo.type)) {
-                    locationComboBox.setSelectedItem(testInfo.getLocation());
-                    numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
-                    if (testInfo.overrides != null) {
-                        rampupSpinner.setValue(testInfo.overrides.rampup);
-                        iterationsSpinner.setValue(testInfo.overrides.iterations == -1 ? 0 : testInfo.overrides.iterations);
-                        durationSpinner.setValue(testInfo.overrides.duration == -1 ? 0 : testInfo.overrides.duration);
-                    } else {
-                        rampupSpinner.setValue(0);
-                        iterationsSpinner.setValue(0);
-                        durationSpinner.setValue(0);
-                    }
-                    runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
-                    runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
-                } else {
-                    infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
-                }
-                configureMainPanelControls(testInfo);
-            }
-        });
-        updateCloudPanelThread.start();
-    }
-     */
-
-
-    private void interruptCloudPanelUpdate() {
-        if (updateCloudPanelThread != null) {
-
-            if (updateCloudPanelThread.isAlive()) {
-                updateCloudPanelThread.interrupt();
-                BmLog.debug("UpdatingCloudPanelThread is interrupted!");
-            }
-        }
-    }
-
-    private Thread testInfoChecker;
-
-
-    private void startTestInfoChecker() {
-        if (testInfoChecker == null) {
-            testInfoChecker = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (!Thread.currentThread().isInterrupted()) {
-                        if (Thread.currentThread().isInterrupted()) {
-                            return;
-                        }
-                        updateCloudPanel(0);
-                        try {
-                            Thread.sleep(30000);
-                        } catch (InterruptedException e) {
-                            BmLog.debug("TestStatusChecker was interrupted during sleeping");
-                            return;
-                        } finally {
-                            if (Thread.currentThread().isInterrupted()) {
-                                return;
-                            }
-                        }
-
-                    }
-                    if (Thread.currentThread().isInterrupted()) {
-                        return;
-                    }
-                }
-            }
-            );
-        }
-        testInfoChecker.start();
-    }
-
-    private void stopTestInfoChecker() {
-        if (testInfoChecker != null) {
-            if (testInfoChecker.isAlive()) {
-                testInfoChecker.interrupt();
-                testInfoChecker = null;
-                System.gc();
-                BmLog.debug("TestStatusChecker is interrupted!");
-            }
-        }
     }
 
     private void configureMainPanelControls(TestInfo testInfo) {
