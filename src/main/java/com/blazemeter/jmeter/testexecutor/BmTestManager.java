@@ -262,8 +262,9 @@ public class BmTestManager {
             synchronized (this.testInfo) {
                 this.testInfo = testInfo;
             }
-            NotifyTestInfoChanged();
         }
+        NotifyTestInfoChanged();
+
     }
 
     public void setUserKey(String userKey) {
