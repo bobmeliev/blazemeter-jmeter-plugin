@@ -39,7 +39,6 @@ public class TestPanelGui {
     private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
     private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
     private static String TEST_ID = "";
-    private static long lastCloudPanelUpdate = 0;
     // change to JMeter property
     private static boolean areListenersInitialized = false;
     // change to JMeter property
@@ -702,6 +701,7 @@ public class TestPanelGui {
             JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         testIdComboBox.removeAllItems();
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
@@ -730,6 +730,7 @@ public class TestPanelGui {
                   after setting NEW TestInfoController was stopped.
                   We need to start it once again.
                 */
+//                addTestId(savedTestInfo, true);
                 TestInfoController.start(TEST_ID);
             }
         });
