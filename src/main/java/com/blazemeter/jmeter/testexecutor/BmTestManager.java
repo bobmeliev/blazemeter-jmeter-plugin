@@ -31,21 +31,22 @@ import java.util.*;
  */
 
 public class BmTestManager {
-    private static BmTestManager instance;
-    private static final Object lock = new Object();
     private String propUserKey;
+    private String userKey;
+
     private long lastUpdateCheck = 0;
-    private boolean isLocalRunMode = false;
     private UserInfo userInfo;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
-    public static int c = 0;
-    private String userKey;
     private boolean isUserKeyValid = false;
+    private boolean isLocalRunMode = false;
+
+    public static int c = 0;
     private static boolean isTestRunning = false;
-
-
+    private static BmTestManager instance;
+    private static final Object lock = new Object();
     private static ServerStatus serverStatus = ServerStatus.NOT_AVAILABLE;
+
 
     protected enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
 
