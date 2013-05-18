@@ -22,6 +22,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Dictionary;
 
 /**
@@ -558,7 +559,12 @@ public class TestPanelGui {
                         TestInfoReader testInfoReader = TestInfoReader.getInstance();
                         TestInfo testInfo = testInfoReader.loadTestInfo();
                         if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
-                            BmTestManager.getInstance().setTestInfo(testInfo);
+                            try {
+                                BmTestManager.getInstance().setTestInfo(testInfo);
+
+                            } catch (ConcurrentModificationException cme) {
+                                BmTestManager.getInstance().setTestInfo(testInfo);
+                            }
                             testInfoReader.setTestInfoSet(true);
                             TestInfoWriter.getInstance().setTestInfo(testInfo);
                             savedTestInfo = testInfo;
@@ -730,7 +736,6 @@ public class TestPanelGui {
                   after setting NEW TestInfoController was stopped.
                   We need to start it once again.
                 */
-//                addTestId(savedTestInfo, true);
                 TestInfoController.start(TEST_ID);
             }
         });
