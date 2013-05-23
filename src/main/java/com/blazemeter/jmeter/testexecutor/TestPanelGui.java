@@ -122,42 +122,6 @@ public class TestPanelGui {
             }
         });
 
-        BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
-            @Override
-            public void onTestUserKeyChanged(String userKey) {
-                setUserKey(userKey);
-                signUpToBlazemeterButton.setEnabled(userKey == null || userKey.isEmpty());
-            }
-        });
-
-
-        BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new BmTestManager.UserInfoChanged() {
-            @Override
-            public void onUserInfoChanged(UserInfo userInfo) {
-                if (userInfo == null) {
-                    userInfoLabel.setText("");
-                    clearTestInfo();
-                } else {
-                    if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
-                        userInfo.setMaxUsersLimit(8400);
-                        userInfo.setMaxEnginesLimit(14);
-                    }
-                    //configure numberOfUserSlider depending on UserInfo
-                    numberOfUsersSlider.setMinimum(0);
-                    userInfoLabel.setText(userInfo.toString());
-                    numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
-                    numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
-                    numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
-                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
-                    numberOfUsersSlider.setLabelTable(labels);
-                }
-            }
-        });
-
-        signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
-                getInstance().
-                getUserKey().
-                isEmpty());
 
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
@@ -308,32 +272,6 @@ public class TestPanelGui {
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
         durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
-
-        final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
-            @Override
-            public void onRunModeChanged(boolean isLocalRunMode) {
-                runLocal.setSelected(isLocalRunMode);
-                runRemote.setSelected(!isLocalRunMode);
-                runModeChanged(isLocalRunMode);
-
-            }
-        };
-        BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
-
-        ActionListener listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                bmTestManager.setIsLocalRunMode(e.getActionCommand().equals("Locally (Reporting Only)"));
-                boolean isLocalRunMode = bmTestManager.getIsLocalRunMode();
-                runModeChanged.onRunModeChanged(isLocalRunMode);
-                BmLog.console(e.getActionCommand());
-
-            }
-        };
-
-        runLocal.addActionListener(listener);
-        runRemote.addActionListener(listener);
 
 
         addFilesButton.addActionListener(new ActionListener() {
@@ -501,6 +439,72 @@ public class TestPanelGui {
 
         if (!areListenersInitialized) {
             areListenersInitialized = true;
+
+
+            final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
+                @Override
+                public void onRunModeChanged(boolean isLocalRunMode) {
+                    runLocal.setSelected(isLocalRunMode);
+                    runRemote.setSelected(!isLocalRunMode);
+                    runModeChanged(isLocalRunMode);
+
+                }
+            };
+            BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
+
+            ActionListener listener = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    BmTestManager bmTestManager = BmTestManager.getInstance();
+                    bmTestManager.setIsLocalRunMode(e.getActionCommand().equals("Locally (Reporting Only)"));
+                    boolean isLocalRunMode = bmTestManager.getIsLocalRunMode();
+                    runModeChanged.onRunModeChanged(isLocalRunMode);
+                    BmLog.console(e.getActionCommand());
+
+                }
+            };
+
+            runLocal.addActionListener(listener);
+            runRemote.addActionListener(listener);
+
+
+            signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
+                    getInstance().
+                    getUserKey().
+                    isEmpty());
+
+            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new BmTestManager.UserInfoChanged() {
+                @Override
+                public void onUserInfoChanged(UserInfo userInfo) {
+                    if (userInfo == null) {
+                        userInfoLabel.setText("");
+                        clearTestInfo();
+                    } else {
+                        if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
+                            userInfo.setMaxUsersLimit(8400);
+                            userInfo.setMaxEnginesLimit(14);
+                        }
+                        //configure numberOfUserSlider depending on UserInfo
+                        numberOfUsersSlider.setMinimum(0);
+                        userInfoLabel.setText(userInfo.toString());
+                        numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
+                        numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
+                        numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
+                        Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
+                        numberOfUsersSlider.setLabelTable(labels);
+                    }
+                }
+            });
+
+
+            BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
+                @Override
+                public void onTestUserKeyChanged(String userKey) {
+                    setUserKey(userKey);
+                    signUpToBlazemeterButton.setEnabled(userKey == null || userKey.isEmpty());
+                }
+            });
+
             testIdComboBox.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent itemEvent) {
@@ -579,6 +583,11 @@ public class TestPanelGui {
                     }
                 }).start();
             } else {
+                String userKey = BmTestManager.getInstance().getUserKey();
+                if (!userKey.isEmpty()) {
+                    userKeyTextField.setText(userKey);
+                    fetchUserTestsAsync();
+                }
                 userKeyTextField.addFocusListener(new FocusListener() {
                     String oldVal = "";
 
@@ -817,8 +826,6 @@ public class TestPanelGui {
                 }
                 runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
                 runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
-            } else {
-                infoLabel.setText(testIdComboBox.getSelectedItem().equals(NEW) ? SELECT_TEST : CAN_NOT_BE_RUN);
             }
 
 

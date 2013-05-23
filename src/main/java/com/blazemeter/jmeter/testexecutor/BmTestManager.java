@@ -183,7 +183,7 @@ public class BmTestManager {
     }
 
     public boolean isUserKeyFromProp() {
-        return this.propUserKey != null && !this.propUserKey.isEmpty();
+        return userKey.isEmpty() ? this.propUserKey != null && !this.propUserKey.isEmpty() : false;
     }
 
 
@@ -269,9 +269,6 @@ public class BmTestManager {
     }
 
     public void setUserKey(String userKey) {
-        if (isUserKeyFromProp())
-            return;
-
         if (this.userKey == null || !this.userKey.equals(userKey)) {
             this.userKey = userKey;
             NotifyUserKeyChanged();

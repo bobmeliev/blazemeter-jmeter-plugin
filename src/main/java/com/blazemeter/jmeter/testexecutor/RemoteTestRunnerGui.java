@@ -55,11 +55,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             return null;
         }
 
-        BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner testRunner = new RemoteTestRunner();
-        testRunner.setUserKey(bmTestManager.getUserKey());
-        testRunner.setTestInfo(bmTestManager.getTestInfo());
-        testRunner.setIsLocalRunMode(bmTestManager.getIsLocalRunMode());
         modifyTestElement(testRunner);
         return testRunner;
     }
@@ -101,11 +97,13 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
             return;
         }
         super.configure(element);
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
+        bmTestManager.setUserKey(remoteTestRunner.getUserKey());
         //initialize listeners on TestPanelGui
         gui.initListeners();
         //initialize RemoteTestRunnerGUI
         initListeners();
-        BmTestManager bmTestManager = BmTestManager.getInstance();
 
         bmTestManager.getInstance().checkForUpdates();
         //Get TestInfo from BmTestManager;
