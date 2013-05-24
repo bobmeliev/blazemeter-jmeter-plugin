@@ -36,10 +36,6 @@ public class TestPanelGui {
     private static final String NEW = "---NEW---";
     private static final String EMPTY = "";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
-    private static final String SELECT_TEST = "Please, select test from list";
-    private static final String LOADING_TEST_INFO = "Loading test info, please wait";
-    private static final String CAN_NOT_BE_RUN = "This test could not be run from Jmeter Plugin. Please, select another one from the list above.";
-    private static final String TEST_INFO_IS_LOADED = "Test info is loaded";
     private static String TEST_ID = "";
     // change to JMeter property
     private static boolean areListenersInitialized = false;
@@ -67,8 +63,8 @@ public class TestPanelGui {
     private JRadioButton runRemote;
     private JRadioButton runLocal;
     private JPanel overridesPanel;
-    private JPanel infoPanel;
-    private JLabel infoLabel;
+    //    private JPanel infoPanel;
+//    private JLabel infoLabel;
     private JLabel userInfoLabel;
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
@@ -743,10 +739,8 @@ public class TestPanelGui {
         runRemote.setSelected(!isLocalRunMode);
         if (isLocalRunMode) {
             cloudPanel.setVisible(false);
-            infoPanel.setVisible(false);
         } else {
             cloudPanel.setVisible(true);
-            infoPanel.setVisible(true);
         }
     }
 
@@ -755,14 +749,11 @@ public class TestPanelGui {
             testInfo = new TestInfo();
             testInfo.name = NEW;
             testIdComboBox.setSelectedItem(testInfo.name);
-            infoLabel.setText(SELECT_TEST);
             configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
             configureMainPanelControls(testInfo);
-            infoLabel.setText(LOADING_TEST_INFO);
             runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
-            infoLabel.setText(TEST_INFO_IS_LOADED);
         }
     }
 
@@ -773,14 +764,11 @@ public class TestPanelGui {
             testInfo = new TestInfo();
             testInfo.name = NEW;
             testIdComboBox.setSelectedItem(testInfo.name);
-            infoLabel.setText(SELECT_TEST);
             configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
             configureMainPanelControls(testInfo);
-            infoLabel.setText(LOADING_TEST_INFO);
             runModeChanged(bmTestManager.getIsLocalRunMode());
-            infoLabel.setText(TEST_INFO_IS_LOADED);
         }
         if (!bmTestManager.getIsLocalRunMode()) {
             // update Cloud panel
@@ -869,7 +857,7 @@ public class TestPanelGui {
      */
     private void $$$setupUI$$$() {
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(3, 6, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(2, 6, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAutoscrolls(true);
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(6, 18, new Insets(1, 1, 1, 1), -1, -1));
@@ -1025,8 +1013,11 @@ public class TestPanelGui {
         numberOfUsersSlider.setPaintTrack(true);
         numberOfUsersSlider.setRequestFocusEnabled(true);
         numberOfUsersSlider.setSnapToTicks(false);
-        numberOfUsersSlider.setValue(0);
+        numberOfUsersSlider.setValue(1);
         numberOfUsersSlider.setValueIsAdjusting(true);
+        numberOfUsersSlider.putClientProperty("JSlider.isFilled", Boolean.FALSE);
+        numberOfUsersSlider.putClientProperty("html.disable", Boolean.FALSE);
+        numberOfUsersSlider.putClientProperty("Slider.paintThumbArrowShape", Boolean.FALSE);
         panel6.add(numberOfUsersSlider, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel7 = new JPanel();
         panel7.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
@@ -1035,6 +1026,16 @@ public class TestPanelGui {
         locationComboBox.setDoubleBuffered(true);
         locationComboBox.setEditable(false);
         locationComboBox.setEnabled(true);
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        defaultComboBoxModel1.addElement("EU West (Ireland)");
+        defaultComboBoxModel1.addElement("US East (Virginia)");
+        defaultComboBoxModel1.addElement("US West (N.California)");
+        defaultComboBoxModel1.addElement("US West (Oregon)");
+        defaultComboBoxModel1.addElement("Asia Pacific (Singapore)");
+        defaultComboBoxModel1.addElement("Japan (Tokyo)");
+        defaultComboBoxModel1.addElement("South America (Sao Paulo)");
+        defaultComboBoxModel1.addElement("Australia (Sydney)");
+        locationComboBox.setModel(defaultComboBoxModel1);
         locationComboBox.setToolTipText("Select location");
         panel7.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer4 = new Spacer();
@@ -1104,19 +1105,18 @@ public class TestPanelGui {
         editJMXLocallyButton = new JButton();
         editJMXLocallyButton.setText("Edit JMX locally");
         cloudPanel.add(editJMXLocallyButton, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        infoPanel = new JPanel();
-        infoPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
-        infoPanel.setVisible(true);
-        mainPanel.add(infoPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        infoPanel.setBorder(BorderFactory.createTitledBorder("Blazemeter System Messages:"));
-        final Spacer spacer7 = new Spacer();
-        infoPanel.add(spacer7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
-        final Spacer spacer8 = new Spacer();
-        infoPanel.add(spacer8, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        infoLabel = new JLabel();
-        infoLabel.setText("");
-        infoLabel.setVerifyInputWhenFocusTarget(false);
-        infoPanel.add(infoLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        uploadJMXCheckBox = new JCheckBox();
+        uploadJMXCheckBox.setBorderPainted(false);
+        uploadJMXCheckBox.setBorderPaintedFlat(true);
+        uploadJMXCheckBox.setDoubleBuffered(true);
+        uploadJMXCheckBox.setFocusCycleRoot(true);
+        uploadJMXCheckBox.setRolloverEnabled(true);
+        uploadJMXCheckBox.setSelected(false);
+        uploadJMXCheckBox.setText("Upload JMX before starting cloud test");
+        uploadJMXCheckBox.setToolTipText("Check to upload JMX");
+        uploadJMXCheckBox.setVisible(true);
+        uploadJMXCheckBox.putClientProperty("hideActionText", Boolean.FALSE);
+        cloudPanel.add(uploadJMXCheckBox, new GridConstraints(1, 4, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
         label3.setLabelFor(testIdComboBox);
