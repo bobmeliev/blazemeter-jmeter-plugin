@@ -96,8 +96,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         bmTestManager.setUserKey(remoteTestRunner.getUserKey());
         TestInfo testInfo = remoteTestRunner.getTestInfo();
         bmTestManager.setTestInfo(testInfo);
-        //should be debugged after finishing with testInfo
-//        bmTestManager.setIsLocalRunMode(remoteTestRunner.getIsLocalRunMode());
+        boolean isLocalRunMode = remoteTestRunner.getIsLocalRunMode();
+        bmTestManager.setIsLocalRunMode(isLocalRunMode);
         //initialize listeners on TestPanelGui
         gui.initListeners();
         //initialize RemoteTestRunnerGUI

@@ -386,8 +386,6 @@ public class TestPanelGui {
         enginesParameters.add(engineSize);
         enginesParameters.add(String.valueOf(userPerEngine));
         return enginesParameters;
-
-
     }
 
 
@@ -444,8 +442,6 @@ public class TestPanelGui {
             final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
                 @Override
                 public void onRunModeChanged(boolean isLocalRunMode) {
-                    runLocal.setSelected(isLocalRunMode);
-                    runRemote.setSelected(!isLocalRunMode);
                     runModeChanged(isLocalRunMode);
 
                 }
@@ -460,7 +456,6 @@ public class TestPanelGui {
                     boolean isLocalRunMode = bmTestManager.getIsLocalRunMode();
                     runModeChanged.onRunModeChanged(isLocalRunMode);
                     BmLog.console(e.getActionCommand());
-
                 }
             };
 
@@ -743,8 +738,10 @@ public class TestPanelGui {
     }
 
 
-    private void runModeChanged(boolean isLocalRun) {
-        if (isLocalRun) {
+    private void runModeChanged(boolean isLocalRunMode) {
+        runLocal.setSelected(isLocalRunMode);
+        runRemote.setSelected(!isLocalRunMode);
+        if (isLocalRunMode) {
             cloudPanel.setVisible(false);
             infoPanel.setVisible(false);
         } else {
