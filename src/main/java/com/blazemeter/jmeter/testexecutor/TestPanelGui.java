@@ -63,8 +63,6 @@ public class TestPanelGui {
     private JRadioButton runRemote;
     private JRadioButton runLocal;
     private JPanel overridesPanel;
-    //    private JPanel infoPanel;
-//    private JLabel infoLabel;
     private JLabel userInfoLabel;
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
