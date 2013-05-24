@@ -3,17 +3,21 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
+import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.ResultCollector;
 import org.apache.jmeter.samplers.*;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.util.ShutdownClient;
 import org.json.XML;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
@@ -61,6 +65,19 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 setTestInfo(testInfo);
+                if ((testInfo.status == TestStatus.NotRunning) & JMeter.isNonGUI() & BmTestManager.isTestRunning()) {
+                    if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
+                        try {
+                            ShutdownClient.main(new String[]{"StopTestNow"});
+
+                        } catch (IOException ioe) {
+                            BmLog.error("Distributed remote test was not stopped: " + ioe);
+                        }
+                    } else {
+                        StandardJMeterEngine.stopEngine();
+                    }
+
+                }
             }
         });
 
@@ -120,15 +137,21 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     @Override
     public void testStarted(String host) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
+        String userKey = bmTestManager.getUserKey();
 
         if (JMeter.isNonGUI()) {
             bmTestManager.setIsLocalRunMode(true);
+            TestInfo testInfo = this.getTestInfo();
+            bmTestManager.setTestInfo(testInfo);
+            bmTestManager.setUserKey(this.getUserKey());
+            //start TestInfoController if non_GUI mode
+
+            TestInfoController.start(testInfo.id);
         }
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.debug("Test is started, running in the cloud!");
             return;
         }
-        String userKey = bmTestManager.getUserKey();
 
         if (userKey == null || userKey.isEmpty()) {
             BmLog.error("UserKey is not found, test results won't be uploaded to server");

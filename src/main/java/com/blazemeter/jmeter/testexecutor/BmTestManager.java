@@ -29,8 +29,8 @@ import java.util.*;
  */
 
 public class BmTestManager {
-    private String propUserKey;
-    private String userKey;
+    private String propUserKey = "";
+    private String userKey = "";
 
     private long lastUpdateCheck = 0;
     private UserInfo userInfo;
