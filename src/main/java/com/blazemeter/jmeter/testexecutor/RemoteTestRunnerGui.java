@@ -241,11 +241,11 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                     areListenersInitialized = true;
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);
-
-                    bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+                    ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
+                    serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
                         @Override
                         public void onServerStatusChanged() {
-                            BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                            ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
                             switch (serverStatus) {
                                 case AVAILABLE:
                                     connectionStatus.setText("SERVER IS AVAILABLE");

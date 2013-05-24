@@ -651,10 +651,11 @@ public class TestPanelGui {
                 }
             });
             //Processing serverStatusChangedNotification
-            bmTestManager.serverStatusChangedNotificationListeners.add(new BmTestManager.ServerStatusChangedNotification() {
+            ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
+            serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
                 @Override
                 public void onServerStatusChanged() {
-                    BmTestManager.ServerStatus serverStatus = BmTestManager.getServerStatus();
+                    ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
                     switch (serverStatus) {
                         case AVAILABLE:
                             TestInfo testInfo = BmTestManager.getInstance().getTestInfo();

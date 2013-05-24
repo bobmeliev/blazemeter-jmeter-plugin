@@ -47,8 +47,8 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             return;
         }
 
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.startCheckingConnection();
+        ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
+        serverStatusController.start();
 
         BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
             @Override

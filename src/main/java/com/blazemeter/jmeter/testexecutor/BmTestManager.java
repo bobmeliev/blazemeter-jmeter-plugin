@@ -17,9 +17,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -45,10 +43,7 @@ public class BmTestManager {
     private static boolean isTestRunning = false;
     private static BmTestManager instance;
     private static final Object lock = new Object();
-    private static ServerStatus serverStatus = ServerStatus.NOT_AVAILABLE;
 
-
-    protected enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -57,10 +52,6 @@ public class BmTestManager {
                     instance = new BmTestManager();
             }
         return instance;
-    }
-
-    public static ServerStatus getServerStatus() {
-        return serverStatus;
     }
 
     public boolean isUserKeyValid() {
@@ -83,86 +74,6 @@ public class BmTestManager {
         instance = null;
     }
 
-
-    private void checkConnection() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String serverURL = BlazemeterApi.BmUrlManager.getServerUrl();
-                ServerStatus latestServerStatus = serverStatus;
-
-                try {
-                    URL url = new URL(serverURL);
-                    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-                    httpConn.setInstanceFollowRedirects(false);
-                    httpConn.setRequestMethod("HEAD");
-                    httpConn.setConnectTimeout(5000);
-                    httpConn.connect();
-                    BmLog.debug("Connection with " + serverURL + " is OK.");
-                    serverStatus = ServerStatus.AVAILABLE;
-                    httpConn.disconnect();
-                } catch (SocketTimeoutException e) {
-                    BmLog.error("Connection with " + serverURL + " was not established, server is unavailable");
-                    serverStatus = ServerStatus.NOT_AVAILABLE;
-                } catch (MalformedURLException e) {
-                    BmLog.error("SERVER URL is invalid! Check 'blazemeter.url' in jmeter.properties");
-                    serverStatus = ServerStatus.NOT_AVAILABLE;
-                } catch (java.net.ConnectException e) {
-                    BmLog.error(serverURL + "is down ");
-                    serverStatus = ServerStatus.NOT_AVAILABLE;
-                } catch (ProtocolException e) {
-                    BmLog.error("HTTP Request method was not set up for checking connection");
-                    serverStatus = ServerStatus.NOT_AVAILABLE;
-                } catch (IOException e) {
-                    BmLog.error("Connection with" + serverURL + "was not established, server is unavailable");
-                    serverStatus = ServerStatus.NOT_AVAILABLE;
-                } finally {
-                    if (!latestServerStatus.equals(serverStatus)) {
-                        NotifyServerStatusChanged();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private Thread serverConnectionChecker;
-
-    public void startCheckingConnection() {
-        if (serverConnectionChecker == null) {
-            serverConnectionChecker = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (!Thread.currentThread().isInterrupted()) {
-                        if (Thread.currentThread().isInterrupted()) {
-                            return;
-
-                        }
-                        checkConnection();
-                        try {
-                            serverConnectionChecker.sleep(15000);
-                        } catch (InterruptedException e) {
-                            BmLog.debug("Connection checker was interrupted during sleeping");
-                            return;
-                        } finally {
-                            if (Thread.currentThread().isInterrupted()) {
-                                return;
-                            }
-                        }
-                    }
-                }
-            });
-            serverConnectionChecker.start();
-        }
-    }
-
-    public void stopCheckingConnection() {
-        if (serverConnectionChecker != null) {
-            if (serverConnectionChecker.isAlive()) {
-                serverConnectionChecker.interrupt();
-                BmLog.debug("ServerConnectionChecking Thread is interrupted!");
-            }
-        }
-    }
 
     private BmTestManager() {
         c++;
