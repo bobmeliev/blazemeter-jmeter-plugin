@@ -105,6 +105,10 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         this.setProperty("isLocalRun", isLocalRun);
     }
 
+    public boolean getIsLocalRunMode() {
+        return this.getPropertyAsBoolean("isLocalRun", false);
+    }
+
     public String getReportName() {
         return this.getPropertyAsString("reportName", "test_results.jtl");
     }

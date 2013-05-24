@@ -3,7 +3,6 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
@@ -73,11 +72,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         //Get testInfo from GUI;
         TestInfo testInfo = gui.getTestInfo();
-        TestInfoWriter testInfoWriter = TestInfoWriter.getInstance();
-        //Save testInfo to testinfo.xml
-        if ((!testInfo.equals(testInfoWriter.getTestInfo())) & (!testInfo.name.equals(""))) {
-            TestInfoWriter.getInstance().saveTestInfo(testInfo);
-        }
         //Set testInfo to BmTestManager
         bmTestManager.setTestInfo(testInfo);
         remoteTestRunner.setReportName("test_" + testInfo.id + ".jtl");
@@ -100,6 +94,10 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
         bmTestManager.setUserKey(remoteTestRunner.getUserKey());
+        TestInfo testInfo = remoteTestRunner.getTestInfo();
+        bmTestManager.setTestInfo(testInfo);
+        //should be debugged after finishing with testInfo
+//        bmTestManager.setIsLocalRunMode(remoteTestRunner.getIsLocalRunMode());
         //initialize listeners on TestPanelGui
         gui.initListeners();
         //initialize RemoteTestRunnerGUI
@@ -107,7 +105,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         bmTestManager.getInstance().checkForUpdates();
         //Get TestInfo from BmTestManager;
-        TestInfo testInfo = bmTestManager.getTestInfo();
+        testInfo = bmTestManager.getTestInfo();
         gui.setTestInfo(testInfo);
     }
 

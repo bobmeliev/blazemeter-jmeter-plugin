@@ -1,7 +1,9 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.testinfo.*;
-import com.blazemeter.jmeter.testinfo.writer.TestInfoWriter;
+import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoChecker;
+import com.blazemeter.jmeter.testinfo.TestInfoController;
+import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.BlazemeterApi;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.TestStatus;
@@ -22,7 +24,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Dictionary;
 
 /**
@@ -72,7 +73,6 @@ public class TestPanelGui {
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
     private JCheckBox uploadJMXCheckBox;
-    private TestInfo savedTestInfo;
 
 
     public TestPanelGui() {
@@ -555,38 +555,19 @@ public class TestPanelGui {
 
                     }
                 }).start();
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        //Reading testinfo from System.getProperty("user.home") + "\\testinfo.xml"
-                        TestInfoReader testInfoReader = TestInfoReader.getInstance();
-                        TestInfo testInfo = testInfoReader.loadTestInfo();
-                        if (testInfo.id != null & !testInfo.id.isEmpty() & !testInfoReader.isTestInfoSet()) {
-                            try {
-                                BmTestManager.getInstance().setTestInfo(testInfo);
-
-                            } catch (ConcurrentModificationException cme) {
-                                BmTestManager.getInstance().setTestInfo(testInfo);
-                            }
-                            testInfoReader.setTestInfoSet(true);
-                            TestInfoWriter.getInstance().setTestInfo(testInfo);
-                            savedTestInfo = testInfo;
-                        }
-                    }
-                }).start();
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        BmTestManager.getInstance().getUserInfo();   //
+                        BmTestManager.getInstance().getUserInfo();
                     }
                 }).start();
             } else {
                 String userKey = BmTestManager.getInstance().getUserKey();
                 if (!userKey.isEmpty()) {
+                    signUpToBlazemeterButton.setVisible(false);
                     userKeyTextField.setText(userKey);
                     fetchUserTestsAsync();
+
                 }
                 userKeyTextField.addFocusListener(new FocusListener() {
                     String oldVal = "";
@@ -731,9 +712,9 @@ public class TestPanelGui {
                     testIdComboBox.setSelectedItem(NEW);
                     BmTestManager.getInstance().setUserKeyValid(true);
                     for (TestInfo ti : tests) {
-                        addTestId(ti, false);
+                        addTestId(ti, ti.id.equals(TEST_ID));
                     }
-                    addTestId(savedTestInfo, true);
+                    TestInfoController.start(TEST_ID);
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
@@ -741,14 +722,8 @@ public class TestPanelGui {
                     enableCloudControls(false);
                     testIdComboBox.setSelectedItem(EMPTY);
                 }
-                /*
-                  after setting NEW TestInfoController was stopped.
-                  We need to start it once again.
-                */
-                TestInfoController.start(TEST_ID);
             }
         });
-
     }
 
     public void setUserKey(String key) {
@@ -827,8 +802,6 @@ public class TestPanelGui {
                 runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
                 runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
             }
-
-
         }
     }
 
