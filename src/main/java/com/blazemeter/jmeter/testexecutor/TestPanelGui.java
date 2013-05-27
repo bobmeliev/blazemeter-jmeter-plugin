@@ -14,6 +14,8 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.action.ActionNames;
+import org.apache.jmeter.gui.action.RemoteStart;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.util.JMeterUtils;
 
@@ -153,7 +155,7 @@ public class TestPanelGui {
                     } else if (chosenOption == JOptionPane.YES_OPTION) {
                         Save save = new Save();
                         try {
-                            save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "save_as"));
+                            save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_AS));
                         } catch (IllegalUserActionException iuae) {
                             BmLog.error("Can not save file," + iuae);
                         }
@@ -330,13 +332,9 @@ public class TestPanelGui {
         testIdTextField.setEnabled(isEnabled);
         testIdComboBox.setEnabled(isEnabled);
         testNameTextField.setEnabled(isEnabled);
-        helpButton.setEnabled(isEnabled);
-        signUpToBlazemeterButton.setEnabled(isEnabled);
         reloadButton.setEnabled(isEnabled);
         createNewButton.setEnabled(isEnabled);
         goToTestPageButton.setEnabled(isEnabled);
-        runLocal.setEnabled(isEnabled);
-        runRemote.setEnabled(isEnabled);
     }
 
     private void resetCloudPanel() {
@@ -609,21 +607,21 @@ public class TestPanelGui {
 
                     if ((testInfo.status == TestStatus.NotRunning)) {
                         if (BmTestManager.getInstance().getIsLocalRunMode() & (BmTestManager.isTestRunning())) {
+                            RemoteStart remoteStart =
+                                    new RemoteStart();
+
+                            remoteStart.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_STOP_ALL));
                             StandardJMeterEngine.stopEngine();
+
                         }
                         boolean isTestIdEmpty = testInfo.id.isEmpty();
                         runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
                         enableCloudControls(!isTestIdEmpty);
 
-                        if (BmTestManager.getInstance().isUserKeyFromProp()) {
-                            runLocal.setEnabled(!isTestIdEmpty);
-                            runRemote.setEnabled(!isTestIdEmpty);
-
-                        } else {
-                            runLocal.setEnabled(true);
-                            runRemote.setEnabled(true);
-                        }
+                        boolean isTestRunning = BmTestManager.isTestRunning();
+                        runLocal.setEnabled(!isTestRunning);
+                        runRemote.setEnabled(!isTestRunning);
 
                         configureMainPanelControls(testInfo);
 
