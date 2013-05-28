@@ -712,6 +712,9 @@ public class TestPanelGui {
     }
 
     public void setUserKey(String key) {
+        if (key.isEmpty()) {
+            return;
+        }
         userKeyTextField.setText(key);
         BmLog.debug("Setting user key" + key);
     }
