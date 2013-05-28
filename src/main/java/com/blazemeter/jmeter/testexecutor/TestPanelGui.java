@@ -606,13 +606,10 @@ public class TestPanelGui {
                     }
 
                     if ((testInfo.status == TestStatus.NotRunning)) {
-                        if (BmTestManager.getInstance().getIsLocalRunMode() & (BmTestManager.isTestRunning())) {
-                            RemoteStart remoteStart =
-                                    new RemoteStart();
-
-                            remoteStart.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_STOP_ALL));
+                        if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
+                            RemoteStart remoteStart = new RemoteStart();
+                            remoteStart.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_SHUT_ALL));
                             StandardJMeterEngine.stopEngine();
-
                         }
                         boolean isTestIdEmpty = testInfo.id.isEmpty();
                         runInTheCloud.setEnabled(!isTestIdEmpty);
