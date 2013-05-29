@@ -39,7 +39,6 @@ public class Utils {
     private Utils() {
     }
 
-    ;
 
     public static boolean isInteger(String str) {
         try {
@@ -159,17 +158,24 @@ public class Utils {
             Load.insertLoadedTree(1, tree);
 
             JMeterTreeModel model = guiPackage.getTreeModel();
-            JMeterTreeNode node = (JMeterTreeNode) guiPackage.getTreeModel().getRoot();
             JMeterTreeNode testPlanNode = model.getNodesOfType(TestPlan.class).get(0);
             List<JMeterTreeNode> nodes = Collections.list(testPlanNode.children());
-            Iterator<JMeterTreeNode> nodeIterator = nodes.iterator();
+            Iterator<JMeterTreeNode> nodesIterator = nodes.iterator();
             boolean containsRemoteTestRunner = false;
-            while (nodeIterator.hasNext()) {
-                JMeterTreeNode nextNode = nodeIterator.next();
-                if (nextNode.getUserObject() instanceof RemoteTestRunner) {
+            for (JMeterTreeNode node : nodes) {
+                if (node.getStaticLabel().equals("BlazeMeter")) {
                     containsRemoteTestRunner = true;
                 }
+                if (node.getStaticLabel().equals("Thread Group")) {
+                    List<JMeterTreeNode> subNodes = Collections.list(node.children());
+                    for (JMeterTreeNode subNode : subNodes) {
+                        if (subNode.getStaticLabel().equals("BlazeMeter")) {
+                            containsRemoteTestRunner = true;
+                        }
+                    }
+                }
             }
+
 
             if (!containsRemoteTestRunner) {
                 TestElement remoteTestRunner = guiPackage.createTestElement(RemoteTestRunnerGui.class, RemoteTestRunner.class);
