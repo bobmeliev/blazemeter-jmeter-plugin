@@ -22,7 +22,14 @@
                 <directory>src/main/java/com/blazemeter/jmeter/images</directory>
             </resource>
         </resources>
+        <!--
+        TODO
+        Should be added to *.jar
+        org/json
+        com/intellij
+        com/jgoodies
 
+        -->
     </build>
 
 

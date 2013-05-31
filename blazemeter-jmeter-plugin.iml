@@ -36,6 +36,7 @@
     <orderEntry type="library" name="Maven: excalibur-logger:excalibur-logger:1.1" level="project" />
     <orderEntry type="library" name="Maven: excalibur-pool:excalibur-pool:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.htmlparser:htmllexer:2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun:tools:1.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.htmlparser:htmlparser:2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.1.2" level="project" />
     <orderEntry type="library" name="Maven: oro:oro:2.0.8" level="project" />
