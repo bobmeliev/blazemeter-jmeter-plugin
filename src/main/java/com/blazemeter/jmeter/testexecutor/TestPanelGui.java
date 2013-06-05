@@ -697,10 +697,20 @@ public class TestPanelGui {
                     testIdComboBox.addItem(NEW);
                     testIdComboBox.setSelectedItem(NEW);
                     BmTestManager.getInstance().setUserKeyValid(true);
+                    java.util.List<String> testIdList = new ArrayList<String>();
                     for (TestInfo ti : tests) {
-                        addTestId(ti, ti.id.equals(TEST_ID));
+                        addTestId(ti, false);
+                        testIdList.add(ti.id);
                     }
-                    TestInfoController.start(TEST_ID);
+                    if (testIdList.contains(TEST_ID)) {
+                        TestInfoController.start(TEST_ID);
+                        testIdComboBox.setSelectedItem(TEST_ID);
+                    } else {
+                        JMeterUtils.reportErrorToUser("Test was not found on server. Please, select test!"
+                                , "TestInfo can not be applied");
+                    }
+
+
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
