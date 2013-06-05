@@ -705,7 +705,7 @@ public class TestPanelGui {
                     if (!TEST_ID.isEmpty()) {
                         if (!testIdList.contains(TEST_ID)) {
                             JMeterUtils.reportErrorToUser("Test="+TEST_ID+" was not found on server. Select test from list."
-                                    , "TestInfo was not found on server");
+                                    , "Test was not found on server");
                         } else {
                             TestInfoController.start(TEST_ID);
                             testIdComboBox.setSelectedItem(TEST_ID);
