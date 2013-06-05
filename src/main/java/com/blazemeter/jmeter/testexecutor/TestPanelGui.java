@@ -702,12 +702,14 @@ public class TestPanelGui {
                         addTestId(ti, false);
                         testIdList.add(ti.id);
                     }
-                    if (testIdList.contains(TEST_ID)) {
-                        TestInfoController.start(TEST_ID);
-                        testIdComboBox.setSelectedItem(TEST_ID);
-                    } else {
-                        JMeterUtils.reportErrorToUser("Test was not found on server. Please, select test!"
-                                , "TestInfo can not be applied");
+                    if (!TEST_ID.isEmpty()) {
+                        if (!testIdList.contains(TEST_ID)) {
+                            JMeterUtils.reportErrorToUser("Test="+TEST_ID+" was not found on server. Select test from list."
+                                    , "TestInfo was not found on server");
+                        } else {
+                            TestInfoController.start(TEST_ID);
+                            testIdComboBox.setSelectedItem(TEST_ID);
+                        }
                     }
 
 
