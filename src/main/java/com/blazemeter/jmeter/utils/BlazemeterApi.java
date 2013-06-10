@@ -236,6 +236,9 @@ public class BlazemeterApi {
         } catch (JSONException e) {
             BmLog.error(e);
             return -1;
+        } catch (NullPointerException npe){
+            BmLog.error("JSON object was not received from server",npe);
+            return -1;
         }
     }
 
