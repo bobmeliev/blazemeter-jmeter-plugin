@@ -587,8 +587,9 @@ public class TestPanelGui {
                     boolean exists = false;
 
                     for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                        TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                        if (ti != null) {
+                        Object obj=testIdComboBox.getItemAt(index);
+                        if(obj instanceof TestInfo&obj!=null){
+                            TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
                             exists = item.equals(ti.id + " - " + ti.name);
                         }
                     }
@@ -832,7 +833,7 @@ public class TestPanelGui {
         if (!BmTestManager.getInstance().isUserKeyFromProp()) {
             userKeyTextField.setEnabled(!isRunning);
         }
-        testIdComboBox.setEnabled(!isRunning);
+        testIdComboBox.setEnabled(!isRunning&testIdComboBox.getItemCount()>0);
         testIdTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
     }
@@ -954,7 +955,7 @@ public class TestPanelGui {
         testIdComboBox = new JComboBox();
         testIdComboBox.setDoubleBuffered(true);
         testIdComboBox.setEditable(false);
-        testIdComboBox.setEnabled(true);
+        testIdComboBox.setEnabled(false);
         testIdComboBox.setToolTipText("Enter test id  or select test from list , click refresh button if you want to load test list from the server.");
         panel4.add(testIdComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         reloadButton = new JButton();
