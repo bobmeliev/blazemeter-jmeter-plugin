@@ -501,7 +501,6 @@ public class TestPanelGui {
                             TestInfo testInfo = (TestInfo) selectedTest;
                             if (testInfo.name != NEW & !testInfo.name.isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
-                                bmTestManager.NotifyTestInfoChanged();
                             }
                         } else if (Utils.isInteger(selectedTest.toString())) {
                             TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
