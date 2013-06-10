@@ -380,7 +380,10 @@ public class BlazemeterApi {
             BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
         } catch (IOException ioe) {
             BmLog.error(ioe);
-        } finally {
+        } catch (IndexOutOfBoundsException ioube){
+            BmLog.error("Verify bug https://blazemeter.atlassian.net/browse/BPC-146");
+        }
+        finally {
             try {
                 if (fileOutputStream != null) {
                     fileOutputStream.close();
