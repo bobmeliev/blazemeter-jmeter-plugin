@@ -586,9 +586,10 @@ public class TestPanelGui {
                     String item = testInfo.id + " - " + testInfo.name;
                     boolean exists = false;
 
-                    for (int index = 0; index < testIdComboBox.getItemCount() && !exists; index++) {
-                        if (item.equals(testIdComboBox.getItemAt(index))) {
-                            exists = true;
+                    for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
+                        TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
+                        if (ti != null) {
+                            exists = item.equals(ti.id + " - " + ti.name);
                         }
                     }
                     if (!exists & !testInfo.id.isEmpty()) {
@@ -703,7 +704,7 @@ public class TestPanelGui {
                     }
                     if (!TEST_ID.isEmpty()) {
                         if (!testIdList.contains(TEST_ID)) {
-                            JMeterUtils.reportErrorToUser("Test="+TEST_ID+" was not found on server. Select test from list."
+                            JMeterUtils.reportErrorToUser("Test=" + TEST_ID + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         } else {
                             TestInfoController.start(TEST_ID);
