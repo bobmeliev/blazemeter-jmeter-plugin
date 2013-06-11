@@ -45,7 +45,10 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     public RemoteTestRunner() {
         super();
+        if(Float.parseFloat(JMeterPluginUtils.getJmeterVersion())<2.5){
+        BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
 
+        }
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.debug("RemoteTestRunner is running in the cloud!");
             return;

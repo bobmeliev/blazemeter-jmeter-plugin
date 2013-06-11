@@ -6,6 +6,7 @@ import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
+import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
 
 import javax.swing.*;
@@ -31,6 +32,12 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     public RemoteTestRunnerGui() {
         super();
+        String jmversion =  JMeterPluginUtils.getJmeterVersion();
+        if (Float.parseFloat(jmversion) < 2.5) {
+            JMeterUtils.reportErrorToUser("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.",
+                                          "Invalid JMeter version");
+
+        }
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.console("RemoteTestRunnerGui(),Running in the cloud!");
             this.setEnabled(false);
