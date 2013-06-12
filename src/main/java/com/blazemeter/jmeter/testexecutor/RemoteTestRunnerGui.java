@@ -4,6 +4,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.*;
+import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
@@ -21,9 +22,9 @@ import java.awt.event.MouseListener;
 public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, BmTestManager.PluginUpdateReceived {
     private static TestPanelGui gui;
     private static JLabel connectionStatus = new JLabel();
-    private boolean areListenersInitialized = false;
     private static JPanel versionPanel;
     private static String BLAZEMETER_LABEL = "BlazeMeter";
+    private static String BLAZEMETER_LISTENERS_INITIALIZED = "blazemeter.listeners.initialized";
 
     public static JPanel getVersionPanel() {
         return versionPanel;
@@ -32,10 +33,10 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     public RemoteTestRunnerGui() {
         super();
-        String jmversion =  JMeterPluginUtils.getJmeterVersion();
+        String jmversion = JMeterPluginUtils.getJmeterVersion();
         if (Float.parseFloat(jmversion) < 2.5) {
             JMeterUtils.reportErrorToUser("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.",
-                                          "Invalid JMeter version");
+                    "Invalid JMeter version");
 
         }
         if (JMeterPluginUtils.inCloudConfig()) {
@@ -77,9 +78,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
-        //Get testInfo from GUI;
         TestInfo testInfo = gui.getTestInfo();
-        //Set testInfo to BmTestManager
         bmTestManager.setTestInfo(testInfo);
         remoteTestRunner.setReportName("test_" + testInfo.id + ".jtl");
 
@@ -100,18 +99,27 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         super.configure(element);
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;
-        bmTestManager.setUserKey(remoteTestRunner.getUserKey());
-        TestInfo testInfo = remoteTestRunner.getTestInfo();
-        bmTestManager.setTestInfo(testInfo);
+        String userKey = remoteTestRunner.getUserKey();
+        TestInfo testInfo = null;
+
+        if (GuiPackage.getInstance().getTestPlanFile() == null) {
+            if (userKey.matches("\\w{3,}+")) {
+                bmTestManager.setUserKey(userKey);
+                testInfo = remoteTestRunner.getTestInfo();
+                bmTestManager.setTestInfo(testInfo);
+            } else if(!userKey.isEmpty()){
+                JMeterUtils.reportErrorToUser("UserKey " + '"'+userKey+'"' + " has invalid format",
+                        "Invalid UserKey format");
+            }
+        }
+
+
         boolean isLocalRunMode = remoteTestRunner.getIsLocalRunMode();
         bmTestManager.setIsLocalRunMode(isLocalRunMode);
-        //initialize listeners on TestPanelGui
         gui.initListeners();
-        //initialize RemoteTestRunnerGUI
         initListeners();
 
         bmTestManager.getInstance().checkForUpdates();
-        //Get TestInfo from BmTestManager;
         testInfo = bmTestManager.getTestInfo();
         gui.setTestInfo(testInfo);
     }
@@ -243,9 +251,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         new Thread(new Runnable() {
             @Override
             public void run() {
+                if (!JMeterUtils.getPropDefault(BLAZEMETER_LISTENERS_INITIALIZED, false)) {
+                    JMeterUtils.setProperty(BLAZEMETER_LISTENERS_INITIALIZED, "true");
 
-                if (!areListenersInitialized) {
-                    areListenersInitialized = true;
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);
                     ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
@@ -266,7 +274,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                         }
                     }
                     );
-
                 }
             }
         }).start();

@@ -30,7 +30,9 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     private static final long serialVersionUID = 1L;
     private static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
     private static int instanceCount = 0;
+    // move to Jmeter properties;
     private static boolean testUrlWasOpened = false;
+    // move to Jmeter properties;
     private static String startLocalTestResult;
     private static String ATTEMPTS_TO_START_TEST = "blazemeter.attempts_to_start_test";
 
