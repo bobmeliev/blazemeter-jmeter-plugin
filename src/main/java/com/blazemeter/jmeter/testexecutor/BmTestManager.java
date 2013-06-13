@@ -381,18 +381,6 @@ public class BmTestManager {
         }
     }
 
-    public interface ServerStatusChangedNotification {
-        public void onServerStatusChanged();
-    }
-
-    public List<ServerStatusChangedNotification> serverStatusChangedNotificationListeners = new ArrayList<ServerStatusChangedNotification>();
-
-    public void NotifyServerStatusChanged() {
-        for (ServerStatusChangedNotification sscn : serverStatusChangedNotificationListeners) {
-            sscn.onServerStatusChanged();
-        }
-    }
-
     //    private static ActionListener pre_exit_listener;
     private static ActionListener pre_close_listener;
     private static ActionListener post_save_listener;
