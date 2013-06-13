@@ -236,8 +236,8 @@ public class BlazemeterApi {
         } catch (JSONException e) {
             BmLog.error(e);
             return -1;
-        } catch (NullPointerException npe){
-            BmLog.error("JSON object was not received from server",npe);
+        } catch (NullPointerException npe) {
+            BmLog.error("JSON object was not received from server", npe);
             return -1;
         }
     }
@@ -279,8 +279,8 @@ public class BlazemeterApi {
             } catch (JSONException ignored) {
             }
             TestInfo testInfo = new TestInfo();
-            testInfo.name = name;
-            testInfo.id = id;
+            testInfo.setName(name);
+            testInfo.setId(id);
             tests.add(testInfo);
         }
         return tests;
@@ -305,14 +305,14 @@ public class BlazemeterApi {
         TestInfo ti = new TestInfo();
         try {
             if (jo.isNull("error")) {
-                ti.id = jo.getString("test_id");
-                ti.name = jo.getString("test_name");
+                ti.setId(jo.getString("test_id"));
+                ti.setName(jo.getString("test_name"));
             } else {
-                ti.error = jo.getString("error");
-                ti.status = TestStatus.Error;
+                ti.setError(jo.getString("error"));
+                ti.setStatus(TestStatus.Error);
             }
         } catch (JSONException e) {
-            ti.status = TestStatus.Error;
+            ti.setStatus(TestStatus.Error);
         }
         return ti;
     }
@@ -380,10 +380,9 @@ public class BlazemeterApi {
             BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
         } catch (IOException ioe) {
             BmLog.error(ioe);
-        } catch (IndexOutOfBoundsException ioube){
+        } catch (IndexOutOfBoundsException ioube) {
             BmLog.error("Verify bug https://blazemeter.atlassian.net/browse/BPC-146");
-        }
-        finally {
+        } finally {
             try {
                 if (fileOutputStream != null) {
                     fileOutputStream.close();
@@ -478,13 +477,13 @@ public class BlazemeterApi {
 
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("TestRunStatus cannot be received, userKey is empty");
-            ti.status = TestStatus.NotFound;
+            ti.setStatus(TestStatus.NotFound);
             return ti;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
             BmLog.debug("TestRunStatus cannot be received, testId is empty");
-            ti.status = TestStatus.NotFound;
+            ti.setStatus(TestStatus.NotFound);
             return ti;
         }
 
@@ -493,33 +492,33 @@ public class BlazemeterApi {
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
-                ti.id = jo.getString("test_id");
-                ti.name = jo.getString("test_name");
-                ti.status = jo.getString("status").equalsIgnoreCase("running") ? TestStatus.Running : TestStatus.NotRunning;
+                ti.setId(jo.getString("test_id"));
+                ti.setName(jo.getString("test_name"));
+                ti.setStatus(jo.getString("status").equalsIgnoreCase("running") ? TestStatus.Running : TestStatus.NotRunning);
                 JSONObject options = jo.getJSONObject("options");
                 if (options != null) {
-                    ti.numberOfUsers = options.getInt("USERS");
-                    ti.location = options.getString("LOCATION");
-                    ti.type = options.getString("TEST_TYPE");
+                    ti.setNumberOfUsers(options.getInt("USERS"));
+                    ti.setLocation(options.getString("LOCATION"));
+                    ti.setType(options.getString("TEST_TYPE"));
                     if (options.getBoolean("OVERRIDE")) {
-                        ti.overrides = new Overrides(
+                        ti.setOverrides(new Overrides(
                                 options.getInt("OVERRIDE_DURATION")
                                 , options.getInt("OVERRIDE_ITERATIONS")
                                 , options.getInt("OVERRIDE_RAMP_UP")
                                 , options.getInt("OVERRIDE_THREADS")
-                        );
+                        ));
                     }
                 }
             } else {
-                ti.status = jo.getInt("response_code") == 404 ? TestStatus.NotFound : TestStatus.Error;
-                ti.error = jo.getString("error");
+                ti.setStatus(jo.getInt("response_code") == 404 ? TestStatus.NotFound : TestStatus.Error);
+                ti.setError(jo.getString("error"));
             }
         } catch (JSONException e) {
             BmLog.error("status getting status", e);
-            ti.status = TestStatus.Error;
+            ti.setStatus(TestStatus.Error);
         } catch (Throwable e) {
             BmLog.error("status getting status", e);
-            ti.status = TestStatus.Error;
+            ti.setStatus(TestStatus.Error);
         }
 
         return ti;

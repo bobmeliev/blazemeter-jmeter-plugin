@@ -110,8 +110,8 @@ public class BmTestManager {
         String userKey = getUserKey();
         BmLog.console("startTest" + testInfo);
 
-        if (testInfo.status != TestStatus.Running) {
-            if (testInfo.id.isEmpty()) {
+        if (testInfo.getStatus() != TestStatus.Running) {
+            if (testInfo.getId().isEmpty()) {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
                     BmLog.debug("Running in NON-GUI mode!");
@@ -125,7 +125,7 @@ public class BmTestManager {
                     BmLog.error("TestInfo is not set! Enter userkey and select a test!", new NullPointerException());
                 }
 
-                if (testInfo.id.isEmpty()) {
+                if (testInfo.getId().isEmpty()) {
                     BmLog.error("Could not get valid id,test will start without blazemeter.");
                 }
 
@@ -143,11 +143,11 @@ public class BmTestManager {
                     checkChangesInTestPlan();
                 }
                 uploadJmx();
-                startLocalTestResult = rpc.startTestLocal(userKey, testInfo.id);
+                startLocalTestResult = rpc.startTestLocal(userKey, testInfo.getId());
                 if (startLocalTestResult.equals("Test already running, please stop it first")) {
                     return startLocalTestResult;
                 }
-                testInfo.status = TestStatus.Running;
+                testInfo.setStatus(TestStatus.Running);
                 NotifyTestInfoChanged();
                 startLocalTestResult = "";
 
@@ -160,7 +160,7 @@ public class BmTestManager {
 
     public void stopTest() {
         BmLog.console("Finishing test...");
-        testInfo.status = TestStatus.NotRunning;
+        testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
         Uploader.getInstance().Finalize();
     }
@@ -198,8 +198,8 @@ public class BmTestManager {
     public String getTestUrl() {
         String url = null;
         if (testInfo != null && testInfo.isValid()) {
-            url = BlazemeterApi.BmUrlManager.getServerUrl() + "/node/" + testInfo.id;
-            if (this.testInfo.status == TestStatus.Running) {
+            url = BlazemeterApi.BmUrlManager.getServerUrl() + "/node/" + testInfo.getId();
+            if (this.testInfo.getStatus() == TestStatus.Running) {
                 url += "/gjtl";
             }
         }
@@ -241,10 +241,10 @@ public class BmTestManager {
             BmLog.error("TestInfo is null, test won't be started");
             return -1;
         }
-        BmLog.console("Starting test " + testInfo.id + "-" + testInfo.name);
-        int testId = rpc.runInTheCloud(this.getUserKey(), testInfo.id);
-        this.testInfo.status = (testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
-        if (this.testInfo.status == TestStatus.Running) {
+        BmLog.console("Starting test " + testInfo.getId() + "-" + testInfo.getName());
+        int testId = rpc.runInTheCloud(this.getUserKey(), testInfo.getId());
+        this.testInfo.setStatus(testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
+        if (this.testInfo.getStatus() == TestStatus.Running) {
             NotifyTestInfoChanged();
         }
         return testId;
@@ -252,10 +252,10 @@ public class BmTestManager {
 
     public void stopInTheCloud() {
         TestInfo ti = this.getTestInfo();
-        BmLog.console("Finishing test " + ti.id + "-" + ti.name);
-        int stopSuccess = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo().id);
-        testInfo = rpc.getTestRunStatus(this.getUserKey(), this.getTestInfo().id, false);
-        if (testInfo.status == TestStatus.NotRunning && stopSuccess != -1) {
+        BmLog.console("Finishing test " + ti.getId() + "-" + ti.getName());
+        int stopSuccess = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo().getId());
+        testInfo = rpc.getTestRunStatus(this.getUserKey(), this.getTestInfo().getId(), false);
+        if (testInfo.getStatus() == TestStatus.NotRunning && stopSuccess != -1) {
             NotifyTestInfoChanged();
         }
     }
@@ -292,22 +292,22 @@ public class BmTestManager {
             FileServer fileServer = FileServer.getFileServer();
             String projectPath = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
             String filename = new File(projectPath).getName();
-            String testName = testInfo.name;
+            String testName = testInfo.getName();
             testName = testName.trim().isEmpty() ? filename : testName;
 
             //Now that  we   have  a  valid ID  check that  if exists
             try {
-                if (testInfo.id.isEmpty()) {
+                if (testInfo.getId().isEmpty()) {
                     testInfo = BlazemeterApi.getInstance().createTest(getUserKey(), testName);
                     setTestInfo(testInfo);
                 } else {
-                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(getUserKey(), testInfo.id, true);
-                    if (ti.status == TestStatus.NotFound) {
+                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(getUserKey(), testInfo.getId(), true);
+                    if (ti.getStatus() == TestStatus.NotFound) {
                         testInfo = BlazemeterApi.getInstance().createTest(getUserKey(), testName);
                     }
                     setTestInfo(testInfo);
                 }
-                BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.id, filename, projectPath);
+                BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.getId(), filename, projectPath);
                 NotifyTestInfoChanged();
 
             } catch (Exception ex) {

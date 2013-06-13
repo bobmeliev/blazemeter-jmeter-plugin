@@ -70,7 +70,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 setTestInfo(testInfo);
-                if ((testInfo.status == TestStatus.NotRunning) & JMeter.isNonGUI() & BmTestManager.isTestRunning()) {
+                if ((testInfo.getStatus() == TestStatus.NotRunning) & JMeter.isNonGUI() & BmTestManager.isTestRunning()) {
                     if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
                         try {
                             ShutdownClient.main(new String[]{"StopTestNow"});
@@ -103,15 +103,15 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (testInfo == null)
             testInfo = new TestInfo();
 
-        this.setProperty("testName", testInfo.name);
-        this.setProperty("testId", testInfo.id);
+        this.setProperty("testName", testInfo.getName());
+        this.setProperty("testId", testInfo.getId());
 
     }
 
     public TestInfo getTestInfo() {
         TestInfo testInfo = new TestInfo();
-        testInfo.id = this.getPropertyAsString("testId", "");
-        testInfo.name = this.getPropertyAsString("testName", "");
+        testInfo.setId(this.getPropertyAsString("testId", ""));
+        testInfo.setName(this.getPropertyAsString("testName", ""));
         return testInfo;
     }
 
@@ -151,7 +151,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             bmTestManager.setUserKey(this.getUserKey());
             //start TestInfoController if non_GUI mode
 
-            TestInfoController.start(testInfo.id);
+            TestInfoController.start(testInfo.getId());
         }
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.debug("Test is started, running in the cloud!");

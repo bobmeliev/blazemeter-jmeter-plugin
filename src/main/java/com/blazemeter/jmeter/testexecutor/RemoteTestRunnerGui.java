@@ -80,7 +80,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         TestInfo testInfo = gui.getTestInfo();
         bmTestManager.setTestInfo(testInfo);
-        remoteTestRunner.setReportName("test_" + testInfo.id + ".jtl");
+        remoteTestRunner.setReportName("test_" + testInfo.getId() + ".jtl");
 
     }
 

@@ -109,7 +109,7 @@ public class TestPanelGui {
                 }
 
                 TestInfo ti = BlazemeterApi.getInstance().createTest(userKey, testName);
-                if (ti != null && ti.status == null) {
+                if (ti != null && ti.getStatus() == null) {
                     addTestId(ti, true);
                     BmTestManager.getInstance().setTestInfo(ti);
                     BmTestManager.getInstance().uploadJmx();
@@ -139,7 +139,7 @@ public class TestPanelGui {
         editJMXLocallyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (BmTestManager.getInstance().getTestInfo().id.isEmpty()) {
+                if (BmTestManager.getInstance().getTestInfo().getId().isEmpty()) {
                     JMeterUtils.reportErrorToUser("JMX can not be downloaded: test id is empty", "Empty test id");
                     return;
                 }
@@ -301,7 +301,7 @@ public class TestPanelGui {
             return;
         }
         testInfo = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                bmTestManager.getTestInfo().id, true);
+                bmTestManager.getTestInfo().getId(), true);
         configureMainPanelControls(testInfo);
         bmTestManager.setTestInfo(testInfo);
         bmTestManager.NotifyTestInfoChanged();
@@ -311,7 +311,7 @@ public class TestPanelGui {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
         TestInfo testInfo = bmTestManager.getTestInfo();
-        File file = blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.id);
+        File file = blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.getId());
         Utils.openJMX(file);
     }
 
@@ -407,7 +407,7 @@ public class TestPanelGui {
                 userPerEngine = 1;
             }
             BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
-                    bmTestManager.getTestInfo().id,
+                    bmTestManager.getTestInfo().getId(),
                     location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
 
         } else {
@@ -499,18 +499,18 @@ public class TestPanelGui {
                         Object selectedTest = testIdComboBox.getSelectedItem();
                         if (selectedTest instanceof TestInfo) {
                             TestInfo testInfo = (TestInfo) selectedTest;
-                            if (testInfo.name != NEW & !testInfo.name.isEmpty()) {
+                            if (testInfo.getName() != NEW & !testInfo.getName().isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
                             }
                         } else if (Utils.isInteger(selectedTest.toString())) {
                             TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
                                     selectedTest.toString(), true);
                             BmLog.console(ti.toString());
-                            if (ti.status == TestStatus.Running || ti.status == TestStatus.NotRunning) {
+                            if (ti.getStatus() == TestStatus.Running || ti.getStatus() == TestStatus.NotRunning) {
                                 bmTestManager.setTestInfo(ti);
                                 setTestInfo(ti);
                             } else {
-                                JMeterUtils.reportErrorToUser(ti.error, "Test not found error");
+                                JMeterUtils.reportErrorToUser(ti.getError(), "Test not found error");
                             }
                         } else if (selectedTest.toString().equals(NEW)) {
                             testIdComboBox.setSelectedItem(NEW);
@@ -583,21 +583,21 @@ public class TestPanelGui {
                         return;
                     }
 
-                    String item = testInfo.id + " - " + testInfo.name;
+                    String item = testInfo.getId() + " - " + testInfo.getName();
                     boolean exists = false;
 
                     for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                        Object obj=testIdComboBox.getItemAt(index);
-                        if(obj instanceof TestInfo&obj!=null){
+                        Object obj = testIdComboBox.getItemAt(index);
+                        if (obj instanceof TestInfo & obj != null) {
                             TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                            exists = item.equals(ti.id + " - " + ti.name);
+                            exists = item.equals(ti.getId() + " - " + ti.getName());
                         }
                     }
-                    if (!exists & !testInfo.id.isEmpty()) {
+                    if (!exists & !testInfo.getId().isEmpty()) {
                         testIdComboBox.addItem(item);
                     }
 
-                    if (testInfo.status == TestStatus.Running) {
+                    if (testInfo.getStatus() == TestStatus.Running) {
                         runInTheCloud.setEnabled(true);
                         addFilesButton.setEnabled(false);
                         enableCloudControls(false);
@@ -605,7 +605,7 @@ public class TestPanelGui {
                         runRemote.setEnabled(false);
                     }
 
-                    if ((testInfo.status == TestStatus.NotRunning)) {
+                    if ((testInfo.getStatus() == TestStatus.NotRunning)) {
                         if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
                             ActionRouter actionRouter = ActionRouter.getInstance();
                             ActionEvent remoteShutAll = new ActionEvent(new JButton(), ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_SHUT_ALL);
@@ -613,7 +613,7 @@ public class TestPanelGui {
                             ActionEvent shutdown = new ActionEvent(new JButton(), ActionEvent.ACTION_PERFORMED, ActionNames.ACTION_SHUTDOWN);
                             actionRouter.actionPerformed(shutdown);
                         }
-                        boolean isTestIdEmpty = testInfo.id.isEmpty();
+                        boolean isTestIdEmpty = testInfo.getId().isEmpty();
                         runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
                         enableCloudControls(!isTestIdEmpty);
@@ -628,19 +628,19 @@ public class TestPanelGui {
 
                     updateTestInfo();
 
-                    if ((testInfo.name != NEW) & (!testInfo.name.isEmpty())) {
-                        if (testInfo != null && !TEST_ID.equals(testInfo.id)) {
-                            TEST_ID = testInfo.id;
+                    if ((testInfo.getName() != NEW) & (!testInfo.getName().isEmpty())) {
+                        if (testInfo != null && !TEST_ID.equals(testInfo.getId())) {
+                            TEST_ID = testInfo.getId();
                             TestInfoController.stop();
 
                         } else {
                             return;
                         }
-                        TestInfoController.start(testInfo.id);
+                        TestInfoController.start(testInfo.getId());
 
                     }
 
-                    if (testInfo.name == NEW || (testInfo.name.isEmpty())) {
+                    if (testInfo.getName() == NEW || (testInfo.getName().isEmpty())) {
                         TestInfoController.stop();
                     }
 
@@ -656,8 +656,8 @@ public class TestPanelGui {
                     switch (serverStatus) {
                         case AVAILABLE:
                             TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                            TestInfoController.start(testInfo.id);
-                            boolean testIsRunning = testInfo.status == TestStatus.Running;
+                            TestInfoController.start(testInfo.getId());
+                            boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
                             enableMainPanelControls(testIsRunning);
                             enableCloudControls(testIsRunning);
                             runInTheCloud.setEnabled(testIsRunning);
@@ -701,7 +701,7 @@ public class TestPanelGui {
                     java.util.List<String> testIdList = new ArrayList<String>();
                     for (TestInfo ti : tests) {
                         addTestId(ti, false);
-                        testIdList.add(ti.id);
+                        testIdList.add(ti.getId());
                     }
                     if (!TEST_ID.isEmpty()) {
                         if (!testIdList.contains(TEST_ID)) {
@@ -758,8 +758,8 @@ public class TestPanelGui {
     protected void setTestInfo(TestInfo testInfo) {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
-            testInfo.name = NEW;
-            testIdComboBox.setSelectedItem(testInfo.name);
+            testInfo.setName(NEW);
+            testIdComboBox.setSelectedItem(testInfo.getName());
             configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
@@ -773,8 +773,8 @@ public class TestPanelGui {
         TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
-            testInfo.name = NEW;
-            testIdComboBox.setSelectedItem(testInfo.name);
+            testInfo.setName(NEW);
+            testIdComboBox.setSelectedItem(testInfo.getName());
             configureMainPanelControls(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
@@ -783,46 +783,46 @@ public class TestPanelGui {
         }
         if (!bmTestManager.getIsLocalRunMode()) {
             // update Cloud panel
-            if ("jmeter".equals(testInfo.type)) {
+            if ("jmeter".equals(testInfo.getType())) {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
-                if (testInfo.overrides != null) {
-                    rampupSpinner.setValue(testInfo.overrides.rampup);
-                    iterationsSpinner.setValue(testInfo.overrides.iterations == -1 ? 0 : testInfo.overrides.iterations);
-                    durationSpinner.setValue(testInfo.overrides.duration == -1 ? 0 : testInfo.overrides.duration);
+                if (testInfo.getOverrides() != null) {
+                    rampupSpinner.setValue(testInfo.getOverrides().rampup);
+                    iterationsSpinner.setValue(testInfo.getOverrides().iterations == -1 ? 0 : testInfo.getOverrides().iterations);
+                    durationSpinner.setValue(testInfo.getOverrides().duration == -1 ? 0 : testInfo.getOverrides().duration);
                 } else {
                     rampupSpinner.setValue(0);
                     iterationsSpinner.setValue(0);
                     durationSpinner.setValue(0);
                 }
-                runInTheCloud.setActionCommand(testInfo.status == TestStatus.Running ? "stop" : "start");
-                runInTheCloud.setText(testInfo.status == TestStatus.Running ? "Stop" : "Run in the Cloud!");
+                runInTheCloud.setActionCommand(testInfo.getStatus() == TestStatus.Running ? "stop" : "start");
+                runInTheCloud.setText(testInfo.getStatus() == TestStatus.Running ? "Stop" : "Run in the Cloud!");
             }
         }
     }
 
     protected TestInfo getTestInfo() {
         TestInfo testInfo = new TestInfo();
-        testInfo.id = testIdTextField.getText();
-        testInfo.name = testNameTextField.getText();
-        testInfo.status = runInTheCloud.getText().equals("Run in the Cloud!") ? TestStatus.NotRunning : TestStatus.Running;
-        testInfo.error = null;
-        testInfo.numberOfUsers = numberOfUsersSlider.getValue();
-        testInfo.location = locationComboBox.getSelectedItem().toString();
-        testInfo.overrides = null;
-        testInfo.type = "jmeter";
+        testInfo.setId(testIdTextField.getText());
+        testInfo.setName(testNameTextField.getText());
+        testInfo.setStatus(runInTheCloud.getText().equals("Run in the Cloud!") ? TestStatus.NotRunning : TestStatus.Running);
+        testInfo.setError(null);
+        testInfo.setNumberOfUsers(numberOfUsersSlider.getValue());
+        testInfo.setLocation(locationComboBox.getSelectedItem().toString());
+        testInfo.setOverrides(null);
+        testInfo.setType("jmeter");
         return testInfo;
     }
 
     private void configureMainPanelControls(TestInfo testInfo) {
-        boolean isRunning = (testInfo != null && testInfo.status == TestStatus.Running);
+        boolean isRunning = (testInfo != null && testInfo.getStatus() == TestStatus.Running);
 
         if (testInfo != null) {
-            testNameTextField.setText(testInfo.name);
-            testIdTextField.setText(testInfo.id);
+            testNameTextField.setText(testInfo.getName());
+            testIdTextField.setText(testInfo.getId());
             testNameTextField.setEnabled(!isRunning);
             createNewButton.setEnabled(!isRunning);
-            goToTestPageButton.setEnabled(!testInfo.id.isEmpty());
+            goToTestPageButton.setEnabled(!testInfo.getId().isEmpty());
         } else {
             testNameTextField.setText("");
             testIdTextField.setText("");
@@ -833,7 +833,7 @@ public class TestPanelGui {
         if (!BmTestManager.getInstance().isUserKeyFromProp()) {
             userKeyTextField.setEnabled(!isRunning);
         }
-        testIdComboBox.setEnabled(!isRunning&testIdComboBox.getItemCount()>0);
+        testIdComboBox.setEnabled(!isRunning & testIdComboBox.getItemCount() > 0);
         testIdTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
     }

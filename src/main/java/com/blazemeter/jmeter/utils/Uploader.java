@@ -129,7 +129,7 @@ public class Uploader {
     private void DoFinalize() {
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         String userKey = BmTestManager.getInstance().getUserKey();
-        String testId = testInfo.id;
+        String testId = testInfo.getId();
 
         isRunning = false;
         for (Map.Entry<String, Report> item : reports.entrySet()) {
@@ -169,7 +169,7 @@ public class Uploader {
         public void run() {
             TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
             String userKey = BmTestManager.getInstance().getUserKey();
-            String testId = testInfo.id;
+            String testId = testInfo.getId();
             BmLog.debug(String.format("Data uploader sending report:%s , %d bytes  ", this.reportName, this.data.length()));
             BlazemeterApi.getInstance().dataUpload(userKey, testId, this.reportName, this.data, this.dataType);
         }
