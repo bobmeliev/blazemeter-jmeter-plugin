@@ -215,15 +215,25 @@ public class BlazemeterApi {
         }
     }
 
-    public int runInTheCloud(String userKey, String testId) {
+    public void runInTheCloud(String userKey, String testId) {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        String error = null;
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.debug("Test cannot be started in the cloud, userKey is empty");
-            return -1;
+            error="Test cannot be started in the cloud, userKey is empty";
+            BmLog.debug(error);
+            testInfo.setError(error);
+            bmTestManager.NotifyTestInfoChanged();
+
+            return;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.debug("Test cannot be started in the cloud, testId is empty");
-            return -2;
+            error="Test cannot be started in the cloud, testId is empty";
+            BmLog.debug(error);
+            testInfo.setError(error);
+            bmTestManager.NotifyTestInfoChanged();
+            return;
         }
 
         String url = this.urlManager.testStart(APP_KEY, userKey, testId);
@@ -231,20 +241,20 @@ public class BlazemeterApi {
         try {
             if (!jo.get("response_code").toString().equals("200"))
             {
-                //BPC-160
-                BmTestManager.getInstance().getTestInfo().setError((String)jo.get("error"));
-                BmTestManager.getInstance().NotifyTestInfoChanged();
-                return -1;
+                testInfo.setError((String)jo.get("error"));
+                bmTestManager.NotifyTestInfoChanged();
+                return;
 
             }
-
-            return jo.getInt("test_id");
+            testInfo.setId((String)jo.get("test_id"));
+            bmTestManager.NotifyTestInfoChanged();
         } catch (JSONException e) {
             BmLog.error(e);
-            return -1;
+            return;
         } catch (NullPointerException npe) {
             BmLog.error("JSON object was not received from server", npe);
-            return -1;
+            return;
+
         }
     }
 

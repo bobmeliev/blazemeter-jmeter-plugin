@@ -40,7 +40,6 @@ public class TestPanelGui {
     private static String TEST_ID = "";
     private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
     private static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
-    private static boolean UPLOAD_JMX = false;
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
     private JComboBox testIdComboBox;
@@ -285,16 +284,16 @@ public class TestPanelGui {
         saveCloudTest();
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
-        int id = bmTestManager.runInTheCloud();
-        if (id != -1) {
-
+        bmTestManager.runInTheCloud();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        if (testInfo.getError()==null&testInfo.getStatus()==TestStatus.Running) {
             String url = bmTestManager.getTestUrl();
             if (url != null)
                 url = url.substring(0, url.length() - 5);
             Utils.Navigate(url);
         }
 
-        TestInfo testInfo = bmTestManager.getTestInfo();
+        testInfo = bmTestManager.getTestInfo();
         if (testInfo == null) {
             return;
         }
@@ -581,6 +580,7 @@ public class TestPanelGui {
                     }
                     if (testInfo.getError() != null && testInfo.getError().equals("Insufficient credits")) {
                         JMeterUtils.reportErrorToUser("Insufficient credits: turn to customer support service", "Cannot start test");
+                        testInfo.setError(null);
                     }
 
                     String item = testInfo.getId() + " - " + testInfo.getName();

@@ -235,19 +235,18 @@ public class BmTestManager {
         }
     }
 
-    public int runInTheCloud() {
+    public void runInTheCloud() {
         TestInfo testInfo = this.getTestInfo();
         if (testInfo == null) {
             BmLog.error("TestInfo is null, test won't be started");
-            return -1;
+            return;
         }
         BmLog.console("Starting test " + testInfo.getId() + "-" + testInfo.getName());
-        int testId = rpc.runInTheCloud(this.getUserKey(), testInfo.getId());
-        this.testInfo.setStatus(testId != -1 ? TestStatus.Running : TestStatus.NotRunning);
+        rpc.runInTheCloud(this.getUserKey(), testInfo.getId());
+        this.testInfo.setStatus(testInfo.getError()!=null ? TestStatus.Running : TestStatus.NotRunning);
         if (this.testInfo.getStatus() == TestStatus.Running) {
             NotifyTestInfoChanged();
         }
-        return testId;
     }
 
     public void stopInTheCloud() {
