@@ -230,7 +230,13 @@ public class BlazemeterApi {
         JSONObject jo = getJson(url, null);
         try {
             if (!jo.get("response_code").toString().equals("200"))
+            {
+                //BPC-160
+                BmTestManager.getInstance().getTestInfo().setError((String)jo.get("error"));
+                BmTestManager.getInstance().NotifyTestInfoChanged();
                 return -1;
+
+            }
 
             return jo.getInt("test_id");
         } catch (JSONException e) {

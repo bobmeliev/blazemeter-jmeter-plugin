@@ -582,6 +582,9 @@ public class TestPanelGui {
                     if (testInfo == null) {
                         return;
                     }
+                    if (testInfo.getError()!=null&&testInfo.getError().equals("Insufficient credits")) {
+                        JMeterUtils.reportErrorToUser("Insufficient credits: turn to customer support service","Cannot start test");
+                    }
 
                     String item = testInfo.getId() + " - " + testInfo.getName();
                     boolean exists = false;
