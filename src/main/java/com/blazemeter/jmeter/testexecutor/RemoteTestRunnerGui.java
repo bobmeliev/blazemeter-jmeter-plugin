@@ -24,7 +24,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     private static JLabel connectionStatus = new JLabel();
     private static JPanel versionPanel;
     private static String BLAZEMETER_LABEL = "BlazeMeter";
-    private static String BLAZEMETER_LISTENERS_INITIALIZED = "blazemeter.listeners.initialized";
+    private static String BLAZEMETER_RUNNERGUI_INITIALIZED = "blazemeter.runnergui.initialized";
 
     public static JPanel getVersionPanel() {
         return versionPanel;
@@ -251,8 +251,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!JMeterUtils.getPropDefault(BLAZEMETER_LISTENERS_INITIALIZED, false)) {
-                    JMeterUtils.setProperty(BLAZEMETER_LISTENERS_INITIALIZED, "true");
+                if (!JMeterUtils.getPropDefault(BLAZEMETER_RUNNERGUI_INITIALIZED, false)) {
+                    JMeterUtils.setProperty(BLAZEMETER_RUNNERGUI_INITIALIZED, "true");
 
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);

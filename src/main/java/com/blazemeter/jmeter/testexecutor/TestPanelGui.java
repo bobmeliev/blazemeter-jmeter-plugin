@@ -38,9 +38,8 @@ public class TestPanelGui {
     private static final String EMPTY = "";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
     private static String TEST_ID = "";
-    // change to JMeter property
-    private static boolean areListenersInitialized = false;
-    // change to JMeter property
+    private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
+    private static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
     private static boolean UPLOAD_JMX = false;
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -233,13 +232,12 @@ public class TestPanelGui {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
 
-                        // TestPlan is empty and UPLOAD_JMX checkbox is set
-                        if (UPLOAD_JMX & Utils.isTestPlanEmpty()) {
-                            JMeterUtils.reportErrorToUser("Test plan is empty, cloud test will be started without updating script");
-                        }
-                        // TestPlan is not empty and UPLOAD_JMX checkbox is set
-                        if (UPLOAD_JMX & !Utils.isTestPlanEmpty()) {
-                            bmTestManager.uploadJmx();
+                        if (Boolean.parseBoolean(JMeterUtils.getProperty(BLAZEMETER_UPLOAD_JMX))) {
+                            if (Utils.isTestPlanEmpty()) {
+                                JMeterUtils.reportErrorToUser("Test plan is empty, cloud test will be started without updating script");
+                            } else {
+                                bmTestManager.uploadJmx();
+                            }
                         }
                         startInTheCloud();
                         bmTestManager.NotifyTestInfoChanged();
@@ -260,7 +258,7 @@ public class TestPanelGui {
         uploadJMXCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                UPLOAD_JMX = uploadJMXCheckBox.isSelected();
+                JMeterUtils.setProperty(BLAZEMETER_UPLOAD_JMX, String.valueOf(uploadJMXCheckBox.isSelected()));
             }
         });
 
@@ -426,9 +424,8 @@ public class TestPanelGui {
     public void initListeners() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
-        if (!areListenersInitialized) {
-            areListenersInitialized = true;
-
+        if (!JMeterUtils.getPropDefault(BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
+            JMeterUtils.setProperty(BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
 
             final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
                 @Override
@@ -582,8 +579,8 @@ public class TestPanelGui {
                     if (testInfo == null) {
                         return;
                     }
-                    if (testInfo.getError()!=null&&testInfo.getError().equals("Insufficient credits")) {
-                        JMeterUtils.reportErrorToUser("Insufficient credits: turn to customer support service","Cannot start test");
+                    if (testInfo.getError() != null && testInfo.getError().equals("Insufficient credits")) {
+                        JMeterUtils.reportErrorToUser("Insufficient credits: turn to customer support service", "Cannot start test");
                     }
 
                     String item = testInfo.getId() + " - " + testInfo.getName();
