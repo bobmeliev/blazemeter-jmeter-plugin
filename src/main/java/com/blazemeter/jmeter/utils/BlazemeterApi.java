@@ -224,7 +224,6 @@ public class BlazemeterApi {
             BmLog.debug(error);
             testInfo.setError(error);
             bmTestManager.NotifyTestInfoChanged();
-
             return;
         }
 
@@ -242,7 +241,6 @@ public class BlazemeterApi {
             if (!jo.get("response_code").toString().equals("200"))
             {
                 testInfo.setError((String)jo.get("error"));
-                bmTestManager.NotifyTestInfoChanged();
                 return;
 
             }
