@@ -6,7 +6,7 @@
 
     <groupId>blazemeter-jmeter-plugin</groupId>
     <artifactId>blazemeter-jmeter-plugin</artifactId>
-    <version>1.55-201303061000</version>
+    <version>1.55-201318061627</version>
 
     <repositories>
         <repository>
