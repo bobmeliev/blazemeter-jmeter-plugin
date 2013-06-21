@@ -11,11 +11,17 @@ import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.jmeter.engine.ClientJMeterEngine;
+import org.apache.jmeter.engine.JMeterEngine;
+import org.apache.jmeter.engine.RemoteJMeterEngine;
+import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.MainFrame;
 import org.apache.jmeter.gui.action.ActionNames;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.gui.action.Save;
+import org.apache.jmeter.gui.util.JMeterToolBar;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
@@ -606,13 +612,6 @@ public class TestPanelGui {
                     }
 
                     if ((testInfo.getStatus() == TestStatus.NotRunning)) {
-                        if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
-                            ActionRouter actionRouter = ActionRouter.getInstance();
-                            ActionEvent remoteShutAll = new ActionEvent(new JButton(), ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_SHUT_ALL);
-                            actionRouter.actionPerformed(remoteShutAll);
-                            ActionEvent shutdown = new ActionEvent(new JButton(), ActionEvent.ACTION_PERFORMED, ActionNames.ACTION_SHUTDOWN);
-                            actionRouter.actionPerformed(shutdown);
-                        }
                         boolean isTestIdEmpty = testInfo.getId().isEmpty();
                         runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
@@ -623,6 +622,20 @@ public class TestPanelGui {
                         runRemote.setEnabled(!isTestRunning);
 
                         configureMainPanelControls(testInfo);
+
+                        if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
+                            //if engine is instance of StandardJMeterEngine
+                            StandardJMeterEngine.stopEngine();
+                            // JMeter is not stopped when distributed test is stopped on server
+                            ClientJMeterEngine.tidyRMI(BmLog.getLogger());
+                            //If engine is instance of RemoteJMeterEngine
+                           /* if(!JMeterUtils.getPropDefault("stopTestReceived", false)){
+                                JMeterUtils.setProperty("stopTestReceived","true");
+                                MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
+                                mainFrame.testEnded();
+                            }*/
+
+                        }
 
                     }
 

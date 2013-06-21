@@ -22,6 +22,10 @@ public class BmLog {
     private static Logger logger = LoggingManager.getLoggerFor("Blazemeter-plugin");
     private static final boolean debugEnabled = JMeterUtils.getPropDefault("blazemeter.debug_enabled", false);
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
     public static void console(String msg) {
         if (writeToConsole) {
             System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
