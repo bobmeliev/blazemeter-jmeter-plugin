@@ -20,6 +20,7 @@ import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.MainFrame;
 import org.apache.jmeter.gui.action.ActionNames;
 import org.apache.jmeter.gui.action.ActionRouter;
+import org.apache.jmeter.gui.action.RemoteStart;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.gui.util.JMeterToolBar;
 import org.apache.jmeter.util.JMeterUtils;
@@ -30,8 +31,11 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -292,7 +296,7 @@ public class TestPanelGui {
 
         bmTestManager.runInTheCloud();
         TestInfo testInfo = bmTestManager.getTestInfo();
-        if (testInfo.getError()==null&testInfo.getStatus()==TestStatus.Running) {
+        if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
             String url = bmTestManager.getTestUrl();
             if (url != null)
                 url = url.substring(0, url.length() - 5);
@@ -625,15 +629,35 @@ public class TestPanelGui {
 
                         if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
                             //if engine is instance of StandardJMeterEngine
+                            /*
+                            2.Check whether or not these engines are started;
+                            3.If none of remote engines is started -> StandardJMeterEngine.stopEngine;
+                            4.If any of remote engines is started -> RemoteStart.doRemoteStopAll
+
+                            //1.Get list of remote engines;
+                            RemoteStart remoteStart = new RemoteStart();
+                            try {
+                                Field remoteEnginesField = RemoteStart.class.getDeclaredField("remoteEngines");
+                                remoteEnginesField.setAccessible(true);
+
+                                Map<String, JMeterEngine> remoteEngines = new HashMap<String, JMeterEngine>();
+//                                Class<?> remoteEnginesFieldClass = remoteEnginesField.getType();
+                                remoteEngines = (java.util.Map) remoteEnginesField.get((java.util.Map)new HashMap<String, JMeterEngine>());
+                                remoteEngines.isEmpty();
+                            } catch (NoSuchFieldException nsfe) {
+                                BmLog.error("Could not get engines from RemoteStart class ", nsfe);
+                            } catch (IllegalAccessException iae) {
+                                BmLog.error("Could not get engines from RemoteStart class ", iae);
+                            }
+
+                            */
+
                             StandardJMeterEngine.stopEngine();
-                            // JMeter is not stopped when distributed test is stopped on server
-                            ClientJMeterEngine.tidyRMI(BmLog.getLogger());
-                            //If engine is instance of RemoteJMeterEngine
-                           /* if(!JMeterUtils.getPropDefault("stopTestReceived", false)){
-                                JMeterUtils.setProperty("stopTestReceived","true");
+                           /*
+                              JMeterUtils.setProperty("stopTestReceived","true");
                                 MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
                                 mainFrame.testEnded();
-                            }*/
+                            */
 
                         }
 

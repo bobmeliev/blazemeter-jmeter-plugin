@@ -121,7 +121,11 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         bmTestManager.getInstance().checkForUpdates();
         testInfo = bmTestManager.getTestInfo();
-        gui.setTestInfo(testInfo);
+        if(!gui.getUserKey().isEmpty()){
+            gui.setTestInfo(testInfo);
+        }else{
+            gui.setTestInfo(null);
+        }
     }
 
     private Component getTopPanel() {
