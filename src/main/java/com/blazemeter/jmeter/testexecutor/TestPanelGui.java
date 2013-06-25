@@ -24,6 +24,7 @@ import org.apache.jmeter.gui.action.RemoteStart;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.gui.util.JMeterToolBar;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jmeter.util.ShutdownClient;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -31,7 +32,9 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -628,41 +631,10 @@ public class TestPanelGui {
                         configureMainPanelControls(testInfo);
 
                         if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
-                            //if engine is instance of StandardJMeterEngine
-                            /*
-                            2.Check whether or not these engines are started;
-                            3.If none of remote engines is started -> StandardJMeterEngine.stopEngine;
-                            4.If any of remote engines is started -> RemoteStart.doRemoteStopAll
-
-                            //1.Get list of remote engines;
-                            RemoteStart remoteStart = new RemoteStart();
-                            try {
-                                Field remoteEnginesField = RemoteStart.class.getDeclaredField("remoteEngines");
-                                remoteEnginesField.setAccessible(true);
-
-                                Map<String, JMeterEngine> remoteEngines = new HashMap<String, JMeterEngine>();
-//                                Class<?> remoteEnginesFieldClass = remoteEnginesField.getType();
-                                remoteEngines = (java.util.Map) remoteEnginesField.get((java.util.Map)new HashMap<String, JMeterEngine>());
-                                remoteEngines.isEmpty();
-                            } catch (NoSuchFieldException nsfe) {
-                                BmLog.error("Could not get engines from RemoteStart class ", nsfe);
-                            } catch (IllegalAccessException iae) {
-                                BmLog.error("Could not get engines from RemoteStart class ", iae);
-                            }
-
-                            */
-
                             StandardJMeterEngine.stopEngine();
-                           /*
-                              JMeterUtils.setProperty("stopTestReceived","true");
-                                MainFrame mainFrame = GuiPackage.getInstance().getMainFrame();
-                                mainFrame.testEnded();
-                            */
-
                         }
 
                     }
-
                     updateTestInfo();
 
                     if ((testInfo.getName() != NEW) & (!testInfo.getName().isEmpty())) {
