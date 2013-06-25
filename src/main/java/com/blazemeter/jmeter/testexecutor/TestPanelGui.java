@@ -643,6 +643,7 @@ public class TestPanelGui {
                             TestInfoController.stop();
 
                         } else {
+                            //Why code gets here after restarting test?
                             return;
                         }
                         TestInfoController.start(testInfo.getId());
