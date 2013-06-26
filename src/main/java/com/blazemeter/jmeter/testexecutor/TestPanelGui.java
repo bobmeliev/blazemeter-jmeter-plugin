@@ -314,7 +314,6 @@ public class TestPanelGui {
                 bmTestManager.getTestInfo().getId(), true);
         configureMainPanelControls(testInfo);
         bmTestManager.setTestInfo(testInfo);
-        bmTestManager.NotifyTestInfoChanged();
     }
 
     private void downloadJMX() {
