@@ -642,9 +642,12 @@ public class TestPanelGui {
                             TEST_ID = testInfo.getId();
                             TestInfoController.stop();
 
+                        } else if (TEST_ID.equals(testInfo.getId())) {
+                            TestInfoController.start(testInfo.getId());
+
                         } else {
-                            //Why code gets here after restarting test?
                             return;
+
                         }
                         TestInfoController.start(testInfo.getId());
 
