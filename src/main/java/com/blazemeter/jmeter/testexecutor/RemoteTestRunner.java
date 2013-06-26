@@ -142,22 +142,19 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     @Override
     public void testStarted(String host) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        String userKey = bmTestManager.getUserKey();
 
         if (JMeter.isNonGUI()) {
             bmTestManager.setIsLocalRunMode(true);
             TestInfo testInfo = this.getTestInfo();
             bmTestManager.setTestInfo(testInfo);
             bmTestManager.setUserKey(this.getUserKey());
-            //start TestInfoController if non_GUI mode
-
             TestInfoController.start(testInfo.getId());
         }
         if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.debug("Test is started, running in the cloud!");
             return;
         }
-
+        String userKey = bmTestManager.getUserKey();
         if (userKey == null || userKey.isEmpty()) {
             BmLog.error("UserKey is not found, test results won't be uploaded to server");
             return;
