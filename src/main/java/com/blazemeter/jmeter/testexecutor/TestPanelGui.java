@@ -495,7 +495,7 @@ public class TestPanelGui {
                 @Override
                 public void onTestUserKeyChanged(String userKey) {
                     setUserKey(userKey);
-                    signUpToBlazemeterButton.setEnabled(userKey == null || userKey.isEmpty());
+                    signUpToBlazemeterButton.setEnabled(!(userKey.matches("\\w{3,}+")&BmTestManager.getInstance().isUserKeyValid()));
                 }
             });
 
@@ -573,7 +573,6 @@ public class TestPanelGui {
                     @Override
                     public void focusLost(FocusEvent focusEvent) {
                         String newVal = userKeyTextField.getText();
-                        signUpToBlazemeterButton.setEnabled(newVal.isEmpty());
                         if (!newVal.equals(oldVal)) {
                             BmTestManager bmTestManager = BmTestManager.getInstance();
                             bmTestManager.setUserKey(newVal);
@@ -696,43 +695,42 @@ public class TestPanelGui {
             JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
         testIdComboBox.removeAllItems();
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
         BlazemeterApi.getInstance().getTestsAsync(userKey, new BlazemeterApi.TestContainerNotifier() {
             @Override
             public void testReceived(ArrayList<TestInfo> tests) {
-                testIdComboBox.removeAllItems();
-                testIdComboBox.setEnabled(true);
-                if (tests != null) {
                     testIdComboBox.removeAllItems();
-                    testIdComboBox.addItem(NEW);
-                    testIdComboBox.setSelectedItem(NEW);
-                    BmTestManager.getInstance().setUserKeyValid(true);
-                    java.util.List<String> testIdList = new ArrayList<String>();
-                    for (TestInfo ti : tests) {
-                        addTestId(ti, false);
-                        testIdList.add(ti.getId());
-                    }
-                    if (!TEST_ID.isEmpty()) {
-                        if (!testIdList.contains(TEST_ID)) {
-                            JMeterUtils.reportErrorToUser("Test=" + TEST_ID + " was not found on server. Select test from list."
-                                    , "Test was not found on server");
-                        } else {
-                            TestInfoController.start(TEST_ID);
-                            testIdComboBox.setSelectedItem(TEST_ID);
+                    testIdComboBox.setEnabled(true);
+                    if (tests != null) {
+                        testIdComboBox.removeAllItems();
+                        testIdComboBox.addItem(NEW);
+                        testIdComboBox.setSelectedItem(NEW);
+                        BmTestManager.getInstance().setUserKeyValid(true);
+                        java.util.List<String> testIdList = new ArrayList<String>();
+                        for (TestInfo ti : tests) {
+                            addTestId(ti, false);
+                            testIdList.add(ti.getId());
                         }
+                        if (!TEST_ID.isEmpty()) {
+                            if (!testIdList.contains(TEST_ID)) {
+                                JMeterUtils.reportErrorToUser("Test=" + TEST_ID + " was not found on server. Select test from list."
+                                        , "Test was not found on server");
+                            } else {
+                                TestInfoController.start(TEST_ID);
+                                testIdComboBox.setSelectedItem(TEST_ID);
+                            }
+                        }
+
+
+                    } else {
+                        JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
+                        BmTestManager.getInstance().setUserKeyValid(false);
+                        resetCloudPanel();
+                        enableCloudControls(false);
+                        testIdComboBox.setSelectedItem(EMPTY);
                     }
-
-
-                } else {
-                    JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
-                    BmTestManager.getInstance().setUserKeyValid(false);
-                    resetCloudPanel();
-                    enableCloudControls(false);
-                    testIdComboBox.setSelectedItem(EMPTY);
-                }
             }
         });
     }
