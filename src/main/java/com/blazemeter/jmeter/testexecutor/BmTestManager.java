@@ -277,7 +277,8 @@ public class BmTestManager {
     }
 
     public UserInfo getUserInfo(boolean force) {
-        if (force || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
+        String userKey = this.getUserKey();
+        if ((force&!userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
             BmLog.console("Getting user information...");
             userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
             NotifyUserInfoChanged(userInfo);
