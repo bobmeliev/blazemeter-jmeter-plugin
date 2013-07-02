@@ -248,8 +248,8 @@ public class TestPanelGui {
                             if (Utils.isTestPlanEmpty()) {
                                 JMeterUtils.reportErrorToUser("Test plan is empty, cloud test will be started without updating script");
                             } else {
-                                if(GuiPackage.getInstance().getTestPlanFile()==null){
-                                     JMeterUtils.reportErrorToUser("Please, save test-plan to file before trying to upload it.");
+                                if (GuiPackage.getInstance().getTestPlanFile() == null) {
+                                    JMeterUtils.reportErrorToUser("Please, save test-plan to file before trying to upload it.");
                                     return;
                                 }
                                 bmTestManager.uploadJmx();
