@@ -11,20 +11,12 @@ import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.apache.jmeter.engine.ClientJMeterEngine;
-import org.apache.jmeter.engine.JMeterEngine;
-import org.apache.jmeter.engine.RemoteJMeterEngine;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.MainFrame;
 import org.apache.jmeter.gui.action.ActionNames;
-import org.apache.jmeter.gui.action.ActionRouter;
-import org.apache.jmeter.gui.action.RemoteStart;
 import org.apache.jmeter.gui.action.Save;
-import org.apache.jmeter.gui.util.JMeterToolBar;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jmeter.util.ShutdownClient;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -32,13 +24,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -255,8 +242,19 @@ public class TestPanelGui {
                                 bmTestManager.uploadJmx();
                             }
                         }
-                        startInTheCloud();
-                        bmTestManager.NotifyTestInfoChanged();
+                        Thread startInTheCloudThread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                startInTheCloud();
+                                BmTestManager.getInstance().NotifyTestInfoChanged();
+
+                            }
+                        });
+                        startInTheCloudThread.start();
+               //########## BPC - 183 ##############################
+//                        OperationProgressDialog operationProgressDialog = new OperationProgressDialog();
+//                        operationProgressDialog.init();
+               //########## BPC - 183 ##############################
                     }
 
                 } else {
