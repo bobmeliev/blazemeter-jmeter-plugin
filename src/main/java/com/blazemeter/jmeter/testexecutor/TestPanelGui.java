@@ -250,11 +250,11 @@ public class TestPanelGui {
 
                             }
                         });
+                        OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                                "Operation will take a few seconds to execute. Your patience is appreciated.");
+//                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
                         startInTheCloudThread.start();
-               //########## BPC - 183 ##############################
-//                        OperationProgressDialog operationProgressDialog = new OperationProgressDialog();
-//                        operationProgressDialog.init();
-               //########## BPC - 183 ##############################
+//                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
                     }
 
                 } else {
