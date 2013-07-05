@@ -171,10 +171,13 @@ public class BmTestManager {
         if (testInfo == null) {
             return;
         }
-        if (!this.testInfo.equals(testInfo)) {
+
+        if (this.testInfo != null && !this.testInfo.equals(testInfo)) {
             synchronized (this.testInfo) {
                 this.testInfo = testInfo;
             }
+        } else if (this.testInfo == null & testInfo != null) {
+            this.testInfo = testInfo;
         }
         NotifyTestInfoChanged();
 
@@ -244,8 +247,8 @@ public class BmTestManager {
         }
         BmLog.console("Starting test " + testInfo.getId() + "-" + testInfo.getName());
         rpc.runInTheCloud(this.getUserKey(), testInfo.getId());
-        this.testInfo.setStatus(testInfo.getError()==null ? TestStatus.Running : TestStatus.NotRunning);
-        if (this.testInfo.getStatus() == TestStatus.Running&this.testInfo.getError()==null) {
+        this.testInfo.setStatus(testInfo.getError() == null ? TestStatus.Running : TestStatus.NotRunning);
+        if (this.testInfo.getStatus() == TestStatus.Running & this.testInfo.getError() == null) {
             NotifyTestInfoChanged();
         }
     }
@@ -278,7 +281,7 @@ public class BmTestManager {
 
     public UserInfo getUserInfo(boolean force) {
         String userKey = this.getUserKey();
-        if ((force&!userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
+        if ((force & !userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
             BmLog.console("Getting user information...");
             userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
             NotifyUserInfoChanged(userInfo);
