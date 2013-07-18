@@ -35,6 +35,7 @@ public abstract class JMeterPluginUtils {
             return version.substring(0, hyphenIndex);
         else
             return version.substring(0, 3);
+
     }
 
     public static PluginVersion getPluginVersion() {
