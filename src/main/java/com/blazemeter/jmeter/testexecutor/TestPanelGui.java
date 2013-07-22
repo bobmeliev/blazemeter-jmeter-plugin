@@ -1,7 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestInfoChecker;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.BlazemeterApi;
@@ -266,7 +265,6 @@ public class TestPanelGui {
                         bmTestManager.NotifyTestInfoChanged();
                     }
                 }
-                new Thread(new TestInfoChecker(testIdTextField.getText())).start();
             }
         });
         uploadJMXCheckBox.addItemListener(new ItemListener() {
@@ -643,7 +641,7 @@ public class TestPanelGui {
                     }
                     updateTestInfo();
 
-                    if ((testInfo.getName() != NEW) & (!testInfo.getName().isEmpty())) {
+                    if ((!testInfo.getName().equals(NEW)) & (!testInfo.getName().isEmpty())) {
                         if (testInfo != null && !TEST_ID.equals(testInfo.getId())) {
                             TEST_ID = testInfo.getId();
                             TestInfoController.stop();

@@ -23,7 +23,7 @@ public class TestInfoController {
     }
 
     public static void start(String testId) {
-        if ((task == null || task.isDone())&!testId.isEmpty()) {
+        if ((task == null || task.isDone()) & !testId.isEmpty()) {
             final TestInfoChecker testInfoChecker = new TestInfoChecker(testId);
             task = scheduler.scheduleAtFixedRate(testInfoChecker, 1, 30, TimeUnit.SECONDS);
             BmLog.console("TestInfoController is started with test.id=" + testId);
@@ -37,5 +37,9 @@ public class TestInfoController {
             BmLog.console("TestInfoController is stopped");
 
         }
+    }
+
+    public static boolean isWorking() {
+        return !task.isDone();
     }
 }

@@ -177,7 +177,9 @@ public class BmTestManager {
                 this.testInfo = testInfo;
             }
         } else if (this.testInfo == null & testInfo != null) {
-            this.testInfo = testInfo;
+            synchronized (this.testInfo) {
+                this.testInfo = testInfo;
+            }
         }
         NotifyTestInfoChanged();
 
