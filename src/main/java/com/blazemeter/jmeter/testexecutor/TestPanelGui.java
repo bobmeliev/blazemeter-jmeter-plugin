@@ -248,7 +248,6 @@ public class TestPanelGui {
                             @Override
                             public void run() {
                                 startInTheCloud();
-                                BmTestManager.getInstance().NotifyTestInfoChanged();
 
                             }
                         });
@@ -265,7 +264,6 @@ public class TestPanelGui {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         bmTestManager.stopInTheCloud();
-                        bmTestManager.NotifyTestInfoChanged();
                     }
                 }
             }
@@ -409,9 +407,11 @@ public class TestPanelGui {
                         " '1' will be saved");
                 userPerEngine = 1;
             }
-            BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
-                    bmTestManager.getTestInfo().getId(),
-                    location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+            synchronized (BlazemeterApi.getInstance()) {
+                BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
+                        bmTestManager.getTestInfo().getId(),
+                        location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+            }
 
         } else {
             JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
