@@ -198,6 +198,7 @@ public class TestPanelGui {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int numberOfUsers = numberOfUsersSlider.getValue();
+                BmLog.debug("Number of users = " + numberOfUsers);
                 int engines;
                 String engineSize;
                 int usersPerEngine;
@@ -308,15 +309,6 @@ public class TestPanelGui {
                 url = url.substring(0, url.length() - 5);
             Utils.Navigate(url);
         }
-
-        testInfo = bmTestManager.getTestInfo();
-        if (testInfo == null) {
-            return;
-        }
-        testInfo = BlazemeterApi.getInstance().getTestRunStatus(BmTestManager.getInstance().getUserKey(),
-                bmTestManager.getTestInfo().getId(), true);
-        configureMainPanelControls(testInfo);
-        bmTestManager.setTestInfo(testInfo);
     }
 
     private void downloadJMX() {
@@ -804,6 +796,7 @@ public class TestPanelGui {
             if ("jmeter".equals(testInfo.getType())) {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
+                BmLog.debug("New value = " + testInfo.getNumberOfUsers() + " users was set to numberOfUserSlider from updateTestInfo");
                 if (testInfo.getOverrides() != null) {
                     rampupSpinner.setValue(testInfo.getOverrides().rampup);
                     iterationsSpinner.setValue(testInfo.getOverrides().iterations == -1 ? 0 : testInfo.getOverrides().iterations);
