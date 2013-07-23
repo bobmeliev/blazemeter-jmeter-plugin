@@ -33,12 +33,15 @@ import java.util.Dictionary;
  * Time: 12:29
  */
 public class TestPanelGui {
+    //variables
     private static final String NEW = "---NEW---";
     private static final String EMPTY = "";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
     private static String TEST_ID = "";
     private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
     private static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
+
+    //Gui controls
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
     private JComboBox testIdComboBox;
@@ -745,7 +748,7 @@ public class TestPanelGui {
             return;
         }
         userKeyTextField.setText(key);
-        BmLog.debug("Setting user key" + key);
+        BmLog.debug("Setting user key " + key);
     }
 
     public String getUserKey() {

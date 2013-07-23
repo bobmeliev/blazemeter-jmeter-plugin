@@ -60,7 +60,6 @@ public class BmTestManager {
 
     public void setUserKeyValid(boolean userKeyValid) {
         isUserKeyValid = userKeyValid;
-        NotifyUserKeyChanged();
     }
 
     public static boolean isTestRunning() {
