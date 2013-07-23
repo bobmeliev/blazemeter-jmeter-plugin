@@ -198,7 +198,6 @@ public class TestPanelGui {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int numberOfUsers = numberOfUsersSlider.getValue();
-                BmLog.debug("Number of users = " + numberOfUsers);
                 int engines;
                 String engineSize;
                 int usersPerEngine;
@@ -505,7 +504,7 @@ public class TestPanelGui {
                             if (testInfo.getName() != NEW & !testInfo.getName().isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
                             }
-                        } else if (Utils.isInteger(selectedTest.toString())) {
+                        }/* else if (Utils.isInteger(selectedTest.toString())) {
                             TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
                                     selectedTest.toString(), true);
                             BmLog.console(ti.toString());
@@ -515,7 +514,7 @@ public class TestPanelGui {
                             } else {
                                 JMeterUtils.reportErrorToUser(ti.getError(), "Test not found error");
                             }
-                        } else if (selectedTest.toString().equals(NEW)) {
+                        }*/ else if (selectedTest.toString().equals(NEW)) {
                             testIdComboBox.setSelectedItem(NEW);
                             configureMainPanelControls(null);
                             resetCloudPanel();
@@ -796,7 +795,6 @@ public class TestPanelGui {
             if ("jmeter".equals(testInfo.getType())) {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
-                BmLog.debug("New value = " + testInfo.getNumberOfUsers() + " users was set to numberOfUserSlider from updateTestInfo");
                 if (testInfo.getOverrides() != null) {
                     rampupSpinner.setValue(testInfo.getOverrides().rampup);
                     iterationsSpinner.setValue(testInfo.getOverrides().iterations == -1 ? 0 : testInfo.getOverrides().iterations);
