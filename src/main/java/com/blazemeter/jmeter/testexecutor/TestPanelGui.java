@@ -724,7 +724,6 @@ public class TestPanelGui {
                             JMeterUtils.reportErrorToUser("Test=" + TEST_ID + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         } else {
-                            TestInfoController.start(TEST_ID);
                             testIdComboBox.setSelectedItem(TEST_ID);
                         }
                     }
