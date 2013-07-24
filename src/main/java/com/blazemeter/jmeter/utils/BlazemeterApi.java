@@ -220,7 +220,7 @@ public class BlazemeterApi {
         TestInfo testInfo = bmTestManager.getTestInfo();
         String error = null;
         if (userKey == null || userKey.trim().isEmpty()) {
-            error="Test cannot be started in the cloud, userKey is empty";
+            error = "Test cannot be started in the cloud, userKey is empty";
             BmLog.debug(error);
             testInfo.setError(error);
             bmTestManager.NotifyTestInfoChanged();
@@ -228,7 +228,7 @@ public class BlazemeterApi {
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            error="Test cannot be started in the cloud, testId is empty";
+            error = "Test cannot be started in the cloud, testId is empty";
             BmLog.debug(error);
             testInfo.setError(error);
             bmTestManager.NotifyTestInfoChanged();
@@ -238,13 +238,12 @@ public class BlazemeterApi {
         String url = this.urlManager.testStart(APP_KEY, userKey, testId);
         JSONObject jo = getJson(url, null);
         try {
-            if (!jo.get("response_code").toString().equals("200"))
-            {
-                testInfo.setError((String)jo.get("error"));
+            if (!jo.get("response_code").toString().equals("200")) {
+                testInfo.setError((String) jo.get("error"));
                 return;
 
             }
-            testInfo.setId((String)jo.get("test_id"));
+            testInfo.setId((String) jo.get("test_id"));
             bmTestManager.NotifyTestInfoChanged();
         } catch (JSONException e) {
             BmLog.error(e);
@@ -445,17 +444,18 @@ public class BlazemeterApi {
         return fileSize;
     }
 
-    public boolean updateTestSettings(String userKey, String testId, String location, //boolean override,
-                                      int engines, String engineType, int usersPerEngine,
-                                      int iterations, int rumpUp, int duration) {
+    public TestInfo updateTestSettings(String userKey, String testId, String location, //boolean override,
+                                       int engines, String engineType, int usersPerEngine,
+                                       int iterations, int rumpUp, int duration) {
+        TestInfo testInfo = new TestInfo();
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("Test settings cannot be updated, userKey is empty");
-            return false;
+            return testInfo;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
             BmLog.debug("Test settings cannot be updated, testId is empty");
-            return false;
+            return testInfo;
         }
 
         String url = this.urlManager.testUpdateUrl(APP_KEY, userKey, testId);
@@ -473,17 +473,33 @@ public class BlazemeterApi {
             options.put("LOCATION", location);
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
-            if (jo.getInt("response_code") != 200)
+            if (jo.getInt("response_code") != 200) {
                 BmLog.error("Failed to update" + testId);
+            } /*else if(jo.getInt("response_code")==200){
+                testInfo.setId(jo.getString("test_id"));
+                testInfo.setName(jo.getString("test_name"));
+                testInfo.setStatus(jo.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning);
+                testInfo.setError(jo.getString("error"));
+                testInfo.setNumberOfUsers(Integer.parseInt((String)jo.get("USERS")));
+
+                JSONObject responseOptions = jo.getJSONObject("options");
+                testInfo.setType(responseOptions.getString("TEST_TYPE"));
+                testInfo.setLocation(responseOptions.getString("LOCATION"));
+                // set overrides
+//                Overrides overrides = new Overrides()
+
+
+
+            }*/
+
         } catch (JSONException e) {
             BmLog.error(e);
-            return false;
         } catch (NullPointerException npe) {
             BmLog.error("Invalid answer from server! Turn to customer support to resolve issue. See log for details", npe);
         }
 
 
-        return true;
+        return testInfo;
     }
 
     public TestInfo getTestRunStatus(String userKey, String testId, boolean detailed) {

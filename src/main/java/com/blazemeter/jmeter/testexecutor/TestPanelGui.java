@@ -37,7 +37,7 @@ public class TestPanelGui {
     private static final String NEW = "---NEW---";
     private static final String EMPTY = "";
     private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
-    private static String TEST_ID = "";
+    private static String CURRENT_TEST_ID = "";
     private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
     private static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
 
@@ -215,15 +215,13 @@ public class TestPanelGui {
                 }
             }
         });
-
-
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int dialogButton;
                 BmTestManager bmTestManager = BmTestManager.getInstance();
-
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
+                    TestInfoController.stop();
                     if (bmTestManager.getUserKey().isEmpty()) {
                         JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
                         return;
@@ -244,18 +242,15 @@ public class TestPanelGui {
                                 bmTestManager.uploadJmx();
                             }
                         }
-                        Thread startInTheCloudThread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                startInTheCloud();
+                        startInTheCloud();
 
-                            }
-                        });
-                        OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                 /*
+                   OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
                                 "Operation will take a few seconds to execute. Your patience is appreciated.");
-//                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
-                        startInTheCloudThread.start();
-//                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
+                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
+                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
+                 */
+
                     }
 
                 } else {
@@ -297,7 +292,6 @@ public class TestPanelGui {
     private void startInTheCloud() {
         saveCloudTest();
         BmTestManager bmTestManager = BmTestManager.getInstance();
-
         bmTestManager.runInTheCloud();
         TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
@@ -411,6 +405,7 @@ public class TestPanelGui {
                 BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
                         bmTestManager.getTestInfo().getId(),
                         location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
+
             }
 
         } else {
@@ -633,14 +628,15 @@ public class TestPanelGui {
                         }
 
                     }
+
                     updateTestInfo();
 
                     if ((!testInfo.getName().equals(NEW)) & (!testInfo.getName().isEmpty())) {
-                        if (testInfo != null && !TEST_ID.equals(testInfo.getId())) {
-                            TEST_ID = testInfo.getId();
+                        if (testInfo != null && !CURRENT_TEST_ID.equals(testInfo.getId())) {
+                            CURRENT_TEST_ID = testInfo.getId();
                             TestInfoController.stop();
 
-                        } else if (TEST_ID.equals(testInfo.getId())) {
+                        } else if (CURRENT_TEST_ID.equals(testInfo.getId())) {
                             TestInfoController.start(testInfo.getId());
 
                         } else {
@@ -654,7 +650,6 @@ public class TestPanelGui {
                     if (testInfo.getName() == NEW || (testInfo.getName().isEmpty())) {
                         TestInfoController.stop();
                     }
-
 
                 }
             });
@@ -713,12 +708,12 @@ public class TestPanelGui {
                         addTestId(ti, false);
                         testIdList.add(ti.getId());
                     }
-                    if (!TEST_ID.isEmpty()) {
-                        if (!testIdList.contains(TEST_ID)) {
-                            JMeterUtils.reportErrorToUser("Test=" + TEST_ID + " was not found on server. Select test from list."
+                    if (!CURRENT_TEST_ID.isEmpty()) {
+                        if (!testIdList.contains(CURRENT_TEST_ID)) {
+                            JMeterUtils.reportErrorToUser("Test=" + CURRENT_TEST_ID + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         } else {
-                            testIdComboBox.setSelectedItem(TEST_ID);
+                            testIdComboBox.setSelectedItem(CURRENT_TEST_ID);
                         }
                     }
 
