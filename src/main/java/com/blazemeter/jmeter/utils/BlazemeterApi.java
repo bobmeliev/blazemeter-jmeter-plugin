@@ -476,24 +476,8 @@ public class BlazemeterApi {
             if (jo.getInt("response_code") != 200) {
                 BmLog.error("Failed to update" + testId);
             } else if (jo.getInt("response_code") == 200) {
-                testInfo.setId(jo.getString("test_id"));
-                testInfo.setName(jo.getString("test_name"));
-                testInfo.setStatus(jo.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning);
-                testInfo.setError(jo.getString("error").equals("null") ? null : jo.getString("error"));
-
-                JSONObject responseOptions = jo.getJSONObject("options");
-                testInfo.setNumberOfUsers((Integer) responseOptions.get("USERS"));
-                testInfo.setType(responseOptions.getString("TEST_TYPE"));
-                testInfo.setLocation(responseOptions.getString("LOCATION"));
-                // set overrides
-                Overrides overrides = new Overrides(responseOptions.getInt("OVERRIDE_DURATION"),
-                        responseOptions.getInt("OVERRIDE_ITERATIONS"),
-                        responseOptions.getInt("OVERRIDE_RAMP_UP"),
-                        responseOptions.getInt("OVERRIDE_THREADS")
-                );
-                testInfo.setOverrides(overrides);
+                testInfo = Utils.parseTestInfo(jo);
             }
-
         } catch (JSONException e) {
             BmLog.error(e);
         } catch (NullPointerException npe) {

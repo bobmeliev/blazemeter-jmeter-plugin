@@ -2,6 +2,8 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
+import com.blazemeter.jmeter.testinfo.Overrides;
+import com.blazemeter.jmeter.testinfo.TestInfo;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
@@ -14,6 +16,8 @@ import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.threads.AbstractThreadGroup;
 import org.apache.jorphan.collections.HashTree;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -217,6 +221,29 @@ public class Utils {
                 fout.close();
         }
         return true;
+    }
+
+    public static TestInfo parseTestInfo(JSONObject jsonObject) throws JSONException {
+        TestInfo testInfo = new TestInfo();
+        testInfo.setId(jsonObject.getString("test_id"));
+        testInfo.setName(jsonObject.getString("test_name"));
+        testInfo.setStatus(jsonObject.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning);
+        testInfo.setError(jsonObject.getString("error").equals("null") ? null : jsonObject.getString("error"));
+
+        JSONObject responseOptions = jsonObject.getJSONObject("options");
+        testInfo.setNumberOfUsers((Integer) responseOptions.get("USERS"));
+        testInfo.setType(responseOptions.getString("TEST_TYPE"));
+        testInfo.setLocation(responseOptions.getString("LOCATION"));
+        // set overrides
+        Overrides overrides = new Overrides(responseOptions.getInt("OVERRIDE_DURATION"),
+                responseOptions.getInt("OVERRIDE_ITERATIONS"),
+                responseOptions.getInt("OVERRIDE_RAMP_UP"),
+                responseOptions.getInt("OVERRIDE_THREADS")
+        );
+        testInfo.setOverrides(overrides);
+
+
+        return testInfo;
     }
 
     /*
