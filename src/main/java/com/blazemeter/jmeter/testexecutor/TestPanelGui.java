@@ -98,7 +98,7 @@ public class TestPanelGui {
 
                 }
                 String testName = testNameTextField.getText().trim();
-                if (testName.isEmpty()) {
+                if (testName.isEmpty() | testName.equals(NEW)) {
                     testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
                     if (testName == null || testName.trim().isEmpty())
                         return;
@@ -108,11 +108,13 @@ public class TestPanelGui {
                     return;
                 }
 
-                TestInfo ti = BlazemeterApi.getInstance().createTest(userKey, testName);
+                TestInfo ti = bmTestManager.createTest(userKey, testName);
+                bmTestManager.getTestInfo().setId(ti.getId());
+//                ti = bmTestManager.updateTestInfoOnServer(userKey, bmTestManager.getTestInfo());
                 if (ti != null && ti.getStatus() == null) {
                     addTestId(ti, true);
-                    BmTestManager.getInstance().setTestInfo(ti);
-                    BmTestManager.getInstance().uploadJmx();
+                    bmTestManager.setTestInfo(ti);
+                    bmTestManager.uploadJmx();
                 }
             }
         });

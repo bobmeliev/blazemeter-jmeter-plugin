@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.*;
@@ -209,6 +210,31 @@ public class BmTestManager {
             }
         }
         return url;
+    }
+
+    public TestInfo createTest(String userKey, String testName) {
+        return
+                BlazemeterApi.getInstance().createTest(userKey, testName);
+    }
+
+    public TestInfo updateTestInfoOnServer(String userKey, TestInfo testInfo) {
+        ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(testInfo.getNumberOfUsers());
+        Overrides overrides = testInfo.getOverrides();
+        TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
+                testInfo.getId(),
+                testInfo.getLocation(),
+                Integer.parseInt(enginesParameters.get(0)),
+                enginesParameters.get(1),
+                Integer.parseInt(enginesParameters.get(2)),
+                overrides == null ? 0 : overrides.iterations,
+                overrides == null ? 0 : overrides.rampup,
+                overrides == null ? 0 : overrides.duration
+
+
+      /*  int engines, String engineType, int usersPerEngine,
+        int iterations, int rumpUp, int duration*/
+        );
+        return ti;
     }
 
     public void uploadJmx() {

@@ -1,9 +1,11 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
@@ -26,6 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -223,27 +226,73 @@ public class Utils {
         return true;
     }
 
-    public static TestInfo parseTestInfo(JSONObject jsonObject) throws JSONException {
+    public static TestInfo parseTestInfo(JSONObject jsonObject) {
         TestInfo testInfo = new TestInfo();
-        testInfo.setId(jsonObject.getString("test_id"));
-        testInfo.setName(jsonObject.getString("test_name"));
-        testInfo.setStatus(jsonObject.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning);
-        testInfo.setError(jsonObject.getString("error").equals("null") ? null : jsonObject.getString("error"));
+        try {
+            testInfo.setId(jsonObject.getString("test_id"));
+            testInfo.setName(jsonObject.getString("test_name"));
+            TestStatus status = null;
+            if (jsonObject.has("status")) {
+                status = jsonObject.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning;
+            }
+            testInfo.setStatus(status);
+            testInfo.setError(jsonObject.getString("error").equals("null") ? null : jsonObject.getString("error"));
 
-        JSONObject responseOptions = jsonObject.getJSONObject("options");
-        testInfo.setNumberOfUsers((Integer) responseOptions.get("USERS"));
-        testInfo.setType(responseOptions.getString("TEST_TYPE"));
-        testInfo.setLocation(responseOptions.getString("LOCATION"));
-        // set overrides
-        Overrides overrides = new Overrides(responseOptions.getInt("OVERRIDE_DURATION"),
-                responseOptions.getInt("OVERRIDE_ITERATIONS"),
-                responseOptions.getInt("OVERRIDE_RAMP_UP"),
-                responseOptions.getInt("OVERRIDE_THREADS")
-        );
-        testInfo.setOverrides(overrides);
+            if (jsonObject.has("options")) {
+                JSONObject responseOptions = jsonObject.getJSONObject("options");
+                if (responseOptions != null) {
+                    testInfo.setNumberOfUsers((Integer) responseOptions.get("USERS"));
+                    testInfo.setType(responseOptions.getString("TEST_TYPE"));
+                    testInfo.setLocation(responseOptions.getString("LOCATION"));
+                    // set overrides
+                    if (responseOptions.getBoolean("OVERRIDE")) {
+                        Overrides overrides = new Overrides(responseOptions.getInt("OVERRIDE_DURATION"),
+                                responseOptions.getInt("OVERRIDE_ITERATIONS"),
+                                responseOptions.getInt("OVERRIDE_RAMP_UP"),
+                                responseOptions.getInt("OVERRIDE_THREADS"));
+                        testInfo.setOverrides(overrides);
+                    }
+                }
+            }
 
+        } catch (JSONException je) {
+            BmLog.error("Error while creating TestInfo from JSON: " + je);
+        }
 
         return testInfo;
+    }
+
+    public static ArrayList<String> calculateEnginesForTest(int numberOfUsers) {
+        ArrayList<String> enginesParameters = new ArrayList<String>(3);
+        int engines = 0;
+        String engineSize = "m1.medium";
+        int userPerEngine = 0;
+
+        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
+
+
+        if (numberOfUsers <= 300) {
+            userPerEngine = numberOfUsers;
+        } else {
+            engines = numberOfUsers / 300;
+            if (engines < userInfo.getMaxEnginesLimit()) {
+                if (numberOfUsers % 300 > 0) {
+                    engines++;
+                }
+            } else {
+                engineSize = "m1.large";
+                engines = numberOfUsers / 600;
+                if (numberOfUsers % 600 > 0) {
+                    engines++;
+                }
+            }
+            userPerEngine = numberOfUsers / engines;
+        }
+
+        enginesParameters.add(String.valueOf(engines));
+        enginesParameters.add(engineSize);
+        enginesParameters.add(String.valueOf(userPerEngine));
+        return enginesParameters;
     }
 
     /*

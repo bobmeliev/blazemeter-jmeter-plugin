@@ -1,7 +1,6 @@
 package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.http.Header;
@@ -300,6 +299,7 @@ public class BlazemeterApi {
     }
 
     public synchronized TestInfo createTest(String userKey, String testName) {
+        TestInfo testInfo = null;
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("Test cannot be created, userKey is empty");
             return null;
@@ -315,19 +315,9 @@ public class BlazemeterApi {
             BmLog.error(e);
         }
         JSONObject jo = getJson(url, properties);
-        TestInfo ti = new TestInfo();
-        try {
-            if (jo.isNull("error")) {
-                ti.setId(jo.getString("test_id"));
-                ti.setName(jo.getString("test_name"));
-            } else {
-                ti.setError(jo.getString("error"));
-                ti.setStatus(TestStatus.Error);
-            }
-        } catch (JSONException e) {
-            ti.setStatus(TestStatus.Error);
-        }
-        return ti;
+        testInfo = Utils.parseTestInfo(jo);
+
+        return testInfo;
     }
 
     /**
@@ -444,7 +434,7 @@ public class BlazemeterApi {
         return fileSize;
     }
 
-    public TestInfo updateTestSettings(String userKey, String testId, String location, //boolean override,
+    public TestInfo updateTestSettings(String userKey, String testId, String location,
                                        int engines, String engineType, int usersPerEngine,
                                        int iterations, int rumpUp, int duration) {
         TestInfo testInfo = new TestInfo();
@@ -473,7 +463,7 @@ public class BlazemeterApi {
             options.put("LOCATION", location);
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
-            if (jo.getInt("response_code") != 200) {
+            if (jo == null || jo.getInt("response_code") != 200) {
                 BmLog.error("Failed to update" + testId);
             } else if (jo.getInt("response_code") == 200) {
                 testInfo = Utils.parseTestInfo(jo);
@@ -507,23 +497,7 @@ public class BlazemeterApi {
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
-                ti.setId(jo.getString("test_id"));
-                ti.setName(jo.getString("test_name"));
-                ti.setStatus(jo.getString("status").equalsIgnoreCase("running") ? TestStatus.Running : TestStatus.NotRunning);
-                JSONObject options = jo.getJSONObject("options");
-                if (options != null) {
-                    ti.setNumberOfUsers(options.getInt("USERS"));
-                    ti.setLocation(options.getString("LOCATION"));
-                    ti.setType(options.getString("TEST_TYPE"));
-                    if (options.getBoolean("OVERRIDE")) {
-                        ti.setOverrides(new Overrides(
-                                options.getInt("OVERRIDE_DURATION")
-                                , options.getInt("OVERRIDE_ITERATIONS")
-                                , options.getInt("OVERRIDE_RAMP_UP")
-                                , options.getInt("OVERRIDE_THREADS")
-                        ));
-                    }
-                }
+                ti = Utils.parseTestInfo(jo);
             } else {
                 ti.setStatus(jo.getInt("response_code") == 404 ? TestStatus.NotFound : TestStatus.Error);
                 ti.setError(jo.getString("error"));
