@@ -402,10 +402,11 @@ public class TestPanelGui {
                 userPerEngine = 1;
             }
             synchronized (BlazemeterApi.getInstance()) {
-                BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
+                testInfo = BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
                         bmTestManager.getTestInfo().getId(),
                         location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
-
+                //TestInfo should be saved to BmTestManager and updated on cloudPanel
+                bmTestManager.setTestInfo(testInfo);
             }
 
         } else {
