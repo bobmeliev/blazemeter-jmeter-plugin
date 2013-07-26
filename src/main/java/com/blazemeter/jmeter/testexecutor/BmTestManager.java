@@ -229,10 +229,6 @@ public class BmTestManager {
                 overrides == null ? 0 : overrides.iterations,
                 overrides == null ? 0 : overrides.rampup,
                 overrides == null ? 0 : overrides.duration
-
-
-      /*  int engines, String engineType, int usersPerEngine,
-        int iterations, int rumpUp, int duration*/
         );
         return ti;
     }

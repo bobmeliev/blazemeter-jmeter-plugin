@@ -107,11 +107,13 @@ public class TestPanelGui {
                     JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
                     return;
                 }
-
+                int numberOfUsers = numberOfUsersSlider.getValue();
                 TestInfo ti = bmTestManager.createTest(userKey, testName);
-                bmTestManager.getTestInfo().setId(ti.getId());
-//                ti = bmTestManager.updateTestInfoOnServer(userKey, bmTestManager.getTestInfo());
-                if (ti != null && ti.getStatus() == null) {
+                ti.setLocation((String) locationComboBox.getSelectedItem());
+                ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
+                ti.setStatus(TestStatus.NotRunning);
+                ti = bmTestManager.updateTestInfoOnServer(userKey, ti);
+                if (ti != null && ti.getStatus() != null) {
                     addTestId(ti, true);
                     bmTestManager.setTestInfo(ti);
                     bmTestManager.uploadJmx();
