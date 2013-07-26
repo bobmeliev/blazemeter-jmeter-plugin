@@ -317,7 +317,12 @@ public class BmTestManager {
         @Override
         public void run() {
             FileServer fileServer = FileServer.getFileServer();
-            String projectPath = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
+            String projectPath = null;
+            if (fileServer.getScriptName() != null) {
+                projectPath = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
+            } else if (!JMeter.isNonGUI()) {
+                projectPath = GuiPackage.getInstance().getTestPlanFile();
+            }
             String filename = new File(projectPath).getName();
             String testName = testInfo.getName();
             testName = testName.trim().isEmpty() ? filename : testName;
@@ -335,7 +340,6 @@ public class BmTestManager {
                     setTestInfo(testInfo);
                 }
                 BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.getId(), filename, projectPath);
-                NotifyTestInfoChanged();
 
             } catch (Exception ex) {
                 BmLog.console(ex.getMessage());

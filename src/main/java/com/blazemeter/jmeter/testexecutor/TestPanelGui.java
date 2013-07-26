@@ -113,10 +113,20 @@ public class TestPanelGui {
                 ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
                 ti.setStatus(TestStatus.NotRunning);
                 ti = bmTestManager.updateTestInfoOnServer(userKey, ti);
+                GuiPackage guiPackage = GuiPackage.getInstance();
+                if (guiPackage.getTestPlanFile() == null) {
+                    Save save = new Save();
+                    try {
+                        save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_ALL_AS));
+                    } catch (IllegalUserActionException iuae) {
+                        BmLog.error("Can not save file," + iuae);
+                    }
+                }
+                bmTestManager.uploadJmx();
                 if (ti != null && ti.getStatus() != null) {
                     addTestId(ti, true);
                     bmTestManager.setTestInfo(ti);
-                    bmTestManager.uploadJmx();
+
                 }
             }
         });
@@ -504,17 +514,7 @@ public class TestPanelGui {
                             if (testInfo.getName() != NEW & !testInfo.getName().isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
                             }
-                        }/* else if (Utils.isInteger(selectedTest.toString())) {
-                            TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(bmTestManager.getUserKey(),
-                                    selectedTest.toString(), true);
-                            BmLog.console(ti.toString());
-                            if (ti.getStatus() == TestStatus.Running || ti.getStatus() == TestStatus.NotRunning) {
-                                bmTestManager.setTestInfo(ti);
-                                setTestInfo(ti);
-                            } else {
-                                JMeterUtils.reportErrorToUser(ti.getError(), "Test not found error");
-                            }
-                        }*/ else if (selectedTest.toString().equals(NEW)) {
+                        } else if (selectedTest.toString().equals(NEW)) {
                             testIdComboBox.setSelectedItem(NEW);
                             configureMainPanelControls(null);
                             resetCloudPanel();
