@@ -325,20 +325,8 @@ public class BmTestManager {
             String testName = testInfo.getName();
             testName = testName.trim().isEmpty() ? filename : testName;
 
-            //Now that  we   have  a  valid ID  check that  if exists
             try {
-                if (testInfo.getId().isEmpty()) {
-                    testInfo = BlazemeterApi.getInstance().createTest(getUserKey(), testName);
-                    setTestInfo(testInfo);
-                } else {
-                    TestInfo ti = BlazemeterApi.getInstance().getTestRunStatus(getUserKey(), testInfo.getId(), true);
-                    if (ti.getStatus() == TestStatus.NotFound) {
-                        testInfo = BlazemeterApi.getInstance().createTest(getUserKey(), testName);
-                    }
-                    setTestInfo(testInfo);
-                }
                 BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.getId(), filename, projectPath);
-
             } catch (Exception ex) {
                 BmLog.console(ex.getMessage());
             }
