@@ -69,7 +69,7 @@ public class ServerStatusController {
                     BmLog.error("SERVER URL is invalid! Check 'blazemeter.url' in jmeter.properties");
                     serverStatus = ServerStatus.NOT_AVAILABLE;
                 } catch (java.net.ConnectException e) {
-                    BmLog.error(serverURL + "is down ");
+                    BmLog.error(serverURL + " is down ");
                     serverStatus = ServerStatus.NOT_AVAILABLE;
                 } catch (ProtocolException e) {
                     BmLog.error("HTTP Request method was not set up for checking connection");

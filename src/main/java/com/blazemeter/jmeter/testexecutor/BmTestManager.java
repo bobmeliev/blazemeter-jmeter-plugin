@@ -164,6 +164,7 @@ public class BmTestManager {
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
         Uploader.getInstance().Finalize();
+        JMeterLogFilesUploader.getInstance().stopListening();
     }
 
 

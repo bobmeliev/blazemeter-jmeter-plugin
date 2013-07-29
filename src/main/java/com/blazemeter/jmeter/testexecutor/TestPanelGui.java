@@ -669,9 +669,9 @@ public class TestPanelGui {
                             TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                             TestInfoController.start(testInfo.getId());
                             boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
-                            enableMainPanelControls(testIsRunning);
-                            enableCloudControls(testIsRunning);
-                            runInTheCloud.setEnabled(testIsRunning);
+                            enableMainPanelControls(!testIsRunning);
+                            enableCloudControls(!testIsRunning);
+                            runInTheCloud.setEnabled(!testIsRunning);
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);

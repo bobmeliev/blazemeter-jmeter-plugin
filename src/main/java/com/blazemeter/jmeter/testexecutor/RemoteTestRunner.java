@@ -47,8 +47,8 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     public RemoteTestRunner() {
         super();
-        if(Float.parseFloat(JMeterPluginUtils.getJmeterVersion())<2.5){
-        BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
+        if (Float.parseFloat(JMeterPluginUtils.getJmeterVersion()) < 2.5) {
+            BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
 
         }
         if (JMeterPluginUtils.inCloudConfig()) {
@@ -80,6 +80,8 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                         }
                     } else {
                         StandardJMeterEngine.stopEngine();
+                        ServerStatusController.getServerStatusController().stop();
+                        TestInfoController.stop();
                     }
 
                 }
@@ -202,10 +204,9 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     @Override
     public void testEnded(String host) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        BmLog.console("Test is ended at " + host);
         BmTestManager.setTestRunning(false);
-        JMeterLogFilesUploader.getInstance().stopListening();
         bmTestManager.stopTest();
+        BmLog.console("Test is ended at " + host);
         if (JMeter.isNonGUI()) {
             System.exit(0);
         }
