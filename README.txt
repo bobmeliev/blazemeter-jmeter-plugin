@@ -1,22 +1,4 @@
-Release Notes - JMeter Plugin - Version 1.53
-
-** Bug
-    * [BPC-104] - Plugin does not reacts on stopping test via site if it is used in LocalRun mode
-    * [BPC-118] - Define log levels depending on priority of log message
-    * [BPC-123] - GUI usability issues
-    * [BPC-125] - TestInfo is not saved to USER_DIR/testInfo.xml after closing JMeter
-
-** Improvement
-    * [BPC-39] - Add release notes (taken from JIRA) and attache to the code.
-    * [BPC-116] - When a test is create a JMX file must be saved or in place - promote to save
-    * [BPC-119] - Where can I set the uploaded JTL properties
-    * [BPC-120] - Add Sydney to the list of available regions
-
-** New Feature
-    * [BPC-121] - Present the user limits
-    * [BPC-122] - Edit Script in Console
-
-                                                      HOW TO USE
+                          HOW TO USE
 
 1.Open jmeter.properties. Add the following entries to the end of the file
 #-----------------------------------------------------------------------------
