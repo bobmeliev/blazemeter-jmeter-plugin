@@ -234,8 +234,8 @@ public class Utils {
             TestStatus status = null;
             if (jsonObject.has("status")) {
                 status = jsonObject.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning;
+                testInfo.setStatus(status);
             }
-            testInfo.setStatus(status);
             testInfo.setError(jsonObject.getString("error").equals("null") ? null : jsonObject.getString("error"));
 
             if (jsonObject.has("options")) {

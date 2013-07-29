@@ -234,6 +234,11 @@ public class BlazemeterApi {
         String url = this.urlManager.testStart(APP_KEY, userKey, testId);
         JSONObject jo = getJson(url, null);
         testInfo = Utils.parseTestInfo(jo);
+        try {
+            testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.Running : TestStatus.NotRunning);
+        } catch (JSONException je) {
+            BmLog.debug("Failed to set test status: " + je.getMessage());
+        }
         return testInfo;
     }
 
