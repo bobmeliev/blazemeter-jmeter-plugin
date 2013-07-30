@@ -20,6 +20,8 @@ import org.apache.jmeter.util.JMeterUtils;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -40,7 +42,7 @@ public class TestPanelGui {
     private static String CURRENT_TEST_ID = "";
     private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
     private static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
-
+    //    private static final String USERKEY_REGEX="\\w{3,}+";
     //Gui controls
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -498,8 +500,7 @@ public class TestPanelGui {
             BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
                 @Override
                 public void onTestUserKeyChanged(String userKey) {
-                    setUserKey(userKey);
-                    signUpToBlazemeterButton.setEnabled(!(userKey.matches("\\w{3,}+") & BmTestManager.getInstance().isUserKeyValid()));
+                    signUpToBlazemeterButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & BmTestManager.getInstance().isUserKeyValid()));
                 }
             });
 
@@ -556,7 +557,31 @@ public class TestPanelGui {
                     fetchUserTestsAsync();
 
                 }
-                userKeyTextField.addFocusListener(new FocusListener() {
+
+                userKeyTextField.getDocument().addDocumentListener(new DocumentListener() {
+                    @Override
+                    public void insertUpdate(DocumentEvent e) {
+                        processChange();
+                    }
+
+                    @Override
+                    public void removeUpdate(DocumentEvent e) {
+                        processChange();
+                    }
+
+                    @Override
+                    public void changedUpdate(DocumentEvent e) {
+                        processChange();
+                    }
+
+                    void processChange() {
+                        BmTestManager bmTestManager = BmTestManager.getInstance();
+                        bmTestManager.setUserKey(userKeyTextField.getText());
+                        fetchUserTestsAsync();
+                    }
+                });
+
+                /*userKeyTextField.addFocusListener(new FocusListener() {
                     String oldVal = "";
 
                     @Override
@@ -575,7 +600,7 @@ public class TestPanelGui {
                             }
                         }
                     }
-                });
+                });*/
             }
             //Here should be all changes of TestInfo processed
             bmTestManager.testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {

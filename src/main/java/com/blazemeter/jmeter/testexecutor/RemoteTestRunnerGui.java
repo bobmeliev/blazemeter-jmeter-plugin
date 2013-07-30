@@ -103,12 +103,12 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         TestInfo testInfo = null;
 
         if (GuiPackage.getInstance().getTestPlanFile() == null) {
-            if (userKey.matches("\\w{3,}+")) {
+            if (userKey.matches(Constants.USERKEY_REGEX)) {
                 bmTestManager.setUserKey(userKey);
                 testInfo = remoteTestRunner.getTestInfo();
                 bmTestManager.setTestInfo(testInfo);
-            } else if(!userKey.isEmpty()){
-                JMeterUtils.reportErrorToUser("UserKey " + '"'+userKey+'"' + " has invalid format",
+            } else if (!userKey.isEmpty()) {
+                JMeterUtils.reportErrorToUser("UserKey " + '"' + userKey + '"' + " has invalid format",
                         "Invalid UserKey format");
             }
         }
@@ -121,9 +121,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         bmTestManager.getInstance().checkForUpdates();
         testInfo = bmTestManager.getTestInfo();
-        if(!gui.getUserKey().isEmpty()){
+        if (!gui.getUserKey().isEmpty()) {
             gui.setTestInfo(testInfo);
-        }else{
+        } else {
             gui.setTestInfo(null);
         }
     }
