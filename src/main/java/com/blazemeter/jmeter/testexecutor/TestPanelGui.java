@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
+import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -20,8 +21,6 @@ import org.apache.jmeter.util.JMeterUtils;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -36,13 +35,7 @@ import java.util.Dictionary;
  */
 public class TestPanelGui {
     //variables
-    private static final String NEW = "---NEW---";
-    private static final String EMPTY = "";
-    private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
     private static String CURRENT_TEST_ID = "";
-    private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
-    private static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
-    //    private static final String USERKEY_REGEX="\\w{3,}+";
     //Gui controls
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -75,6 +68,7 @@ public class TestPanelGui {
     public TestPanelGui() {
 
         configureUIComponents();
+        configureUserKeyTextField(userKeyTextField);
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -100,7 +94,7 @@ public class TestPanelGui {
 
                 }
                 String testName = testNameTextField.getText().trim();
-                if (testName.isEmpty() | testName.equals(NEW)) {
+                if (testName.isEmpty() | testName.equals(Constants.NEW)) {
                     testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
                     if (testName == null || testName.trim().isEmpty())
                         return;
@@ -148,7 +142,7 @@ public class TestPanelGui {
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Utils.Navigate(HELP_URL);
+                Utils.Navigate(Constants.HELP_URL);
             }
         });
 
@@ -247,7 +241,7 @@ public class TestPanelGui {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
 
-                        if (Boolean.parseBoolean(JMeterUtils.getProperty(BLAZEMETER_UPLOAD_JMX))) {
+                        if (Boolean.parseBoolean(JMeterUtils.getProperty(Constants.BLAZEMETER_UPLOAD_JMX))) {
                             if (Utils.isTestPlanEmpty()) {
                                 JMeterUtils.reportErrorToUser("Test plan is empty, cloud test will be started without updating script");
                             } else {
@@ -282,7 +276,7 @@ public class TestPanelGui {
         uploadJMXCheckBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                JMeterUtils.setProperty(BLAZEMETER_UPLOAD_JMX, String.valueOf(uploadJMXCheckBox.isSelected()));
+                JMeterUtils.setProperty(Constants.BLAZEMETER_UPLOAD_JMX, String.valueOf(uploadJMXCheckBox.isSelected()));
             }
         });
 
@@ -441,8 +435,8 @@ public class TestPanelGui {
     public void initListeners() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
-        if (!JMeterUtils.getPropDefault(BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
-            JMeterUtils.setProperty(BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
+        if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
+            JMeterUtils.setProperty(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
 
             final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
                 @Override
@@ -512,16 +506,16 @@ public class TestPanelGui {
                         Object selectedTest = testIdComboBox.getSelectedItem();
                         if (selectedTest instanceof TestInfo) {
                             TestInfo testInfo = (TestInfo) selectedTest;
-                            if (testInfo.getName() != NEW & !testInfo.getName().isEmpty()) {
+                            if (testInfo.getName() != Constants.NEW & !testInfo.getName().isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
                             }
-                        } else if (selectedTest.toString().equals(NEW)) {
-                            testIdComboBox.setSelectedItem(NEW);
+                        } else if (selectedTest.toString().equals(Constants.NEW)) {
+                            testIdComboBox.setSelectedItem(Constants.NEW);
                             configureMainPanelControls(null);
                             resetCloudPanel();
                             enableCloudControls(false);
                             TestInfo testInfo = new TestInfo();
-                            testInfo.setName(NEW);
+                            testInfo.setName(Constants.NEW);
                             bmTestManager.setTestInfo(testInfo);
                         }
                     }
@@ -558,36 +552,7 @@ public class TestPanelGui {
 
                 }
 
-                userKeyTextField.getDocument().addDocumentListener(new DocumentListener() {
-                    @Override
-                    public void insertUpdate(DocumentEvent e) {
-                        processChange();
-                    }
-
-                    @Override
-                    public void removeUpdate(DocumentEvent e) {
-                        processChange();
-                    }
-
-                    @Override
-                    public void changedUpdate(DocumentEvent e) {
-                        processChange();
-                    }
-
-                    void processChange() {
-                        String userKey = userKeyTextField.getText();
-                        if (userKey.matches(Constants.USERKEY_REGEX)) {
-                            userKeyTextField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-                            userKeyTextField.setBackground(Color.WHITE);
-                            BmTestManager bmTestManager = BmTestManager.getInstance();
-                            bmTestManager.setUserKey(userKey);
-                            fetchUserTestsAsync();
-
-                        } else {
-                            userKeyTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
-                        }
-                    }
-                });
+                userKeyTextField.getDocument().addDocumentListener(new UserKeyListener());
 
             }
             //Here should be all changes of TestInfo processed
@@ -649,7 +614,7 @@ public class TestPanelGui {
 
                     updateTestInfo();
 
-                    if ((!testInfo.getName().equals(NEW)) & (!testInfo.getName().isEmpty())) {
+                    if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
                         if (testInfo != null && !CURRENT_TEST_ID.equals(testInfo.getId())) {
                             CURRENT_TEST_ID = testInfo.getId();
                             TestInfoController.stop();
@@ -665,7 +630,7 @@ public class TestPanelGui {
 
                     }
 
-                    if (testInfo.getName() == NEW || (testInfo.getName().isEmpty())) {
+                    if (testInfo.getName() == Constants.NEW || (testInfo.getName().isEmpty())) {
                         TestInfoController.stop();
                     }
 
@@ -718,8 +683,8 @@ public class TestPanelGui {
                 testIdComboBox.setEnabled(true);
                 if (tests != null) {
                     testIdComboBox.removeAllItems();
-                    testIdComboBox.addItem(NEW);
-                    testIdComboBox.setSelectedItem(NEW);
+                    testIdComboBox.addItem(Constants.NEW);
+                    testIdComboBox.setSelectedItem(Constants.NEW);
                     BmTestManager.getInstance().setUserKeyValid(true);
                     java.util.List<String> testIdList = new ArrayList<String>();
                     for (TestInfo ti : tests) {
@@ -741,10 +706,14 @@ public class TestPanelGui {
                     BmTestManager.getInstance().setUserKeyValid(false);
                     resetCloudPanel();
                     enableCloudControls(false);
-                    testIdComboBox.setSelectedItem(EMPTY);
+                    testIdComboBox.setSelectedItem(Constants.EMPTY);
                 }
             }
         });
+    }
+
+    private void configureUserKeyTextField(JTextField userKeyTextField) {
+        userKeyTextField.getDocument().putProperty(Constants.PARENT, userKeyTextField);
     }
 
     public void setUserKey(String key) {
@@ -780,7 +749,7 @@ public class TestPanelGui {
     protected void setTestInfo(TestInfo testInfo) {
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
-            testInfo.setName(NEW);
+            testInfo.setName(Constants.NEW);
             testIdComboBox.setSelectedItem(testInfo.getName());
             configureMainPanelControls(null);
         } else {
@@ -795,7 +764,7 @@ public class TestPanelGui {
         TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
-            testInfo.setName(NEW);
+            testInfo.setName(Constants.NEW);
             testIdComboBox.setSelectedItem(testInfo.getName());
             configureMainPanelControls(null);
         } else {
@@ -871,6 +840,7 @@ public class TestPanelGui {
         defaultComboBoxModel1.addElement("South America (Sao Paulo)");
         defaultComboBoxModel1.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel1);
+
     }
 
 
