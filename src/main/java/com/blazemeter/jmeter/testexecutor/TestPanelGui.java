@@ -34,8 +34,6 @@ import java.util.Dictionary;
  * Time: 12:29
  */
 public class TestPanelGui {
-    //variables
-    private static String CURRENT_TEST_ID = "";
     //Gui controls
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -254,7 +252,7 @@ public class TestPanelGui {
                         }
                         startInTheCloud();
 
-                 /*
+                 /*BPC-183
                    OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
                                 "Operation will take a few seconds to execute. Your patience is appreciated.");
                         operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
@@ -615,11 +613,11 @@ public class TestPanelGui {
                     updateTestInfo();
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
-                        if (testInfo != null && !CURRENT_TEST_ID.equals(testInfo.getId())) {
-                            CURRENT_TEST_ID = testInfo.getId();
+                        if (testInfo != null && !JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID, "").equals(testInfo.getId())) {
+                            JMeterUtils.setProperty(Constants.CURRENT_TEST_ID, testInfo.getId());
                             TestInfoController.stop();
 
-                        } else if (CURRENT_TEST_ID.equals(testInfo.getId())) {
+                        } else if (JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID, "").equals(testInfo.getId())) {
                             TestInfoController.start(testInfo.getId());
 
                         } else {
@@ -691,12 +689,13 @@ public class TestPanelGui {
                         addTestId(ti, false);
                         testIdList.add(ti.getId());
                     }
-                    if (!CURRENT_TEST_ID.isEmpty()) {
-                        if (!testIdList.contains(CURRENT_TEST_ID)) {
-                            JMeterUtils.reportErrorToUser("Test=" + CURRENT_TEST_ID + " was not found on server. Select test from list."
+                    String currentTestId = JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID, "");
+                    if (!currentTestId.isEmpty()) {
+                        if (!testIdList.contains(currentTestId)) {
+                            JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         } else {
-                            testIdComboBox.setSelectedItem(CURRENT_TEST_ID);
+                            testIdComboBox.setSelectedItem(currentTestId);
                         }
                     }
 

@@ -8,12 +8,17 @@ package com.blazemeter.jmeter.testexecutor;
  * To change this template use File | Settings | File Templates.
  */
 public interface Constants {
+    // used by userKeyTextField for validation
     public static final String USERKEY_REGEX = "\\w{3,}+";
+    //used by userKeyTextField for linking with Document object
     public static final String PARENT = "parent";
+    // default value of textidComboBox
     public static final String NEW = "---NEW---";
     public static final String EMPTY = "";
     public static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
     public static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
     public static final String BLAZEMETER_UPLOAD_JMX = "blazemeter.upload.jmx";
-
+    public static final String REQUEST_FEATURE_REPORT_BUG_URL = "http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
+    //name of JMeter property for storing current testId, which is used by TestPanelGui
+    public static final String CURRENT_TEST_ID = "blazemeter.current_test_id";
 }

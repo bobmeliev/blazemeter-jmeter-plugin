@@ -41,8 +41,6 @@ import java.util.List;
  */
 public class Utils {
 
-    public static String REQUEST_FEATURE_REPORT_BUG_URL = "http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
-
     private Utils() {
     }
 
@@ -293,30 +291,6 @@ public class Utils {
         enginesParameters.add(engineSize);
         enginesParameters.add(String.valueOf(userPerEngine));
         return enginesParameters;
-    }
-
-    /*
-      This method closes JMeter and restarts it using daemon-thread.
-    */
-    public static void restartJMeter() {
-        final String CMD = "cmd.exe";
-        final String JMETER_START_SCRIPT = " C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.8\\bin\\jmeter.bat";
-        final String[] command = {CMD, "/C", JMETER_START_SCRIPT};
-
-
-        try {
-            Process proc = Runtime.getRuntime().exec(command);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(proc.getInputStream()));
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                BmLog.console(line);
-            }
-            System.exit(0);
-        } catch (IOException e) {
-            BmLog.error("jmeter.bat is not found - JMeter is not restarted");
-        }
-
     }
 
 
