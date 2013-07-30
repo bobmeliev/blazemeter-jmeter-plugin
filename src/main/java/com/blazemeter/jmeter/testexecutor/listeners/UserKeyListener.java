@@ -27,7 +27,7 @@ public class UserKeyListener implements DocumentListener {
     @Override
     public void insertUpdate(DocumentEvent e) {
         if (isUserKeyValidOnGUI(e)) {
-            fe
+            // fetch tests from server
 
         }
 
@@ -43,7 +43,10 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void removeUpdate(DocumentEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (isUserKeyValidOnGUI(e)) {
+            // fetch tests from server
+
+        }
     }
 
     /**
@@ -53,7 +56,10 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void changedUpdate(DocumentEvent e) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        if (isUserKeyValidOnGUI(e)) {
+            // fetch tests from server
+
+        }
     }
 
     boolean isUserKeyValidOnGUI(DocumentEvent e) {
@@ -72,10 +78,10 @@ public class UserKeyListener implements DocumentListener {
     }
 
 
-    boolean isUserKeyValidOnServer(String userKey) {
+    private void isUserKeyValidOnServer(String userKey) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.setUserKey(userKey);
-        fetchUserTestsAsync();
+//        fetchUserTestsAsync();
 
     }
 }

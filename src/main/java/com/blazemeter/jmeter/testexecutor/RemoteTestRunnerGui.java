@@ -193,7 +193,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         gridBagConstraints.anchor = GridBagConstraints.EAST;
         gridBagConstraints.insets = new Insets(2, 0, 0, 10);
         panelLink.add(reportBug, gridBagConstraints);
-        reportBug.addMouseListener(new Utils.URIOpener(Utils.REQUEST_FEATURE_REPORT_BUG_URL));
+        reportBug.addMouseListener(new Utils.URIOpener(Constants.REQUEST_FEATURE_REPORT_BUG_URL));
 
 
         gridBagConstraints = new GridBagConstraints();
@@ -203,7 +203,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         gridBagConstraints.anchor = GridBagConstraints.EAST;
         gridBagConstraints.insets = new Insets(2, 0, 0, 10);
         panelLink.add(requestFeature, gridBagConstraints);
-        requestFeature.addMouseListener(new Utils.URIOpener(Utils.REQUEST_FEATURE_REPORT_BUG_URL));
+        requestFeature.addMouseListener(new Utils.URIOpener(Constants.REQUEST_FEATURE_REPORT_BUG_URL));
 
 
         gridBagConstraints = new GridBagConstraints();
