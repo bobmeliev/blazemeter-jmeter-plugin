@@ -575,32 +575,20 @@ public class TestPanelGui {
                     }
 
                     void processChange() {
-                        BmTestManager bmTestManager = BmTestManager.getInstance();
-                        bmTestManager.setUserKey(userKeyTextField.getText());
-                        fetchUserTestsAsync();
+                        String userKey = userKeyTextField.getText();
+                        if (userKey.matches(Constants.USERKEY_REGEX)) {
+                            userKeyTextField.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                            userKeyTextField.setBackground(Color.WHITE);
+                            BmTestManager bmTestManager = BmTestManager.getInstance();
+                            bmTestManager.setUserKey(userKey);
+                            fetchUserTestsAsync();
+
+                        } else {
+                            userKeyTextField.setBorder(BorderFactory.createLineBorder(Color.RED));
+                        }
                     }
                 });
 
-                /*userKeyTextField.addFocusListener(new FocusListener() {
-                    String oldVal = "";
-
-                    @Override
-                    public void focusGained(FocusEvent focusEvent) {
-                        oldVal = userKeyTextField.getText();
-                    }
-
-                    @Override
-                    public void focusLost(FocusEvent focusEvent) {
-                        String newVal = userKeyTextField.getText();
-                        if (!newVal.equals(oldVal)) {
-                            BmTestManager bmTestManager = BmTestManager.getInstance();
-                            bmTestManager.setUserKey(newVal);
-                            if (!newVal.isEmpty()) {
-                                fetchUserTestsAsync();
-                            }
-                        }
-                    }
-                });*/
             }
             //Here should be all changes of TestInfo processed
             bmTestManager.testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
