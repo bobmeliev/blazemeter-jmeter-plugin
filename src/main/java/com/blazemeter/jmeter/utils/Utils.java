@@ -130,6 +130,18 @@ public class Utils {
         Utils.openJMX(file);
     }
 
+    public static boolean uploadJMX(){
+        /*1.Get TestPlan via GuiPackage;
+          2.Get name of TestPlan
+          3.Get TestInfo from BmTestManager
+          4.Upload JMX to cloud;
+          5.Get response about successfull upload:true or false
+
+         */
+        boolean isUploaded=true;
+        return  isUploaded;
+    }
+
     public static void Navigate(String url) {
         if (java.awt.Desktop.isDesktopSupported()) {
             try {

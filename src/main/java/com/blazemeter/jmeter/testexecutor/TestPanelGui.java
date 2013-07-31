@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
+import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -278,6 +279,9 @@ public class TestPanelGui {
                 if (url != null)
                     Utils.Navigate(url);
             }
+        });
+
+        saveUploadButton.addActionListener(new SaveUploadButtonListener() {
         });
     }
 
