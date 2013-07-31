@@ -28,10 +28,12 @@ public class EditJMXLocallyButtonListener implements ActionListener {
         }
         GuiPackage guiPackage = GuiPackage.getInstance();
         if (guiPackage.isDirty()) {
+
             int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
                     "Do you want to save changes in current test-plan?",
                     JMeterUtils.getResString("save?"),
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
             if (chosenOption == JOptionPane.CANCEL_OPTION) {
                 return;
             } else if (chosenOption == JOptionPane.YES_OPTION) {
@@ -46,6 +48,5 @@ public class EditJMXLocallyButtonListener implements ActionListener {
         } else {
             Utils.downloadJMX();
         }
-
     }
 }

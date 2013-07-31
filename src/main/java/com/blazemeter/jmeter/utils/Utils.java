@@ -137,7 +137,7 @@ public class Utils {
     public static void saveJMX(GuiPackage guiPackage) {
         Save save = new Save();
         try {
-            save.doAction(new ActionEvent(guiPackage, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_AS));
+            save.doAction(new ActionEvent(guiPackage, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE));
         } catch (IllegalUserActionException iuae) {
             BmLog.error("Can not save file," + iuae.getMessage());
         }

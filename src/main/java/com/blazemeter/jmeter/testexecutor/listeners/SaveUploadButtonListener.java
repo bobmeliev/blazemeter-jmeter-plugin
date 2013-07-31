@@ -1,6 +1,9 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.utils.Utils;
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.util.JMeterUtils;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +21,16 @@ public class SaveUploadButtonListener implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        BmTestManager.getInstance().uploadJmx();
+        try {
+            GuiPackage guiPackage = GuiPackage.getInstance();
+            if (guiPackage.getTestPlanFile() == null | guiPackage.isDirty()) {
+                Utils.saveJMX(guiPackage);
+            }
+            BmTestManager.getInstance().uploadJmx();
+
+        } catch (NullPointerException npe) {
+            JMeterUtils.reportErrorToUser("Save test-plan locally before uploading");
+        }
+
     }
 }

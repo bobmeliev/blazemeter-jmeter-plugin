@@ -321,14 +321,14 @@ public class BmTestManager {
             } else if (!JMeter.isNonGUI()) {
                 projectPath = GuiPackage.getInstance().getTestPlanFile();
             }
-            String filename = new File(projectPath).getName();
-            String testName = testInfo.getName();
-            testName = testName.trim().isEmpty() ? filename : testName;
-
             try {
+                String filename = new File(projectPath).getName();
                 BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.getId(), filename, projectPath);
+            } catch (NullPointerException npe) {
+                BmLog.error("JMX was not uploaded to server: test-plan is needed to be saved first ");
             } catch (Exception ex) {
-                BmLog.console(ex.getMessage());
+                BmLog.error(ex);
+
             }
         }
     }
