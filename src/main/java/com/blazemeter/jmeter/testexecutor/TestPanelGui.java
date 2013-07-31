@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
+import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
@@ -12,10 +13,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.apache.jmeter.engine.StandardJMeterEngine;
-import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.action.ActionNames;
-import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
@@ -23,7 +21,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Dictionary;
 
@@ -115,13 +112,10 @@ public class TestPanelGui {
                 ti = bmTestManager.updateTestInfoOnServer(userKey, ti);
                 GuiPackage guiPackage = GuiPackage.getInstance();
                 if (guiPackage.getTestPlanFile() == null) {
-                    Save save = new Save();
-                    try {
-                        save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_ALL_AS));
-                    } catch (IllegalUserActionException iuae) {
-                        BmLog.error("Can not save file," + iuae);
-                    }
+
+                    Utils.saveJMX(guiPackage);
                 }
+
                 bmTestManager.uploadJmx();
                 if (ti != null && ti.getStatus() != null) {
                     addTestId(ti, true);
@@ -150,45 +144,7 @@ public class TestPanelGui {
             }
         });
 
-        editJMXLocallyButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (BmTestManager.getInstance().getTestInfo().getId().isEmpty()) {
-                    JMeterUtils.reportErrorToUser("JMX can not be downloaded: test id is empty", "Empty test id");
-                    return;
-                }
-                GuiPackage guiPackage = GuiPackage.getInstance();
-                if (guiPackage.isDirty()) {
-                    int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
-                            "Do you want to save changes in current test-plan?",
-                            JMeterUtils.getResString("save?"),
-                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if (chosenOption == JOptionPane.CANCEL_OPTION) {
-                        return;
-                    } else if (chosenOption == JOptionPane.YES_OPTION) {
-                        Save save = new Save();
-                        try {
-                            save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_AS));
-                        } catch (IllegalUserActionException iuae) {
-                            BmLog.error("Can not save file," + iuae);
-                        }
-                        Utils.downloadJMX();
-                    } else if (chosenOption == JOptionPane.NO_OPTION) {
-                        Utils.downloadJMX();
-                    }
-                } else {
-                    Utils.downloadJMX();
-                }
-
-            }
-
-
-            // save jmx on the disk in user.dir with the name.equals(filename=)
-            // open jmx in JMeter for editing
-            // edit jmx
-            // wait until user clicksSaveButton and upload script back to server;
-
-        });
+        editJMXLocallyButton.addActionListener(new EditJMXLocallyButtonListener());
 
         numberOfUserTextBox.addFocusListener(new FocusAdapter() {
             @Override
@@ -281,9 +237,9 @@ public class TestPanelGui {
             }
         });
 
-        saveUploadButton.addActionListener(new SaveUploadButtonListener() {
-        });
+        saveUploadButton.addActionListener(new SaveUploadButtonListener());
     }
+
 
     public JPanel getMainPanel() {
         return mainPanel;

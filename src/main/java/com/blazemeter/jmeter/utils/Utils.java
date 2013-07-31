@@ -9,7 +9,9 @@ import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.action.ActionNames;
 import org.apache.jmeter.gui.action.Load;
+import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.gui.tree.JMeterTreeModel;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
 import org.apache.jmeter.save.SaveService;
@@ -23,6 +25,7 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -130,17 +133,16 @@ public class Utils {
         Utils.openJMX(file);
     }
 
-    public static boolean uploadJMX(){
-        /*1.Get TestPlan via GuiPackage;
-          2.Get name of TestPlan
-          3.Get TestInfo from BmTestManager
-          4.Upload JMX to cloud;
-          5.Get response about successfull upload:true or false
 
-         */
-        boolean isUploaded=true;
-        return  isUploaded;
+    public static void saveJMX(GuiPackage guiPackage) {
+        Save save = new Save();
+        try {
+            save.doAction(new ActionEvent(guiPackage, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_AS));
+        } catch (IllegalUserActionException iuae) {
+            BmLog.error("Can not save file," + iuae.getMessage());
+        }
     }
+
 
     public static void Navigate(String url) {
         if (java.awt.Desktop.isDesktopSupported()) {
