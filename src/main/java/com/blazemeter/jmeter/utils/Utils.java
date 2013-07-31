@@ -122,6 +122,14 @@ public class Utils {
         return contents.toString();
     }
 
+    public static void downloadJMX() {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        File file = blazemeterApi.downloadJmx(bmTestManager.getUserKey(), testInfo.getId());
+        Utils.openJMX(file);
+    }
+
     public static void Navigate(String url) {
         if (java.awt.Desktop.isDesktopSupported()) {
             try {
