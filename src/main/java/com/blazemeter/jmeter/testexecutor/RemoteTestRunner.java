@@ -28,13 +28,7 @@ import java.util.List;
 public class RemoteTestRunner extends ResultCollector implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
     private static final long serialVersionUID = 1L;
-    private static final String LOCAL_TEST_STRING = "localhost/127.0.0.1";
     private static int instanceCount = 0;
-    // move to Jmeter properties;
-    private static boolean testUrlWasOpened = false;
-    // move to Jmeter properties;
-    private static String startLocalTestResult;
-    private static String ATTEMPTS_TO_START_TEST = "blazemeter.attempts_to_start_test";
 
     public boolean canRemove() {
         BmLog.debug("Are you sure that you want to remove? " + instanceCount);
@@ -98,7 +92,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
         instanceCount++;
         BmTestManager.getInstance().hooksRegister();
-        JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "0");
+        JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "0");
     }
 
     public void setTestInfo(TestInfo testInfo) {
@@ -168,15 +162,16 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         }
 
 
-        if ((bmTestManager.getIsLocalRunMode() & (JMeterUtils.getProperty(ATTEMPTS_TO_START_TEST).equals("0")))) {
-            startLocalTestResult = bmTestManager.startLocalTest();
+        if ((bmTestManager.getIsLocalRunMode() & (JMeterUtils.getProperty(Constants.ATTEMPTS_TO_START_TEST).equals("0")))) {
+           JMeterUtils.setProperty(Constants.START_LOCAL_TEST_RESULT,bmTestManager.startLocalTest());
+           String startLocalTestResult = JMeterUtils.getProperty(Constants.START_LOCAL_TEST_RESULT);
             if (!startLocalTestResult.isEmpty()) {
                 if (!JMeter.isNonGUI()) {
                     JMeterUtils.reportErrorToUser("Results can not be uploaded to server due to the following reason: "
                             + startLocalTestResult.toLowerCase(), "Unable to start uploading results");
 
 
-                    JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "1");
+                    JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "1");
                     return;
                 }
             }
@@ -184,13 +179,13 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
 
             BmTestManager.setTestRunning(true);
-            JMeterUtils.setProperty(ATTEMPTS_TO_START_TEST, "0");
+            JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "0");
 
-            if (!testUrlWasOpened) {
+            if (!JMeterUtils.getPropDefault(Constants.TEST_URL_WAS_OPENED,false)) {
                 String url = bmTestManager.getTestUrl();
                 Utils.Navigate(url);
                 BmLog.debug("Opening test URL: " + url);
-                testUrlWasOpened = true;
+                JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED,"true");
             }
         } else {
             BmLog.debug("Test is started without uploading report to server");
@@ -210,7 +205,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (JMeter.isNonGUI()) {
             System.exit(0);
         }
-        testUrlWasOpened = false;
+        JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED,"false");
     }
 
     @Override
@@ -308,12 +303,12 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void testStarted() {
-        testStarted(LOCAL_TEST_STRING);
+        testStarted(Constants.LOCALHOST);
     }
 
     @Override
     public void testEnded() {
-        testEnded(LOCAL_TEST_STRING);
+        testEnded(Constants.LOCALHOST);
     }
 
     @Override

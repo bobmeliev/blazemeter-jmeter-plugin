@@ -21,4 +21,10 @@ public interface Constants {
     public static final String REQUEST_FEATURE_REPORT_BUG_URL = "http://community.blazemeter.com/forums/175399-blazemeter-jmeter-plugin";
     //name of JMeter property for storing current testId, which is used by TestPanelGui
     public static final String CURRENT_TEST_ID = "blazemeter.current_test_id";
+    public static final String LOCALHOST = "localhost/127.0.0.1";
+    public static final String TEST_URL_WAS_OPENED = "blazemeter.attempts_to_start_test";
+    public static final String ATTEMPTS_TO_START_TEST = "blazemeter.attempts_to_start_test";
+    public static final String START_LOCAL_TEST_RESULT = "blazemeter.start_local_test_result";
+    public static final String BLAZEMETER_LABEL = "BlazeMeter";
+    public static String BLAZEMETER_RUNNERGUI_INITIALIZED = "blazemeter.runnergui.initialized";
 }

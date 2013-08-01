@@ -23,8 +23,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     private static TestPanelGui gui;
     private static JLabel connectionStatus = new JLabel();
     private static JPanel versionPanel;
-    private static String BLAZEMETER_LABEL = "BlazeMeter";
-    private static String BLAZEMETER_RUNNERGUI_INITIALIZED = "blazemeter.runnergui.initialized";
+
 
     public static JPanel getVersionPanel() {
         return versionPanel;
@@ -107,8 +106,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 bmTestManager.setUserKey(userKey);
                 testInfo = remoteTestRunner.getTestInfo();
                 bmTestManager.setTestInfo(testInfo);
-            } else if (!userKey.isEmpty()) {
-                JMeterUtils.reportErrorToUser("UserKey " + '"' + userKey + '"' + " has invalid format",
+            } else if(!userKey.isEmpty()){
+                JMeterUtils.reportErrorToUser("UserKey " + '"'+userKey+'"' + " has invalid format",
                         "Invalid UserKey format");
             }
         }
@@ -121,9 +120,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         bmTestManager.getInstance().checkForUpdates();
         testInfo = bmTestManager.getTestInfo();
-        if (!gui.getUserKey().isEmpty()) {
+        if(!gui.getUserKey().isEmpty()){
             gui.setTestInfo(testInfo);
-        } else {
+        }else{
             gui.setTestInfo(null);
         }
     }
@@ -244,7 +243,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     }
 
     public String getStaticLabel() {
-        return BLAZEMETER_LABEL;
+        return Constants.BLAZEMETER_LABEL;
     }
 
     public String getLabelResource() {
@@ -255,8 +254,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (!JMeterUtils.getPropDefault(BLAZEMETER_RUNNERGUI_INITIALIZED, false)) {
-                    JMeterUtils.setProperty(BLAZEMETER_RUNNERGUI_INITIALIZED, "true");
+                if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_RUNNERGUI_INITIALIZED, false)) {
+                    JMeterUtils.setProperty(Constants.BLAZEMETER_RUNNERGUI_INITIALIZED, "true");
 
                     BmTestManager bmTestManager = BmTestManager.getInstance();
                     bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);

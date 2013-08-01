@@ -31,12 +31,6 @@ import java.util.Dictionary;
  * Time: 12:29
  */
 public class TestPanelGui {
-    //variables
-//    private static final String EMPTY = "";
-//    private static final String HELP_URL = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter#user_key";
-    private static String CURRENT_TEST_ID = "";
-    private static final String BLAZEMETER_TESTPANELGUI_INITIALIZED = "blazemeter.testpanelgui.initialized";
-
     //Gui controls
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -247,6 +241,7 @@ public class TestPanelGui {
     private void startInTheCloud() {
         saveCloudTest();
         BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfoController.stop();
         bmTestManager.runInTheCloud();
         TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
@@ -373,8 +368,8 @@ public class TestPanelGui {
     public void initListeners() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
-        if (!JMeterUtils.getPropDefault(BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
-            JMeterUtils.setProperty(BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
+        if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
+            JMeterUtils.setProperty(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
 
             final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
                 @Override
@@ -433,7 +428,7 @@ public class TestPanelGui {
                 @Override
                 public void onTestUserKeyChanged(String userKey) {
                     setUserKey(userKey);
-                    signUpToBlazemeterButton.setEnabled(!(userKey.matches("\\w{3,}+") & BmTestManager.getInstance().isUserKeyValid()));
+                    signUpToBlazemeterButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & BmTestManager.getInstance().isUserKeyValid()));
                 }
             });
 
@@ -571,11 +566,11 @@ public class TestPanelGui {
                     updateTestInfo();
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
-                        if (testInfo != null && !CURRENT_TEST_ID.equals(testInfo.getId())) {
-                            CURRENT_TEST_ID = testInfo.getId();
+                        if (testInfo != null && !JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID,"").equals(testInfo.getId())) {
+                            JMeterUtils.setProperty(Constants.CURRENT_TEST_ID,testInfo.getId());
                             TestInfoController.stop();
 
-                        } else if (CURRENT_TEST_ID.equals(testInfo.getId())) {
+                        } else if (JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID,"").equals(testInfo.getId())) {
                             TestInfoController.start(testInfo.getId());
 
                         } else {
@@ -647,12 +642,13 @@ public class TestPanelGui {
                         addTestId(ti, false);
                         testIdList.add(ti.getId());
                     }
-                    if (!CURRENT_TEST_ID.isEmpty()) {
-                        if (!testIdList.contains(CURRENT_TEST_ID)) {
-                            JMeterUtils.reportErrorToUser("Test=" + CURRENT_TEST_ID + " was not found on server. Select test from list."
+                    String currentTestId=JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID,"");
+                    if (!currentTestId.isEmpty()) {
+                        if (!testIdList.contains(currentTestId)) {
+                            JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         } else {
-                            testIdComboBox.setSelectedItem(CURRENT_TEST_ID);
+                            testIdComboBox.setSelectedItem(currentTestId);
                         }
                     }
 
