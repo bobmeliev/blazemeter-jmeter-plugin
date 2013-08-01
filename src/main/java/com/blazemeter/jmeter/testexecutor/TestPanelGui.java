@@ -268,6 +268,7 @@ public class TestPanelGui {
         durationSpinner.setEnabled(isEnabled);
         addFilesButton.setEnabled(isEnabled);
         editJMXLocallyButton.setEnabled(isEnabled);
+        saveUploadButton.setEnabled(isEnabled);
     }
 
     private void enableMainPanelControls(boolean isEnabled) {
