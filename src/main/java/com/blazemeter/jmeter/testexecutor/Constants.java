@@ -28,4 +28,5 @@ public interface Constants {
     public static final String BLAZEMETER_LABEL = "BlazeMeter";
     public static String BLAZEMETER_RUNNERGUI_INITIALIZED = "blazemeter.runnergui.initialized";
     public static final String APP_KEY = "75bad111c06f4e10c001";
+    public static final String BLAZEMETER_SERVER_LOG_FILE="blazemeter.server_log_file";
 }

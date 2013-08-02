@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.testexecutor.Constants;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
 
@@ -45,7 +46,7 @@ public class JMeterLogFilesUploader {
 
     public String getJMeterServerLogFilename() {
         if (jmeter_server_log_filename == null) {
-            String server_log_file_path = JMeterUtils.getProperty("server_log_file");
+            String server_log_file_path = JMeterUtils.getProperty(Constants.BLAZEMETER_SERVER_LOG_FILE);
             if (server_log_file_path == null || server_log_file_path.isEmpty())   //No log file!
                 return null;
 
