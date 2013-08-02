@@ -75,10 +75,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         super.configureTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
 
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-
         TestInfo testInfo = gui.getTestInfo();
-        bmTestManager.setTestInfo(testInfo);
         remoteTestRunner.setReportName("test_" + testInfo.getId() + ".jtl");
 
     }
@@ -106,6 +103,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 bmTestManager.setUserKey(userKey);
                 testInfo = remoteTestRunner.getTestInfo();
                 bmTestManager.setTestInfo(testInfo);
+                gui.setTestInfo(testInfo);
             } else if(!userKey.isEmpty()){
                 JMeterUtils.reportErrorToUser("UserKey " + '"'+userKey+'"' + " has invalid format",
                         "Invalid UserKey format");
@@ -119,12 +117,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         initListeners();
 
         bmTestManager.getInstance().checkForUpdates();
-        testInfo = bmTestManager.getTestInfo();
-        if(!gui.getUserKey().isEmpty()){
-            gui.setTestInfo(testInfo);
-        }else{
-            gui.setTestInfo(null);
-        }
     }
 
     private Component getTopPanel() {
