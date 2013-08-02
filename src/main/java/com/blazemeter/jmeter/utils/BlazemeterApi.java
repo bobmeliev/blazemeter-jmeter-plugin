@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.Constants;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.http.Header;
@@ -26,7 +27,6 @@ import java.util.List;
 
 public class BlazemeterApi {
 
-    public static final String APP_KEY = "75bad111c06f4e10c001"; //was:75bad111c06f4e10c514
     private BmUrlManager urlManager = BmUrlManager.getBmUrlManager();
     private static BlazemeterApi instance;
 
@@ -141,7 +141,7 @@ public class BlazemeterApi {
             return userInfo;
 
         try {
-            String url = this.urlManager.getUserInfo(APP_KEY, userKey);
+            String url = this.urlManager.getUserInfo(Constants.APP_KEY, userKey);
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
@@ -201,7 +201,7 @@ public class BlazemeterApi {
             return -1;
         }
 
-        String url = this.urlManager.testStop(APP_KEY, userKey, testId);
+        String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testId);
         JSONObject jo = getJson(url, null);
         try {
             if (!jo.get("response_code").toString().equals("200"))
@@ -231,7 +231,7 @@ public class BlazemeterApi {
             return testInfo;
         }
 
-        String url = this.urlManager.testStart(APP_KEY, userKey, testId);
+        String url = this.urlManager.testStart(Constants.APP_KEY, userKey, testId);
         JSONObject jo = getJson(url, null);
         testInfo = Utils.parseTestInfo(jo);
         try {
@@ -248,7 +248,7 @@ public class BlazemeterApi {
             return null;
         }
 
-        String url = this.urlManager.getTests(APP_KEY, userKey, "all");
+        String url = this.urlManager.getTests(Constants.APP_KEY, userKey, "all");
 
         JSONObject jo = getJson(url, null);
         JSONArray arr;
@@ -293,7 +293,7 @@ public class BlazemeterApi {
             return null;
         }
 
-        String url = this.urlManager.scriptCreation(APP_KEY, userKey, testName);
+        String url = this.urlManager.scriptCreation(Constants.APP_KEY, userKey, testName);
         JSONObject properties = new JSONObject();
         try {
             JSONObject jo = new JSONObject();
@@ -325,7 +325,7 @@ public class BlazemeterApi {
             return;
         }
 
-        String url = this.urlManager.scriptUpload(APP_KEY, userKey, testId, fileName);
+        String url = this.urlManager.scriptUpload(Constants.APP_KEY, userKey, testId, fileName);
         JSONObject jmxData = new JSONObject();
         String fileCon = Utils.getFileContents(filePath);
 
@@ -351,7 +351,7 @@ public class BlazemeterApi {
             BmLog.debug("JMX cannot be downloaded, testId is empty");
             return null;
         }
-        String url = this.urlManager.scriptDownload(APP_KEY, userKey, testId);
+        String url = this.urlManager.scriptDownload(Constants.APP_KEY, userKey, testId);
         List<String> jmx = getJMXasList(url);
         String jmxName = jmx.get(0);
         FileOutputStream fileOutputStream = null;
@@ -406,7 +406,7 @@ public class BlazemeterApi {
             reportName = reportName.toLowerCase().endsWith(".jtl") ? reportName : reportName + ".jtl";
         }
 
-        String url = this.urlManager.testResultsJTLUpload(APP_KEY, userKey, testId, reportName, dataType);
+        String url = this.urlManager.testResultsJTLUpload(Constants.APP_KEY, userKey, testId, reportName, dataType);
 
         JSONObject obj = new JSONObject();
         try {
@@ -436,7 +436,7 @@ public class BlazemeterApi {
             return testInfo;
         }
 
-        String url = this.urlManager.testUpdateUrl(APP_KEY, userKey, testId);
+        String url = this.urlManager.testUpdateUrl(Constants.APP_KEY, userKey, testId);
         JSONObject obj = new JSONObject();
         try {
             JSONObject options = new JSONObject();
@@ -481,7 +481,7 @@ public class BlazemeterApi {
         }
 
         try {
-            String url = this.urlManager.testStatus(APP_KEY, userKey, testId, detailed);
+            String url = this.urlManager.testStatus(Constants.APP_KEY, userKey, testId, detailed);
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
@@ -505,7 +505,7 @@ public class BlazemeterApi {
         PluginUpdate update = null;
         try {
             userKey = userKey == null ? "" : userKey;
-            String url = this.urlManager.getUpdate(APP_KEY, userKey, JMeterPluginUtils.getPluginVersion().toString(true));
+            String url = this.urlManager.getUpdate(Constants.APP_KEY, userKey, JMeterPluginUtils.getPluginVersion().toString(true));
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
@@ -540,7 +540,7 @@ public class BlazemeterApi {
             return startTestResult;
         }
 
-        String url = this.urlManager.testStartLocal(APP_KEY, userKey, testId);
+        String url = this.urlManager.testStartLocal(Constants.APP_KEY, userKey, testId);
         String errorMessage = null;
         String errorCode = null;
         try {
@@ -575,7 +575,7 @@ public class BlazemeterApi {
             return;
         }
 
-        String url = this.urlManager.testStop(APP_KEY, userKey, testId);
+        String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testId);
         getJson(url, null);
     }
 

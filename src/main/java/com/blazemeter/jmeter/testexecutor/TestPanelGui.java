@@ -440,7 +440,7 @@ public class TestPanelGui {
                         Object selectedTest = testIdComboBox.getSelectedItem();
                         if (selectedTest instanceof TestInfo) {
                             TestInfo testInfo = (TestInfo) selectedTest;
-                            if (testInfo.getName() != Constants.NEW & !testInfo.getName().isEmpty()) {
+                            if (!testInfo.getName().equals(Constants.NEW) & !testInfo.getName().isEmpty()) {
                                 bmTestManager.setTestInfo(testInfo);
                             }
                         } else if (selectedTest.toString().equals(Constants.NEW)) {
@@ -566,11 +566,11 @@ public class TestPanelGui {
                     updateTestInfo();
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
-                        if (testInfo != null && !JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID,"").equals(testInfo.getId())) {
-                            JMeterUtils.setProperty(Constants.CURRENT_TEST_ID,testInfo.getId());
+                        if (testInfo != null && !JMeterUtils.getPropDefault(Constants.CURRENT_TEST,"").equals(testInfo.getId())) {
+                            JMeterUtils.setProperty(Constants.CURRENT_TEST,testInfo.getId());
                             TestInfoController.stop();
 
-                        } else if (JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID,"").equals(testInfo.getId())) {
+                        } else if (JMeterUtils.getPropDefault(Constants.CURRENT_TEST,"").equals(testInfo.getId())) {
                             TestInfoController.start(testInfo.getId());
 
                         } else {
@@ -581,7 +581,7 @@ public class TestPanelGui {
 
                     }
 
-                    if (testInfo.getName() == Constants.NEW || (testInfo.getName().isEmpty())) {
+                    if (testInfo.getName().equals(Constants.NEW)  || (testInfo.getName().isEmpty())) {
                         TestInfoController.stop();
                     }
 
@@ -642,13 +642,18 @@ public class TestPanelGui {
                         addTestId(ti, false);
                         testIdList.add(ti.getId());
                     }
-                    String currentTestId=JMeterUtils.getPropDefault(Constants.CURRENT_TEST_ID,"");
-                    if (!currentTestId.isEmpty()) {
-                        if (!testIdList.contains(currentTestId)) {
-                            JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
+                    String currentTest=JMeterUtils.getPropDefault(Constants.CURRENT_TEST,"");
+                    String currentTestId=currentTest.substring(0,currentTest.indexOf(";"));
+                    if (!currentTest.isEmpty()) {
+                        if (testIdList.contains(currentTestId)) {
+                            String currentTestName=currentTest.substring(currentTest.indexOf(";")+1,currentTest.length());
+                            TestInfo currentTestInfo=new TestInfo();
+                            currentTestInfo.setId(currentTestId);
+                            currentTestInfo.setName(currentTestName);
+                            testIdComboBox.setSelectedItem(currentTestInfo);
+                            } else {
+                            JMeterUtils.reportErrorToUser("Test=" + currentTest + " was not found on server. Select test from list."
                                     , "Test was not found on server");
-                        } else {
-                            testIdComboBox.setSelectedItem(currentTestId);
                         }
                     }
 
