@@ -566,7 +566,7 @@ public class TestPanelGui {
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
                         if (testInfo != null && !JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "").equals(testInfo.getId())) {
-                            JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId());
+                            JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
                             TestInfoController.stop();
 
                         } else if (JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "").equals(testInfo.getId())) {
@@ -642,8 +642,8 @@ public class TestPanelGui {
                         testIdList.add(ti.getId());
                     }
                     String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
-                    String currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
                     if (!currentTest.isEmpty()) {
+                        String currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
                         if (testIdList.contains(currentTestId)) {
                             String currentTestName = currentTest.substring(currentTest.indexOf(";") + 1, currentTest.length());
                             TestInfo currentTestInfo = new TestInfo();
