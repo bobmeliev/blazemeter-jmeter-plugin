@@ -655,8 +655,8 @@ public class TestPanelGui {
                                 testIdComboBox.setSelectedItem(ti);
                             }
                         }
-                        if (!testIdList.contains(currentTestId)) {
-                            JMeterUtils.reportErrorToUser("Test=" + currentTest + " was not found on server. Select test from list."
+                        if (!testIdList.isEmpty() && !testIdList.contains(currentTestId)) {
+                            JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         }
                     }
