@@ -565,11 +565,18 @@ public class TestPanelGui {
                     updateTestInfo();
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
-                        if (testInfo != null && !JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "").equals(testInfo.getId())) {
+                        String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
+                        String currentTestId = null;
+                        if (!currentTest.isEmpty()) {
+                            currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
+                        } else {
+                            currentTestId = "";
+                        }
+                        if (testInfo != null && !currentTestId.equals(testInfo.getId())) {
                             JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
                             TestInfoController.stop();
 
-                        } else if (JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "").equals(testInfo.getId())) {
+                        } else if (currentTestId.equals(testInfo.getId())) {
                             TestInfoController.start(testInfo.getId());
 
                         } else {
@@ -577,7 +584,6 @@ public class TestPanelGui {
 
                         }
                         TestInfoController.start(testInfo.getId());
-
                     }
 
                     if (testInfo.getName().equals(Constants.NEW) || (testInfo.getName().isEmpty())) {
@@ -644,19 +650,16 @@ public class TestPanelGui {
                     String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
                     if (!currentTest.isEmpty()) {
                         String currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
-                        if (testIdList.contains(currentTestId)) {
-                            String currentTestName = currentTest.substring(currentTest.indexOf(";") + 1, currentTest.length());
-                            TestInfo currentTestInfo = new TestInfo();
-                            currentTestInfo.setId(currentTestId);
-                            currentTestInfo.setName(currentTestName);
-                            testIdComboBox.setSelectedItem(currentTestInfo);
-                        } else {
+                        for (TestInfo ti : tests) {
+                            if (ti.getId().equals(currentTestId)) {
+                                testIdComboBox.setSelectedItem(ti);
+                            }
+                        }
+                        if (!testIdList.contains(currentTestId)) {
                             JMeterUtils.reportErrorToUser("Test=" + currentTest + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                         }
                     }
-
-
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
