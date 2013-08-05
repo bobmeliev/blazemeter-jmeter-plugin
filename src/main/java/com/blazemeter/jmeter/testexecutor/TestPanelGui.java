@@ -72,7 +72,7 @@ public class TestPanelGui {
         signUpToBlazemeterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Utils.Navigate(BlazemeterApi.BmUrlManager.getServerUrl() + "/user");
+                Utils.Navigate(BmTestManager.getServerUrl() + "/user");
             }
         });
 
@@ -102,7 +102,7 @@ public class TestPanelGui {
                 ti.setLocation((String) locationComboBox.getSelectedItem());
                 ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
                 ti.setStatus(TestStatus.NotRunning);
-                ti = bmTestManager.updateTestInfoOnServer(userKey, ti);
+                ti = bmTestManager.updateTestSettings(userKey, ti);
                 if (ti != null && ti.getStatus() != null) {
                     addTestId(ti, true);
                     bmTestManager.setTestInfo(ti);

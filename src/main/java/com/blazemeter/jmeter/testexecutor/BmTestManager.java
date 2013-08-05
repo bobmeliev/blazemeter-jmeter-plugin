@@ -218,7 +218,7 @@ public class BmTestManager {
                 BlazemeterApi.getInstance().createTest(userKey, testName);
     }
 
-    public TestInfo updateTestInfoOnServer(String userKey, TestInfo testInfo) {
+    public TestInfo updateTestSettings(String userKey, TestInfo testInfo) {
         ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(testInfo.getNumberOfUsers());
         Overrides overrides = testInfo.getOverrides();
         TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
@@ -539,5 +539,15 @@ public class BmTestManager {
                 }
             }
         }).start();
+    }
+
+    /*
+    Wrapper-method, which provides server URL.
+    Incapsulates BlazemeterAPI from TestPanelGui
+       @return String
+
+     */
+    public static String getServerUrl() {
+        return BlazemeterApi.BmUrlManager.getServerUrl();
     }
 }
