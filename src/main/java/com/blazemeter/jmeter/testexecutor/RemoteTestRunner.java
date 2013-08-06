@@ -73,9 +73,9 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                             BmLog.error("Distributed remote test was not stopped: " + ioe);
                         }
                     } else {
-                        StandardJMeterEngine.stopEngine();
                         ServerStatusController.getServerStatusController().stop();
                         TestInfoController.stop();
+                        testEnded();
                     }
 
                 }
@@ -163,8 +163,8 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
 
         if ((bmTestManager.getIsLocalRunMode() & (JMeterUtils.getProperty(Constants.ATTEMPTS_TO_START_TEST).equals("0")))) {
-           JMeterUtils.setProperty(Constants.START_LOCAL_TEST_RESULT,bmTestManager.startLocalTest());
-           String startLocalTestResult = JMeterUtils.getProperty(Constants.START_LOCAL_TEST_RESULT);
+            JMeterUtils.setProperty(Constants.START_LOCAL_TEST_RESULT, bmTestManager.startLocalTest());
+            String startLocalTestResult = JMeterUtils.getProperty(Constants.START_LOCAL_TEST_RESULT);
             if (!startLocalTestResult.isEmpty()) {
                 if (!JMeter.isNonGUI()) {
                     JMeterUtils.reportErrorToUser("Results can not be uploaded to server due to the following reason: "
@@ -181,11 +181,11 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmTestManager.setTestRunning(true);
             JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "0");
 
-            if (!JMeterUtils.getPropDefault(Constants.TEST_URL_WAS_OPENED,false)) {
+            if (!JMeterUtils.getPropDefault(Constants.TEST_URL_WAS_OPENED, false)) {
                 String url = bmTestManager.getTestUrl();
                 Utils.Navigate(url);
                 BmLog.debug("Opening test URL: " + url);
-                JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED,"true");
+                JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "true");
             }
         } else {
             BmLog.debug("Test is started without uploading report to server");
@@ -198,14 +198,15 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void testEnded(String host) {
+        JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "false");
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BmTestManager.setTestRunning(false);
-        bmTestManager.stopTest();
         BmLog.console("Test is ended at " + host);
         if (JMeter.isNonGUI()) {
+            StandardJMeterEngine.stopEngine();
             System.exit(0);
         }
-        JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED,"false");
+        bmTestManager.stopTest();
     }
 
     @Override

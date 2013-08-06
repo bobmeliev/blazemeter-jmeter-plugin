@@ -163,8 +163,10 @@ public class BmTestManager {
         BmLog.console("Finishing test...");
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
-        Uploader.getInstance().Finalize();
         JMeterLogFilesUploader.getInstance().stopListening();
+        if (!JMeter.isNonGUI()) {
+            Uploader.getInstance().Finalize();
+        }
     }
 
 
