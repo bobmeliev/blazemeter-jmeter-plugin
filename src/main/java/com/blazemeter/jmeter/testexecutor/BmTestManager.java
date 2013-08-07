@@ -37,7 +37,6 @@ public class BmTestManager {
     private boolean isUserKeyValid = false;
     private boolean isLocalRunMode = false;
 
-    public static int c = 0;
     private static boolean isTestRunning = false;
     private static BmTestManager instance;
     private static final Object lock = new Object();
@@ -68,13 +67,7 @@ public class BmTestManager {
         isTestRunning = testRunning;
     }
 
-    public void destroy() {
-        instance = null;
-    }
-
-
     private BmTestManager() {
-        c++;
         this.testInfo = new TestInfo();
         rpc = BlazemeterApi.getInstance();
         this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");

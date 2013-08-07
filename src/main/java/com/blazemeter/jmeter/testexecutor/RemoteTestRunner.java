@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.utils.*;
@@ -88,6 +89,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         this.setProperty(Constants.TEST_NAME, testInfo.getName());
         this.setProperty(Constants.TEST_ID, testInfo.getId());
         this.setProperty(Constants.TEST_NUMBER_OF_USERS, testInfo.getNumberOfUsers());
+
+        Overrides overrides = testInfo.getOverrides();
+        if (overrides != null) {
+            this.setProperty(Constants.TEST_DURATION, overrides.duration);
+            this.setProperty(Constants.TEST_ITERATIONS, overrides.iterations);
+            this.setProperty(Constants.TEST_RAMP_UP, overrides.rampup);
+            this.setProperty(Constants.TEST_THREADS, overrides.threads);
+        }
     }
 
     public TestInfo getTestInfo() {

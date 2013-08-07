@@ -33,4 +33,8 @@ public interface Constants {
     public static final String TEST_ID = "testId";
     public static final String TEST_NAME = "testName";
     public static final String TEST_NUMBER_OF_USERS = "numberOfUsers";
+    public static final String TEST_DURATION = "duration";
+    public static final String TEST_ITERATIONS = "iterations";
+    public static final String TEST_RAMP_UP = "rampUp";
+    public static final String TEST_THREADS = "threads";
 }
