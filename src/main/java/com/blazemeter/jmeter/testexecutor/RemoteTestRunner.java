@@ -99,15 +99,16 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (testInfo == null)
             testInfo = new TestInfo();
 
-        this.setProperty("testName", testInfo.getName());
-        this.setProperty("testId", testInfo.getId());
-
+        this.setProperty(Constants.TEST_NAME, testInfo.getName());
+        this.setProperty(Constants.TEST_ID, testInfo.getId());
+        this.setProperty(Constants.TEST_NUMBER_OF_USERS, testInfo.getNumberOfUsers());
     }
 
     public TestInfo getTestInfo() {
         TestInfo testInfo = new TestInfo();
-        testInfo.setId(this.getPropertyAsString("testId", ""));
-        testInfo.setName(this.getPropertyAsString("testName", ""));
+        testInfo.setId(this.getPropertyAsString(Constants.TEST_ID, ""));
+        testInfo.setName(this.getPropertyAsString(Constants.TEST_NAME, ""));
+        testInfo.setNumberOfUsers(this.getPropertyAsInt(Constants.TEST_NUMBER_OF_USERS, 0));
         return testInfo;
     }
 

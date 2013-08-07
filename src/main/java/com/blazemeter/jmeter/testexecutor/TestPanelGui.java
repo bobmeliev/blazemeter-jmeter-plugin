@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -562,7 +563,7 @@ public class TestPanelGui {
 
                     }
 
-                    updateTestInfo();
+                    setTestInfo(testInfo);
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
                         String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
@@ -702,21 +703,7 @@ public class TestPanelGui {
     }
 
     protected void setTestInfo(TestInfo testInfo) {
-        if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
-            testInfo = new TestInfo();
-            testInfo.setName(Constants.NEW);
-            testIdComboBox.setSelectedItem(testInfo.getName());
-            configureMainPanelControls(null);
-        } else {
-            testIdComboBox.setSelectedItem(testInfo);
-            configureMainPanelControls(testInfo);
-            runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
-        }
-    }
-
-    protected void updateTestInfo() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
             testInfo.setName(Constants.NEW);
@@ -755,7 +742,12 @@ public class TestPanelGui {
         testInfo.setError(null);
         testInfo.setNumberOfUsers(numberOfUsersSlider.getValue());
         testInfo.setLocation(locationComboBox.getSelectedItem().toString());
-        testInfo.setOverrides(null);
+        Overrides overrides = new Overrides((Integer) durationSpinner.getValue(),
+                (Integer) iterationsSpinner.getValue(),
+                (Integer) rampupSpinner.getValue(),
+                numberOfUsersSlider.getValue()
+        );
+        testInfo.setOverrides(overrides);
         testInfo.setType("jmeter");
         return testInfo;
     }
