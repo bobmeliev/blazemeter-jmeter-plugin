@@ -28,16 +28,6 @@ import java.util.List;
 public class RemoteTestRunner extends ResultCollector implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
     private static final long serialVersionUID = 1L;
-    private static int instanceCount = 0;
-
-    public boolean canRemove() {
-        BmLog.debug("Are you sure that you want to remove? " + instanceCount);
-        instanceCount--;
-        if (instanceCount == 0) {
-            BmTestManager.getInstance().hooksUnregistered();
-        }
-        return super.canRemove();
-    }
 
     public RemoteTestRunner() {
         super();
@@ -88,10 +78,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 setIsLocalRunMode(isLocalRunMode);
             }
         });
-
-
-        instanceCount++;
-        BmTestManager.getInstance().hooksRegister();
         JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "0");
     }
 
