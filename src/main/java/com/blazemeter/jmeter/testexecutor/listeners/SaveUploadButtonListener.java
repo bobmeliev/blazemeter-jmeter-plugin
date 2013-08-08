@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
@@ -26,6 +27,12 @@ public class SaveUploadButtonListener implements ActionListener {
             GuiPackage guiPackage = GuiPackage.getInstance();
             if (guiPackage.getTestPlanFile() == null | guiPackage.isDirty()) {
                 Utils.saveJMX(guiPackage);
+            }
+            TestInfo testInfo = bmTestManager.getTestInfo();
+            if (testInfo.getNumberOfUsers() == 0) {
+                JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
+                        " '1' will be saved");
+                testInfo.setNumberOfUsers(1);
             }
             bmTestManager.updateTestSettings(bmTestManager.getUserKey(), bmTestManager.getTestInfo());
             BmTestManager.getInstance().uploadJmx();

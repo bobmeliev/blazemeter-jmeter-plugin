@@ -354,34 +354,19 @@ public class TestPanelGui {
         int numberOfUsers = numberOfUsersSlider.getValue();
 
         ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
-
-
-        int engines = Integer.valueOf(enginesParameters.get(0));
-        String engineSize = enginesParameters.get(1);
         int userPerEngine = Integer.valueOf(enginesParameters.get(2));
 
-
-        int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
-        iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
-
-        int rumpUp = Integer.parseInt(rampupSpinner.getValue().toString());
-        int duration = Integer.parseInt(durationSpinner.getValue().toString());
-        duration = duration > 0 ? duration : -1;
-        String location = locationComboBox.getSelectedItem().toString();
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         if (testInfo != null) {
             if (userPerEngine == 0) {
                 JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
                         " '1' will be saved");
                 userPerEngine = 1;
+                testInfo.getOverrides().setThreads(userPerEngine);
             }
-            synchronized (BlazemeterApi.getInstance()) {
-                testInfo = BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
-                        bmTestManager.getTestInfo().getId(),
-                        location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
-                //TestInfo should be saved to BmTestManager and updated on cloudPanel
-                bmTestManager.setTestInfo(testInfo);
-            }
+            testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
+                    bmTestManager.getTestInfo());
+            bmTestManager.setTestInfo(testInfo);
 
         } else {
             JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
