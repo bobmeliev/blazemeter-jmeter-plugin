@@ -219,9 +219,9 @@ public class BmTestManager {
                 Integer.parseInt(enginesParameters.get(0)),
                 enginesParameters.get(1),
                 Integer.parseInt(enginesParameters.get(2)),
-                overrides == null ? 0 : overrides.iterations,
-                overrides == null ? 0 : overrides.rampup,
-                overrides == null ? 0 : overrides.duration
+                overrides == null ? 0 : overrides.getIterations(),
+                overrides == null ? 0 : overrides.getRampup(),
+                overrides == null ? 0 : overrides.getDuration()
         );
         return ti;
     }

@@ -164,10 +164,8 @@ public class TestPanelGui {
                 int engines;
                 String engineSize;
                 int usersPerEngine;
-                BmTestManager bmTestManager = BmTestManager.getInstance();
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 testInfo.setNumberOfUsers(numberOfUsers);
-                bmTestManager.NotifyTestInfoChanged();
                 ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
                 engines = Integer.valueOf(enginesParameters.get(0));
                 engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
@@ -220,9 +218,39 @@ public class TestPanelGui {
 
 
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
+        rampupSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setRampup((Integer) rampupSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("RampUpSpinner was not activated yet. Try again later");
+                }
+            }
+        });
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
-        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
+        iterationsSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setIterations((Integer) iterationsSpinner.getValue());
 
+                } catch (NullPointerException npe) {
+                    BmLog.error("IterationsSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
+        durationSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setDuration((Integer) durationSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("DurationSpinner was not activated yet. Try again later");
+                }
+            }
+        });
 
         addFilesButton.addActionListener(new ActionListener() {
             @Override
@@ -723,9 +751,9 @@ public class TestPanelGui {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
                 if (testInfo.getOverrides() != null) {
-                    rampupSpinner.setValue(testInfo.getOverrides().rampup);
-                    iterationsSpinner.setValue(testInfo.getOverrides().iterations == -1 ? 0 : testInfo.getOverrides().iterations);
-                    durationSpinner.setValue(testInfo.getOverrides().duration == -1 ? 0 : testInfo.getOverrides().duration);
+                    rampupSpinner.setValue(testInfo.getOverrides().getRampup());
+                    iterationsSpinner.setValue(testInfo.getOverrides().getIterations() == -1 ? 0 : testInfo.getOverrides().getIterations());
+                    durationSpinner.setValue(testInfo.getOverrides().getDuration() == -1 ? 0 : testInfo.getOverrides().getDuration());
                 } else {
                     rampupSpinner.setValue(0);
                     iterationsSpinner.setValue(0);
