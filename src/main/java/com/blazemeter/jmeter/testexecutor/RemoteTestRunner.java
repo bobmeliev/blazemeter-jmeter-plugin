@@ -28,7 +28,6 @@ import java.util.List;
 //~--- JDK imports ------------------------------------------------------------
 public class RemoteTestRunner extends ResultCollector implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
-    private static final long serialVersionUID = 1L;
 
     public RemoteTestRunner() {
         super();
