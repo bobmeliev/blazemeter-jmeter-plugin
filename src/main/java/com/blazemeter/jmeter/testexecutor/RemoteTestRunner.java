@@ -92,6 +92,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
         Overrides overrides = testInfo.getOverrides();
         if (overrides != null) {
+            overrides.threads = testInfo.getNumberOfUsers();
             this.setProperty(Constants.TEST_DURATION, overrides.duration);
             this.setProperty(Constants.TEST_ITERATIONS, overrides.iterations);
             this.setProperty(Constants.TEST_RAMP_UP, overrides.rampup);

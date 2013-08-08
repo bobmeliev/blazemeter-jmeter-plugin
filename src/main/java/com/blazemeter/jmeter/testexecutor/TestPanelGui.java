@@ -164,7 +164,10 @@ public class TestPanelGui {
                 int engines;
                 String engineSize;
                 int usersPerEngine;
-
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                testInfo.setNumberOfUsers(numberOfUsers);
+                bmTestManager.NotifyTestInfoChanged();
                 ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
                 engines = Integer.valueOf(enginesParameters.get(0));
                 engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";

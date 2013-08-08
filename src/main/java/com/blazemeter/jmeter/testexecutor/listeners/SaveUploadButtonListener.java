@@ -22,12 +22,13 @@ public class SaveUploadButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
+            BmTestManager bmTestManager = BmTestManager.getInstance();
             GuiPackage guiPackage = GuiPackage.getInstance();
             if (guiPackage.getTestPlanFile() == null | guiPackage.isDirty()) {
                 Utils.saveJMX(guiPackage);
             }
+            bmTestManager.updateTestSettings(bmTestManager.getUserKey(), bmTestManager.getTestInfo());
             BmTestManager.getInstance().uploadJmx();
-
         } catch (NullPointerException npe) {
             JMeterUtils.reportErrorToUser("Save test-plan locally before uploading");
         }
