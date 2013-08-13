@@ -4,6 +4,7 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.upload.JMeterLogFilesUploader;
+import com.blazemeter.jmeter.upload.Uploader;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;

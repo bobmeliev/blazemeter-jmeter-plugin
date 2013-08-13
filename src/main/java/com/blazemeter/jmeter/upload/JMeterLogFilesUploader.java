@@ -2,7 +2,6 @@ package com.blazemeter.jmeter.upload;
 
 import com.blazemeter.jmeter.testexecutor.Constants;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.Uploader;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.logging.LoggingManager;
