@@ -6,7 +6,6 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.upload.JMeterLogFilesUploader;
-import com.blazemeter.jmeter.upload.Uploader;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.JMeterPluginUtils;
 import com.blazemeter.jmeter.utils.TestStatus;
@@ -191,7 +190,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.debug("Test is started without uploading report to server");
             return;
         }
-        Uploader.getInstance().samplingStarted(getReportName());
         JMeterLogFilesUploader.getInstance().startListening();
     }
 
@@ -220,14 +218,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             b.append(GetJtlString(se));
             b.append("\n");
         }
-        Uploader.getInstance().addSample(getReportName(), b.toString());
+//        Uploader.getInstance().addSample(getReportName(), b.toString());
     }
 
     @Override
     public synchronized void sampleOccurred(SampleEvent evt) {
         if (BmTestManager.isTestRunning()) {
             String templateJTL = GetJtlString(evt);
-            Uploader.getInstance().addSample(getReportName(), templateJTL);
+//            Uploader.getInstance().addSample(getReportName(), templateJTL);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }
