@@ -1,7 +1,7 @@
 package com.blazemeter.jmeter.testinfo;
 
+import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.utils.BlazemeterApi;
 
 /**
  * Created with IntelliJ IDEA.

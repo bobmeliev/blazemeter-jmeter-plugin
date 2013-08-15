@@ -18,7 +18,7 @@ public class SamplesQueue {
 
     public SamplesQueue(int batchSize) {
         this.batchSize = batchSize;
-        this.messages = new ArrayList<>(batchSize);
+        this.messages = new ArrayList<JSONObject>(batchSize);
     }
 
     public void put(JSONObject message) throws InterruptedException {
@@ -34,7 +34,7 @@ public class SamplesQueue {
     }
 
     public List<JSONObject> take(int maxWaitMillis) throws InterruptedException {
-        List<JSONObject> result = new ArrayList<>();
+        List<JSONObject> result = new ArrayList<JSONObject>();
         lock.lock();
         try {
             if (messages.size() < batchSize) {

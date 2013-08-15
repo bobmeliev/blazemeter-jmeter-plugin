@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.results.JMeterLogFilesUploader;
+import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -154,10 +154,7 @@ public class BmTestManager {
         BmLog.console("Finishing test...");
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
-        JMeterLogFilesUploader.getInstance().stopListening();
-        if (!JMeter.isNonGUI()) {
-//            Uploader.getInstance().Finalize();
-        }
+
     }
 
 

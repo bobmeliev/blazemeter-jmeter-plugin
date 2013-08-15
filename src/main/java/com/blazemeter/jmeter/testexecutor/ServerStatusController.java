@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.utils.BlazemeterApi;
+import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.utils.BmLog;
 
 import java.io.IOException;

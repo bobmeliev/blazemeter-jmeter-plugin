@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.results.JMeterLogFilesUploader;
+import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
@@ -191,6 +192,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             return;
         }
         JMeterLogFilesUploader.getInstance().startListening();
+        SamplesUploader.getInstance().start();
     }
 
 
@@ -203,7 +205,10 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         StandardJMeterEngine.stopEngine();
         if (JMeter.isNonGUI()) {
             System.exit(0);
+        } else {
+            SamplesUploader.getInstance().stop();
         }
+        JMeterLogFilesUploader.getInstance().stopListening();
         bmTestManager.stopTest();
     }
 
@@ -218,14 +223,15 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             b.append(GetJtlString(se));
             b.append("\n");
         }
-//        Uploader.getInstance().addSample(getReportName(), b.toString());
+        SamplesUploader.getInstance().addSamples(sampleEvents);
     }
 
     @Override
-    public synchronized void sampleOccurred(SampleEvent evt) {
+    public synchronized void sampleOccurred(SampleEvent sampleEvent) {
         if (BmTestManager.isTestRunning()) {
-            String templateJTL = GetJtlString(evt);
+//            String templateJTL = GetJtlString(evt);
 //            Uploader.getInstance().addSample(getReportName(), templateJTL);
+            SamplesUploader.getInstance().addSample(sampleEvent);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }
