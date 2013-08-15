@@ -1,8 +1,4 @@
-package com.blazemeter.jmeter.upload;
-
-import org.json.JSONObject;
-
-import java.util.concurrent.LinkedBlockingQueue;
+package com.blazemeter.jmeter.results;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * To change this template use File | Settings | File Templates.
  */
 public class SamplesResultsUploader {
-    private static LinkedBlockingQueue<JSONObject> resultsQueue = new LinkedBlockingQueue<JSONObject>(50);
+    private static SamplesQueue samplesQueue = new SamplesQueue(50);
 
     private SamplesResultsUploader() {
     }

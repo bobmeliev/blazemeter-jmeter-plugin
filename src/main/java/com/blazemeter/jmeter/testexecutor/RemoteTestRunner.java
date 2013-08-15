@@ -2,10 +2,10 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.blazemeter.jmeter.results.JMeterLogFilesUploader;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
-import com.blazemeter.jmeter.upload.JMeterLogFilesUploader;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.JMeterPluginUtils;
 import com.blazemeter.jmeter.utils.TestStatus;
@@ -61,7 +61,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 if ((testInfo.getStatus() == TestStatus.NotRunning) & JMeter.isNonGUI() & BmTestManager.isTestRunning()) {
                     if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
                         try {
-                            ShutdownClient.main(new String[]{"StopTestNow"});
+                            ShutdownClient.main(new String[]{"StopTestNow" });
 
                         } catch (IOException ioe) {
                             BmLog.error("Distributed remote test was not stopped: " + ioe);

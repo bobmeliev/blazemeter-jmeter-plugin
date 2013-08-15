@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.upload;
+package com.blazemeter.jmeter.results;
 
 import com.blazemeter.jmeter.testexecutor.Constants;
 import com.blazemeter.jmeter.utils.BmLog;
