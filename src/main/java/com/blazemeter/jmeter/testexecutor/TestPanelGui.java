@@ -119,6 +119,12 @@ public class TestPanelGui {
         });
 
 
+        locationComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BmTestManager.getInstance().getTestInfo().setLocation((String) locationComboBox.getSelectedItem());
+            }
+        });
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -800,7 +806,7 @@ public class TestPanelGui {
         defaultComboBoxModel1.addElement("US West (Oregon)");
         defaultComboBoxModel1.addElement("Asia Pacific (Singapore)");
         defaultComboBoxModel1.addElement("Japan (Tokyo)");
-        defaultComboBoxModel1.addElement("South America (Sao Paulo)");
+        defaultComboBoxModel1.addElement("South America (San Paulo)");
         defaultComboBoxModel1.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel1);
     }
@@ -1058,10 +1064,10 @@ public class TestPanelGui {
         label11.setText("* 0 means \"Limited by Test Session Time\"");
         cloudPanel.add(label11, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         editJMXLocallyButton = new JButton();
-        editJMXLocallyButton.setText("Edit JMX locally");
+        editJMXLocallyButton.setText("Edit JMX ");
         cloudPanel.add(editJMXLocallyButton, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         saveUploadButton = new JButton();
-        saveUploadButton.setText("Save/Upload");
+        saveUploadButton.setText("Save/Upload JMX");
         cloudPanel.add(saveUploadButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
