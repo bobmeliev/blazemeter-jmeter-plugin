@@ -1,8 +1,14 @@
 package com.blazemeter.jmeter.results;
 
+import com.blazemeter.jmeter.utils.BmLog;
 import org.apache.jmeter.samplers.SampleEvent;
+import org.json.JSONObject;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,27 +17,46 @@ import java.util.List;
  * Time: 6:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SamplesUploader implements Runnable {
+public class SamplesUploader {
+    private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledFuture<?> task;
     private static SamplesUploader samplesUploader = null;
+    private static Thread samplesUploaderThread = null;
     private static final int batchSize = 50;
-    private final SamplesQueue samplesQueue;
+    private static final SamplesQueue samplesQueue = new SamplesQueue(batchSize);
+    private static final int MAX_DELAY=30000;
 
-    private SamplesUploader(int batchSize) {
-        this.samplesQueue = new SamplesQueue(batchSize);
+    private SamplesUploader(){}
+
+
+    public static void startUploading() {
+        samplesUploaderThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long delay = MAX_DELAY;
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        long begin = System.currentTimeMillis();
+                        List<JSONObject> batch = samplesQueue.take((int) delay);
+                        send(batch);
+                        long millisOfCurrentItration = System.currentTimeMillis() - begin;
+                        delay = MAX_DELAY - millisOfCurrentItration;
+                        if (delay < 0) {
+                            // если отсылка заняла больше 30 секунд
+                            delay = 0;
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        });
+        task = scheduler.schedule(samplesUploaderThread, 0, TimeUnit.SECONDS);
+        BmLog.console("Samples uploading is started");
     }
 
-    public static SamplesUploader getInstance() {
-        if (samplesUploader == null) {
-            samplesUploader = new SamplesUploader(batchSize);
-        }
-        return samplesUploader;
-    }
-
-    public void start() {
-        samplesUploader.start();
-    }
-
-    public void stop() {
+    public static void stop() {
+        task.cancel(true);
         /*
         1.Stop checking time;
         2.Stop checking capacity;
@@ -47,35 +72,19 @@ public class SamplesUploader implements Runnable {
          */
     }
 
-    public void addSample(SampleEvent sampleEvent) {
+    public static void addSample(SampleEvent sampleEvent) {
        /*
        1.Add sample to samplesQueue
         */
     }
 
-    public void addSamples(List<SampleEvent> sampleEvents) {
+    public static void addSamples(List<SampleEvent> sampleEvents) {
        /*
        1.Add List of samples to samplesQueue
         */
     }
 
-    @Override
-    public void run() {
-        /*long delay = MAX_DELEAY;
-        while (!isInterrupted()) {
-            try {
-                long begin = System.currentTimeMillis();
-                List<String> batch = queue.take((int) delay);
-                send(batch);
-                long millisOfCurrentItration =  System.currentTimeMillis() - begin;
-                delay = MAX_DELEAY - millisOfCurrentItration;
-                if (delay < 0) {
-                    // если отсылка заняла больше 30 секунд
-                    delay = 0;
-                }
-            } catch (InterruptedException e) {
-                super.interrupt();
-            }
-        }*/
+    private static void send(List<JSONObject> batch){
+        //send samples to server
     }
 }

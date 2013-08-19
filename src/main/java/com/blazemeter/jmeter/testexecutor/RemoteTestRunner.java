@@ -19,7 +19,6 @@ import org.apache.jmeter.samplers.*;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.ShutdownClient;
-import org.json.XML;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -194,7 +193,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             return;
         }
         JMeterLogFilesUploader.getInstance().startListening();
-        SamplesUploader.getInstance().start();
+        SamplesUploader.startUploading();
     }
 
 
@@ -208,7 +207,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (JMeter.isNonGUI()) {
             System.exit(0);
         } else {
-            SamplesUploader.getInstance().stop();
+            SamplesUploader.stop();
         }
         JMeterLogFilesUploader.getInstance().stopListening();
         bmTestManager.stopTest();
@@ -220,12 +219,12 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void processBatch(List<SampleEvent> sampleEvents) throws RemoteException {
-        StringBuilder b = new StringBuilder();
-        for (SampleEvent se : sampleEvents) {
+//        StringBuilder b = new StringBuilder();
+        /*for (SampleEvent se : sampleEvents) {
             b.append(GetJtlString(se));
             b.append("\n");
-        }
-        SamplesUploader.getInstance().addSamples(sampleEvents);
+        }*/
+        SamplesUploader.addSamples(sampleEvents);
     }
 
     @Override
@@ -233,7 +232,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (BmTestManager.isTestRunning()) {
 //            String templateJTL = GetJtlString(evt);
 //            Uploader.getInstance().addSample(getReportName(), templateJTL);
-            SamplesUploader.getInstance().addSample(sampleEvent);
+            SamplesUploader.addSample(sampleEvent);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }
@@ -273,7 +272,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         return writer.toString();
     }
 
-    private String GetJtlString(SampleEvent evt) {
+    /*private String GetJtlString(SampleEvent evt) {
 
         SampleResult res = evt.getResult();
         String t = Long.toString(res.getTime());
@@ -294,7 +293,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         String in = Long.toString(res.getIdleTime());
 
         return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\" lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
-    }
+    }*/
 
 
     @Override

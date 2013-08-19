@@ -190,13 +190,13 @@ public class TestPanelGui {
             public void actionPerformed(ActionEvent e) {
                 int dialogButton;
                 BmTestManager bmTestManager = BmTestManager.getInstance();
-                if ("start".equals(e.getActionCommand().toLowerCase())) {
+                if ("startUploading".equals(e.getActionCommand().toLowerCase())) {
                     TestInfoController.stop();
                     if (bmTestManager.getUserKey().isEmpty()) {
                         JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
                         return;
                     }
-                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
+                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to startUploading the test?",
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
@@ -536,7 +536,7 @@ public class TestPanelGui {
                         return;
                     }
                     if (testInfo.getError() != null) {
-                        String errorTitle = "Cannot start test";
+                        String errorTitle = "Cannot startUploading test";
                         String errorMessage = testInfo.getError();
                         if (errorMessage.equals("Insufficient credits")) {
                             errorMessage = errorMessage + ": turn to customer support service";
@@ -750,7 +750,7 @@ public class TestPanelGui {
                     iterationsSpinner.setValue(0);
                     durationSpinner.setValue(0);
                 }
-                runInTheCloud.setActionCommand(testInfo.getStatus() == TestStatus.Running ? "stop" : "start");
+                runInTheCloud.setActionCommand(testInfo.getStatus() == TestStatus.Running ? "stop" : "startUploading");
                 runInTheCloud.setText(testInfo.getStatus() == TestStatus.Running ? "Stop" : "Run in the Cloud!");
             }
         }
@@ -1039,7 +1039,7 @@ public class TestPanelGui {
         label9.setText("Duration (minutes)");
         panel10.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
         runInTheCloud = new JButton();
-        runInTheCloud.setActionCommand("start");
+        runInTheCloud.setActionCommand("startUploading");
         runInTheCloud.setEnabled(false);
         runInTheCloud.setFont(new Font(runInTheCloud.getFont().getName(), runInTheCloud.getFont().getStyle(), 16));
         runInTheCloud.setHideActionText(false);
