@@ -1,7 +1,5 @@
 package com.blazemeter.jmeter.results;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -13,15 +11,15 @@ public class SamplesQueue {
 
     private final Lock lock = new ReentrantLock();
     private final Condition lessThenBatchSizeCondition = lock.newCondition();
-    private final ArrayList<JSONObject> messages;
+    private final ArrayList<String> messages;
     private final int batchSize;
 
     public SamplesQueue(int batchSize) {
         this.batchSize = batchSize;
-        this.messages = new ArrayList<JSONObject>(batchSize);
+        this.messages = new ArrayList<String>(batchSize);
     }
 
-    public void put(JSONObject message) throws InterruptedException {
+    public void put(String message) throws InterruptedException {
         lock.lock();
         try {
             messages.add(message);
@@ -33,8 +31,8 @@ public class SamplesQueue {
         }
     }
 
-    public List<JSONObject> take(int maxWaitMillis) throws InterruptedException {
-        List<JSONObject> result = new ArrayList<JSONObject>();
+    public List<String> take(int maxWaitMillis) throws InterruptedException {
+        List<String> result = new ArrayList<String>();
         lock.lock();
         try {
             if (messages.size() < batchSize) {

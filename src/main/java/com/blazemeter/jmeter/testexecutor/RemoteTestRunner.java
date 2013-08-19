@@ -22,7 +22,6 @@ import org.apache.jmeter.samplers.SampleListener;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.ShutdownClient;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
@@ -225,25 +224,18 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     public void processBatch(List<SampleEvent> sampleEvents) throws RemoteException {
         StringBuilder b = new StringBuilder();
         for (SampleEvent se : sampleEvents) {
-            b.append(Utils.getJtlString(se));
-            b.append("\n");
+            JSONObject jo = Utils.getJSONObject(se);
+            String sample = jo.toString();
+            SamplesUploader.addSample(sample);
         }
-        SamplesUploader.addSamples(sampleEvents);
     }
 
     @Override
     public synchronized void sampleOccurred(SampleEvent sampleEvent) {
         if (BmTestManager.isTestRunning()) {
-//            String sampleJTL = Utils.getJtlString(sampleEvent);
-            try {
-                JSONObject jo = Utils.getJSONObject(sampleEvent);
-
-            } catch (JSONException je) {
-                BmLog.error("Error while converting sample to JSONObject");
-            }
-
-//            Uploader.getInstance().addSample(getReportName(), templateJTL);
-            SamplesUploader.addSample(sampleEvent);
+            JSONObject jo = Utils.getJSONObject(sampleEvent);
+            String sample = jo.toString();
+            SamplesUploader.addSample(sample);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }

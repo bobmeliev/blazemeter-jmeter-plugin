@@ -248,7 +248,7 @@ public class Utils {
         return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\" lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
     }
 
-    public static JSONObject getJSONObject(SampleEvent evt) throws JSONException {
+    public static JSONObject getJSONObject(SampleEvent evt) {
         SampleResult res = evt.getResult();
         String t = Long.toString(res.getTime());
         String lt = Long.toString(res.getLatency());
@@ -269,24 +269,29 @@ public class Utils {
 
         JSONObject data = new JSONObject();
         JSONObject httpSample = new JSONObject();
-        data.put("t", t);
-        data.put("lt", lt);
-        data.put("lt", lt);
-        data.put("ts", ts);
-        data.put("s", s);
-        data.put("lb", lb);
-        data.put("rc", rc);
-        data.put("rm", rm);
-        data.put("tn", tn);
-        data.put("dt", dt);
-        data.put("by", by);
-        data.put("sc", sc);
-        data.put("ec", ec);
-        data.put("ng", ng);
-        data.put("na", na);
-        data.put("hn", hn);
-        data.put("in", in);
-        httpSample.put("httpSample", data);
+        try {
+            data.put("t", t);
+            data.put("lt", lt);
+            data.put("lt", lt);
+            data.put("ts", ts);
+            data.put("s", s);
+            data.put("lb", lb);
+            data.put("rc", rc);
+            data.put("rm", rm);
+            data.put("tn", tn);
+            data.put("dt", dt);
+            data.put("by", by);
+            data.put("sc", sc);
+            data.put("ec", ec);
+            data.put("ng", ng);
+            data.put("na", na);
+            data.put("hn", hn);
+            data.put("in", in);
+            httpSample.put("httpSample", data);
+
+        } catch (JSONException je) {
+            BmLog.error("Error while converting sample to JSONObject");
+        }
         return httpSample;
     }
 

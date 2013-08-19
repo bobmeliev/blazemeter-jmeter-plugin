@@ -1,8 +1,6 @@
 package com.blazemeter.jmeter.results;
 
 import com.blazemeter.jmeter.utils.BmLog;
-import org.apache.jmeter.samplers.SampleEvent;
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -24,9 +22,10 @@ public class SamplesUploader {
     private static Thread samplesUploaderThread = null;
     private static final int batchSize = 50;
     private static final SamplesQueue samplesQueue = new SamplesQueue(batchSize);
-    private static final int MAX_DELAY=30000;
+    private static final int MAX_DELAY = 30000;
 
-    private SamplesUploader(){}
+    private SamplesUploader() {
+    }
 
 
     public static void startUploading() {
@@ -37,7 +36,7 @@ public class SamplesUploader {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         long begin = System.currentTimeMillis();
-                        List<JSONObject> batch = samplesQueue.take((int) delay);
+                        List<String> batch = samplesQueue.take((int) delay);
                         send(batch);
                         long millisOfCurrentItration = System.currentTimeMillis() - begin;
                         delay = MAX_DELAY - millisOfCurrentItration;
@@ -72,19 +71,19 @@ public class SamplesUploader {
          */
     }
 
-    public static void addSample(SampleEvent sampleEvent) {
+    public static void addSample(String jsonString) {
        /*
        1.Add sample to samplesQueue
         */
     }
 
-    public static void addSamples(List<SampleEvent> sampleEvents) {
+    public static void addSamples(List<String> jsonStrings) {
        /*
        1.Add List of samples to samplesQueue
         */
     }
 
-    private static void send(List<JSONObject> batch){
+    private static void send(List<String> batch) {
         //send samples to server
     }
 }
