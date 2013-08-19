@@ -15,16 +15,20 @@ import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
 import org.apache.jmeter.reporters.ResultCollector;
-import org.apache.jmeter.samplers.*;
+import org.apache.jmeter.samplers.RemoteSampleListener;
+import org.apache.jmeter.samplers.Remoteable;
+import org.apache.jmeter.samplers.SampleEvent;
+import org.apache.jmeter.samplers.SampleListener;
 import org.apache.jmeter.testelement.TestListener;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jmeter.util.ShutdownClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -61,7 +65,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 if ((testInfo.getStatus() == TestStatus.NotRunning) & JMeter.isNonGUI() & BmTestManager.isTestRunning()) {
                     if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
                         try {
-                            ShutdownClient.main(new String[]{"StopTestNow" });
+                            ShutdownClient.main(new String[]{"StopTestNow"});
 
                         } catch (IOException ioe) {
                             BmLog.error("Distributed remote test was not stopped: " + ioe);
@@ -219,81 +223,31 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void processBatch(List<SampleEvent> sampleEvents) throws RemoteException {
-//        StringBuilder b = new StringBuilder();
-        /*for (SampleEvent se : sampleEvents) {
-            b.append(GetJtlString(se));
+        StringBuilder b = new StringBuilder();
+        for (SampleEvent se : sampleEvents) {
+            b.append(Utils.getJtlString(se));
             b.append("\n");
-        }*/
+        }
         SamplesUploader.addSamples(sampleEvents);
     }
 
     @Override
     public synchronized void sampleOccurred(SampleEvent sampleEvent) {
         if (BmTestManager.isTestRunning()) {
-//            String templateJTL = GetJtlString(evt);
+//            String sampleJTL = Utils.getJtlString(sampleEvent);
+            try {
+                JSONObject jo = Utils.getJSONObject(sampleEvent);
+
+            } catch (JSONException je) {
+                BmLog.error("Error while converting sample to JSONObject");
+            }
+
 //            Uploader.getInstance().addSample(getReportName(), templateJTL);
             SamplesUploader.addSample(sampleEvent);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }
     }
-
-    private String escape(String str) {
-        int len = str.length();
-        StringWriter writer = new StringWriter((int) (len * 0.1));
-        for (int i = 0; i < len; i++) {
-            char c = str.charAt(i);
-            switch (c) {
-                case '"':
-                    writer.write("&quot;");
-                    break;
-                case '&':
-                    writer.write("&amp;");
-                    break;
-                case '<':
-                    writer.write("&lt;");
-                    break;
-                case '>':
-                    writer.write("&gt;");
-                    break;
-                case '\'':
-                    writer.write("&apos;");
-                    break;
-                default:
-                    if (c > 0x7F) {
-                        writer.write("&#");
-                        writer.write(Integer.toString(c, 10));
-                        writer.write(';');
-                    } else {
-                        writer.write(c);
-                    }
-            }
-        }
-        return writer.toString();
-    }
-
-    /*private String GetJtlString(SampleEvent evt) {
-
-        SampleResult res = evt.getResult();
-        String t = Long.toString(res.getTime());
-        String lt = Long.toString(res.getLatency());
-        String ts = Long.toString(res.getTimeStamp());
-        String s = Boolean.toString(res.isSuccessful());
-        String lb = escape(res.getSampleLabel());
-        String rc = escape(res.getResponseCode());
-        String rm = escape(res.getResponseMessage());
-        String tn = escape(res.getThreadName());
-        String dt = escape(res.getDataType());
-        String by = Integer.toString(res.getBytes());
-        String sc = Integer.toString(res.getSampleCount());
-        String ec = Integer.toString(res.getErrorCount());
-        String ng = Integer.toString(res.getGroupThreads());
-        String na = Integer.toString(res.getAllThreads());
-        String hn = XML.escape(JMeterUtils.getLocalHostFullName());
-        String in = Long.toString(res.getIdleTime());
-
-        return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\" lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
-    }*/
 
 
     @Override

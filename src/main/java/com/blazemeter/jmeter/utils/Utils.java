@@ -15,14 +15,18 @@ import org.apache.jmeter.gui.action.Load;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.gui.tree.JMeterTreeModel;
 import org.apache.jmeter.gui.tree.JMeterTreeNode;
+import org.apache.jmeter.samplers.SampleEvent;
+import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.save.SaveService;
 import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.threads.AbstractThreadGroup;
+import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.collections.HashTree;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.XML;
 
 import javax.swing.*;
 import java.awt.*;
@@ -220,6 +224,105 @@ public class Utils {
         }
     }
 
+
+    public static String getJtlString(SampleEvent evt) {
+
+        SampleResult res = evt.getResult();
+        String t = Long.toString(res.getTime());
+        String lt = Long.toString(res.getLatency());
+        String ts = Long.toString(res.getTimeStamp());
+        String s = Boolean.toString(res.isSuccessful());
+        String lb = escape(res.getSampleLabel());
+        String rc = escape(res.getResponseCode());
+        String rm = escape(res.getResponseMessage());
+        String tn = escape(res.getThreadName());
+        String dt = escape(res.getDataType());
+        String by = Integer.toString(res.getBytes());
+        String sc = Integer.toString(res.getSampleCount());
+        String ec = Integer.toString(res.getErrorCount());
+        String ng = Integer.toString(res.getGroupThreads());
+        String na = Integer.toString(res.getAllThreads());
+        String hn = XML.escape(JMeterUtils.getLocalHostFullName());
+        String in = Long.toString(res.getIdleTime());
+
+        return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\" lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
+    }
+
+    public static JSONObject getJSONObject(SampleEvent evt) throws JSONException {
+        SampleResult res = evt.getResult();
+        String t = Long.toString(res.getTime());
+        String lt = Long.toString(res.getLatency());
+        String ts = Long.toString(res.getTimeStamp());
+        String s = Boolean.toString(res.isSuccessful());
+        String lb = escape(res.getSampleLabel());
+        String rc = escape(res.getResponseCode());
+        String rm = escape(res.getResponseMessage());
+        String tn = escape(res.getThreadName());
+        String dt = escape(res.getDataType());
+        String by = Integer.toString(res.getBytes());
+        String sc = Integer.toString(res.getSampleCount());
+        String ec = Integer.toString(res.getErrorCount());
+        String ng = Integer.toString(res.getGroupThreads());
+        String na = Integer.toString(res.getAllThreads());
+        String hn = XML.escape(JMeterUtils.getLocalHostFullName());
+        String in = Long.toString(res.getIdleTime());
+
+        JSONObject data = new JSONObject();
+        JSONObject httpSample = new JSONObject();
+        data.put("t", t);
+        data.put("lt", lt);
+        data.put("lt", lt);
+        data.put("ts", ts);
+        data.put("s", s);
+        data.put("lb", lb);
+        data.put("rc", rc);
+        data.put("rm", rm);
+        data.put("tn", tn);
+        data.put("dt", dt);
+        data.put("by", by);
+        data.put("sc", sc);
+        data.put("ec", ec);
+        data.put("ng", ng);
+        data.put("na", na);
+        data.put("hn", hn);
+        data.put("in", in);
+        httpSample.put("httpSample", data);
+        return httpSample;
+    }
+
+    private static String escape(String str) {
+        int len = str.length();
+        StringWriter writer = new StringWriter((int) (len * 0.1));
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            switch (c) {
+                case '"':
+                    writer.write("&quot;");
+                    break;
+                case '&':
+                    writer.write("&amp;");
+                    break;
+                case '<':
+                    writer.write("&lt;");
+                    break;
+                case '>':
+                    writer.write("&gt;");
+                    break;
+                case '\'':
+                    writer.write("&apos;");
+                    break;
+                default:
+                    if (c > 0x7F) {
+                        writer.write("&#");
+                        writer.write(Integer.toString(c, 10));
+                        writer.write(';');
+                    } else {
+                        writer.write(c);
+                    }
+            }
+        }
+        return writer.toString();
+    }
 
     public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException {
         BufferedInputStream in = null;
