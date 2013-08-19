@@ -92,6 +92,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         this.setProperty(Constants.TEST_NAME, testInfo.getName());
         this.setProperty(Constants.TEST_ID, testInfo.getId());
         this.setProperty(Constants.TEST_NUMBER_OF_USERS, testInfo.getNumberOfUsers());
+        this.setProperty(Constants.TEST_LOCATION, testInfo.getLocation());
 
         Overrides overrides = testInfo.getOverrides();
         if (overrides != null) {
@@ -108,6 +109,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         testInfo.setId(this.getPropertyAsString(Constants.TEST_ID, ""));
         testInfo.setName(this.getPropertyAsString(Constants.TEST_NAME, ""));
         testInfo.setNumberOfUsers(this.getPropertyAsInt(Constants.TEST_NUMBER_OF_USERS, 0));
+        testInfo.setLocation(this.getPropertyAsString(Constants.TEST_LOCATION, "EU West (Ireland)"));
         return testInfo;
     }
 

@@ -25,6 +25,10 @@ public class SaveUploadButtonListener implements ActionListener {
         try {
             BmTestManager bmTestManager = BmTestManager.getInstance();
             GuiPackage guiPackage = GuiPackage.getInstance();
+            if(Utils.isTestPlanEmpty()){
+                JMeterUtils.reportErrorToUser("Test-plan should have at least one Thread Group");
+                return;
+            }
             if (guiPackage.getTestPlanFile() == null | guiPackage.isDirty()) {
                 Utils.saveJMX(guiPackage);
             }
