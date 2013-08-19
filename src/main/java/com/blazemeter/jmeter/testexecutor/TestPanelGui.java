@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -118,6 +119,12 @@ public class TestPanelGui {
         });
 
 
+        locationComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BmTestManager.getInstance().getTestInfo().setLocation((String) locationComboBox.getSelectedItem());
+            }
+        });
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -163,7 +170,8 @@ public class TestPanelGui {
                 int engines;
                 String engineSize;
                 int usersPerEngine;
-
+                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                testInfo.setNumberOfUsers(numberOfUsers);
                 ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
                 engines = Integer.valueOf(enginesParameters.get(0));
                 engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
@@ -216,9 +224,39 @@ public class TestPanelGui {
 
 
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
+        rampupSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setRampup((Integer) rampupSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("RampUpSpinner was not activated yet. Try again later");
+                }
+            }
+        });
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
-        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
+        iterationsSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setIterations((Integer) iterationsSpinner.getValue());
 
+                } catch (NullPointerException npe) {
+                    BmLog.error("IterationsSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
+        durationSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setDuration((Integer) durationSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("DurationSpinner was not activated yet. Try again later");
+                }
+            }
+        });
 
         addFilesButton.addActionListener(new ActionListener() {
             @Override
@@ -322,34 +360,19 @@ public class TestPanelGui {
         int numberOfUsers = numberOfUsersSlider.getValue();
 
         ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
-
-
-        int engines = Integer.valueOf(enginesParameters.get(0));
-        String engineSize = enginesParameters.get(1);
         int userPerEngine = Integer.valueOf(enginesParameters.get(2));
 
-
-        int iterations = Integer.parseInt(iterationsSpinner.getValue().toString());
-        iterations = iterations > 0 || iterations < 1001 ? iterations : -1;
-
-        int rumpUp = Integer.parseInt(rampupSpinner.getValue().toString());
-        int duration = Integer.parseInt(durationSpinner.getValue().toString());
-        duration = duration > 0 ? duration : -1;
-        String location = locationComboBox.getSelectedItem().toString();
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         if (testInfo != null) {
             if (userPerEngine == 0) {
                 JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
                         " '1' will be saved");
                 userPerEngine = 1;
+                testInfo.getOverrides().setThreads(userPerEngine);
             }
-            synchronized (BlazemeterApi.getInstance()) {
-                testInfo = BlazemeterApi.getInstance().updateTestSettings(bmTestManager.getUserKey(),
-                        bmTestManager.getTestInfo().getId(),
-                        location, engines, engineSize, userPerEngine, iterations, rumpUp, duration);
-                //TestInfo should be saved to BmTestManager and updated on cloudPanel
-                bmTestManager.setTestInfo(testInfo);
-            }
+            testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
+                    bmTestManager.getTestInfo());
+            bmTestManager.setTestInfo(testInfo);
 
         } else {
             JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
@@ -562,7 +585,7 @@ public class TestPanelGui {
 
                     }
 
-                    updateTestInfo();
+                    setTestInfo(testInfo);
 
                     if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
                         String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
@@ -702,21 +725,7 @@ public class TestPanelGui {
     }
 
     protected void setTestInfo(TestInfo testInfo) {
-        if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
-            testInfo = new TestInfo();
-            testInfo.setName(Constants.NEW);
-            testIdComboBox.setSelectedItem(testInfo.getName());
-            configureMainPanelControls(null);
-        } else {
-            testIdComboBox.setSelectedItem(testInfo);
-            configureMainPanelControls(testInfo);
-            runModeChanged(BmTestManager.getInstance().getIsLocalRunMode());
-        }
-    }
-
-    protected void updateTestInfo() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
             testInfo = new TestInfo();
             testInfo.setName(Constants.NEW);
@@ -733,9 +742,9 @@ public class TestPanelGui {
                 locationComboBox.setSelectedItem(testInfo.getLocation());
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
                 if (testInfo.getOverrides() != null) {
-                    rampupSpinner.setValue(testInfo.getOverrides().rampup);
-                    iterationsSpinner.setValue(testInfo.getOverrides().iterations == -1 ? 0 : testInfo.getOverrides().iterations);
-                    durationSpinner.setValue(testInfo.getOverrides().duration == -1 ? 0 : testInfo.getOverrides().duration);
+                    rampupSpinner.setValue(testInfo.getOverrides().getRampup());
+                    iterationsSpinner.setValue(testInfo.getOverrides().getIterations() == -1 ? 0 : testInfo.getOverrides().getIterations());
+                    durationSpinner.setValue(testInfo.getOverrides().getDuration() == -1 ? 0 : testInfo.getOverrides().getDuration());
                 } else {
                     rampupSpinner.setValue(0);
                     iterationsSpinner.setValue(0);
@@ -755,7 +764,12 @@ public class TestPanelGui {
         testInfo.setError(null);
         testInfo.setNumberOfUsers(numberOfUsersSlider.getValue());
         testInfo.setLocation(locationComboBox.getSelectedItem().toString());
-        testInfo.setOverrides(null);
+        Overrides overrides = new Overrides((Integer) durationSpinner.getValue(),
+                (Integer) iterationsSpinner.getValue(),
+                (Integer) rampupSpinner.getValue(),
+                numberOfUsersSlider.getValue()
+        );
+        testInfo.setOverrides(overrides);
         testInfo.setType("jmeter");
         return testInfo;
     }
@@ -792,7 +806,7 @@ public class TestPanelGui {
         defaultComboBoxModel1.addElement("US West (Oregon)");
         defaultComboBoxModel1.addElement("Asia Pacific (Singapore)");
         defaultComboBoxModel1.addElement("Japan (Tokyo)");
-        defaultComboBoxModel1.addElement("South America (Sao Paulo)");
+        defaultComboBoxModel1.addElement("South America (San Paulo)");
         defaultComboBoxModel1.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel1);
     }
@@ -1050,10 +1064,10 @@ public class TestPanelGui {
         label11.setText("* 0 means \"Limited by Test Session Time\"");
         cloudPanel.add(label11, new GridConstraints(5, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         editJMXLocallyButton = new JButton();
-        editJMXLocallyButton.setText("Edit JMX locally");
+        editJMXLocallyButton.setText("Edit JMX ");
         cloudPanel.add(editJMXLocallyButton, new GridConstraints(1, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         saveUploadButton = new JButton();
-        saveUploadButton.setText("Save/Upload");
+        saveUploadButton.setText("Save/Upload JMX");
         cloudPanel.add(saveUploadButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);

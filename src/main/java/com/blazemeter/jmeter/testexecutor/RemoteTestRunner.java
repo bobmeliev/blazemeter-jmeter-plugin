@@ -2,9 +2,15 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
-import com.blazemeter.jmeter.utils.*;
+import com.blazemeter.jmeter.upload.JMeterLogFilesUploader;
+import com.blazemeter.jmeter.upload.Uploader;
+import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.JMeterPluginUtils;
+import com.blazemeter.jmeter.utils.TestStatus;
+import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.engine.event.LoopIterationEvent;
@@ -27,17 +33,6 @@ import java.util.List;
 //~--- JDK imports ------------------------------------------------------------
 public class RemoteTestRunner extends ResultCollector implements SampleListener, RemoteSampleListener, Remoteable, Serializable, TestListener, ActionListener {
 
-    private static final long serialVersionUID = 1L;
-    private static int instanceCount = 0;
-
-    public boolean canRemove() {
-        BmLog.debug("Are you sure that you want to remove? " + instanceCount);
-        instanceCount--;
-        if (instanceCount == 0) {
-            BmTestManager.getInstance().hooksUnregistered();
-        }
-        return super.canRemove();
-    }
 
     public RemoteTestRunner() {
         super();
@@ -77,7 +72,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                         TestInfoController.stop();
                         testEnded();
                     }
-
                 }
             }
         });
@@ -88,10 +82,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 setIsLocalRunMode(isLocalRunMode);
             }
         });
-
-
-        instanceCount++;
-        BmTestManager.getInstance().hooksRegister();
         JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "0");
     }
 
@@ -99,15 +89,27 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (testInfo == null)
             testInfo = new TestInfo();
 
-        this.setProperty("testName", testInfo.getName());
-        this.setProperty("testId", testInfo.getId());
+        this.setProperty(Constants.TEST_NAME, testInfo.getName());
+        this.setProperty(Constants.TEST_ID, testInfo.getId());
+        this.setProperty(Constants.TEST_NUMBER_OF_USERS, testInfo.getNumberOfUsers());
+        this.setProperty(Constants.TEST_LOCATION, testInfo.getLocation());
 
+        Overrides overrides = testInfo.getOverrides();
+        if (overrides != null) {
+            overrides.setThreads(testInfo.getNumberOfUsers());
+            this.setProperty(Constants.TEST_DURATION, overrides.getDuration());
+            this.setProperty(Constants.TEST_ITERATIONS, overrides.getIterations());
+            this.setProperty(Constants.TEST_RAMP_UP, overrides.getRampup());
+            this.setProperty(Constants.TEST_THREADS, overrides.getThreads());
+        }
     }
 
     public TestInfo getTestInfo() {
         TestInfo testInfo = new TestInfo();
-        testInfo.setId(this.getPropertyAsString("testId", ""));
-        testInfo.setName(this.getPropertyAsString("testName", ""));
+        testInfo.setId(this.getPropertyAsString(Constants.TEST_ID, ""));
+        testInfo.setName(this.getPropertyAsString(Constants.TEST_NAME, ""));
+        testInfo.setNumberOfUsers(this.getPropertyAsInt(Constants.TEST_NUMBER_OF_USERS, 0));
+        testInfo.setLocation(this.getPropertyAsString(Constants.TEST_LOCATION, "EU West (Ireland)"));
         return testInfo;
     }
 
@@ -202,8 +204,8 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BmTestManager.setTestRunning(false);
         BmLog.console("Test is ended at " + host);
+        StandardJMeterEngine.stopEngine();
         if (JMeter.isNonGUI()) {
-            StandardJMeterEngine.stopEngine();
             System.exit(0);
         }
         bmTestManager.stopTest();

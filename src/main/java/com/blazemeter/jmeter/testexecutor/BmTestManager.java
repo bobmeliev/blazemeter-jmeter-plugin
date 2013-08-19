@@ -3,24 +3,23 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import com.blazemeter.jmeter.upload.JMeterLogFilesUploader;
+import com.blazemeter.jmeter.upload.Uploader;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.action.ActionRouter;
-import org.apache.jmeter.gui.action.Command;
 import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
-import org.apache.jorphan.reflect.ClassFinder;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +39,6 @@ public class BmTestManager {
     private boolean isUserKeyValid = false;
     private boolean isLocalRunMode = false;
 
-    public static int c = 0;
     private static boolean isTestRunning = false;
     private static BmTestManager instance;
     private static final Object lock = new Object();
@@ -71,13 +69,7 @@ public class BmTestManager {
         isTestRunning = testRunning;
     }
 
-    public void destroy() {
-        instance = null;
-    }
-
-
     private BmTestManager() {
-        c++;
         this.testInfo = new TestInfo();
         rpc = BlazemeterApi.getInstance();
         this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
@@ -229,9 +221,9 @@ public class BmTestManager {
                 Integer.parseInt(enginesParameters.get(0)),
                 enginesParameters.get(1),
                 Integer.parseInt(enginesParameters.get(2)),
-                overrides == null ? 0 : overrides.iterations,
-                overrides == null ? 0 : overrides.rampup,
-                overrides == null ? 0 : overrides.duration
+                overrides == null ? 0 : overrides.getIterations(),
+                overrides == null ? 0 : overrides.getRampup(),
+                overrides == null ? 0 : overrides.getDuration()
         );
         return ti;
     }
@@ -399,128 +391,6 @@ public class BmTestManager {
             uic.onUserInfoChanged(userInfo);
         }
     }
-
-    //    private static ActionListener pre_exit_listener;
-    private static ActionListener pre_close_listener;
-    private static ActionListener post_save_listener;
-    private static Class<?> c_close;
-    private static Class<?> c_save;
-    private static Class<?> c_exit;
-    private static Class<?> c_load;
-    private static Class<?> c_open;
-
-
-    private boolean hooksRegistered = false;
-
-
-    public void hooksRegister() {
-        if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("Running in the Cloud will not register hooks!");
-            return;
-        }
-
-        if (this.hooksRegistered) {
-            return;
-        }
-
-
-        BmLog.console("Registering hooks");
-        try {
-            c_close = Class.forName("org.apache.jmeter.gui.action.Close");
-            c_save = Class.forName("org.apache.jmeter.gui.action.Save");
-            c_exit = Class.forName("org.apache.jmeter.gui.action.ExitCommand");
-            c_load = Class.forName("org.apache.jmeter.gui.action.Load");
-            c_open = Class.forName("org.apache.jmeter.gui.action.LoadRecentProject");
-        } catch (ClassNotFoundException e) {
-            BmLog.error("error while registering hooks", e);
-            return;
-        }
-
-        post_save_listener = new ActionListener() {
-
-
-            @Override
-            public synchronized void actionPerformed(ActionEvent e) {
-
-                try {
-                    doPostSaveActions(e);
-                } catch (Throwable ex) {
-                    BmLog.error(ex);
-                }
-            }
-
-            private synchronized void doPostSaveActions(ActionEvent e) throws Throwable {
-                BmLog.console("Post save!");
-
-                uploadJmx();
-            }
-        };
-
-
-        pre_close_listener = new ActionListener() {
-
-
-            @Override
-            public synchronized void actionPerformed(ActionEvent e) {
-                BmTestManager.getInstance().hooksUnregistered();
-            }
-
-        };
-
-//        ActionRouter.getInstance().addPreActionListener(c_save, pre_save_listener);
-        ActionRouter.getInstance().addPostActionListener(c_save, post_save_listener);
-        ActionRouter.getInstance().addPreActionListener(c_close, pre_close_listener);
-        ActionRouter.getInstance().addPreActionListener(c_exit, pre_close_listener);
-        ActionRouter.getInstance().addPreActionListener(c_open, pre_close_listener);
-        ActionRouter.getInstance().addPreActionListener(c_load, pre_close_listener);
-        this.hooksRegistered = true;
-    }
-
-    public void hooksUnregistered() {
-
-        BmLog.console("De registering our  Hooks");
-
-//       ActionRouter.getInstance().removePreActionListener(c_save, pre_save_listener);
-        ActionRouter.getInstance().removePostActionListener(c_save, post_save_listener);
-        ActionRouter.getInstance().removePreActionListener(c_close, pre_close_listener);
-        ActionRouter.getInstance().removePreActionListener(c_exit, pre_close_listener);
-        java.util.List<String> listClasses;
-        Map<String, Set<Command>> commands = new HashMap<String, Set<Command>>();
-        Command command;
-        Iterator<String> iterClasses;
-        Class<?> commandClass;
-        try {
-            listClasses = ClassFinder.findClassesThatExtend(JMeterUtils.getSearchPaths(), new Class[]{Class
-                    .forName("org.apache.jmeter.gui.action.Command")});
-            commands = new HashMap<String, Set<Command>>(listClasses.size());
-            if (listClasses.size() == 0) {
-                BmLog.console("!!!!!Uh-oh, didn't find any action handlers!!!!!");
-            }
-            iterClasses = listClasses.iterator();
-            while (iterClasses.hasNext()) {
-                String strClassName = iterClasses.next();
-
-                //BmLog.console("classname:: " + strClassName);
-                commandClass = Class.forName(strClassName);
-                if (!Modifier.isAbstract(commandClass.getModifiers())) {
-                    command = (Command) commandClass.newInstance();
-                    for (String commandName : command.getActionNames()) {
-                        Set<Command> commandObjects = commands.get(commandName);
-                        if (commandObjects == null) {
-                            commandObjects = new HashSet<Command>();
-                            commands.put(commandName, commandObjects);
-                        }
-                        commandObjects.add(command);
-                    }
-                }
-            }
-
-        } catch (Throwable ex) {
-            BmLog.error(ex);
-        }
-        this.hooksRegistered = false;
-    }
-
 
     public void checkForUpdates() {
         long now = new Date().getTime();

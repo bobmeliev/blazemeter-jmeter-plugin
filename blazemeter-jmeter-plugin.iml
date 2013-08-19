@@ -17,6 +17,8 @@
     <orderEntry type="library" name="Maven: asm:asm:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.jgoodies:forms:1.0.7" level="project" />
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.12" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.12" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: logkit:logkit:2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.jmeter:jorphan:2.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: bsf:bsf:2.4.0" level="project" />

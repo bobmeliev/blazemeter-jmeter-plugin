@@ -76,8 +76,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
 
         TestInfo testInfo = gui.getTestInfo();
+        remoteTestRunner.setTestInfo(testInfo);
         remoteTestRunner.setReportName("test_" + testInfo.getId() + ".jtl");
-
     }
 
     @Override
@@ -104,9 +104,9 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 testInfo = remoteTestRunner.getTestInfo();
                 bmTestManager.setTestInfo(testInfo);
                 gui.setTestInfo(testInfo);
-                JMeterUtils.setProperty(Constants.CURRENT_TEST,testInfo.getId()+";"+testInfo.getName());
-            } else if(!userKey.isEmpty()){
-                JMeterUtils.reportErrorToUser("UserKey " + '"'+userKey+'"' + " has invalid format",
+                JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
+            } else if (!userKey.isEmpty()) {
+                JMeterUtils.reportErrorToUser("UserKey " + '"' + userKey + '"' + " has invalid format",
                         "Invalid UserKey format");
             }
         }
