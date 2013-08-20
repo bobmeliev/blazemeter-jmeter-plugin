@@ -29,6 +29,6 @@ public class LogUploader implements Runnable {
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         String testId = testInfo.getId();
         BmLog.debug(String.format("Log uploader sending log:%s , %d bytes  ", this.logName, this.data.length()));
-        BmTestManager.getInstance().dataUpload(testId, this.logName, this.data, this.dataType);
+        BmTestManager.getInstance().logUpload(testId, this.logName, this.data, this.dataType);
     }
 }

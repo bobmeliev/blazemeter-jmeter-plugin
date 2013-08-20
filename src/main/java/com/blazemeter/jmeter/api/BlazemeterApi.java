@@ -388,27 +388,22 @@ public class BlazemeterApi {
     }
 
 
-    public synchronized int dataUpload(String userKey, String testId, String reportName, String buff, String dataType) {
+    public synchronized int logUpload(String userKey, String testId, String logName, String buff, String dataType) {
 
         if (userKey == null || userKey.trim().isEmpty()) {
-            BmLog.debug("Data cannot be uploaded, userKey is empty");
+            BmLog.debug("Log cannot be uploaded, userKey is empty");
             return -1;
         }
 
         if (testId == null || testId.trim().isEmpty()) {
-            BmLog.debug("Data cannot be uploaded, testId is empty");
+            BmLog.debug("Log cannot be uploaded, testId is empty");
             return -1;
         }
 
         Integer fileSize = -1;
-        reportName = reportName.trim().isEmpty() ? "sample" : reportName;
+        logName = logName.trim().isEmpty() ? "log" : logName;
 
-
-        if (dataType.equals("jtl")) {
-            reportName = reportName.toLowerCase().endsWith(".jtl") ? reportName : reportName + ".jtl";
-        }
-
-        String url = this.urlManager.testResultsJTLUpload(Constants.APP_KEY, userKey, testId, reportName, dataType);
+        String url = this.urlManager.logUpload(Constants.APP_KEY, userKey, testId, logName, dataType);
 
         JSONObject obj = new JSONObject();
         try {
@@ -417,7 +412,7 @@ public class BlazemeterApi {
             if (jo.has("file_size"))
                 fileSize = (Integer) jo.get("file_size");
             else
-                BmLog.error("Failed to upload " + reportName);
+                BmLog.error("Failed to upload " + logName);
         } catch (JSONException e) {
             BmLog.error(e);
         }
@@ -661,7 +656,7 @@ public class BlazemeterApi {
             return String.format("%s/api/rest/blazemeter/testStop/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
         }
 
-        public String testResultsJTLUpload(String appKey, String userKey, String testId, String fileName, String dataType) {
+        public String logUpload(String appKey, String userKey, String testId, String fileName, String dataType) {
             try {
                 appKey = URLEncoder.encode(appKey, "UTF-8");
                 userKey = URLEncoder.encode(userKey, "UTF-8");

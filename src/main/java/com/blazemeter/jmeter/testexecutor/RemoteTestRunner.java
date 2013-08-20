@@ -162,7 +162,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
             callBackUrl = bmTestManager.startLocalTest();
 
-            if (callBackUrl.isEmpty()) {
+            if (callBackUrl != null && callBackUrl.isEmpty()) {
                 JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "1");
                 return;
             }

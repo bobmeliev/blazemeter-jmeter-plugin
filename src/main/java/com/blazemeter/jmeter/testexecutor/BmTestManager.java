@@ -251,8 +251,8 @@ public class BmTestManager {
         return ti;
     }
 
-    public void dataUpload(String testId, String reportName, String buff, String dataType) {
-        BlazemeterApi.getInstance().dataUpload(getUserKey(), testId, reportName, buff, dataType);
+    public void logUpload(String testId, String reportName, String buff, String dataType) {
+        BlazemeterApi.getInstance().logUpload(getUserKey(), testId, reportName, buff, dataType);
     }
 
     public void uploadJmx() {

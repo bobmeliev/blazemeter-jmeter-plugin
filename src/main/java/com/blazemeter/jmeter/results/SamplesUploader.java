@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.results;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.utils.BmLog;
 
 import java.util.List;
@@ -77,6 +78,8 @@ public class SamplesUploader {
     }
 
     private static void send(List<String> batch, String callBackUrl) {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+//        bmTestManager.logUpload();
         //send samples to server
     }
 }
