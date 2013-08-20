@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.results;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.utils.BmLog;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -37,7 +38,7 @@ public class SamplesUploader {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         long begin = System.currentTimeMillis();
-                        List<String> batch = samplesQueue.take((int) delay);
+                        List<JSONObject> batch = samplesQueue.take((int) delay);
                         send(batch, callBackUrl);
                         long millisOfCurrentIteration = System.currentTimeMillis() - begin;
                         delay = MAX_DELAY - millisOfCurrentIteration;
@@ -68,16 +69,16 @@ public class SamplesUploader {
 
     }
 
-    public static void addSample(String jsonString) {
+    public static void addSample(JSONObject jsonObject) {
         try {
-            samplesQueue.put(jsonString);
+            samplesQueue.put(jsonObject);
 
         } catch (InterruptedException ie) {
             BmLog.error("Failed to add sample to uploader: Interruptedexception");
         }
     }
 
-    private static void send(List<String> batch, String callBackUrl) {
+    private static void send(List<JSONObject> batch, String callBackUrl) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 //        bmTestManager.logUpload();
         //send samples to server

@@ -42,10 +42,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
 
         }
-        /*if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("RemoteTestRunner is running in the cloud!");
-            return;
-        }*/
 
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
@@ -209,8 +205,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     public void processBatch(List<SampleEvent> sampleEvents) throws RemoteException {
         StringBuilder b = new StringBuilder();
         for (SampleEvent se : sampleEvents) {
-            JSONObject jo = Utils.getJSONObject(se);
-            String sample = jo.toString();
+            JSONObject sample = Utils.getJSONObject(se);
             SamplesUploader.addSample(sample);
         }
     }
@@ -218,8 +213,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     @Override
     public synchronized void sampleOccurred(SampleEvent sampleEvent) {
         if (BmTestManager.isTestRunning()) {
-            JSONObject jo = Utils.getJSONObject(sampleEvent);
-            String sample = jo.toString();
+            JSONObject sample = Utils.getJSONObject(sampleEvent);
             SamplesUploader.addSample(sample);
         } else {
             BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");

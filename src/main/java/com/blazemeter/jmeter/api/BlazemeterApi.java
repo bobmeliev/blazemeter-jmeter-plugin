@@ -419,6 +419,10 @@ public class BlazemeterApi {
         return fileSize;
     }
 
+    public synchronized void samplesUpload(List<String> samples) {
+
+    }
+
     public TestInfo updateTestSettings(String userKey, String testId, String location,
                                        int engines, String engineType, int usersPerEngine,
                                        int iterations, int rumpUp, int duration) {
