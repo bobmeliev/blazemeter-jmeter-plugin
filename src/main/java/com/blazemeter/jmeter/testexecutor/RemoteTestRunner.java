@@ -42,10 +42,10 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
 
         }
-        if (JMeterPluginUtils.inCloudConfig()) {
+        /*if (JMeterPluginUtils.inCloudConfig()) {
             BmLog.debug("RemoteTestRunner is running in the cloud!");
             return;
-        }
+        }*/
 
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
@@ -131,9 +131,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         return this.getPropertyAsBoolean("isLocalRun", false);
     }
 
-    public String getReportName() {
-        return this.getPropertyAsString("reportName", "test_results.jtl");
-    }
 
     public void setReportName(String reportName) {
         this.setProperty("reportName", reportName);
@@ -141,6 +138,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void testStarted(String host) {
+        final String callBackUrl;
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
         if (JMeter.isNonGUI()) {
@@ -149,10 +147,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             bmTestManager.setTestInfo(testInfo);
             bmTestManager.setUserKey(this.getUserKey());
             TestInfoController.start(testInfo.getId());
-        }
-        if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.debug("Test is started, running in the cloud!");
-            return;
         }
         String userKey = bmTestManager.getUserKey();
         if (userKey == null || userKey.isEmpty()) {
@@ -164,21 +158,15 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.error("UserKey is invalid, test will be started without uploading results");
             return;
         }
-
-
         if ((bmTestManager.getIsLocalRunMode() & (JMeterUtils.getProperty(Constants.ATTEMPTS_TO_START_TEST).equals("0")))) {
-            JMeterUtils.setProperty(Constants.START_LOCAL_TEST_RESULT, bmTestManager.startLocalTest());
-            String startLocalTestResult = JMeterUtils.getProperty(Constants.START_LOCAL_TEST_RESULT);
-            if (!startLocalTestResult.isEmpty()) {
-                if (!JMeter.isNonGUI()) {
-                    JMeterUtils.reportErrorToUser("Results can not be uploaded to server due to the following reason: "
-                            + startLocalTestResult.toLowerCase(), "Unable to start uploading results");
 
+            callBackUrl = bmTestManager.startLocalTest();
 
-                    JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "1");
-                    return;
-                }
+            if (callBackUrl.isEmpty()) {
+                JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "1");
+                return;
             }
+
             BmLog.console("Test is started at " + host);
 
 
@@ -191,12 +179,9 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 BmLog.debug("Opening test URL: " + url);
                 JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "true");
             }
-        } else {
-            BmLog.debug("Test is started without uploading report to server");
-            return;
+            JMeterLogFilesUploader.getInstance().startListening();
+            SamplesUploader.startUploading(callBackUrl);
         }
-        JMeterLogFilesUploader.getInstance().startListening();
-        SamplesUploader.startUploading();
     }
 
 

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class BlazemeterApi {
@@ -525,40 +526,29 @@ public class BlazemeterApi {
         return update;
     }
 
-    public synchronized String startTestLocal(String userKey, String testId) {
-        String startTestResult = "";
-        if (userKey == null || userKey.trim().isEmpty()) {
-            startTestResult = "Local(Reporting only) test was not started: userKey is empty";
-            BmLog.error(startTestResult);
-            BmLog.console(startTestResult);
-            return startTestResult;
-        }
-
-        if (testId == null || testId.trim().isEmpty()) {
-            startTestResult = "Local(Reporting only) test was not started: testID is empty";
-            BmLog.error(startTestResult);
-            BmLog.console(startTestResult);
-            return startTestResult;
-        }
+    public synchronized HashMap<String, String> startTestLocal(String userKey, String testId) {
+        HashMap<String, String> res = new HashMap<String, String>();
 
         String url = this.urlManager.testStartLocal(Constants.APP_KEY, userKey, testId);
+        String responseCode = null;
         String errorMessage = null;
-        String errorCode = null;
+        String callBackUrl = null;
+
         try {
             JSONObject jsonObject = getJson(url, null);
+            responseCode = jsonObject.get("response_code").toString();
             errorMessage = jsonObject.get("error").toString();
-            errorCode = jsonObject.get("response_code").toString();
-
+            callBackUrl = jsonObject.get("submit").toString();
 
         } catch (JSONException je) {
             BmLog.error("Error during processing JSON request: ", je);
         }
-
-        if (errorMessage.equals("Test already running, please stop it first") & errorCode.equals("500")) {
-            BmLog.error("Local(Reporting only) test was not started: " + errorMessage.toLowerCase());
-            return errorMessage;
+        if (!responseCode.equals("200")) {
+            res.put("error", errorMessage);
+        } else {
+            res.put("callbackurl", callBackUrl);
         }
-        return startTestResult;
+        return res;
     }
 
     /**

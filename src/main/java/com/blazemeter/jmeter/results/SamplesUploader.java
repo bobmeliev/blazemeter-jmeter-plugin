@@ -27,7 +27,8 @@ public class SamplesUploader {
     }
 
 
-    public static void startUploading() {
+    public static void startUploading(String url) {
+        final String callBackUrl = url;
         samplesUploaderThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -36,7 +37,7 @@ public class SamplesUploader {
                     try {
                         long begin = System.currentTimeMillis();
                         List<String> batch = samplesQueue.take((int) delay);
-                        send(batch);
+                        send(batch, callBackUrl);
                         long millisOfCurrentIteration = System.currentTimeMillis() - begin;
                         delay = MAX_DELAY - millisOfCurrentIteration;
                         if (delay < 0) {
@@ -75,7 +76,7 @@ public class SamplesUploader {
         }
     }
 
-    private static void send(List<String> batch) {
+    private static void send(List<String> batch, String callBackUrl) {
         //send samples to server
     }
 }

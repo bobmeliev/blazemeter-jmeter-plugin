@@ -7,18 +7,15 @@ import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
-import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.action.Save;
 import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -92,15 +89,46 @@ public class BmTestManager {
 
 
     public String startLocalTest() {
-        String startLocalTestResult = "";
-        if (JMeterPluginUtils.inCloudConfig()) {
-            startLocalTestResult = "Test will not be started, start test in the cloud";
-            BmLog.debug(startLocalTestResult);
-            BmLog.error(startLocalTestResult);
-            return startLocalTestResult;
-        }
+        /*
+         callBackUrl should contain URL for uploading test results to server.
+         Other information(e.g. errors) should be processed via testInfo
+          */
+        String callBackUrl = null;
+        final String error;
         TestInfo testInfo = getTestInfo();
         String userKey = getUserKey();
+
+        if (userKey == null || userKey.trim().isEmpty()) {
+            callBackUrl = "";
+            error = "Local(Reporting only) test was not started: userKey is empty";
+            testInfo.setError(error);
+            NotifyTestInfoChanged();
+            BmLog.error(error);
+            BmLog.console(error);
+            return callBackUrl;
+        }
+
+        String testId = testInfo.getId();
+        if (testId == null || testId.trim().isEmpty()) {
+            callBackUrl = "";
+            error = "Local(Reporting only) test was not started: testID is empty";
+            testInfo.setError(error);
+            NotifyTestInfoChanged();
+            BmLog.error(callBackUrl);
+            BmLog.console(callBackUrl);
+            return callBackUrl;
+        }
+
+        if (Utils.isTestPlanEmpty()) {
+            callBackUrl = "";
+            error = "Cannot start test: test-plan is empty";
+            testInfo.setError(error);
+            NotifyTestInfoChanged();
+            BmLog.error(callBackUrl);
+            BmLog.console(callBackUrl);
+            return callBackUrl;
+        }
+
         BmLog.console("startTest" + testInfo);
 
         if (testInfo.getStatus() != TestStatus.Running) {
@@ -110,45 +138,43 @@ public class BmTestManager {
                     BmLog.debug("Running in NON-GUI mode!");
                     projectName = "non-gui-test";
                 }
-
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
                 BmLog.console("Starting local test...");
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
                 if (testInfo == null) {
                     BmLog.error("TestInfo is not set! Enter userkey and select a test!", new NullPointerException());
                 }
-
                 if (testInfo.getId().isEmpty()) {
-                    BmLog.error("Could not get valid id,test will start without blazemeter.");
+                    BmLog.error("Could not get valid id, test will start without blazemeter.");
                 }
-
                 setTestInfo(testInfo);
             }
-
             try {
-                if (Utils.isTestPlanEmpty()) {
-                    startLocalTestResult = "Cannot start test: test-plan is empty";
-                    JMeterUtils.reportErrorToUser(startLocalTestResult);
-                    BmLog.debug(startLocalTestResult);
-                    return startLocalTestResult;
-                }
                 if (!JMeter.isNonGUI()) {
-                    checkChangesInTestPlan();
+                    Utils.checkChangesInTestPlan();
                 }
                 uploadJmx();
-                startLocalTestResult = rpc.startTestLocal(userKey, testInfo.getId());
-                if (startLocalTestResult.equals("Test already running, please stop it first")) {
-                    return startLocalTestResult;
+                HashMap<String, String> res = rpc.startTestLocal(userKey, testInfo.getId());
+                if (res.containsKey("error")) {
+                    callBackUrl = "";
+                    error = res.get("error");
+                    testInfo.setError(error);
+                    NotifyTestInfoChanged();
+                    BmLog.error(error);
+                    BmLog.console(error);
+                    return callBackUrl;
+
+                } else if (res.containsKey("callbackurl")) {
+                    callBackUrl = res.get("callbackurl");
                 }
                 testInfo.setStatus(TestStatus.Running);
                 NotifyTestInfoChanged();
-                startLocalTestResult = "";
 
             } catch (Throwable ex) {
                 BmLog.error("Test was not started locally", ex);
             }
         }
-        return startLocalTestResult;
+        return callBackUrl;
     }
 
     public void stopTest() {
@@ -239,24 +265,6 @@ public class BmTestManager {
         }
     }
 
-    private void checkChangesInTestPlan() {
-        GuiPackage guiPackage = GuiPackage.getInstance();
-        if (guiPackage.isDirty()) {
-            int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
-                    "Do you want to save changes in current test-plan?",
-                    JMeterUtils.getResString("save?"),
-                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if (chosenOption == JOptionPane.YES_OPTION) {
-                Save save = new Save();
-                try {
-                    save.doAction(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "save"));
-                    GuiPackage.showInfoMessage("All changes are saved to " + guiPackage.getTestPlanFile(), "File is saved");
-                } catch (IllegalUserActionException iuae) {
-                    BmLog.error("Can not save file," + iuae);
-                }
-            }
-        }
-    }
 
     public void runInTheCloud() {
         TestInfo testInfo = this.getTestInfo();

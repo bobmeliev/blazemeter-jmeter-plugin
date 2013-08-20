@@ -129,6 +129,25 @@ public class Utils {
         return contents.toString();
     }
 
+    public static void checkChangesInTestPlan() {
+        GuiPackage guiPackage = GuiPackage.getInstance();
+        if (guiPackage.isDirty()) {
+            int chosenOption = JOptionPane.showConfirmDialog(GuiPackage.getInstance().getMainFrame(),
+                    "Do you want to save changes in current test-plan?",
+                    JMeterUtils.getResString("save?"),
+                    JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (chosenOption == JOptionPane.YES_OPTION) {
+                Save save = new Save();
+                try {
+                    save.doAction(new ActionEvent(guiPackage, ActionEvent.ACTION_PERFORMED, "save"));
+                    GuiPackage.showInfoMessage("All changes are saved to " + guiPackage.getTestPlanFile(), "File is saved");
+                } catch (IllegalUserActionException iuae) {
+                    BmLog.error("Can not save file," + iuae);
+                }
+            }
+        }
+    }
+
     public static void downloadJMX() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         BlazemeterApi blazemeterApi = BlazemeterApi.getInstance();
@@ -224,29 +243,6 @@ public class Utils {
         }
     }
 
-
-    public static String getJtlString(SampleEvent evt) {
-
-        SampleResult res = evt.getResult();
-        String t = Long.toString(res.getTime());
-        String lt = Long.toString(res.getLatency());
-        String ts = Long.toString(res.getTimeStamp());
-        String s = Boolean.toString(res.isSuccessful());
-        String lb = escape(res.getSampleLabel());
-        String rc = escape(res.getResponseCode());
-        String rm = escape(res.getResponseMessage());
-        String tn = escape(res.getThreadName());
-        String dt = escape(res.getDataType());
-        String by = Integer.toString(res.getBytes());
-        String sc = Integer.toString(res.getSampleCount());
-        String ec = Integer.toString(res.getErrorCount());
-        String ng = Integer.toString(res.getGroupThreads());
-        String na = Integer.toString(res.getAllThreads());
-        String hn = XML.escape(JMeterUtils.getLocalHostFullName());
-        String in = Long.toString(res.getIdleTime());
-
-        return String.format("<httpSample t=\"%s\" lt=\"%s\" ts=\"%s\" s=\"%s\" lb=\"%s\" rc=\"%s\" rm=\"%s\" tn=\"%s\" dt=\"%s\" by=\"%s\" sc=\"%s\" ec=\"%s\" ng=\"%s\" na=\"%s\" hn=\"%s\" in=\"%s\"/>\n", t, lt, ts, s, lb, rc, rm, tn, dt, by, sc, ec, ng, na, hn, in);
-    }
 
     public static JSONObject getJSONObject(SampleEvent evt) {
         SampleResult res = evt.getResult();

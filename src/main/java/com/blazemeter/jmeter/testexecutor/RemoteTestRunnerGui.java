@@ -42,11 +42,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                     "Invalid JMeter version");
 
         }
-        if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui(),Running in the cloud!");
-            this.setEnabled(false);
-            return;
-        }
         try {
             if (gui == null) {
                 gui = new TestPanelGui();
@@ -60,11 +55,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
 
     public TestElement createTestElement() {
-        if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui.createTestElement,Running in the cloud!");
-            return null;
-        }
-
         RemoteTestRunner testRunner = new RemoteTestRunner();
         modifyTestElement(testRunner);
         return testRunner;
@@ -72,10 +62,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     @Override
     public void modifyTestElement(TestElement te) {
-        if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui.modifyTestElement,Running in the cloud!");
-            return;
-        }
         super.configureTestElement(te);
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
 
@@ -92,10 +78,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     @Override
     public void configure(TestElement element) {
-        if (JMeterPluginUtils.inCloudConfig()) {
-            BmLog.console("RemoteTestRunnerGui.Configure,Running in the cloud!");
-            return;
-        }
         super.configure(element);
         BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) element;

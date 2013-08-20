@@ -23,10 +23,6 @@ public abstract class JMeterPluginUtils {
         return filename;
     }
 
-    public static boolean inCloudConfig() {
-        return JMeterUtils.getPropDefault("blazemeter.is_image", false);
-    }
-
     public static String getJmeterVersion() {
         String version = JMeterUtils.getJMeterVersion();
 

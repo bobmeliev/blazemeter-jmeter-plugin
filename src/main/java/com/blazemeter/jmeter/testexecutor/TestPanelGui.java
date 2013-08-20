@@ -536,7 +536,7 @@ public class TestPanelGui {
                         return;
                     }
                     if (testInfo.getError() != null) {
-                        String errorTitle = "Cannot startUploading test";
+                        String errorTitle = "Cannot start test";
                         String errorMessage = testInfo.getError();
                         if (errorMessage.equals("Insufficient credits")) {
                             errorMessage = errorMessage + ": turn to customer support service";
