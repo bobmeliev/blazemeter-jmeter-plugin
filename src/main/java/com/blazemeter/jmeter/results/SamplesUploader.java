@@ -21,8 +21,8 @@ public class SamplesUploader {
     private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> task;
     private static Thread samplesUploaderThread = null;
-    private static final int batchSize = 50;
-    private static final SamplesQueue samplesQueue = new SamplesQueue(batchSize);
+    private static final int samplesSize = 50;
+    private static final SamplesQueue samplesQueue = new SamplesQueue(samplesSize);
     private static final int MAX_DELAY = 30000;
 
     private SamplesUploader() {
@@ -38,8 +38,8 @@ public class SamplesUploader {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
                         long begin = System.currentTimeMillis();
-                        List<JSONObject> batch = samplesQueue.take((int) delay);
-                        send(batch, callBackUrl);
+                        List<JSONObject> samples = samplesQueue.take((int) delay);
+                        send(samples, callBackUrl);
                         long millisOfCurrentIteration = System.currentTimeMillis() - begin;
                         delay = MAX_DELAY - millisOfCurrentIteration;
                         if (delay < 0) {
@@ -78,9 +78,8 @@ public class SamplesUploader {
         }
     }
 
-    private static void send(List<JSONObject> batch, String callBackUrl) {
+    private static void send(List<JSONObject> samples, String callBackUrl) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-//        bmTestManager.logUpload();
-        //send samples to server
+        bmTestManager.samplesUpload(samples, callBackUrl);
     }
 }

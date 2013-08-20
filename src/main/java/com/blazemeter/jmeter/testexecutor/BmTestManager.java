@@ -10,6 +10,7 @@ import org.apache.jmeter.JMeter;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -253,6 +254,10 @@ public class BmTestManager {
 
     public void logUpload(String testId, String reportName, String buff, String dataType) {
         BlazemeterApi.getInstance().logUpload(getUserKey(), testId, reportName, buff, dataType);
+    }
+
+    public void samplesUpload(List<JSONObject> samples, String callBackUrl) {
+        BlazemeterApi.getInstance().samplesUpload(samples, callBackUrl);
     }
 
     public void uploadJmx() {

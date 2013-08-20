@@ -69,7 +69,19 @@ public class BlazemeterApi {
         postRequest.setHeader("Content-type", "application/json; charset=UTF-8");
 
         if (data != null) {
-            postRequest.setEntity(new StringEntity(data.toString()));
+            StringEntity stringEntity = null;
+
+            if (data.has("samples")) {
+                try {
+                    stringEntity = new StringEntity(data.getString("samples"));
+
+                } catch (JSONException je) {
+                    BmLog.error("Failed to prepare samples for sending: " + je.getMessage());
+                }
+            } else {
+                stringEntity = new StringEntity(data.toString());
+            }
+            postRequest.setEntity(stringEntity);
         }
 
         HttpResponse response = null;
@@ -99,9 +111,9 @@ public class BlazemeterApi {
                 jo = new JSONObject(output);
             }
         } catch (IOException e) {
-            BmLog.error("error while decoding Json", e);
+            BmLog.error("error while decoding Json: " + e.getMessage());
         } catch (JSONException e) {
-            BmLog.error("error while decoding Json", e);
+            BmLog.error("error while decoding Json: " + e.getMessage());
         } finally {
             return jo;
         }
@@ -419,8 +431,15 @@ public class BlazemeterApi {
         return fileSize;
     }
 
-    public synchronized void samplesUpload(List<String> samples) {
+    public synchronized void samplesUpload(List<JSONObject> samples, String callBackUrl) {
+        try {
+            JSONObject data = new JSONObject();
+            data.put("data", new JSONArray(samples));
 
+            JSONObject jo = getJson(callBackUrl, data);
+        } catch (JSONException e) {
+            BmLog.error("Failed to upload samples: " + e.getMessage());
+        }
     }
 
     public TestInfo updateTestSettings(String userKey, String testId, String location,
