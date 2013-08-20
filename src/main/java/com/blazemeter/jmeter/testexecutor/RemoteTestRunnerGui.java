@@ -76,6 +76,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
 
         TestInfo testInfo = gui.getTestInfo();
+        String userKey = BmTestManager.getInstance().getUserKey();
+        remoteTestRunner.setUserKey(userKey);
         remoteTestRunner.setTestInfo(testInfo);
         remoteTestRunner.setReportName("test_" + testInfo.getId() + ".jtl");
     }
