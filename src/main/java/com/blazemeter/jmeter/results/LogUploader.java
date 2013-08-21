@@ -1,8 +1,6 @@
 package com.blazemeter.jmeter.results;
 
-import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.Constants;
-import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.util.JMeterUtils;
@@ -72,7 +70,7 @@ public class LogUploader {
             }
             if (buff.length() > 0) {
                 logFilename = logFilename.substring(logFilename.lastIndexOf(System.getProperty("file.separator")) + 1);
-                upload(Utils.getHostIP() + "_" + logFilename, buff.toString(), "log");
+                new Thread(new Uploader(Utils.getHostIP() + "_" + logFilename, buff.toString(), "log")).run();
             }
             try {
                 Thread.sleep(10000);
@@ -83,6 +81,7 @@ public class LogUploader {
         uploadFinished = true;
 
     }
+
 
     public void stopListening() {
         if (!isRunning)
@@ -104,10 +103,5 @@ public class LogUploader {
         }
     }
 
-    private void upload(String logName, String data, String dataType) {
-        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-        String testId = testInfo.getId();
-        BmLog.debug(String.format("Log uploader sending log:%s , %d bytes  ", logName, data.length()));
-        BmTestManager.getInstance().logUpload(testId, logName, data, dataType);
-    }
+
 }
