@@ -25,7 +25,12 @@ public class JMeterLogsUploader {
         return instance;
     }
 
-    private void startLogUploaders(HashMap<String, String> log_files_names) {
+    public void startListening() {
+        if (isRunning)
+            return;
+
+        log_files.put("jmeter_log", JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log"));
+//        log_files.put("jmeter_server_log", Constants.JMETER_SERVER_LOG_FILENAME);
         for (Map.Entry<String, String> entry : log_files.entrySet()) {
             StringBuilder filename = new StringBuilder(entry.getValue());
             if (!new File(filename.toString()).exists()) {
@@ -42,15 +47,6 @@ public class JMeterLogsUploader {
                 BmLog.error("Failed to find log file " + filename + ": " + fnfe.getMessage());
             }
         }
-    }
-
-    public void startListening() {
-        if (isRunning)
-            return;
-
-        log_files.put("jmeter_log", JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log"));
-//        log_files.put("jmeter_server_log", Constants.JMETER_SERVER_LOG_FILENAME);
-        startLogUploaders(log_files);
         isRunning = true;
     }
 
