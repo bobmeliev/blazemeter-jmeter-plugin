@@ -21,6 +21,7 @@ public class SamplesUploader {
     private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> task;
     private static Thread samplesUploaderThread = null;
+    private static StringBuilder callBackUrl = null;
     private static final int samplesSize = 50;
     private static final SamplesQueue samplesQueue = new SamplesQueue(samplesSize);
     private static final int MAX_DELAY = 30000;
@@ -30,7 +31,7 @@ public class SamplesUploader {
 
 
     public static void startUploading(String url) {
-        final String callBackUrl = url;
+        callBackUrl = new StringBuilder(url);
         samplesUploaderThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -39,7 +40,7 @@ public class SamplesUploader {
                     try {
                         long begin = System.currentTimeMillis();
                         List<JSONObject> samples = samplesQueue.take((int) delay);
-                        send(samples, callBackUrl);
+                        send(samples, callBackUrl.toString());
                         long millisOfCurrentIteration = System.currentTimeMillis() - begin;
                         delay = MAX_DELAY - millisOfCurrentIteration;
                         if (delay < 0) {
@@ -47,7 +48,7 @@ public class SamplesUploader {
                             delay = 0;
                         }
                     } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                        return;
                     }
                 }
             }
@@ -57,22 +58,22 @@ public class SamplesUploader {
     }
 
     public static void stop() {
-
-        task.cancel(true);
-        /*
-        1.Stop checking time;
-        2.Stop checking capacity;
-        3. drainTo() all objects;
-        4. Send them to server;
-        5. Die.
-         */
-
+        try {
+            List<JSONObject> samples = samplesQueue.take(MAX_DELAY);
+            if (samples.size() > 0) {
+                send(samples, callBackUrl.toString());
+            }
+        } catch (InterruptedException ie) {
+            BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
+        }
+        if (!task.isDone()) {
+            task.cancel(true);
+        }
     }
 
     public static void addSample(JSONObject jsonObject) {
         try {
             samplesQueue.put(jsonObject);
-
         } catch (InterruptedException ie) {
             BmLog.error("Failed to add sample to uploader: Interruptedexception");
         }
