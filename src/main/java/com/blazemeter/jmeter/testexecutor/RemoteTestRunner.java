@@ -58,7 +58,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             public void onTestInfoChanged(TestInfo testInfo) {
                 setTestInfo(testInfo);
                 if ((testInfo.getStatus() == TestStatus.NotRunning) & JMeter.isNonGUI() & BmTestManager.isTestRunning()) {
-                    if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
+                    if (Utils.isJMeterServer()) {
                         try {
                             ShutdownClient.main(new String[]{"StopTestNow"});
 
