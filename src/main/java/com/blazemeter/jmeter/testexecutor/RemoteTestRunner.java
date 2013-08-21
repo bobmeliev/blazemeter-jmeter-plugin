@@ -2,7 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.blazemeter.jmeter.results.JMeterLogsUploader;
+import com.blazemeter.jmeter.results.LogUploader;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
@@ -175,7 +175,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 BmLog.debug("Opening test URL: " + url);
                 JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "true");
             }
-            JMeterLogsUploader.getInstance().startListening();
+            LogUploader.getInstance().startListening();
             SamplesUploader.startUploading(callBackUrl);
         }
     }
@@ -193,7 +193,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         } else {
             SamplesUploader.stop();
         }
-        JMeterLogsUploader.getInstance().stopListening();
+        LogUploader.getInstance().stopListening();
         bmTestManager.stopTest();
     }
 
