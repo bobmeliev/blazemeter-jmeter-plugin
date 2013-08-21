@@ -256,6 +256,7 @@
                 <properties>
                   <selected value="false"/>
                   <text value="Locally (Reporting Only)"/>
+                  <toolTipText value="Send results to cloud for displaying"/>
                 </properties>
               </component>
               <hspacer id="ae435">
@@ -270,6 +271,7 @@
                 <properties>
                   <selected value="true"/>
                   <text value="Run in the Cloud"/>
+                  <toolTipText value="Using cloud engines for test"/>
                 </properties>
               </component>
             </children>
@@ -353,6 +355,7 @@
                   <paintTrack value="true"/>
                   <requestFocusEnabled value="true"/>
                   <snapToTicks value="false"/>
+                  <toolTipText value="Set number of test users"/>
                   <value value="1"/>
                   <valueIsAdjusting value="true"/>
                 </properties>
@@ -395,13 +398,6 @@
               </component>
             </children>
           </grid>
-          <hspacer id="9080b">
-            <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="180" height="-1"/>
-              </grid>
-            </constraints>
-          </hspacer>
           <component id="5d795" class="javax.swing.JTextField" binding="enginesDescription">
             <constraints>
               <grid row="0" column="2" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -412,6 +408,7 @@
               <editable value="false"/>
               <enabled value="false"/>
               <text value="JMETER CONSOLE"/>
+              <toolTipText value="Number of JMeter engines"/>
             </properties>
           </component>
           <grid id="2e4d" binding="overridesPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -441,6 +438,7 @@
                     <properties>
                       <autoscrolls value="false"/>
                       <focusTraversalPolicyProvider value="true"/>
+                      <toolTipText value="How quickly will load increase"/>
                     </properties>
                   </component>
                   <component id="be28a" class="javax.swing.JLabel">
@@ -453,6 +451,7 @@
                       <labelFor value="ed43"/>
                       <requestFocusEnabled value="false"/>
                       <text value="Rampup Period (seconds)"/>
+                      <toolTipText value="How quickly will load increase"/>
                     </properties>
                   </component>
                   <grid id="d35e2" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -471,7 +470,9 @@
                             <maximum-size width="100" height="-1"/>
                           </grid>
                         </constraints>
-                        <properties/>
+                        <properties>
+                          <toolTipText value="&quot;0&quot; means &quot;FOREVER&quot;"/>
+                        </properties>
                       </component>
                       <component id="77663" class="javax.swing.JLabel">
                         <constraints>
@@ -483,6 +484,7 @@
                           <labelFor value="ed43"/>
                           <requestFocusEnabled value="false"/>
                           <text value="# Iterations"/>
+                          <toolTipText value="&quot;0&quot; means &quot;FOREVER&quot;"/>
                         </properties>
                       </component>
                     </children>
@@ -505,7 +507,9 @@
                         <maximum-size width="100" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <toolTipText value="&quot;0&quot; means &quot;Limited by Test Session Time&quot;"/>
+                    </properties>
                   </component>
                   <component id="52f8f" class="javax.swing.JLabel">
                     <constraints>
@@ -517,6 +521,7 @@
                       <labelFor value="ed43"/>
                       <requestFocusEnabled value="false"/>
                       <text value="Duration (minutes)"/>
+                      <toolTipText value="&quot;0&quot; means &quot;Limited by Test Session Time&quot;"/>
                     </properties>
                   </component>
                 </children>
@@ -537,17 +542,9 @@
               <inheritsPopupMenu value="true"/>
               <label value="Run in the Cloud!"/>
               <text value="Run in the Cloud!"/>
+              <toolTipText value="Update settings on server and start test"/>
             </properties>
           </component>
-          <hspacer id="7df60">
-            <constraints>
-              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
-                <minimum-size width="80" height="-1"/>
-                <preferred-size width="80" height="-1"/>
-                <maximum-size width="80" height="-1"/>
-              </grid>
-            </constraints>
-          </hspacer>
           <vspacer id="eae44">
             <constraints>
               <grid row="5" column="12" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
@@ -562,26 +559,7 @@
               <enabled value="false"/>
               <label value="Add Files for Cloud Test"/>
               <text value="Add Files for Cloud Test"/>
-            </properties>
-          </component>
-          <component id="d312c" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="80" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <text value="* 0 means &quot;FOREVER&quot;"/>
-            </properties>
-          </component>
-          <component id="26f87" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                <preferred-size width="100" height="-1"/>
-              </grid>
-            </constraints>
-            <properties>
-              <text value="* 0 means &quot;Limited by Test Session Time&quot;"/>
+              <toolTipText value="Add data files for test"/>
             </properties>
           </component>
           <component id="cf354" class="javax.swing.JButton" binding="editJMXLocallyButton" default-binding="true">
@@ -590,6 +568,7 @@
             </constraints>
             <properties>
               <text value="Edit JMX "/>
+              <toolTipText value="Download JMX from server and open"/>
             </properties>
           </component>
           <component id="1e22e" class="javax.swing.JButton" binding="saveUploadButton" default-binding="true">
@@ -598,6 +577,7 @@
             </constraints>
             <properties>
               <text value="Save/Upload JMX"/>
+              <toolTipText value="Upload JMX to server"/>
             </properties>
           </component>
         </children>
