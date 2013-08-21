@@ -75,6 +75,10 @@ public class Utils {
         return hostIP;
     }
 
+    public static boolean isJMeterServer() {
+        return Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime");
+    }
+
     /*
       This method perform verification whether or not test plan contains
       ThreadGroups. If test-plan does not contain any,

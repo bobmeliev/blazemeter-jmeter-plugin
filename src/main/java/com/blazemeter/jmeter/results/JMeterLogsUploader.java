@@ -10,47 +10,59 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JMeterLogFilesUploader {
-    private static JMeterLogFilesUploader instance;
+public class JMeterLogsUploader {
+    private static JMeterLogsUploader instance;
     private BufferedReader jmeter_log_reader;
     private BufferedReader jmeter_server_log_reader;
     String jmeter_server_log_filename = null;
     private String jmeter_log_filename = null;
+
+    private HashMap<String, String> log_files = null;
     private boolean uploadFinished;
     private boolean isRunning = false;
 
-    private JMeterLogFilesUploader() {
+    private JMeterLogsUploader() {
     }
 
 
-    public static JMeterLogFilesUploader getInstance() {
+    public static JMeterLogsUploader getInstance() {
         if (instance == null)
-            instance = new JMeterLogFilesUploader();
+            instance = new JMeterLogsUploader();
         return instance;
     }
 
-    private HashMap<String, BufferedReader> getLogFilesReaders() {
+    private void startLogUploaders(HashMap<String, String> log_files_names) {
         HashMap<String, BufferedReader> logFileReaders = null;
-        /*
-        How to get log files names?
-         */
-        return logFileReaders;
+        for (Map.Entry<String, String> entry : log_files.entrySet()) {
+            StringBuilder filename = new StringBuilder(entry.getValue());
+            if (!new File(filename.toString()).exists()) {
+                filename = new StringBuilder(JMeterUtils.getJMeterBinDir() + "/").append(filename);
+            }
+            try {
+                String host = Utils.getHostIP() + (Utils.isJMeterServer() ? "(jmeter-server)" : "");
+                BmLog.console("Log file path at host=" + host + "  is: " + filename);
+
+                BufferedReader logBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename.toString())));
+                logFileReaders.put(entry.getKey(), logBufferedReader);
+                uploadLog(filename.toString(), logBufferedReader);
+            } catch (FileNotFoundException fnfe) {
+                BmLog.error("Failed to find log file " + filename + ": " + fnfe.getMessage());
+            }
+        }
     }
 
-    private void startLogUploaders(HashMap<String, BufferedReader> logFilesReaders) {
-        if (isRunning) {
+    public void startListening() {
+        if (isRunning)
             return;
-        }
-        for (Map.Entry<String, BufferedReader> entry : logFilesReaders.entrySet()) {
-            /*
-            1.Get BufferedReader for each entry
-            2.Create LogUploader
-            2.Start log uploading from BufferedReader
 
-            If this is distributed test - jmeter.log+jmeter-server.log should be uploaded from each jmeter engine.
+/*
+        log_files.put("jmeter_log",JMeterUtils.getPropDefault(LoggingManager.LOG_FILE, "jmeter.log"));
+        log_files.put("jmeter_server_log",Constants.JMETER_SERVER_LOG_FILENAME);
+        startLogUploaders(log_files);
+*/
 
-             */
-        }
+
+        String jmeter_log_filename = getJMeterLogFilename();
         if (jmeter_log_filename != null) {
             try {
                 jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
@@ -67,7 +79,28 @@ public class JMeterLogFilesUploader {
             BmLog.error("Jmeter log file was not defined in jmeter.properties:jmeter server log will not be uploaded");
         }
 
-
+        /* if ThreadGroup has name "RMI Runtime", than this jmeter instance is jmeter-server.
+          Only in this case we need to upload jmeter-server.log
+        */
+        if (Utils.isJMeterServer()) {
+            String jmeter_server_log_filename = getJMeterServerLogFilename();
+            if (jmeter_server_log_filename != null) {
+                try {
+                    jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_server_log_filename)));
+                } catch (FileNotFoundException fnfe) {
+                    BmLog.error("Could not upload log file" + jmeter_server_log_filename + ", file not found!", fnfe);
+                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        UploadJmeterServerLog();
+                    }
+                }).start();
+            } else {
+                BmLog.error("Jmeter server log file was not defined in jmeter.properties");
+            }
+        }
+        isRunning = true;
     }
 
     public String getJMeterLogFilename() {
@@ -107,50 +140,36 @@ public class JMeterLogFilesUploader {
     }
 
 
-    public void startListening() {
-        if (isRunning)
-            return;
-        String jmeter_log_filename = getJMeterLogFilename();
-        if (jmeter_log_filename != null) {
+    private void uploadLog(String logFilename, BufferedReader logReader) {
+        uploadFinished = false;
+        boolean last = true;
+        while (isRunning || last) {
+            StringBuilder buff = new StringBuilder(4096);
+            String line;
             try {
-                jmeter_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_log_filename)));
-            } catch (FileNotFoundException fnfe) {
-                BmLog.error("Could not upload log file" + jmeter_log_filename + ", file not found!", fnfe);
-            }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    UploadJMeterLog();
+                while ((line = logReader.readLine()) != null) {
+                    buff.append(line);
+                    buff.append("\n");
                 }
-            }).start();
-        } else {
-            BmLog.error("Jmeter log file was not defined in jmeter.properties:jmeter server log will not be uploaded");
-        }
+            } catch (IOException e) {
+                BmLog.error("Problems with reading " + logFilename, e);
+            }
+            if (buff.length() > 0) {
+                logFilename = logFilename.substring(logFilename.lastIndexOf(System.getProperty("file.separator")) + 1);
+                new LogUploader(Utils.getHostIP() + "_" + logFilename, buff.toString(), "log").run();
 
-        /* if ThreadGroup has name "RMI Runtime", than this jmeter instance is jmeter-server.
-          Only in this case we need to upload jmeter-server.log
-        */
-        if (Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime")) {
-            String jmeter_server_log_filename = getJMeterServerLogFilename();
-            if (jmeter_server_log_filename != null) {
-                try {
-                    jmeter_server_log_reader = new BufferedReader(new InputStreamReader(new FileInputStream(jmeter_server_log_filename)));
-                } catch (FileNotFoundException fnfe) {
-                    BmLog.error("Could not upload log file" + jmeter_server_log_filename + ", file not found!", fnfe);
-                }
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        UploadJmeterServerLog();
-                    }
-                }).start();
-            } else {
-                BmLog.error("Jmeter server log file was not defined in jmeter.properties");
+
             }
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ignored) {
+            }
+            last = !isRunning && !last;
+
         }
-        isRunning = true;
+        uploadFinished = true;
+
     }
-
 
     private void UploadJMeterLog() {
         uploadFinished = false;
