@@ -191,7 +191,6 @@ public class TestPanelGui {
                 int dialogButton;
                 BmTestManager bmTestManager = BmTestManager.getInstance();
                 if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    TestInfoController.stop();
                     if (bmTestManager.getUserKey().isEmpty()) {
                         JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
                         return;

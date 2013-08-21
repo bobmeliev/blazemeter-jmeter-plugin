@@ -4,6 +4,7 @@ import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.*;
 import org.apache.jmeter.JMeter;
@@ -130,13 +131,13 @@ public class BmTestManager {
             return callBackUrl;
         }
 
-        BmLog.console("startTest" + testInfo);
+        BmLog.console("Start test " + testInfo);
 
         if (testInfo.getStatus() != TestStatus.Running) {
             if (testInfo.getId().isEmpty()) {
                 String projectName = JMeterPluginUtils.getProjectName();
                 if (projectName == null) {
-                    BmLog.debug("Running in NON-GUI mode!");
+                    BmLog.debug("Test is running in non-gui mode!");
                     projectName = "non-gui-test";
                 }
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
@@ -172,7 +173,7 @@ public class BmTestManager {
                 NotifyTestInfoChanged();
 
             } catch (Throwable ex) {
-                BmLog.error("Test was not started locally", ex);
+                BmLog.error("Test was not started locally: " + ex.getMessage());
             }
         }
         return callBackUrl;
@@ -278,6 +279,7 @@ public class BmTestManager {
             return;
         }
         BmLog.console("Starting test " + testInfo.getId() + "-" + testInfo.getName());
+        TestInfoController.stop();
         testInfo = rpc.runInTheCloud(this.getUserKey(), testInfo.getId());
         setTestInfo(testInfo);
     }
