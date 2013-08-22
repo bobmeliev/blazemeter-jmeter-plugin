@@ -36,16 +36,17 @@ public class LogUploader {
         }
         for (Map.Entry<String, String> entry : log_files.entrySet()) {
             StringBuilder filename = new StringBuilder(entry.getValue());
+            String host = Utils.getHostIP() + (Utils.isJMeterServer() ? "(jmeter-server)" : "");
+
             if (!new File(filename.toString()).exists()) {
                 filename = new StringBuilder(JMeterUtils.getJMeterBinDir() + "/").append(filename);
             }
             try {
-                String host = Utils.getHostIP() + (Utils.isJMeterServer() ? "(jmeter-server)" : "");
                 BmLog.console("Log file path at host= " + host + " is: " + filename);
 
                 BufferedReader logBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename.toString())));
                 logFileReaders.put(entry.getKey(), logBufferedReader);
-                uploadLog(filename.toString(), logBufferedReader);
+                initLogUploader(filename.toString(), logBufferedReader);
             } catch (FileNotFoundException fnfe) {
                 BmLog.error("Failed to find log file " + filename + ": " + fnfe.getMessage());
             }
@@ -54,7 +55,7 @@ public class LogUploader {
     }
 
 
-    private void uploadLog(String logFilename, BufferedReader logReader) {
+    private void initLogUploader(String logFilename, BufferedReader logReader) {
         uploadFinished = false;
         boolean last = true;
         while (isRunning || last) {
