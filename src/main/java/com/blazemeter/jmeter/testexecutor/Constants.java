@@ -36,4 +36,6 @@ public interface Constants {
     public static final String TEST_RAMP_UP = "rampUp";
     public static final String TEST_THREADS = "threads";
     public static final String JMETER_SERVER_LOG_FILENAME = "jmeter-server.log";
+    public static final String DATA = "data";
+    public static final String SAMPLES = "samples";
 }

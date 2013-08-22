@@ -71,9 +71,9 @@ public class BlazemeterApi {
         if (data != null) {
             StringEntity stringEntity = null;
 
-            if (data.has("samples")) {
+            if (data.has(Constants.SAMPLES)) {
                 try {
-                    stringEntity = new StringEntity(data.getString("samples"));
+                    stringEntity = new StringEntity(data.getString(Constants.SAMPLES));
 
                 } catch (JSONException je) {
                     BmLog.error("Failed to prepare samples for sending: " + je.getMessage());
@@ -102,9 +102,10 @@ public class BlazemeterApi {
 
     private JSONObject getJson(String url, JSONObject data) {
         JSONObject jo = null;
+        HttpResponse response = null;
         try {
 
-            HttpResponse response = getResponse(url, data);
+            response = getResponse(url, data);
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());
                 BmLog.debug(output);
@@ -344,7 +345,7 @@ public class BlazemeterApi {
         String fileCon = Utils.getFileContents(filePath);
 
         try {
-            jmxData.put("data", fileCon);
+            jmxData.put(Constants.DATA, fileCon);
         } catch (JSONException e) {
             BmLog.error(e);
         }
@@ -419,7 +420,7 @@ public class BlazemeterApi {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("data", buff);
+            obj.put(Constants.DATA, buff);
             JSONObject jo = getJson(url, obj);
             if (jo.has("file_size"))
                 fileSize = (Integer) jo.get("file_size");
@@ -434,7 +435,7 @@ public class BlazemeterApi {
     public synchronized void samplesUpload(List<JSONObject> samples, String callBackUrl) {
         try {
             JSONObject data = new JSONObject();
-            data.put("data", new JSONArray(samples));
+            data.put(Constants.SAMPLES, new JSONArray(samples));
 
             JSONObject jo = getJson(callBackUrl, data);
         } catch (JSONException e) {
