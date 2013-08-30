@@ -166,8 +166,8 @@ public class BmTestManager {
                     BmLog.console(error);
                     return callBackUrl;
 
-                } else if (res.containsKey("callbackurl")) {
-                    callBackUrl = res.get("callbackurl");
+                } else if (res.containsKey(Constants.CALLBACK_URL)) {
+                    callBackUrl = res.get(Constants.CALLBACK_URL);
                 }
                 testInfo.setStatus(TestStatus.Running);
                 NotifyTestInfoChanged();
@@ -184,6 +184,7 @@ public class BmTestManager {
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
         SamplesUploader.stop();
+        rpc.stopTest(userKey, testInfo.getId());
     }
 
 

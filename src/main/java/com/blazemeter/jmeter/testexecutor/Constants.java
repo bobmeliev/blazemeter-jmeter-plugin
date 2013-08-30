@@ -38,4 +38,5 @@ public interface Constants {
     public static final String JMETER_SERVER_LOG_FILENAME = "jmeter-server.log";
     public static final String DATA = "data";
     public static final String SAMPLES = "samples";
+    public static final String CALLBACK_URL = "callbackurl";
 }

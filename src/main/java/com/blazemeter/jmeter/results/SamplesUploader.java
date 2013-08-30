@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.results;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.Constants;
 import com.blazemeter.jmeter.utils.BmLog;
 import org.json.JSONObject;
 
@@ -31,6 +32,9 @@ public class SamplesUploader {
 
 
     public static void startUploading(String url) {
+        if (url == null) {
+            BmLog.error("Cannot start SamplesUploader: server did not send callBack URL");
+        }
         callBackUrl = new StringBuilder(url);
         samplesUploaderThread = new Thread(new Runnable() {
             @Override
@@ -54,7 +58,7 @@ public class SamplesUploader {
             }
         });
         task = scheduler.schedule(samplesUploaderThread, 0, TimeUnit.SECONDS);
-        BmLog.console("Samples uploading is started");
+        BmLog.console("Samples uploading is started: " + Constants.CALLBACK_URL + "=" + callBackUrl);
     }
 
     public static void stop() {
@@ -68,6 +72,7 @@ public class SamplesUploader {
         }
         if (!task.isDone()) {
             task.cancel(true);
+            BmLog.console("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
         }
     }
 

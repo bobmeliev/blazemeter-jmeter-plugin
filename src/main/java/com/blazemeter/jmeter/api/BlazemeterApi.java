@@ -565,7 +565,7 @@ public class BlazemeterApi {
         if (!responseCode.equals("200")) {
             res.put("error", errorMessage);
         } else {
-            res.put("callbackurl", callBackUrl);
+            res.put(Constants.CALLBACK_URL, callBackUrl);
         }
         return res;
     }
