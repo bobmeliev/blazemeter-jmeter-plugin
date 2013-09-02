@@ -250,44 +250,42 @@ public class Utils {
 
     public static JSONObject getJSONObject(SampleEvent evt) {
         SampleResult res = evt.getResult();
-        String t = Long.toString(res.getTime());
-        String lt = Long.toString(res.getLatency());
-        String ts = Long.toString(res.getTimeStamp());
-        String s = Boolean.toString(res.isSuccessful());
+        long t = res.getTime();
+        long lt = res.getLatency();
+        long ts = res.getTimeStamp();
+        boolean s = res.isSuccessful();
         String lb = escape(res.getSampleLabel());
         String rc = escape(res.getResponseCode());
         String rm = escape(res.getResponseMessage());
         String tn = escape(res.getThreadName());
         String dt = escape(res.getDataType());
-        String by = Integer.toString(res.getBytes());
-        String sc = Integer.toString(res.getSampleCount());
-        String ec = Integer.toString(res.getErrorCount());
-        String ng = Integer.toString(res.getGroupThreads());
-        String na = Integer.toString(res.getAllThreads());
+        int by = res.getBytes();
+        int sc = res.getSampleCount();
+        int ec = res.getErrorCount();
+        int ng = res.getGroupThreads();
+        int na = res.getAllThreads();
         String hn = XML.escape(JMeterUtils.getLocalHostFullName());
-        String in = Long.toString(res.getIdleTime());
+        long in = res.getIdleTime();
 
-        JSONObject data = new JSONObject();
         JSONObject httpSample = new JSONObject();
         try {
-            data.put("t", t);
-            data.put("lt", lt);
-            data.put("lt", lt);
-            data.put("ts", ts);
-            data.put("s", s);
-            data.put("lb", lb);
-            data.put("rc", rc);
-            data.put("rm", rm);
-            data.put("tn", tn);
-            data.put("dt", dt);
-            data.put("by", by);
-            data.put("sc", sc);
-            data.put("ec", ec);
-            data.put("ng", ng);
-            data.put("na", na);
-            data.put("hn", hn);
-            data.put("in", in);
-            httpSample.put("httpSample", data);
+            httpSample.put("t", t);
+            httpSample.put("lt", lt);
+            httpSample.put("lt", lt);
+            httpSample.put("ts", ts);
+            httpSample.put("s", s);
+            httpSample.put("lb", lb);
+            httpSample.put("rc", rc);
+            httpSample.put("rm", rm);
+            httpSample.put("tn", tn);
+            httpSample.put("dt", dt);
+            httpSample.put("by", by);
+            httpSample.put("sc", sc);
+            httpSample.put("ec", ec);
+            httpSample.put("ng", ng);
+            httpSample.put("na", na);
+            httpSample.put("hn", hn);
+            httpSample.put("in", in);
 
         } catch (JSONException je) {
             BmLog.error("Error while converting sample to JSONObject");
