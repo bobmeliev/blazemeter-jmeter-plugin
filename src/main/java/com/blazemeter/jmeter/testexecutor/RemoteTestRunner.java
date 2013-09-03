@@ -185,18 +185,20 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void testEnded(String host) {
-        JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "false");
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        BmTestManager.setTestRunning(false);
-        BmLog.console("Test is ended at " + host);
-        StandardJMeterEngine.stopEngine();
-        if (JMeter.isNonGUI()) {
-            System.exit(0);
-        } else {
-            SamplesUploader.stop();
+        if(BmTestManager.isTestRunning()){
+            JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "false");
+            BmTestManager bmTestManager = BmTestManager.getInstance();
+            BmTestManager.setTestRunning(false);
+            BmLog.console("Test is ended at " + host);
+            StandardJMeterEngine.stopEngine();
+            if (JMeter.isNonGUI()) {
+                System.exit(0);
+            } else {
+                SamplesUploader.stop();
+            }
+            LogUploader.getInstance().stopListening();
+            bmTestManager.stopTest();
         }
-        LogUploader.getInstance().stopListening();
-        bmTestManager.stopTest();
     }
 
     @Override

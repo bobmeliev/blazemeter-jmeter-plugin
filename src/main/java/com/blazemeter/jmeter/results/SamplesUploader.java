@@ -70,7 +70,7 @@ public class SamplesUploader {
         } catch (InterruptedException ie) {
             BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
         }
-        if (!task.isDone()) {
+        if (task!=null&&!task.isDone()) {
             task.cancel(true);
             BmLog.console("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
         }
