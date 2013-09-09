@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.Constants;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 import com.blazemeter.jmeter.testinfo.Overrides;
@@ -165,6 +166,8 @@ public class Utils {
         Save save = new Save();
         try {
             save.doAction(new ActionEvent(guiPackage, ActionEvent.ACTION_PERFORMED, ActionNames.SAVE_ALL_AS));
+            FileServer.getFileServer().setScriptName(GuiPackage.getInstance().getTreeListener()
+                    .getCurrentNode().getName() + Constants.JMX_FILE_EXTENSTION);
         } catch (IllegalUserActionException iuae) {
             BmLog.error("Can not save file," + iuae.getMessage());
         }
