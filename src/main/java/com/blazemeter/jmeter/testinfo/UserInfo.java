@@ -1,5 +1,7 @@
 package com.blazemeter.jmeter.testinfo;
 
+import org.json.JSONArray;
+
 import java.util.Date;
 
 /**
@@ -18,8 +20,10 @@ public class UserInfo {
     private int maxThreadsLarge;
     private String plan;
     private long time;
+    private JSONArray locations;
 
-    public UserInfo(String userName, int credits, String email, int maxUsersLimit, int maxEnginesLimit, int maxThreadsMedium, int maxThreadsLarge, String plan) {
+    public UserInfo(String userName, int credits, String email, int maxUsersLimit,
+                    int maxEnginesLimit, int maxThreadsMedium, int maxThreadsLarge, String plan, JSONArray locations) {
         this.time = new Date().getTime();
         this.userName = userName;
         this.credits = credits;
@@ -29,6 +33,7 @@ public class UserInfo {
         this.maxThreadsMedium = maxThreadsMedium;
         this.maxThreadsLarge = maxThreadsLarge;
         this.plan = plan;
+        this.locations = locations;
     }
 
     public String getUserName() {
@@ -101,6 +106,14 @@ public class UserInfo {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public JSONArray getLocations() {
+        return locations;
+    }
+
+    public void setLocations(JSONArray locations) {
+        this.locations = locations;
     }
 
     public String toString() {

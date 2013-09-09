@@ -16,6 +16,9 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -440,6 +443,19 @@ public class TestPanelGui {
                         numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
                         Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
                         numberOfUsersSlider.setLabelTable(labels);
+
+                        //set locations list
+                        JSONArray locations = userInfo.getLocations();
+                        locationComboBox.removeAllItems();
+                        try {
+                            for (int i = 0; i < locations.length(); ++i) {
+                                JSONObject location = locations.getJSONObject(i);
+                                locationComboBox.addItem(location.get("title"));
+                            }
+                        } catch (JSONException je) {
+                            BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
+                        }
+
                     }
                 }
             });

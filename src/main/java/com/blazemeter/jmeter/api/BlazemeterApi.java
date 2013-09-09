@@ -167,10 +167,9 @@ public class BlazemeterApi {
                         jo.getInt("max_engines_limit"),
                         jo.getInt("max_threads_medium"),
                         jo.getInt("max_threads_large"),
-                        jo.getString("plan")
+                        jo.getString("plan"),
+                        jo.getJSONArray("locations")
                 );
-
-
             }
         } catch (JSONException e) {
             BmLog.error("status getting status", e);
