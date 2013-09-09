@@ -125,7 +125,24 @@ public class TestPanelGui {
         locationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                BmTestManager.getInstance().getTestInfo().setLocation((String) locationComboBox.getSelectedItem());
+                JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
+                StringBuilder locationId = null;
+                if (locations.length() > 0) {
+
+                    try {
+                        for (int i = 0; i < locations.length(); ++i) {
+                            JSONObject location = locations.getJSONObject(i);
+                            if (location.get("title").equals(locationComboBox.getSelectedItem())) {
+                                locationId = new StringBuilder((String) location.get("id"));
+                            }
+                        }
+                    } catch (JSONException je) {
+                        BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
+                    }
+                    BmTestManager.getInstance().getTestInfo().setLocation(locationId.toString());
+                    locationId.setLength(0);
+
+                }
             }
         });
         goToTestPageButton.addActionListener(new ActionListener() {
@@ -446,16 +463,17 @@ public class TestPanelGui {
 
                         //set locations list
                         JSONArray locations = userInfo.getLocations();
-                        locationComboBox.removeAllItems();
-                        try {
-                            for (int i = 0; i < locations.length(); ++i) {
-                                JSONObject location = locations.getJSONObject(i);
-                                locationComboBox.addItem(location.get("title"));
+                        if (locations.length() > 0) {
+                            locationComboBox.removeAllItems();
+                            try {
+                                for (int i = 0; i < locations.length(); ++i) {
+                                    JSONObject location = locations.getJSONObject(i);
+                                    locationComboBox.addItem(location.get("title"));
+                                }
+                            } catch (JSONException je) {
+                                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
                             }
-                        } catch (JSONException je) {
-                            BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
                         }
-
                     }
                 }
             });
