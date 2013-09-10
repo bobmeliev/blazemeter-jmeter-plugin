@@ -124,21 +124,9 @@ public class TestPanelGui {
         locationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
-                if (locations.length() > 0) {
-                    StringBuilder locationId;
-                    try {
-                        for (int i = 0; i < locations.length(); ++i) {
-                            JSONObject location = locations.getJSONObject(i);
-                            if (location.get("title").equals(locationComboBox.getSelectedItem())) {
-                                locationId = new StringBuilder((String) location.get("id"));
-                                BmTestManager.getInstance().getTestInfo().setLocation(locationId.toString());
-                                locationId.setLength(0);
-                            }
-                        }
-                    } catch (JSONException je) {
-                        BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
-                    }
+                String locationId = Utils.getLocationId((String) locationComboBox.getSelectedItem());
+                if (!locationId.isEmpty()) {
+                    BmTestManager.getInstance().getTestInfo().setLocation(locationId);
                 }
             }
         });
@@ -769,7 +757,10 @@ public class TestPanelGui {
         if (!bmTestManager.getIsLocalRunMode()) {
             // update Cloud panel
             if ("jmeter".equals(testInfo.getType())) {
-                locationComboBox.setSelectedItem(testInfo.getLocation());
+                String locationTitle = Utils.getLocationTitle(testInfo.getLocation());
+                if (!locationTitle.isEmpty()) {
+                    locationComboBox.setSelectedItem(locationTitle);
+                }
                 numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
                 if (testInfo.getOverrides() != null) {
                     rampupSpinner.setValue(testInfo.getOverrides().getRampup());

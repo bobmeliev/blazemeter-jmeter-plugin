@@ -25,6 +25,7 @@ import org.apache.jmeter.testelement.TestPlan;
 import org.apache.jmeter.threads.AbstractThreadGroup;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.collections.HashTree;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
@@ -79,6 +80,46 @@ public class Utils {
     public static boolean isJMeterServer() {
         return Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime");
     }
+
+    public static String getLocationId(String locationTitle) {
+        JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
+        if (locations.length() > 0) {
+            String locationId;
+            try {
+                for (int i = 0; i < locations.length(); ++i) {
+                    JSONObject location = locations.getJSONObject(i);
+                    if (location.get("title").equals(locationTitle)) {
+                        locationId = (String) location.get("id");
+                        return locationId;
+                    }
+                }
+            } catch (JSONException je) {
+                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
+            }
+
+        }
+        return "";
+    }
+
+    public static String getLocationTitle(String locationId) {
+        JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
+        if (locations.length() > 0) {
+            String locationTitle;
+            try {
+                for (int i = 0; i < locations.length(); ++i) {
+                    JSONObject location = locations.getJSONObject(i);
+                    if (location.get("id").equals(locationId)) {
+                        locationTitle = (String) location.get("title");
+                        return locationTitle;
+                    }
+                }
+            } catch (JSONException je) {
+                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
+            }
+        }
+        return "";
+    }
+
 
     /*
       This method perform verification whether or not test plan contains
