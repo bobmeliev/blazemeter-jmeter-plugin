@@ -3,7 +3,6 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
-import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -126,22 +125,20 @@ public class TestPanelGui {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
-                StringBuilder locationId = null;
                 if (locations.length() > 0) {
-
+                    StringBuilder locationId;
                     try {
                         for (int i = 0; i < locations.length(); ++i) {
                             JSONObject location = locations.getJSONObject(i);
                             if (location.get("title").equals(locationComboBox.getSelectedItem())) {
                                 locationId = new StringBuilder((String) location.get("id"));
+                                BmTestManager.getInstance().getTestInfo().setLocation(locationId.toString());
+                                locationId.setLength(0);
                             }
                         }
                     } catch (JSONException je) {
                         BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
                     }
-                    BmTestManager.getInstance().getTestInfo().setLocation(locationId.toString());
-                    locationId.setLength(0);
-
                 }
             }
         });
@@ -789,23 +786,6 @@ public class TestPanelGui {
         }
     }
 
-    protected TestInfo getTestInfo() {
-        TestInfo testInfo = new TestInfo();
-        testInfo.setId(testIdTextField.getText());
-        testInfo.setName(testNameTextField.getText());
-        testInfo.setStatus(runInTheCloud.getText().equals("Run in the Cloud!") ? TestStatus.NotRunning : TestStatus.Running);
-        testInfo.setError(null);
-        testInfo.setNumberOfUsers(numberOfUsersSlider.getValue());
-        testInfo.setLocation(locationComboBox.getSelectedItem().toString());
-        Overrides overrides = new Overrides((Integer) durationSpinner.getValue(),
-                (Integer) iterationsSpinner.getValue(),
-                (Integer) rampupSpinner.getValue(),
-                numberOfUsersSlider.getValue()
-        );
-        testInfo.setOverrides(overrides);
-        testInfo.setType("jmeter");
-        return testInfo;
-    }
 
     private void configureMainPanelControls(TestInfo testInfo) {
         boolean isRunning = (testInfo != null && testInfo.getStatus() == TestStatus.Running);

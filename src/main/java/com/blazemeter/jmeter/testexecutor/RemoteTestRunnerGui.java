@@ -63,9 +63,10 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     @Override
     public void modifyTestElement(TestElement te) {
         super.configureTestElement(te);
+        BmTestManager bmTestManager = BmTestManager.getInstance();
         RemoteTestRunner remoteTestRunner = (RemoteTestRunner) te;
 
-        TestInfo testInfo = gui.getTestInfo();
+        TestInfo testInfo = bmTestManager.getTestInfo();
         String userKey = BmTestManager.getInstance().getUserKey();
         remoteTestRunner.setUserKey(userKey);
         remoteTestRunner.setTestInfo(testInfo);
