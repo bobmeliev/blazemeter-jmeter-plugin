@@ -44,12 +44,14 @@ public class SamplesUploader {
                     try {
                         long begin = System.currentTimeMillis();
                         List<JSONObject> samples = samplesQueue.take((int) delay);
-                        send(samples, callBackUrl.toString());
-                        long millisOfCurrentIteration = System.currentTimeMillis() - begin;
-                        delay = MAX_DELAY - millisOfCurrentIteration;
-                        if (delay < 0) {
-                            // если отсылка заняла больше 30 секунд
-                            delay = 0;
+                        if (samples.size() > 0) {
+                            send(samples, callBackUrl.toString());
+                            long millisOfCurrentIteration = System.currentTimeMillis() - begin;
+                            delay = MAX_DELAY - millisOfCurrentIteration;
+                            if (delay < 0) {
+                                // если отсылка заняла больше 30 секунд
+                                delay = 0;
+                            }
                         }
                     } catch (InterruptedException e) {
                         return;
@@ -70,7 +72,7 @@ public class SamplesUploader {
         } catch (InterruptedException ie) {
             BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
         }
-        if (task!=null&&!task.isDone()) {
+        if (task != null && !task.isDone()) {
             task.cancel(true);
             BmLog.console("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
         }
