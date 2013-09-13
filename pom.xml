@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <blazemeter.jmeter.plugin.version>1.55-201306080954</blazemeter.jmeter.plugin.version>
+        <blazemeter.jmeter.plugin.version>2.0.0</blazemeter.jmeter.plugin.version>
         <blazemeter.jmeter.plugin.groupId>blazemeter-jmeter-plugin</blazemeter.jmeter.plugin.groupId>
         <blazemeter.jmeter.plugin.artefactId>blazemeter-jmeter-plugin</blazemeter.jmeter.plugin.artefactId>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

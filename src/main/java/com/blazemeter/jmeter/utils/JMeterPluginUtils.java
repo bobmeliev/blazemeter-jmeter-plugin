@@ -35,7 +35,7 @@ public abstract class JMeterPluginUtils {
     }
 
     public static PluginVersion getPluginVersion() {
-        return new PluginVersion(1, 55, "201306080954"); //YY-MM-DD-HH-MM
+        return new PluginVersion(2, 0, "0"); //number of patch
         //should be changed before building version for publishing
     }
 }

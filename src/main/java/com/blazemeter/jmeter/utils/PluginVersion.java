@@ -30,7 +30,7 @@ public class PluginVersion {
 
     public String toString(boolean full) {
         if (full)
-            return String.format("%d.%2d-%s", major, minor, build);
-        return String.format("%d.%2d", major, minor);
+            return String.format("%d.%d.%s", major, minor, build);
+        return String.format("%d.%d", major, minor);
     }
 }
