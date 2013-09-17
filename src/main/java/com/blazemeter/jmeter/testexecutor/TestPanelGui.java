@@ -554,10 +554,14 @@ public class TestPanelGui {
                         return;
                     }
                     if (testInfo.getError() != null) {
-                        String errorTitle = "Cannot start test";
+                        String errorTitle = "Problems with test";
                         String errorMessage = testInfo.getError();
                         if (errorMessage.equals("Insufficient credits")) {
                             errorMessage = errorMessage + ": turn to customer support service";
+                        }
+                        if (errorMessage.equals("Test not found")) {
+                            testInfo.setError(null);
+                            return;
                         }
                         JMeterUtils.reportErrorToUser(errorMessage, errorTitle);
                         testInfo.setError(null);
@@ -690,15 +694,18 @@ public class TestPanelGui {
                     }
                     String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
                     if (!currentTest.isEmpty()) {
-                        String currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
+                        StringBuilder currentTestId = new StringBuilder(currentTest.substring(0, currentTest.indexOf(";")));
                         for (TestInfo ti : tests) {
                             if (ti.getId().equals(currentTestId)) {
                                 testIdComboBox.setSelectedItem(ti);
                             }
                         }
-                        if (!testIdList.isEmpty() && !testIdList.contains(currentTestId)) {
+                        if ((!testIdList.isEmpty() & currentTestId.length() != 0) && !testIdList.contains(currentTestId)) {
                             JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
                                     , "Test was not found on server");
+                            currentTestId.setLength(0);
+                            JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
+
                         }
                     }
                 } else {
