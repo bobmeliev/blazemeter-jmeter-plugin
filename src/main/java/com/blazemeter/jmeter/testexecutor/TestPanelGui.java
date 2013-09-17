@@ -541,6 +541,7 @@ public class TestPanelGui {
                             bmTestManager.setUserKey(newVal);
                             if (!newVal.isEmpty()) {
                                 fetchUserTestsAsync();
+                                signUpToBlazemeterButton.setVisible(false);
                             }
                         }
                     }
