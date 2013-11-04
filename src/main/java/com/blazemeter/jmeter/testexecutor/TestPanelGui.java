@@ -373,6 +373,7 @@ public class TestPanelGui {
                         " '1' will be saved");
                 userPerEngine = 1;
                 testInfo.getOverrides().setThreads(userPerEngine);
+                testInfo.setNumberOfUsers(Integer.valueOf(userPerEngine));
             }
             testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
                     bmTestManager.getTestInfo());
