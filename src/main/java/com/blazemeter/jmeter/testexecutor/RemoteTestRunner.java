@@ -8,7 +8,6 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.JMeterPluginUtils;
 import com.blazemeter.jmeter.utils.TestStatus;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
@@ -38,7 +37,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     public RemoteTestRunner() {
         super();
-        if (Float.parseFloat(JMeterPluginUtils.getJmeterVersion()) < 2.5) {
+        if (Float.parseFloat(Utils.getJmeterVersion()) < 2.5) {
             BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
 
         }
@@ -185,7 +184,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public void testEnded(String host) {
-        if(BmTestManager.isTestRunning()){
+        if (BmTestManager.isTestRunning()) {
             JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "false");
             BmTestManager bmTestManager = BmTestManager.getInstance();
             BmTestManager.setTestRunning(false);

@@ -234,6 +234,7 @@ public class BlazemeterApi {
         if (userKey == null || userKey.trim().isEmpty()) {
             error = "Test cannot be started in the cloud, userKey is empty";
             BmLog.debug(error);
+            testInfo = new TestInfo();
             testInfo.setError(error);
             return testInfo;
         }
@@ -241,6 +242,7 @@ public class BlazemeterApi {
         if (testId == null || testId.trim().isEmpty()) {
             error = "Test cannot be started in the cloud, testId is empty";
             BmLog.debug(error);
+            testInfo = new TestInfo();
             testInfo.setError(error);
             return testInfo;
         }
@@ -311,7 +313,7 @@ public class BlazemeterApi {
         JSONObject properties = new JSONObject();
         try {
             JSONObject jo = new JSONObject();
-            jo.put("JMETER_VERSION", JMeterPluginUtils.getJmeterVersion());
+            jo.put("JMETER_VERSION", Utils.getJmeterVersion());
             properties.put("options", jo);
         } catch (JSONException e) {
             BmLog.error(e);
@@ -461,7 +463,7 @@ public class BlazemeterApi {
         try {
             JSONObject options = new JSONObject();
             options.put("NUMBER_OF_ENGINES", engines);//engine
-            options.put("JMETER_VERSION", JMeterPluginUtils.getJmeterVersion());//engine
+            options.put("JMETER_VERSION", Utils.getJmeterVersion());//engine
             options.put("INSTANCE_TYPE", engineType);//engine
             options.put("OVERRIDE", 1);
             options.put("OVERRIDE_THREADS", usersPerEngine);//threads
@@ -525,7 +527,7 @@ public class BlazemeterApi {
         PluginUpdate update = null;
         try {
             userKey = userKey == null ? "" : userKey;
-            String url = this.urlManager.getUpdate(Constants.APP_KEY, userKey, JMeterPluginUtils.getPluginVersion().toString(true));
+            String url = this.urlManager.getUpdate(Constants.APP_KEY, userKey, Utils.getPluginVersion().toString(true));
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
@@ -597,7 +599,7 @@ public class BlazemeterApi {
             SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
             BmLog.console("Server url is :" + SERVER_URL);
             BmLog.console("Jmeter version :" + JMeterUtils.getJMeterVersion());
-            BmLog.console("Plugin version :" + JMeterPluginUtils.getPluginVersion().toString(true));
+            BmLog.console("Plugin version :" + Utils.getPluginVersion().toString(true));
         }
 
         protected static BmUrlManager getBmUrlManager() {

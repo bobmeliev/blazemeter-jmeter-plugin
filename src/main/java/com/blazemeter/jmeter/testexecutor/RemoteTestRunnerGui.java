@@ -5,7 +5,6 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.JMeterPluginUtils;
 import com.blazemeter.jmeter.utils.PluginUpdate;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
@@ -36,7 +35,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     public RemoteTestRunnerGui() {
         super();
-        String jmversion = JMeterPluginUtils.getJmeterVersion();
+        String jmversion = Utils.getJmeterVersion();
         if (Float.parseFloat(jmversion) < 2.5) {
             JMeterUtils.reportErrorToUser("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.",
                     "Invalid JMeter version");
@@ -119,11 +118,11 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         icon.setIcon(
                 new ImageIcon(
-                        JMeterPluginUtils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
+                        Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         icon.addMouseListener(new Utils.URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
 
-        JLabel version = new JLabel("Version:" + JMeterPluginUtils.getPluginVersion().toString());
+        JLabel version = new JLabel("Version:" + Utils.getPluginVersion().toString());
 
         version.setFont(version.getFont().deriveFont(Font.PLAIN).deriveFont(14F));
         version.setForeground(Color.GRAY);

@@ -6,7 +6,10 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
-import com.blazemeter.jmeter.utils.*;
+import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.PluginUpdate;
+import com.blazemeter.jmeter.utils.TestStatus;
+import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.services.FileServer;
@@ -135,7 +138,7 @@ public class BmTestManager {
 
         if (testInfo.getStatus() != TestStatus.Running) {
             if (testInfo.getId().isEmpty()) {
-                String projectName = JMeterPluginUtils.getProjectName();
+                String projectName = Utils.getProjectName();
                 if (projectName == null) {
                     BmLog.debug("Test is running in non-gui mode!");
                     projectName = "non-gui-test";
@@ -420,8 +423,8 @@ public class BmTestManager {
             @Override
             public void run() {
                 PluginUpdate update = BlazemeterApi.getInstance().getUpdate(BmTestManager.getInstance().getUserKey());
-                if (update != null && update.getVersion().isNewerThan(JMeterPluginUtils.getPluginVersion())) {
-                    BmLog.console(String.format("Update found from %s to %s", JMeterPluginUtils.getPluginVersion().toString(true), update.getVersion().toString(true)));
+                if (update != null && update.getVersion().isNewerThan(Utils.getPluginVersion())) {
+                    BmLog.console(String.format("Update found from %s to %s", Utils.getPluginVersion().toString(true), update.getVersion().toString(true)));
                     NotifyPluginUpdateReceived(update);
                 } else {
                     BmLog.console("No update found");

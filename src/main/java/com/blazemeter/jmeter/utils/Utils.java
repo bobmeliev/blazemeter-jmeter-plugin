@@ -491,6 +491,35 @@ public class Utils {
 
     }
 
+    public static String getProjectName() {
+        if (GuiPackage.getInstance() == null)
+            return null;
+        String projectPath = GuiPackage.getInstance().getTestPlanFile();
+        String filename = "untitled";
+        if (projectPath != null) {
+            filename = new File(projectPath).getName();
+            if (filename.length() > 4)
+                filename = filename.toLowerCase().endsWith(".jmx") ? filename.substring(0, filename.length() - 4) : filename;
+        }
+        return filename;
+    }
+
+    public static String getJmeterVersion() {
+        String version = JMeterUtils.getJMeterVersion();
+
+        int hyphenIndex = version.indexOf("-");
+        int spaceIndex = version.indexOf(" ");
+
+        return (hyphenIndex != -1 & spaceIndex == -1) ?
+                version.substring(0, hyphenIndex) :
+                version.substring(0, spaceIndex);
+    }
+
+    public static PluginVersion getPluginVersion() {
+        return new PluginVersion(2, 0, "0"); //number of patch
+        //should be changed before building version for publishing
+    }
+
 
     public static class URIOpener extends MouseAdapter {
         private final String uri;
