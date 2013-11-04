@@ -35,12 +35,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     public RemoteTestRunnerGui() {
         super();
-        String jmversion = Utils.getJmeterVersion();
-        if (Float.parseFloat(jmversion) < 2.5) {
-            JMeterUtils.reportErrorToUser("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.",
-                    "Invalid JMeter version");
-
-        }
+        Utils.checkJMeterVersion();
         try {
             if (gui == null) {
                 gui = new TestPanelGui();

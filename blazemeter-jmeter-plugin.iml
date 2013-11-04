@@ -9,6 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.0" level="project" />
     <orderEntry type="library" name="Maven: com.hp.hpl.jena:json-jena:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.intellij:forms_rt:6.0.5" level="project" />
     <orderEntry type="library" name="Maven: asm:asm-commons:2.2.3" level="project" />
@@ -41,7 +42,6 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: excalibur-logger:excalibur-logger:1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: excalibur-pool:excalibur-pool:1.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.htmlparser:htmllexer:2.1" level="project" />
-    <orderEntry type="library" name="Maven: com.sun:tools:1.5.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.htmlparser:htmlparser:2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.httpcomponents:httpclient:4.1.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.httpcomponents:httpcore:4.1.4" level="project" />

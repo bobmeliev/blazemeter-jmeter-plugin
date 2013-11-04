@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
 import org.apache.jmeter.gui.GuiPackage;
@@ -193,6 +194,23 @@ public class Utils {
             }
         }
     }
+
+    public static void checkJMeterVersion() {
+
+        String[] currentVersion = StringUtils.split(Utils.getJmeterVersion(), ".");
+        String[] baseVersion = StringUtils.split("2.5", ".");
+        if (currentVersion[0].equals(baseVersion[0])) {
+            if (Integer.valueOf(currentVersion[1]) < Integer.valueOf(baseVersion[1])) {
+                if (JMeter.isNonGUI()) {
+                    BmLog.error("Blazemeter Listener won't work with " + Utils.getJmeterVersion() + " version of JMeter. Please, update Jmeter to 2.5 or later.");
+                } else {
+                    JMeterUtils.reportErrorToUser("Blazemeter Listener won't work with " + Utils.getJmeterVersion() + " version of JMeter. Please, update Jmeter to 2.5 or later.",
+                            "Invalid JMeter version");
+                }
+            }
+        }
+    }
+
 
     public static void downloadJMX() {
         BmTestManager bmTestManager = BmTestManager.getInstance();

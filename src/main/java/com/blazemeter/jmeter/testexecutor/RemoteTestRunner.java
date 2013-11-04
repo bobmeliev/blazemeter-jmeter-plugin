@@ -37,10 +37,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     public RemoteTestRunner() {
         super();
-        if (Float.parseFloat(Utils.getJmeterVersion()) < 2.5) {
-            BmLog.error("Blazemeter Listener won't work with this version of JMeter. Please, update Jmeter to 2.5 or later.");
-
-        }
+        Utils.checkJMeterVersion();
 
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
