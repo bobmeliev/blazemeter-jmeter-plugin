@@ -15,8 +15,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.action.ActionNames;
-import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +25,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Dictionary;
 
@@ -607,11 +608,24 @@ public class TestPanelGui {
                         configureMainPanelControls(testInfo);
 
                         if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
+                            try {
+//                                Registry registry = LocateRegistry.getRegistry(Registry.REGISTRY_PORT);
+                                String[] jmeterEngines = LocateRegistry.getRegistry(Registry.REGISTRY_PORT).list();
+//                                String[] names = Naming.list("rmi://localhost:1099");
+                            }/*catch (MalformedURLException mue){
+                                BmLog.error("Cannot get list of remote objects from RMI registry");
+                            }*/ catch (RemoteException re) {
+                                BmLog.error("Failed to get list of remote objects from RMI registry");
+                            }
+
                             SamplesUploader.stop();
                             StandardJMeterEngine.stopEngine();
-                            JToolBar jToolBar = GuiPackage.getInstance().getMainToolbar();
+
+
+                 /*           JToolBar jToolBar = GuiPackage.getInstance().getMainToolbar();
                             Component[] components = jToolBar.getComponents();
                             ActionRouter.getInstance().actionPerformed(new ActionEvent(components[0], ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_STOP_ALL));
+                 */
                         }
                     }
 
