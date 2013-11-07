@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -378,7 +379,16 @@ public class TestPanelGui {
                 JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
                         " '1' will be saved");
                 userPerEngine = 1;
-                testInfo.getOverrides().setThreads(userPerEngine);
+                Overrides overrides = testInfo.getOverrides();
+                if (overrides != null) {
+                    testInfo.getOverrides().setThreads(userPerEngine);
+                } else {
+                    overrides = new Overrides((Integer) durationSpinner.getValue(),
+                            (Integer) iterationsSpinner.getValue(),
+                            (Integer) rampupSpinner.getValue(),
+                            userPerEngine);
+                    testInfo.setOverrides(overrides);
+                }
                 testInfo.setNumberOfUsers(Integer.valueOf(userPerEngine));
             }
             testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
