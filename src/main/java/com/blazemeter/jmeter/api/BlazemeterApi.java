@@ -26,6 +26,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BlazemeterApi {
 
@@ -373,7 +374,8 @@ public class BlazemeterApi {
         FileOutputStream fileOutputStream = null;
         File file = null;
         try {
-            file = new File(System.getProperty("user.home") + "/" + jmxName);
+            Map<String, String> env = System.getenv();
+            file = new File(env.get("JMETER") + "/" + jmxName);
             // if file doesnt exists, then create it
             if (!file.exists()) {
                 file.createNewFile();
