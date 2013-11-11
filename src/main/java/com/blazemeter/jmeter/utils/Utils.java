@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestStatus;
 import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.JMeter;
@@ -534,7 +535,7 @@ public class Utils {
     }
 
     public static PluginVersion getPluginVersion() {
-        return new PluginVersion(2, 0, "0"); //number of patch
+        return new PluginVersion(2, 1, "0"); //number of patch
         //should be changed before building version for publishing
     }
 

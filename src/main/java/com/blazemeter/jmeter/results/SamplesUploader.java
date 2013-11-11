@@ -26,6 +26,7 @@ public class SamplesUploader {
     private static final int samplesSize = 50;
     private static final SamplesQueue samplesQueue = new SamplesQueue(samplesSize);
     private static final int MAX_DELAY = 30000;
+    private static long millisOfCurrentIteration = 0;
 
     private SamplesUploader() {
     }
@@ -39,19 +40,18 @@ public class SamplesUploader {
         samplesUploaderThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                long delay = MAX_DELAY;
                 while (!Thread.currentThread().isInterrupted()) {
+                    long delay = MAX_DELAY - millisOfCurrentIteration;
+                    if (delay < 0) {
+                        // if sending results to server took more than 30secs, set
+                        millisOfCurrentIteration = 30000;
+                    }
                     try {
-                        long begin = System.currentTimeMillis();
                         List<JSONObject> samples = samplesQueue.take((int) delay);
                         if (samples.size() > 0) {
+                            long begin = System.currentTimeMillis();
                             send(samples, callBackUrl.toString());
-                            long millisOfCurrentIteration = System.currentTimeMillis() - begin;
-                            delay = MAX_DELAY - millisOfCurrentIteration;
-                            if (delay < 0) {
-                                // если отсылка заняла больше 30 секунд
-                                delay = 0;
-                            }
+                            millisOfCurrentIteration = System.currentTimeMillis() - begin;
                         }
                     } catch (InterruptedException e) {
                         return;
