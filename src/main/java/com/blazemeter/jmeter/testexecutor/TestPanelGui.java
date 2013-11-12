@@ -67,6 +67,8 @@ public class TestPanelGui {
     private JPanel jmeterSettingsPanel;
     private JTextField textField2;
     private JTextField textField1;
+    private JTextField textField3;
+    private JTextField textField4;
 
 
     public TestPanelGui() {
@@ -771,11 +773,8 @@ public class TestPanelGui {
     private void runModeChanged(boolean isLocalRunMode) {
         runLocal.setSelected(isLocalRunMode);
         runRemote.setSelected(!isLocalRunMode);
-        if (isLocalRunMode) {
-            cloudPanel.setVisible(false);
-        } else {
-            cloudPanel.setVisible(true);
-        }
+        cloudPanel.setVisible(!isLocalRunMode);
+        jmeterSettingsPanel.setVisible(!isLocalRunMode);
     }
 
     protected void setTestInfo(TestInfo testInfo) {
@@ -1112,10 +1111,30 @@ public class TestPanelGui {
         saveUploadButton.setToolTipText("Upload JMX to server");
         cloudPanel.add(saveUploadButton, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         jmeterSettingsPanel = new JPanel();
-        jmeterSettingsPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        jmeterSettingsPanel.setLayout(new GridLayoutManager(3, 4, new Insets(0, 0, 0, 0), -1, -1));
         jmeterSettingsPanel.setToolTipText("Additional settings for JMeter Console and JMeter Engines");
         mainPanel.add(jmeterSettingsPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         jmeterSettingsPanel.setBorder(BorderFactory.createTitledBorder("JMeter Advanced Settings"));
+        textField1 = new JTextField();
+        jmeterSettingsPanel.add(textField1, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        textField2 = new JTextField();
+        jmeterSettingsPanel.add(textField2, new GridConstraints(2, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        textField3 = new JTextField();
+        jmeterSettingsPanel.add(textField3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        textField4 = new JTextField();
+        jmeterSettingsPanel.add(textField4, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JLabel label10 = new JLabel();
+        label10.setText("Property Value:");
+        jmeterSettingsPanel.add(label10, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label11 = new JLabel();
+        label11.setText("Property Key:");
+        jmeterSettingsPanel.add(label11, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label12 = new JLabel();
+        label12.setText("JMeter Console CL Arguments:");
+        jmeterSettingsPanel.add(label12, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label13 = new JLabel();
+        label13.setText("JMeter Engine CL Arguments:");
+        jmeterSettingsPanel.add(label13, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
         label3.setLabelFor(testIdComboBox);
