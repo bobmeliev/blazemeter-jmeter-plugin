@@ -994,7 +994,7 @@ public class TestPanelGui {
         final Spacer spacer3 = new Spacer();
         panel1.add(spacer3, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         cloudPanel = new JPanel();
-        cloudPanel.setLayout(new GridLayoutManager(6, 4, new Insets(1, 1, 1, 1), -1, -1));
+        cloudPanel.setLayout(new GridLayoutManager(5, 4, new Insets(1, 1, 1, 1), -1, -1));
         cloudPanel.setEnabled(true);
         cloudPanel.setVisible(true);
         mainPanel.add(cloudPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
