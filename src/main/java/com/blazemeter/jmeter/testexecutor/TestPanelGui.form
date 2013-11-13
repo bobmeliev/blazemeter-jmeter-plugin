@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.blazemeter.jmeter.testexecutor.TestPanelGui">
-  <grid id="70b7a" binding="mainPanel" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="70b7a" binding="mainPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="1782" height="751"/>
@@ -10,7 +10,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="c09b6" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="c09b6" layout-manager="GridLayoutManager" row-count="9" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="1" left="1" bottom="1" right="1"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -53,21 +53,6 @@
               <toolTipText value="Register/Login to BlazeMeter site and find your User Key on a profile page."/>
             </properties>
           </component>
-          <component id="ccc8b" class="javax.swing.JButton" binding="goToTestPageButton">
-            <constraints>
-              <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <actionCommand value="Go to Test Page!"/>
-              <enabled value="true"/>
-              <hideActionText value="false"/>
-              <label value="Go to Test Page!"/>
-              <text value="Go to Test Page!"/>
-              <toolTipText value="Navigate to test page on Blazemeter site"/>
-              <verifyInputWhenFocusTarget value="false"/>
-              <visible value="true"/>
-            </properties>
-          </component>
           <component id="47dcf" class="javax.swing.JLabel">
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -77,7 +62,7 @@
               <text value="Select Test"/>
             </properties>
           </component>
-          <grid id="5b65a" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="5b65a" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -87,7 +72,7 @@
             <children>
               <component id="50155" class="javax.swing.JButton" binding="helpButton">
                 <constraints>
-                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false">
                     <minimum-size width="24" height="21"/>
                   </grid>
                 </constraints>
@@ -108,7 +93,7 @@
               </component>
               <component id="f90f6" class="javax.swing.JLabel" binding="userInfoLabel">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value=""/>
@@ -180,7 +165,7 @@
               </component>
             </children>
           </grid>
-          <grid id="2e371" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="2e371" layout-manager="GridLayoutManager" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -201,7 +186,7 @@
               </component>
               <component id="29879" class="javax.swing.JButton" binding="reloadButton">
                 <constraints>
-                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                     <minimum-size width="24" height="21"/>
                   </grid>
                 </constraints>
@@ -219,11 +204,30 @@
                   <verticalAlignment value="0"/>
                 </properties>
               </component>
+              <component id="ccc8b" class="javax.swing.JButton" binding="goToTestPageButton">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="1" anchor="0" fill="0" indent="0" use-parent-layout="false">
+                    <minimum-size width="165" height="-1"/>
+                    <preferred-size width="165" height="-1"/>
+                    <maximum-size width="165" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <actionCommand value="Go to Test Page!"/>
+                  <enabled value="true"/>
+                  <hideActionText value="false"/>
+                  <label value="Go to Test Page!"/>
+                  <text value="Go to Test Page!"/>
+                  <toolTipText value="Navigate to test page on Blazemeter site"/>
+                  <verifyInputWhenFocusTarget value="false"/>
+                  <visible value="true"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <component id="906c9" class="javax.swing.JLabel">
             <constraints>
-              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="67" height="28"/>
               </grid>
             </constraints>
@@ -244,7 +248,7 @@
           <grid id="87369" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -278,12 +282,56 @@
           </grid>
           <hspacer id="deb16">
             <constraints>
-              <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
+          <component id="d9e6f" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Console:"/>
+            </properties>
+          </component>
+          <component id="6b6e7" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="500" height="-1"/>
+                <preferred-size width="500" height="-1"/>
+                <maximum-size width="500" height="-1"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="1657e" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Engine:"/>
+            </properties>
+          </component>
+          <component id="577fa" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+            <constraints>
+              <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="500" height="-1"/>
+                <preferred-size width="500" height="-1"/>
+                <maximum-size width="500" height="-1"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="8a963" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="JMeter Args:"/>
+            </properties>
+          </component>
         </children>
       </grid>
-      <grid id="b2078" binding="cloudPanel" layout-manager="GridLayoutManager" row-count="4" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="b2078" binding="cloudPanel" layout-manager="GridLayoutManager" row-count="5" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="1" left="1" bottom="1" right="1"/>
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -298,7 +346,7 @@
         <children>
           <component id="f0ba8" class="javax.swing.JLabel">
             <constraints>
-              <grid row="1" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+              <grid row="2" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
                 <preferred-size width="67" height="28"/>
               </grid>
             </constraints>
@@ -310,7 +358,7 @@
           </component>
           <component id="5c2d1" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <labelFor value="cc90a"/>
@@ -320,7 +368,7 @@
           <grid id="abf15" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="1" column="1" row-span="2" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+              <grid row="2" column="1" row-span="2" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
                 <minimum-size width="-1" height="50"/>
                 <preferred-size width="-1" height="50"/>
                 <maximum-size width="-1" height="50"/>
@@ -378,7 +426,7 @@
           <grid id="66871" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -408,7 +456,7 @@
           </grid>
           <component id="5d795" class="javax.swing.JTextField" binding="enginesDescription">
             <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
@@ -422,7 +470,7 @@
           <grid id="2e4d" binding="overridesPanel" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
@@ -544,7 +592,7 @@
           </grid>
           <component id="52cf0" class="javax.swing.JButton" binding="runInTheCloud">
             <constraints>
-              <grid row="2" column="3" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false">
+              <grid row="0" column="3" row-span="2" col-span="2" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <minimum-size width="275" height="40"/>
                 <preferred-size width="275" height="40"/>
                 <maximum-size width="275" height="40"/>
@@ -561,9 +609,35 @@
               <toolTipText value="Update settings on server and start test"/>
             </properties>
           </component>
+          <component id="cf354" class="javax.swing.JButton" binding="editJMXLocallyButton" default-binding="true">
+            <constraints>
+              <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="100" height="25"/>
+                <preferred-size width="100" height="25"/>
+                <maximum-size width="100" height="25"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value="Edit JMX "/>
+              <toolTipText value="Download JMX from server and open"/>
+            </properties>
+          </component>
+          <component id="1e22e" class="javax.swing.JButton" binding="saveUploadButton" default-binding="true">
+            <constraints>
+              <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+                <minimum-size width="165" height="25"/>
+                <preferred-size width="165" height="25"/>
+                <maximum-size width="165" height="25"/>
+              </grid>
+            </constraints>
+            <properties>
+              <text value="Save/Upload JMX"/>
+              <toolTipText value="Upload JMX to server"/>
+            </properties>
+          </component>
           <component id="76a11" class="javax.swing.JButton" binding="addFilesButton" default-binding="true">
             <constraints>
-              <grid row="1" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+              <grid row="4" column="3" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <minimum-size width="275" height="25"/>
                 <preferred-size width="275" height="25"/>
                 <maximum-size width="275" height="25"/>
@@ -575,85 +649,6 @@
               <label value="Add Files for Cloud Test"/>
               <text value="Add Files for Cloud Test"/>
               <toolTipText value="Add data files for test"/>
-            </properties>
-          </component>
-          <component id="1e22e" class="javax.swing.JButton" binding="saveUploadButton" default-binding="true">
-            <constraints>
-              <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="165" height="25"/>
-                <preferred-size width="165" height="25"/>
-                <maximum-size width="165" height="25"/>
-              </grid>
-            </constraints>
-            <properties>
-              <text value="Save/Upload JMX"/>
-              <toolTipText value="Upload JMX to server"/>
-            </properties>
-          </component>
-          <component id="cf354" class="javax.swing.JButton" binding="editJMXLocallyButton" default-binding="true">
-            <constraints>
-              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="100" height="25"/>
-                <preferred-size width="100" height="25"/>
-                <maximum-size width="100" height="25"/>
-              </grid>
-            </constraints>
-            <properties>
-              <text value="Edit JMX "/>
-              <toolTipText value="Download JMX from server and open"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
-      <grid id="be99e" binding="jmeterSettingsPanel" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <toolTipText value="Additional settings for JMeter Console and JMeter Engines"/>
-        </properties>
-        <border type="none" title="Advanced Test Settings"/>
-        <children>
-          <hspacer id="f922f">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-          </hspacer>
-          <component id="6b6e7" class="javax.swing.JTextField" binding="textField1" default-binding="true">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="500" height="-1"/>
-                <preferred-size width="500" height="-1"/>
-                <maximum-size width="500" height="-1"/>
-              </grid>
-            </constraints>
-            <properties/>
-          </component>
-          <component id="1657e" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="JMeter Engine CL Arguments:"/>
-            </properties>
-          </component>
-          <component id="577fa" class="javax.swing.JTextField" binding="textField2" default-binding="true">
-            <constraints>
-              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <minimum-size width="500" height="-1"/>
-                <preferred-size width="500" height="-1"/>
-                <maximum-size width="500" height="-1"/>
-              </grid>
-            </constraints>
-            <properties/>
-          </component>
-          <component id="d9e6f" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="JMeter Console CL Arguments:"/>
             </properties>
           </component>
         </children>
