@@ -2,6 +2,8 @@ package com.blazemeter.jmeter.testinfo;
 
 import com.blazemeter.jmeter.utils.Utils;
 
+import java.util.Properties;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Vitali
@@ -17,6 +19,7 @@ public class TestInfo {
     private String location;
     private Overrides overrides;
     private String type;
+    private Properties jmeterProperties;
 
 
     private TestInfo(String testName, String testId) {
@@ -120,5 +123,13 @@ public class TestInfo {
 
     public String getLocation() {
         return location;
+    }
+
+    public Properties getJmeterProperties() {
+        return jmeterProperties;
+    }
+
+    public void setJmeterProperties(Properties jmeterProperties) {
+        this.jmeterProperties = jmeterProperties;
     }
 }
