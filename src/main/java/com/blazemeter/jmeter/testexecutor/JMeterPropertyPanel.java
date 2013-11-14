@@ -33,11 +33,11 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
     private static final String COLUMN_NAMES_1 = "value"; // $NON-NLS-1$
 
-    // TODO: add and delete not currently supported
     private static final String ADD = "add"; // $NON-NLS-1$
 
     private static final String DELETE = "delete"; // $NON-NLS-1$
 
+    private static final String LOAD = "load"; // $NON-NLS-1$
 
     /**
      * The table containing the list of arguments.
@@ -59,6 +59,11 @@ public class JMeterPropertyPanel extends AbstractConfigGui
      * A button for removing arguments from the table.
      */
     private JButton deleteButton;
+
+    /**
+     * A button for loading properties from the jmeter.properties.
+     */
+    private JButton loadButton;
 
     public JMeterPropertyPanel() {
         super();
@@ -133,8 +138,9 @@ public class JMeterPropertyPanel extends AbstractConfigGui
                     }
                 }
             }
-
-//            return;
+        }
+        if (LOAD.equals(command)) {
+            setUpData();
         }
     }
 
@@ -174,6 +180,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
             Map.Entry<Object, Object> row = i.next();
             tableModel.addRow(new String[]{(String) row.getKey(), (String) row.getValue()});
         }
+        deleteButton.setEnabled(true);
     }
 
     @Override
@@ -202,12 +209,17 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         deleteButton = new JButton(JMeterUtils.getResString("delete")); // $NON-NLS-1$
         deleteButton.setActionCommand(DELETE);
 
+        loadButton = new JButton(JMeterUtils.getResString("load"));
+        loadButton.setActionCommand(LOAD);
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         addButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        loadButton.addActionListener(this);
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(loadButton);
         return buttonPanel;
     }
 
