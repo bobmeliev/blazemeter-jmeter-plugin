@@ -64,6 +64,7 @@ public class TestPanelGui {
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
     private JButton saveUploadButton;
+    private JPanel JMeterPropertyPanel = new JMeterPropertyPanel();
 
 
     public TestPanelGui() {
@@ -859,8 +860,9 @@ public class TestPanelGui {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAutoscrolls(true);
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(7, 3, new Insets(1, 1, 1, 1), -1, -1));
@@ -989,7 +991,7 @@ public class TestPanelGui {
         cloudPanel.setLayout(new GridLayoutManager(5, 5, new Insets(1, 1, 1, 1), -1, -1));
         cloudPanel.setEnabled(true);
         cloudPanel.setVisible(true);
-        mainPanel.add(cloudPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         cloudPanel.setBorder(BorderFactory.createTitledBorder("Run in the Cloud Settings"));
         final JLabel label5 = new JLabel();
         label5.setRequestFocusEnabled(false);
@@ -1103,6 +1105,8 @@ public class TestPanelGui {
         addFilesButton.setText("Add Files for Cloud Test");
         addFilesButton.setToolTipText("Add data files for test");
         cloudPanel.add(addFilesButton, new GridConstraints(4, 3, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(275, 25), new Dimension(275, 25), new Dimension(275, 25), 0, false));
+        mainPanel.add(JMeterPropertyPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        JMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
         label3.setLabelFor(testIdComboBox);
