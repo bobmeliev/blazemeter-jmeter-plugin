@@ -4,10 +4,10 @@ import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.UnsharedComponent;
 import org.apache.jmeter.gui.util.HeaderAsPropertyRenderer;
-import org.apache.jmeter.gui.util.MenuFactory;
 import org.apache.jmeter.gui.util.PowerTableModel;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jorphan.collections.Data;
 import org.apache.jorphan.gui.GuiUtils;
 
 import javax.swing.*;
@@ -29,9 +29,9 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
     private static final long serialVersionUID = 1L;
 
-    private static final String COLUMN_NAMES_0 = "name"; // $NON-NLS-1$
+    private static final String NAME = "name"; // $NON-NLS-1$
 
-    private static final String COLUMN_NAMES_1 = "value"; // $NON-NLS-1$
+    private static final String VALUE = "value"; // $NON-NLS-1$
 
     private static final String ADD = "add"; // $NON-NLS-1$
 
@@ -75,10 +75,10 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         return "property_visualiser_title"; // $NON-NLS-1$
     }
 
-    @Override
+    /*@Override
     public Collection<String> getMenuCategories() {
         return Arrays.asList(new String[]{MenuFactory.NON_TEST_ELEMENTS});
-    }
+    }*/
 
     @Override
     public void actionPerformed(ActionEvent action) {
@@ -135,6 +135,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
                         }
 
                         table.setRowSelectionInterval(rowToSelect, rowToSelect);
+
                     }
                 }
             }
@@ -247,7 +248,27 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     }
 
     private void initializeTableModel() {
-        tableModel = new PowerTableModel(new String[]{COLUMN_NAMES_0, COLUMN_NAMES_1},
+        tableModel = new PowerTableModel(new String[]{NAME, VALUE},
                 new Class[]{String.class, String.class});
+    }
+
+    public Properties getData() {
+        Properties p = new Properties();
+        Data data = tableModel.getData();
+        String[] names = data.getColumn(NAME);
+        String[] values = data.getColumn(VALUE);
+        int dataSize = data.size();
+        for (int i = 0; i < dataSize; i++) {
+            p.put(names[i], values[i]);
+        }
+        /*
+        Set<Map.Entry<Object, Object>> s = p.entrySet();
+        ArrayList<Map.Entry<Object, Object>> al = new ArrayList<Map.Entry<Object, Object>>(s);
+        Iterator<Map.Entry<Object, Object>> i = al.iterator();
+        while (i.hasNext()) {
+            Map.Entry<Object, Object> row = i.next();
+            p.put(row.getKey(),row.getValue());
+        }*/
+        return p;
     }
 }
