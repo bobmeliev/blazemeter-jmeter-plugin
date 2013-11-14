@@ -9,8 +9,6 @@ import org.apache.jmeter.gui.util.PowerTableModel;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
 import org.apache.jorphan.gui.GuiUtils;
-import org.apache.jorphan.gui.ObjectTableModel;
-import org.apache.jorphan.reflect.Functor;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -39,14 +37,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     private static final String ADD = "add"; // $NON-NLS-1$
 
     private static final String DELETE = "delete"; // $NON-NLS-1$
-
-    private static final String SYSTEM = "system"; // $NON-NLS-1$
-
-    private static final String JMETER = "jmeter"; // $NON-NLS-1$
-
-//    private final JCheckBox systemButton = new JCheckBox("System");
-
-    private final JCheckBox jmeterButton = new JCheckBox("JMeter");
 
 
     /**
@@ -91,8 +81,8 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         if (ADD.equals(command)) {
             // If a table cell is being edited, we should accept the current
             // value and stop the editing before adding a new row.
-            GuiUtils.stopTableEditing(cookieTable);
-            GuiUtils
+//            GuiUtils.
+            GuiUtils.stopTableEditing(table);
             tableModel.addNewRow();
             tableModel.fireTableDataChanged();
 
@@ -105,7 +95,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
             // Highlight (select) the appropriate row.
             int rowToSelect = tableModel.getRowCount() - 1;
-            cookieTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+            table.setRowSelectionInterval(rowToSelect, rowToSelect);
 
 //            return;
         }
@@ -113,13 +103,13 @@ public class JMeterPropertyPanel extends AbstractConfigGui
             if (tableModel.getRowCount() > 0) {
                 // If a table cell is being edited, we must cancel the editing
                 // before deleting the row.
-                if (cookieTable.isEditing()) {
-                    TableCellEditor cellEditor = cookieTable.getCellEditor(cookieTable.getEditingRow(),
-                            cookieTable.getEditingColumn());
+                if (table.isEditing()) {
+                    TableCellEditor cellEditor = table.getCellEditor(table.getEditingRow(),
+                            table.getEditingColumn());
                     cellEditor.cancelCellEditing();
                 }
 
-                int rowSelected = cookieTable.getSelectedRow();
+                int rowSelected = table.getSelectedRow();
 
                 if (rowSelected != -1) {
                     tableModel.removeRow(rowSelected);
@@ -140,22 +130,13 @@ public class JMeterPropertyPanel extends AbstractConfigGui
                             rowToSelect = rowSelected - 1;
                         }
 
-                        cookieTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+                        table.setRowSelectionInterval(rowToSelect, rowToSelect);
                     }
                 }
             }
 
 //            return;
         }
-        if (SYSTEM.equals(command)) {
-            setUpData();
-            return;
-        }
-        if (JMETER.equals(command)) {
-            setUpData();
-            return;
-        }
-
     }
 
     @Override
@@ -174,12 +155,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     private void setUpData() {
         tableModel.clearData();
         Properties p = null;
-        if (systemButton.isSelected()) {
-            p = System.getProperties();
-        }
-        if (jmeterButton.isSelected()) {
-            p = JMeterUtils.getJMeterProperties();
-        }
+        p = JMeterUtils.getJMeterProperties();
         if (p == null) {
             return;
         }
@@ -196,9 +172,9 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         });
         Iterator<Map.Entry<Object, Object>> i = al.iterator();
         while (i.hasNext()) {
-            tableModel.addRow(i.next());
+            Map.Entry<Object, Object> row = i.next();
+            tableModel.addRow(new String[]{(String) row.getKey(), (String) row.getValue()});
         }
-
     }
 
     @Override
@@ -220,19 +196,19 @@ public class JMeterPropertyPanel extends AbstractConfigGui
      * @return a GUI panel containing the buttons
      */
     private JPanel makeButtonPanel() {// Not currently used
-        add = new JButton(JMeterUtils.getResString("add")); // $NON-NLS-1$
-        add.setActionCommand(ADD);
-        add.setEnabled(true);
+        addButton = new JButton(JMeterUtils.getResString("add")); // $NON-NLS-1$
+        addButton.setActionCommand(ADD);
+        addButton.setEnabled(true);
 
-        delete = new JButton(JMeterUtils.getResString("delete")); // $NON-NLS-1$
-        delete.setActionCommand(DELETE);
+        deleteButton = new JButton(JMeterUtils.getResString("delete")); // $NON-NLS-1$
+        deleteButton.setActionCommand(DELETE);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-        add.addActionListener(this);
-        delete.addActionListener(this);
-        buttonPanel.add(add);
-        buttonPanel.add(delete);
+        addButton.addActionListener(this);
+        deleteButton.addActionListener(this);
+        buttonPanel.add(addButton);
+        buttonPanel.add(deleteButton);
         return buttonPanel;
     }
 
@@ -260,14 +236,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     }
 
     private void initializeTableModel() {
-        tableModel = new ObjectTableModel(new String[]{COLUMN_NAMES_0, COLUMN_NAMES_1},
-                new Functor[]{
-                        new Functor(Map.Entry.class, "getKey"), // $NON-NLS-1$
-                        new Functor(Map.Entry.class, "getValue")},  // $NON-NLS-1$
-                new Functor[]{
-                        null, //new Functor("setName"), // $NON-NLS-1$
-                        new Functor(Map.Entry.class, "setValue", new Class[]{Object.class}) // $NON-NLS-1$
-                },
-                new Class[]{String.class, String.class});
+        tableModel = new PowerTableModel();
     }
 }
