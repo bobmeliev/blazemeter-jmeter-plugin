@@ -477,6 +477,9 @@ public class BlazemeterApi {
             options.put("OVERRIDE_RAMP_UP", rumpUp);//ranpup
             options.put("OVERRIDE_DURATION", duration);//duration
             options.put("LOCATION", location);
+            // pass Properties jmeterProperties to method;
+            JSONObject jmeter_params = Utils.convertToJSON();
+
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
             if (jo == null || jo.getInt("response_code") != 200) {

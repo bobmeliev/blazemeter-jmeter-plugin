@@ -40,9 +40,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -539,6 +537,17 @@ public class Utils {
         //should be changed before building version for publishing
     }
 
+    public static JSONObject convertToJSON(Properties properties) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        Enumeration e = properties.propertyNames();
+
+        while (e.hasMoreElements()) {
+
+            String key = (String) e.nextElement();
+            jsonObject.put(key, properties.getProperty(key));
+        }
+        return jsonObject;
+    }
 
     public static class URIOpener extends MouseAdapter {
         private final String uri;
