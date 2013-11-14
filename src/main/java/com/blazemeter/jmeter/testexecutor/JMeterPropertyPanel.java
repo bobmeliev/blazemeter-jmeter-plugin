@@ -57,11 +57,15 @@ public class JMeterPropertyPanel extends AbstractConfigGui
      */
     protected transient ObjectTableModel tableModel;
 
-//    /** A button for adding new arguments to the table. */
-//    private JButton add;
-//
-//    /** A button for removing arguments from the table. */
-//    private JButton delete;
+    /**
+     * A button for adding new arguments to the table.
+     */
+    private JButton add;
+
+    /**
+     * A button for removing arguments from the table.
+     */
+    private JButton delete;
 
     public JMeterPropertyPanel() {
         super();
@@ -155,48 +159,26 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     }
 
     /**
-     * Create a panel containing the title label for the table.
+     * Create a panel containing the add and delete buttons.
      *
-     * @return a panel containing the title label
+     * @return a GUI panel containing the buttons
      */
-    private Component makeLabelPanel() {
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        ButtonGroup bg = new ButtonGroup();
-        bg.add(systemButton);
-        bg.add(jmeterButton);
-        jmeterButton.setSelected(true);
-        systemButton.setActionCommand(SYSTEM);
-        jmeterButton.setActionCommand(JMETER);
-        systemButton.addActionListener(this);
-        jmeterButton.addActionListener(this);
+    private JPanel makeButtonPanel() {// Not currently used
+        add = new JButton(JMeterUtils.getResString("add")); // $NON-NLS-1$
+        add.setActionCommand(ADD);
+        add.setEnabled(true);
 
-        labelPanel.add(systemButton);
-        labelPanel.add(jmeterButton);
-        labelPanel.add(tableLabel);
-        return labelPanel;
+        delete = new JButton(JMeterUtils.getResString("delete")); // $NON-NLS-1$
+        delete.setActionCommand(DELETE);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+        add.addActionListener(this);
+        delete.addActionListener(this);
+        buttonPanel.add(add);
+        buttonPanel.add(delete);
+        return buttonPanel;
     }
-
-//    /**
-//     * Create a panel containing the add and delete buttons.
-//     *
-//     * @return a GUI panel containing the buttons
-//     */
-//    private JPanel makeButtonPanel() {// Not currently used
-//        add = new JButton(JMeterUtils.getResString("add")); // $NON-NLS-1$
-//        add.setActionCommand(ADD);
-//        add.setEnabled(true);
-//
-//        delete = new JButton(JMeterUtils.getResString("delete")); // $NON-NLS-1$
-//        delete.setActionCommand(DELETE);
-//
-//        JPanel buttonPanel = new JPanel();
-//        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-//         add.addActionListener(this);
-//        delete.addActionListener(this);
-//        buttonPanel.add(add);
-//        buttonPanel.add(delete);
-//        return buttonPanel;
-//    }
 
     /**
      * Initialize the components and layout of this component.
@@ -206,16 +188,14 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
         setLayout(new BorderLayout(0, 5));
         setBorder(makeBorder());
-        add(makeTitlePanel(), BorderLayout.NORTH);
         p = new JPanel();
 
         p.setLayout(new BorderLayout());
 
-        p.add(makeLabelPanel(), BorderLayout.NORTH);
         p.add(makeMainPanel(), BorderLayout.CENTER);
         // Force a minimum table height of 70 pixels
-        p.add(Box.createVerticalStrut(70), BorderLayout.WEST);
-        //p.add(makeButtonPanel(), BorderLayout.SOUTH);
+        p.add(Box.createVerticalStrut(100), BorderLayout.WEST);
+        p.add(makeButtonPanel(), BorderLayout.SOUTH);
 
         add(p, BorderLayout.CENTER);
         table.revalidate();
