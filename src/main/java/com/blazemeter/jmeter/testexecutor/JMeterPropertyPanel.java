@@ -81,7 +81,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         if (ADD.equals(command)) {
             // If a table cell is being edited, we should accept the current
             // value and stop the editing before adding a new row.
-//            GuiUtils.
             GuiUtils.stopTableEditing(table);
             tableModel.addNewRow();
             tableModel.fireTableDataChanged();
@@ -236,6 +235,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     }
 
     private void initializeTableModel() {
-        tableModel = new PowerTableModel();
+        tableModel = new PowerTableModel(new String[]{COLUMN_NAMES_0, COLUMN_NAMES_1},
+                new Class[]{String.class, String.class});
     }
 }
