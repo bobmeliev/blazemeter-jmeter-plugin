@@ -64,8 +64,6 @@ public class TestPanelGui {
     private JButton addFilesButton;
     private JButton editJMXLocallyButton;
     private JButton saveUploadButton;
-    private JTextField textField1;
-    private JTextField textField2;
 
 
     public TestPanelGui() {
@@ -988,7 +986,7 @@ public class TestPanelGui {
         final Spacer spacer3 = new Spacer();
         panel1.add(spacer3, new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         cloudPanel = new JPanel();
-        cloudPanel.setLayout(new GridLayoutManager(8, 5, new Insets(1, 1, 1, 1), -1, -1));
+        cloudPanel.setLayout(new GridLayoutManager(5, 5, new Insets(1, 1, 1, 1), -1, -1));
         cloudPanel.setEnabled(true);
         cloudPanel.setVisible(true);
         mainPanel.add(cloudPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -1105,19 +1103,6 @@ public class TestPanelGui {
         addFilesButton.setText("Add Files for Cloud Test");
         addFilesButton.setToolTipText("Add data files for test");
         cloudPanel.add(addFilesButton, new GridConstraints(4, 3, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(275, 25), new Dimension(275, 25), new Dimension(275, 25), 0, false));
-        textField1 = new JTextField();
-        cloudPanel.add(textField1, new GridConstraints(6, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(500, -1), new Dimension(500, -1), new Dimension(500, -1), 0, false));
-        textField2 = new JTextField();
-        cloudPanel.add(textField2, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(500, -1), new Dimension(500, -1), new Dimension(500, -1), 0, false));
-        final JLabel label10 = new JLabel();
-        label10.setText("Engine:");
-        cloudPanel.add(label10, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label11 = new JLabel();
-        label11.setText("Console:");
-        cloudPanel.add(label11, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label12 = new JLabel();
-        label12.setText("JMeter Args:");
-        cloudPanel.add(label12, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
         label3.setLabelFor(testIdComboBox);
