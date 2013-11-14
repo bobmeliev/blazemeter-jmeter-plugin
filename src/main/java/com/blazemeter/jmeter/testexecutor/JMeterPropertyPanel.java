@@ -75,11 +75,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         return "property_visualiser_title"; // $NON-NLS-1$
     }
 
-    /*@Override
-    public Collection<String> getMenuCategories() {
-        return Arrays.asList(new String[]{MenuFactory.NON_TEST_ELEMENTS});
-    }*/
-
     @Override
     public void actionPerformed(ActionEvent action) {
         String command = action.getActionCommand();
@@ -261,14 +256,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         for (int i = 0; i < dataSize; i++) {
             p.put(names[i], values[i]);
         }
-        /*
-        Set<Map.Entry<Object, Object>> s = p.entrySet();
-        ArrayList<Map.Entry<Object, Object>> al = new ArrayList<Map.Entry<Object, Object>>(s);
-        Iterator<Map.Entry<Object, Object>> i = al.iterator();
-        while (i.hasNext()) {
-            Map.Entry<Object, Object> row = i.next();
-            p.put(row.getKey(),row.getValue());
-        }*/
         return p;
     }
 }
