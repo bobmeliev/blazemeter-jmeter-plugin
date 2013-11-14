@@ -5,12 +5,15 @@ import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.UnsharedComponent;
 import org.apache.jmeter.gui.util.HeaderAsPropertyRenderer;
 import org.apache.jmeter.gui.util.MenuFactory;
+import org.apache.jmeter.gui.util.PowerTableModel;
 import org.apache.jmeter.testelement.TestElement;
 import org.apache.jmeter.util.JMeterUtils;
+import org.apache.jorphan.gui.GuiUtils;
 import org.apache.jorphan.gui.ObjectTableModel;
 import org.apache.jorphan.reflect.Functor;
 
 import javax.swing.*;
+import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,11 +44,10 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
     private static final String JMETER = "jmeter"; // $NON-NLS-1$
 
-    private final JCheckBox systemButton = new JCheckBox("System");
+//    private final JCheckBox systemButton = new JCheckBox("System");
 
     private final JCheckBox jmeterButton = new JCheckBox("JMeter");
 
-    private final JLabel tableLabel = new JLabel("Properties");
 
     /**
      * The table containing the list of arguments.
@@ -55,17 +57,18 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     /**
      * The model for the arguments table.
      */
-    protected transient ObjectTableModel tableModel;
+//    protected transient ObjectTableModel tableModel;
+    protected transient PowerTableModel tableModel;
 
     /**
      * A button for adding new arguments to the table.
      */
-    private JButton add;
+    private JButton addButton;
 
     /**
      * A button for removing arguments from the table.
      */
-    private JButton delete;
+    private JButton deleteButton;
 
     public JMeterPropertyPanel() {
         super();
@@ -86,10 +89,63 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     public void actionPerformed(ActionEvent action) {
         String command = action.getActionCommand();
         if (ADD.equals(command)) {
-            return;
+            // If a table cell is being edited, we should accept the current
+            // value and stop the editing before adding a new row.
+            GuiUtils.stopTableEditing(cookieTable);
+            GuiUtils
+            tableModel.addNewRow();
+            tableModel.fireTableDataChanged();
+
+            // Enable the DELETE and SAVE buttons if they are currently
+            // disabled.
+            if (!deleteButton.isEnabled()) {
+                deleteButton.setEnabled(true);
+            }
+
+
+            // Highlight (select) the appropriate row.
+            int rowToSelect = tableModel.getRowCount() - 1;
+            cookieTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+
+//            return;
         }
         if (DELETE.equals(command)) {
-            return;
+            if (tableModel.getRowCount() > 0) {
+                // If a table cell is being edited, we must cancel the editing
+                // before deleting the row.
+                if (cookieTable.isEditing()) {
+                    TableCellEditor cellEditor = cookieTable.getCellEditor(cookieTable.getEditingRow(),
+                            cookieTable.getEditingColumn());
+                    cellEditor.cancelCellEditing();
+                }
+
+                int rowSelected = cookieTable.getSelectedRow();
+
+                if (rowSelected != -1) {
+                    tableModel.removeRow(rowSelected);
+                    tableModel.fireTableDataChanged();
+
+                    // Disable the DELETE and SAVE buttons if no rows remaining
+                    // after delete.
+                    if (tableModel.getRowCount() == 0) {
+                        deleteButton.setEnabled(false);
+                    }
+
+                    // Table still contains one or more rows, so highlight
+                    // (select) the appropriate one.
+                    else {
+                        int rowToSelect = rowSelected;
+
+                        if (rowSelected >= tableModel.getRowCount()) {
+                            rowToSelect = rowSelected - 1;
+                        }
+
+                        cookieTable.setRowSelectionInterval(rowToSelect, rowToSelect);
+                    }
+                }
+            }
+
+//            return;
         }
         if (SYSTEM.equals(command)) {
             setUpData();
@@ -199,6 +255,8 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
         add(p, BorderLayout.CENTER);
         table.revalidate();
+        setUpData();
+
     }
 
     private void initializeTableModel() {
