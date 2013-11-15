@@ -248,7 +248,8 @@ public class BmTestManager {
                 Integer.parseInt(enginesParameters.get(2)),
                 overrides == null ? 0 : overrides.getIterations(),
                 overrides == null ? 0 : overrides.getRampup(),
-                overrides == null ? 0 : overrides.getDuration()
+                overrides == null ? 0 : overrides.getDuration(),
+                testInfo.getJmeterProperties()
         );
         return ti;
     }

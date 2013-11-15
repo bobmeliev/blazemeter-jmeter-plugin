@@ -27,10 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BlazemeterApi {
 
@@ -443,8 +440,7 @@ public class BlazemeterApi {
         try {
             JSONObject data = new JSONObject();
             data.put(Constants.SAMPLES, new JSONArray(samples));
-
-            JSONObject jo = getJson(callBackUrl, data);
+            getJson(callBackUrl, data);
         } catch (JSONException e) {
             BmLog.error("Failed to upload samples: " + e.getMessage());
         }
@@ -452,7 +448,7 @@ public class BlazemeterApi {
 
     public TestInfo updateTestSettings(String userKey, String testId, String location,
                                        int engines, String engineType, int usersPerEngine,
-                                       int iterations, int rumpUp, int duration) {
+                                       int iterations, int rumpUp, int duration, Properties jmeterProperties) {
         TestInfo testInfo = new TestInfo();
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("Test settings cannot be updated, userKey is empty");
@@ -478,7 +474,8 @@ public class BlazemeterApi {
             options.put("OVERRIDE_DURATION", duration);//duration
             options.put("LOCATION", location);
             // pass Properties jmeterProperties to method;
-            JSONObject jmeter_params = Utils.convertToJSON();
+            JSONObject jmeter_params = Utils.convertToJSON(jmeterProperties);
+            options.put("JMETER_PARAMS", jmeter_params);
 
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
