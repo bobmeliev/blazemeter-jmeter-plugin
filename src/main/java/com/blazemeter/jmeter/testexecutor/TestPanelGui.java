@@ -613,9 +613,11 @@ public class TestPanelGui {
                         enableCloudControls(false);
                         runLocal.setEnabled(false);
                         runRemote.setEnabled(false);
+                        Utils.enableElements(jMeterPropertyPanel, false);
                     }
 
                     if ((testInfo.getStatus() == TestStatus.NotRunning)) {
+                        Utils.enableElements(jMeterPropertyPanel, true);
                         boolean isTestIdEmpty = testInfo.getId().isEmpty();
                         runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
@@ -689,11 +691,13 @@ public class TestPanelGui {
                             enableMainPanelControls(!testIsRunning);
                             enableCloudControls(!testIsRunning);
                             runInTheCloud.setEnabled(!testIsRunning);
+                            Utils.enableElements(jMeterPropertyPanel, !testIsRunning);
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);
                             enableCloudControls(false);
                             runInTheCloud.setEnabled(false);
+                            Utils.enableElements(jMeterPropertyPanel, false);
                             TestInfoController.stop();
                             break;
                     }
@@ -781,7 +785,6 @@ public class TestPanelGui {
         runLocal.setSelected(isLocalRunMode);
         runRemote.setSelected(!isLocalRunMode);
         cloudPanel.setVisible(!isLocalRunMode);
-//        jmeterSettingsPanel.setVisible(!isLocalRunMode);
     }
 
     protected void setTestInfo(TestInfo testInfo) {

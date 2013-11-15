@@ -549,6 +549,16 @@ public class Utils {
         return jsonObject;
     }
 
+    public static void enableElements(Container container, boolean shouldBeEnabled) {
+        Component[] components = container.getComponents();
+        for (Component c : components) {
+            c.setEnabled(shouldBeEnabled);
+            if (c instanceof Container) {
+                enableElements((Container) c, shouldBeEnabled);
+            }
+        }
+    }
+
     public static class URIOpener extends MouseAdapter {
         private final String uri;
 
