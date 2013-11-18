@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
+import com.blazemeter.jmeter.testinfo.TestInfo;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.UnsharedComponent;
@@ -159,6 +160,8 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         tableModel.clearData();
         Properties p = null;
         p = JMeterUtils.getJMeterProperties();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.getTestInfo().setJmeterProperties(p);
         if (p == null) {
             return;
         }
@@ -241,7 +244,17 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         add(p, BorderLayout.CENTER);
         table.revalidate();
         setUpData();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
+            @Override
+            public void onTestInfoChanged(TestInfo testInfo) {
+                if (testInfo.getJmeterProperties() == null) {
+                    testInfo.setJmeterProperties(getData());
+                }
 
+            }
+
+        });
     }
 
     private void initializeTableModel() {
