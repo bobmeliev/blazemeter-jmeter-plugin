@@ -14,10 +14,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -153,6 +150,12 @@ public class BmTestManager {
             try {
                 if (!JMeter.isNonGUI()) {
                     Utils.checkChangesInTestPlan();
+                }
+                Properties properties = this.getTestInfo().getJmeterProperties();
+                if (properties != null) {
+                    for (Map.Entry<Object, Object> p : properties.entrySet()) {
+                        JMeterUtils.setProperty((String) p.getKey(), (String) p.getValue());
+                    }
                 }
                 uploadJmx();
                 HashMap<String, String> res = rpc.startTestLocal(userKey, testInfo.getId());

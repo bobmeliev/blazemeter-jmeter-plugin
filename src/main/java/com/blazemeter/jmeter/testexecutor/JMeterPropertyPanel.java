@@ -48,7 +48,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
      * The model for the arguments table.
      */
 //    protected transient ObjectTableModel tableModel;
-    protected transient PowerTableModel tableModel;
+    private transient PowerTableModel tableModel;
 
     /**
      * A button for adding new arguments to the table.
@@ -138,6 +138,8 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         if (LOAD.equals(command)) {
             setUpData();
         }
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.getTestInfo().setJmeterProperties(getData());
     }
 
     @Override
