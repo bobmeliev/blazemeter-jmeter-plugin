@@ -785,6 +785,7 @@ public class TestPanelGui {
         runLocal.setSelected(isLocalRunMode);
         runRemote.setSelected(!isLocalRunMode);
         cloudPanel.setVisible(!isLocalRunMode);
+        jMeterPropertyPanel.setVisible(!isLocalRunMode);
     }
 
     protected void setTestInfo(TestInfo testInfo) {
