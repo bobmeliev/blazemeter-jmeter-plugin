@@ -277,7 +277,6 @@ public class Utils {
             JMeterTreeModel model = guiPackage.getTreeModel();
             JMeterTreeNode testPlanNode = model.getNodesOfType(TestPlan.class).get(0);
             List<JMeterTreeNode> nodes = Collections.list(testPlanNode.children());
-            Iterator<JMeterTreeNode> nodesIterator = nodes.iterator();
             boolean containsRemoteTestRunner = false;
             for (JMeterTreeNode node : nodes) {
                 if (node.getStaticLabel().equals("BlazeMeter")) {
