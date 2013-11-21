@@ -131,12 +131,6 @@ public class VersionPanel extends JPanel {
             }
         }
         );
-
-        /*if (innerPanel != null) {
-            innerPanel.add(panelLink);
-        } else {
-            this.add(panelLink);
-        }*/
     }
 
     public static VersionPanel getVersionPanel() {
