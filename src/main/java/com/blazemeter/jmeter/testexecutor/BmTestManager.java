@@ -366,7 +366,7 @@ public class BmTestManager {
     }
 
 
-    List<TestInfoNotification> testInfoNotificationListeners = new ArrayList<TestInfoNotification>();
+    public List<TestInfoNotification> testInfoNotificationListeners = new ArrayList<TestInfoNotification>();
 
     public void NotifyTestInfoChanged() {
         for (TestInfoNotification ti : testInfoNotificationListeners) {

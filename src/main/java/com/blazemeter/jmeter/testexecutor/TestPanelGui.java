@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
