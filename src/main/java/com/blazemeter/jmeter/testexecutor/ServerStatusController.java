@@ -23,7 +23,7 @@ public class ServerStatusController {
 
     private static ServerStatus serverStatus = ServerStatus.NOT_AVAILABLE;
 
-    protected enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
+    public enum ServerStatus {AVAILABLE, NOT_AVAILABLE}
 
     private ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> task;
