@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
@@ -246,7 +247,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         table.revalidate();
         setUpData();
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
+        bmTestManager.testInfoNotificationListeners.add(new TestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 if (testInfo.getJmeterProperties() == null) {

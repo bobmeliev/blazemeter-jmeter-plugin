@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.testexecutor.notifications.PluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -23,7 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
-public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, BmTestManager.PluginUpdateReceived {
+public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, PluginUpdateNotification {
     private static TestPanelGui gui;
     private static JPanel versionPanel;
 
@@ -163,7 +164,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                     JMeterUtils.setProperty(Constants.BLAZEMETER_RUNNERGUI_INITIALIZED, "true");
 
                     BmTestManager bmTestManager = BmTestManager.getInstance();
-                    bmTestManager.pluginUpdateReceivedNotificationListeners.add(RemoteTestRunnerGui.this);
+                    bmTestManager.pluginUpdateNotificationListeners.add(RemoteTestRunnerGui.this);
 
                 }
             }
@@ -196,7 +197,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
     }
 
     @Override
-    public void onPluginUpdateReceived(final PluginUpdate update) {
+    public void onPluginUpdate(final PluginUpdate update) {
         if (update == null)
             return;
 

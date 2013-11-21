@@ -2,6 +2,9 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.results.SamplesUploader;
+import com.blazemeter.jmeter.testexecutor.notifications.PluginUpdateNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.PluginUpdate;
@@ -347,10 +350,6 @@ public class BmTestManager {
         }
     }
 
-    public interface TestUserKeyNotification {
-        public void onTestUserKeyChanged(String userKey);
-    }
-
 
     List<TestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<TestUserKeyNotification>();
 
@@ -359,10 +358,6 @@ public class BmTestManager {
             ti.onTestUserKeyChanged(userKey);
         }
 
-    }
-
-    public interface TestInfoNotification {
-        public void onTestInfoChanged(TestInfo testInfo);
     }
 
 
@@ -374,16 +369,15 @@ public class BmTestManager {
         }
     }
 
+/*
+    public interface PluginUpdateReceived extends PluginUpdateNotification {
+    }*/
 
-    public interface PluginUpdateReceived {
-        public void onPluginUpdateReceived(PluginUpdate update);
-    }
-
-    public List<PluginUpdateReceived> pluginUpdateReceivedNotificationListeners = new ArrayList<PluginUpdateReceived>();
+    public List<PluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<PluginUpdateNotification>();
 
     public void NotifyPluginUpdateReceived(PluginUpdate update) {
-        for (PluginUpdateReceived ti : pluginUpdateReceivedNotificationListeners) {
-            ti.onPluginUpdateReceived(update);
+        for (PluginUpdateNotification ti : pluginUpdateNotificationListeners) {
+            ti.onPluginUpdate(update);
         }
     }
 

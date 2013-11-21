@@ -4,6 +4,8 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.results.LogUploader;
 import com.blazemeter.jmeter.results.SamplesUploader;
+import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
@@ -42,14 +44,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
 
-        BmTestManager.getInstance().testUserKeyNotificationListeners.add(new BmTestManager.TestUserKeyNotification() {
+        BmTestManager.getInstance().testUserKeyNotificationListeners.add(new TestUserKeyNotification() {
             @Override
             public void onTestUserKeyChanged(String userKey) {
                 setUserKey(userKey);
             }
         });
 
-        BmTestManager.getInstance().testInfoNotificationListeners.add(new BmTestManager.TestInfoNotification() {
+        BmTestManager.getInstance().testInfoNotificationListeners.add(new TestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 setTestInfo(testInfo);
