@@ -111,6 +111,16 @@ public class TestPanelGui {
                 ti.setLocation((String) locationComboBox.getSelectedItem());
                 ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
                 ti.setStatus(TestStatus.NotRunning);
+                Properties jmeterProperties = null;
+
+                if (!bmTestManager.getIsLocalRunMode()) {
+                    jmeterProperties = bmTestManager.getTestInfo().getJmeterProperties();
+
+                } else {
+                    jmeterProperties = new Properties();
+                }
+
+                ti.setJmeterProperties(jmeterProperties);
                 ti = bmTestManager.updateTestSettings(userKey, ti);
                 if (ti != null && ti.getStatus() != null) {
                     addTestId(ti, true);
