@@ -38,9 +38,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         super();
         Utils.checkJMeterVersion();
         try {
-         /*   if (gui == null) {
-                gui = new TestPanelGui();
-            }*/
             gui = TestPanelGui.getGui();
         } catch (Exception e) {
             BmLog.error(e);
