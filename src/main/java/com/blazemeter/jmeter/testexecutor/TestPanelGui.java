@@ -38,6 +38,8 @@ import java.util.Properties;
  * Time: 12:29
  */
 public class TestPanelGui {
+    private static TestPanelGui gui;
+
     //Gui controls
     private JTextField userKeyTextField;
     private JTextField testNameTextField;
@@ -855,6 +857,13 @@ public class TestPanelGui {
         testIdComboBox.setEnabled(!isRunning & testIdComboBox.getItemCount() > 0);
         testIdTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
+    }
+
+    public static TestPanelGui getGui() {
+        if (gui == null) {
+            gui = new TestPanelGui();
+        }
+        return gui;
     }
 
     private void configureUIComponents() {
