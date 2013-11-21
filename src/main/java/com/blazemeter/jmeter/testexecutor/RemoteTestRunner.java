@@ -4,6 +4,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.results.LogUploader;
 import com.blazemeter.jmeter.results.SamplesUploader;
+import com.blazemeter.jmeter.testexecutor.notifications.RunModeChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
 import com.blazemeter.jmeter.testinfo.Overrides;
@@ -72,7 +73,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             }
         });
 
-        BmTestManager.getInstance().runModeChangedNotificationListeners.add(new BmTestManager.RunModeChanged() {
+        BmTestManager.getInstance().runModeChangedNotificationListeners.add(new RunModeChangedNotification() {
             @Override
             public void onRunModeChanged(boolean isLocalRunMode) {
                 setIsLocalRunMode(isLocalRunMode);

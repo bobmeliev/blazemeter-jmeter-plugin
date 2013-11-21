@@ -3,8 +3,10 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testexecutor.notifications.RunModeChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.UserInfoChangedNotification;
 import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -437,7 +439,7 @@ public class TestPanelGui {
         if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
             JMeterUtils.setProperty(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
 
-            final BmTestManager.RunModeChanged runModeChanged = new BmTestManager.RunModeChanged() {
+            final RunModeChangedNotification runModeChanged = new RunModeChangedNotification() {
                 @Override
                 public void onRunModeChanged(boolean isLocalRunMode) {
                     runModeChanged(isLocalRunMode);
@@ -466,7 +468,7 @@ public class TestPanelGui {
                     getUserKey().
                     isEmpty());
 
-            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new BmTestManager.UserInfoChanged() {
+            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new UserInfoChangedNotification() {
                 @Override
                 public void onUserInfoChanged(UserInfo userInfo) {
                     if (userInfo == null) {

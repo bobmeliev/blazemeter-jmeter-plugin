@@ -2,9 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.results.SamplesUploader;
-import com.blazemeter.jmeter.testexecutor.notifications.PluginUpdateNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.PluginUpdate;
@@ -369,10 +367,6 @@ public class BmTestManager {
         }
     }
 
-/*
-    public interface PluginUpdateReceived extends PluginUpdateNotification {
-    }*/
-
     public List<PluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<PluginUpdateNotification>();
 
     public void NotifyPluginUpdateReceived(PluginUpdate update) {
@@ -381,27 +375,19 @@ public class BmTestManager {
         }
     }
 
-
-    public interface RunModeChanged {
-        public void onRunModeChanged(boolean isLocalRunMode);
-    }
-
-    public List<RunModeChanged> runModeChangedNotificationListeners = new ArrayList<RunModeChanged>();
+    public List<RunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<RunModeChangedNotification>();
 
     public void NotifyRunModeChanged(boolean isLocalRunMode) {
-        for (RunModeChanged rmc : runModeChangedNotificationListeners) {
+        for (RunModeChangedNotification rmc : runModeChangedNotificationListeners) {
             rmc.onRunModeChanged(isLocalRunMode);
         }
     }
 
-    public interface UserInfoChanged {
-        public void onUserInfoChanged(UserInfo userInfo);
-    }
 
-    public List<UserInfoChanged> userInfoChangedNotificationListeners = new ArrayList<UserInfoChanged>();
+    public List<UserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<UserInfoChangedNotification>();
 
     public void NotifyUserInfoChanged(UserInfo userInfo) {
-        for (UserInfoChanged uic : userInfoChangedNotificationListeners) {
+        for (UserInfoChangedNotification uic : userInfoChangedNotificationListeners) {
             uic.onUserInfoChanged(userInfo);
         }
     }
