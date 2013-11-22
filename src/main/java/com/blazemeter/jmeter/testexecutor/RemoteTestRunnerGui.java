@@ -3,7 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
-import com.blazemeter.jmeter.testexecutor.notifications.PluginUpdateNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -24,7 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 
-public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, PluginUpdateNotification {
+public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, IPluginUpdateNotification {
     private static TestPanelGui gui;
     private static JPanel versionPanel;
 

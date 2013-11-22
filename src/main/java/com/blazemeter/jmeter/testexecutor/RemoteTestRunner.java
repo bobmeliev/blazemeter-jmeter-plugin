@@ -4,9 +4,9 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.results.LogUploader;
 import com.blazemeter.jmeter.results.SamplesUploader;
-import com.blazemeter.jmeter.testexecutor.notifications.RunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
 import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
@@ -45,14 +45,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
 
-        BmTestManager.getInstance().testUserKeyNotificationListeners.add(new TestUserKeyNotification() {
+        BmTestManager.getInstance().testUserKeyNotificationListeners.add(new ITestUserKeyNotification() {
             @Override
             public void onTestUserKeyChanged(String userKey) {
                 setUserKey(userKey);
             }
         });
 
-        BmTestManager.getInstance().testInfoNotificationListeners.add(new TestInfoNotification() {
+        BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 setTestInfo(testInfo);
@@ -73,7 +73,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             }
         });
 
-        BmTestManager.getInstance().runModeChangedNotificationListeners.add(new RunModeChangedNotification() {
+        BmTestManager.getInstance().runModeChangedNotificationListeners.add(new IRunModeChangedNotification() {
             @Override
             public void onRunModeChanged(boolean isLocalRunMode) {
                 setIsLocalRunMode(isLocalRunMode);

@@ -3,10 +3,10 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
-import com.blazemeter.jmeter.testexecutor.notifications.RunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.TestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.TestUserKeyNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.UserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
 import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -439,7 +439,7 @@ public class TestPanelGui {
         if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
             JMeterUtils.setProperty(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
 
-            final RunModeChangedNotification runModeChanged = new RunModeChangedNotification() {
+            final IRunModeChangedNotification runModeChanged = new IRunModeChangedNotification() {
                 @Override
                 public void onRunModeChanged(boolean isLocalRunMode) {
                     runModeChanged(isLocalRunMode);
@@ -468,7 +468,7 @@ public class TestPanelGui {
                     getUserKey().
                     isEmpty());
 
-            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new UserInfoChangedNotification() {
+            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
                 @Override
                 public void onUserInfoChanged(UserInfo userInfo) {
                     if (userInfo == null) {
@@ -506,7 +506,7 @@ public class TestPanelGui {
             });
 
 
-            BmTestManager.getInstance().testUserKeyNotificationListeners.add(new TestUserKeyNotification() {
+            BmTestManager.getInstance().testUserKeyNotificationListeners.add(new ITestUserKeyNotification() {
                 @Override
                 public void onTestUserKeyChanged(String userKey) {
                     setUserKey(userKey);
@@ -590,7 +590,7 @@ public class TestPanelGui {
                 });
             }
             //Here should be all changes of TestInfo processed
-            bmTestManager.testInfoNotificationListeners.add(new TestInfoNotification() {
+            bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
                 @Override
                 public void onTestInfoChanged(TestInfo testInfo) {
                     if (testInfo == null) {

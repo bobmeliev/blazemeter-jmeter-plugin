@@ -9,6 +9,6 @@ import com.blazemeter.jmeter.testinfo.UserInfo;
  * Time: 11:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface UserInfoChangedNotification {
+public interface IUserInfoChangedNotification {
     void onUserInfoChanged(UserInfo userInfo);
 }

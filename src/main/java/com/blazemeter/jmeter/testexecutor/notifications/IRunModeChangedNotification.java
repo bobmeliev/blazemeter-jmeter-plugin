@@ -7,6 +7,6 @@ package com.blazemeter.jmeter.testexecutor.notifications;
  * Time: 11:26 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface RunModeChangedNotification {
+public interface IRunModeChangedNotification {
     void onRunModeChanged(boolean isLocalRunMode);
 }

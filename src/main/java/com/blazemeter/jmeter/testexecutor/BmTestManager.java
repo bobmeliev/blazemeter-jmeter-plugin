@@ -69,7 +69,7 @@ public class BmTestManager {
         this.testInfo = new TestInfo();
         rpc = BlazemeterApi.getInstance();
         this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
-        this.testUserKeyNotificationListeners.add(new TestUserKeyNotification() {
+        this.testUserKeyNotificationListeners.add(new ITestUserKeyNotification() {
             @Override
             public void onTestUserKeyChanged(String userKey) {
                 new Thread(new Runnable() {
@@ -349,45 +349,45 @@ public class BmTestManager {
     }
 
 
-    List<TestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<TestUserKeyNotification>();
+    List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
 
     public void NotifyUserKeyChanged() {
-        for (TestUserKeyNotification ti : testUserKeyNotificationListeners) {
+        for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {
             ti.onTestUserKeyChanged(userKey);
         }
 
     }
 
 
-    public List<TestInfoNotification> testInfoNotificationListeners = new ArrayList<TestInfoNotification>();
+    public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
 
     public void NotifyTestInfoChanged() {
-        for (TestInfoNotification ti : testInfoNotificationListeners) {
+        for (ITestInfoNotification ti : testInfoNotificationListeners) {
             ti.onTestInfoChanged(testInfo);
         }
     }
 
-    public List<PluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<PluginUpdateNotification>();
+    public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
 
     public void NotifyPluginUpdateReceived(PluginUpdate update) {
-        for (PluginUpdateNotification ti : pluginUpdateNotificationListeners) {
+        for (IPluginUpdateNotification ti : pluginUpdateNotificationListeners) {
             ti.onPluginUpdate(update);
         }
     }
 
-    public List<RunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<RunModeChangedNotification>();
+    public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
 
     public void NotifyRunModeChanged(boolean isLocalRunMode) {
-        for (RunModeChangedNotification rmc : runModeChangedNotificationListeners) {
+        for (IRunModeChangedNotification rmc : runModeChangedNotificationListeners) {
             rmc.onRunModeChanged(isLocalRunMode);
         }
     }
 
 
-    public List<UserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<UserInfoChangedNotification>();
+    public List<IUserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<IUserInfoChangedNotification>();
 
     public void NotifyUserInfoChanged(UserInfo userInfo) {
-        for (UserInfoChangedNotification uic : userInfoChangedNotificationListeners) {
+        for (IUserInfoChangedNotification uic : userInfoChangedNotificationListeners) {
             uic.onUserInfoChanged(userInfo);
         }
     }

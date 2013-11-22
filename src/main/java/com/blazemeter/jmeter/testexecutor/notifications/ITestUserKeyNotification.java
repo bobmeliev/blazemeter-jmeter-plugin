@@ -7,6 +7,6 @@ package com.blazemeter.jmeter.testexecutor.notifications;
  * Time: 11:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface TestUserKeyNotification {
+public interface ITestUserKeyNotification {
     void onTestUserKeyChanged(String userKey);
 }
