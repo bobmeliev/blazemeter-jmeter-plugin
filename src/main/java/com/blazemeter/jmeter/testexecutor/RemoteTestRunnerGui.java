@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotificatio
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.PluginUpdate;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;

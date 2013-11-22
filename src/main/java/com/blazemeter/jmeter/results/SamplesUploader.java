@@ -1,8 +1,8 @@
 package com.blazemeter.jmeter.results;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.Constants;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Constants;
 import org.json.JSONObject;
 
 import java.util.List;

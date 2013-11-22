@@ -10,6 +10,7 @@ import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotifica
 import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -147,6 +148,8 @@ public class TestPanelGui {
         locationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+
                 String locationId = Utils.getLocationId((String) locationComboBox.getSelectedItem());
                 if (!locationId.isEmpty()) {
                     BmTestManager.getInstance().getTestInfo().setLocation(locationId);

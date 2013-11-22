@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor;
+package com.blazemeter.jmeter.utils;
 
 /**
  * Created with IntelliJ IDEA.
