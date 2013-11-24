@@ -1,10 +1,26 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
+import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoController;
+import com.blazemeter.jmeter.testinfo.TestStatus;
+import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +44,151 @@ public class CloudPanel extends JPanel {
     private JButton addFilesButton;
 
     public CloudPanel() {
+        createGui();
+        init();
+    }
+
+
+    private void init() {
+        locationComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String locationId = Utils.getLocationId((String) locationComboBox.getSelectedItem());
+                if (!locationId.isEmpty()) {
+                    BmTestManager.getInstance().getTestInfo().setLocation(locationId);
+                }
+            }
+        });
+
+        editJMXLocallyButton.addActionListener(new EditJMXLocallyButtonListener());
+
+        numberOfUserTextBox.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent focusEvent) {
+                int numberOfUsers = 0;
+                try {
+                    numberOfUsers = Integer.valueOf(numberOfUserTextBox.getText().trim());
+                    if (numberOfUsers == 0) {
+                        numberOfUserTextBox.setText("1");
+                    }
+                } catch (NumberFormatException e) {
+                    BmLog.error("You've tried to enter not integer. Please, correct mistake!");
+                    numberOfUsers = 0;
+                } finally {
+                    numberOfUsersSlider.setValue(numberOfUsers);
+                }
+            }
+        });
+
+        numberOfUsersSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int numberOfUsers = numberOfUsersSlider.getValue();
+                int engines;
+                String engineSize;
+                int usersPerEngine;
+                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                testInfo.setNumberOfUsers(numberOfUsers);
+                ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
+                engines = Integer.valueOf(enginesParameters.get(0));
+                engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
+                usersPerEngine = Integer.valueOf(enginesParameters.get(2));
+                if (numberOfUsers <= 300) {
+                    enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
+                    numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
+                } else {
+                    enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
+                    numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
+                }
+            }
+        });
+        runInTheCloud.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int dialogButton;
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                if ("start".equals(e.getActionCommand().toLowerCase())) {
+                    if (bmTestManager.getUserKey().isEmpty()) {
+                        JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
+                        return;
+                    }
+                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to start the test?",
+                            "Start test?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (dialogButton == JOptionPane.YES_OPTION) {
+                        startInTheCloud();
+/*
+
+                   OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                                "Operation will take a few seconds to execute. Your patience is appreciated.");
+                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
+                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
+
+*/
+
+
+                    }
+
+                } else {
+                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to stop the test? ",
+                            "Stop test?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (dialogButton == JOptionPane.YES_OPTION) {
+                        bmTestManager.stopInTheCloud();
+                    }
+                }
+            }
+        });
+
+        rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
+        rampupSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setRampup((Integer) rampupSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("RampUpSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+        iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
+        iterationsSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setIterations((Integer) iterationsSpinner.getValue());
+
+                } catch (NullPointerException npe) {
+                    BmLog.error("IterationsSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
+        durationSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setDuration((Integer) durationSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("DurationSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+
+        addFilesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String url = BmTestManager.getInstance().getTestUrl() + "/files";
+                if (url != null)
+                    Utils.Navigate(url);
+            }
+        });
+
+        saveUploadButton.addActionListener(new SaveUploadButtonListener());
+    }
+
+
+    private void createGui() {
         this.setLayout(new GridLayoutManager(5, 5, new Insets(1, 1, 1, 1), -1, -1));
         this.setEnabled(true);
         this.setVisible(true);
@@ -74,6 +235,16 @@ public class CloudPanel extends JPanel {
         locationComboBox.setEditable(false);
         locationComboBox.setEnabled(true);
         locationComboBox.setToolTipText("Select location");
+        final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
+        defaultComboBoxModel.addElement("EU West (Ireland)");
+        defaultComboBoxModel.addElement("US East (Virginia)");
+        defaultComboBoxModel.addElement("US West (N.California)");
+        defaultComboBoxModel.addElement("US West (Oregon)");
+        defaultComboBoxModel.addElement("Asia Pacific (Singapore)");
+        defaultComboBoxModel.addElement("Japan (Tokyo)");
+        defaultComboBoxModel.addElement("South America (San Paulo)");
+        defaultComboBoxModel.addElement("Australia (Sydney)");
+        locationComboBox.setModel(defaultComboBoxModel);
         panel3.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         enginesDescription = new JTextField();
         enginesDescription.setEditable(false);
@@ -144,10 +315,22 @@ public class CloudPanel extends JPanel {
         addFilesButton.setText("Add Files for Cloud Test");
         addFilesButton.setToolTipText("Add data files for test");
         this.add(addFilesButton, new GridConstraints(4, 3, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(275, 25), new Dimension(275, 25), new Dimension(275, 25), 0, false));
+
+    }
+
+    private void startInTheCloud() {
+//        saveCloudTest();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfoController.stop();
+        bmTestManager.runInTheCloud();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
+            String url = bmTestManager.getTestUrl();
+            if (url != null)
+                url = url.substring(0, url.length() - 5);
+            Utils.Navigate(url);
+        }
     }
 
 
-    private void init() {
-
-    }
 }
