@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotificat
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -79,6 +80,11 @@ public class TestPanelGui {
     public TestPanelGui() {
 
         $$$setupUI$$$();
+        mainPanel.remove(cloudPanel);
+        cloudPanel = new CloudPanel();
+        cloudPanel.setVisible(true);
+        mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+
         configureUIComponents();
         reloadButton.addActionListener(new ActionListener() {
             @Override
