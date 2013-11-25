@@ -97,8 +97,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         boolean isLocalRunMode = remoteTestRunner.getIsLocalRunMode();
         bmTestManager.setIsLocalRunMode(isLocalRunMode);
-        gui.initListeners();
-        initListeners();
+        gui.init();
 
         bmTestManager.getInstance().checkForUpdates();
     }
@@ -143,18 +142,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         box.add(getTopPanel(), BorderLayout.NORTH);
         box.add(gui.getMainPanel(), BorderLayout.NORTH);
         add(box, BorderLayout.NORTH);
-
-    }
-
-    public String getStaticLabel() {
-        return Constants.BLAZEMETER_LABEL;
-    }
-
-    public String getLabelResource() {
-        return this.getClass().getCanonicalName();
-    }
-
-    private void initListeners() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -167,6 +154,14 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 }
             }
         }).start();
+    }
+
+    public String getStaticLabel() {
+        return Constants.BLAZEMETER_LABEL;
+    }
+
+    public String getLabelResource() {
+        return this.getClass().getCanonicalName();
     }
 
     private static Container findComponentWithBorder(JComponent panel, Class<?> aClass) {

@@ -96,6 +96,20 @@ public class CloudPanel extends JPanel {
             }
         });
 
+
+        rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
+        rampupSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setRampup((Integer) rampupSpinner.getValue());
+                } catch (NullPointerException npe) {
+                    BmLog.error("RampUpSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+
+
         numberOfUsersSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -167,6 +181,8 @@ public class CloudPanel extends JPanel {
                 }
             }
         });
+
+
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
         iterationsSpinner.addChangeListener(new ChangeListener() {
             @Override
@@ -311,7 +327,6 @@ public class CloudPanel extends JPanel {
         });
 
 
-
         //Processing serverStatusChangedNotification
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
@@ -394,7 +409,7 @@ public class CloudPanel extends JPanel {
             @Override
             public void onUserInfoChanged(UserInfo userInfo) {
                 if (userInfo == null) {
-                  return;
+                    return;
                 } else {
                     if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
                         userInfo.setMaxUsersLimit(8400);
@@ -666,11 +681,11 @@ public class CloudPanel extends JPanel {
         return (String) locationComboBox.getSelectedItem();
     }
 
-    public int getNumberOfUsers(){
+    public int getNumberOfUsers() {
         return numberOfUsersSlider.getValue();
     }
 
-    public void setNumberOfUsers(int numberOfUsers){
+    public void setNumberOfUsers(int numberOfUsers) {
         numberOfUsersSlider.setValue(numberOfUsers);
     }
 

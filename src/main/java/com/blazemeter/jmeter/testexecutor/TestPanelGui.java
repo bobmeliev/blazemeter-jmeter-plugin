@@ -9,7 +9,10 @@ import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
-import com.blazemeter.jmeter.testinfo.*;
+import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestInfoController;
+import com.blazemeter.jmeter.testinfo.TestStatus;
+import com.blazemeter.jmeter.testinfo.UserInfo;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;
@@ -24,8 +27,6 @@ import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.rmi.ConnectException;
@@ -33,7 +34,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.Properties;
 
 /**
@@ -61,9 +61,6 @@ public class TestPanelGui {
     private JTextField enginesDescription;
     private CloudPanel cloudPanel;
 
-    private JSpinner iterationsSpinner;
-    private JSpinner durationSpinner;
-    private JSpinner rampupSpinner;
 
     private JRadioButton runRemote;
     private JRadioButton runLocal;
@@ -186,40 +183,6 @@ public class TestPanelGui {
             }
         });
 
-        rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
-        rampupSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                try {
-                    BmTestManager.getInstance().getTestInfo().getOverrides().setRampup((Integer) rampupSpinner.getValue());
-                } catch (NullPointerException npe) {
-                    BmLog.error("RampUpSpinner was not activated yet. Try again later");
-                }
-            }
-        });
-        iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
-        iterationsSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                try {
-                    BmTestManager.getInstance().getTestInfo().getOverrides().setIterations((Integer) iterationsSpinner.getValue());
-
-                } catch (NullPointerException npe) {
-                    BmLog.error("IterationsSpinner was not activated yet. Try again later");
-                }
-            }
-        });
-        durationSpinner.setModel(new SpinnerNumberModel(0, 0, 480, 60));
-        durationSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                try {
-                    BmTestManager.getInstance().getTestInfo().getOverrides().setDuration((Integer) durationSpinner.getValue());
-                } catch (NullPointerException npe) {
-                    BmLog.error("DurationSpinner was not activated yet. Try again later");
-                }
-            }
-        });
 
         addFilesButton.addActionListener(new ActionListener() {
             @Override
@@ -238,20 +201,6 @@ public class TestPanelGui {
         return mainPanel;
     }
 
-    private void startInTheCloud() {
-        saveCloudTest();
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        TestInfoController.stop();
-        bmTestManager.runInTheCloud();
-        TestInfo testInfo = bmTestManager.getTestInfo();
-        if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
-            String url = bmTestManager.getTestUrl();
-            if (url != null)
-                url = url.substring(0, url.length() - 5);
-            Utils.Navigate(url);
-        }
-    }
-
 
     private void enableMainPanelControls(boolean isEnabled) {
         testIdTextField.setEnabled(isEnabled);
@@ -263,49 +212,6 @@ public class TestPanelGui {
     }
 
 
-    private void saveCloudTest() {
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        int numberOfUsers = cloudPanel.getNumberOfUsers();
-
-        ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
-        int userPerEngine = Integer.valueOf(enginesParameters.get(2));
-
-        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-        if (testInfo != null) {
-            if (userPerEngine == 0) {
-                JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
-                        " '1' will be saved");
-                userPerEngine = 1;
-                Overrides overrides = testInfo.getOverrides();
-                if (overrides != null) {
-                    testInfo.getOverrides().setThreads(userPerEngine);
-                } else {
-                    overrides = new Overrides((Integer) durationSpinner.getValue(),
-                            (Integer) iterationsSpinner.getValue(),
-                            (Integer) rampupSpinner.getValue(),
-                            userPerEngine);
-                    testInfo.setOverrides(overrides);
-                }
-                testInfo.setNumberOfUsers(Integer.valueOf(userPerEngine));
-            }
-            /*
-            BPC-207
-             */
-            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) jMeterPropertyPanel;
-            Properties jmeterProperties = propertyPanel.getData();
-            testInfo.setJmeterProperties(jmeterProperties);
-            /*
-            BPC-207
-             */
-            testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
-                    bmTestManager.getTestInfo());
-            bmTestManager.setTestInfo(testInfo);
-
-        } else {
-            JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
-        }
-    }
-
     private void clearTestInfo() {
         testIdComboBox.removeAllItems();
         BmTestManager.getInstance().setTestInfo(null);
@@ -314,7 +220,7 @@ public class TestPanelGui {
     /**
      * Here some heavy GUI listeners are initialized;
      */
-    public void initListeners() {
+    public void init() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
 
         if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
@@ -895,11 +801,6 @@ public class TestPanelGui {
         final JPanel panel8 = new JPanel();
         panel8.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         overridesPanel.add(panel8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        rampupSpinner = new JSpinner();
-        rampupSpinner.setAutoscrolls(false);
-        rampupSpinner.setFocusTraversalPolicyProvider(true);
-        rampupSpinner.setToolTipText("How quickly will load increase");
-        panel8.add(rampupSpinner, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(50, -1), new Dimension(50, -1), new Dimension(50, -1), 0, false));
         final JLabel label7 = new JLabel();
         label7.setRequestFocusEnabled(false);
         label7.setText("Rampup Period (seconds)");
@@ -908,9 +809,6 @@ public class TestPanelGui {
         final JPanel panel9 = new JPanel();
         panel9.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel8.add(panel9, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        iterationsSpinner = new JSpinner();
-        iterationsSpinner.setToolTipText("\"0\" means \"FOREVER\"");
-        panel9.add(iterationsSpinner, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(50, -1), new Dimension(50, -1), new Dimension(50, -1), 0, false));
         final JLabel label8 = new JLabel();
         label8.setRequestFocusEnabled(false);
         label8.setText("# Iterations");
@@ -919,9 +817,6 @@ public class TestPanelGui {
         final JPanel panel10 = new JPanel();
         panel10.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         overridesPanel.add(panel10, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, true));
-        durationSpinner = new JSpinner();
-        durationSpinner.setToolTipText("\"0\" means \"Limited by Test Session Time\"");
-        panel10.add(durationSpinner, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(50, -1), new Dimension(50, -1), new Dimension(50, -1), 0, false));
         final JLabel label9 = new JLabel();
         label9.setRequestFocusEnabled(false);
         label9.setText("Duration (minutes)");
