@@ -1,15 +1,22 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.ServerStatusController;
 import com.blazemeter.jmeter.testexecutor.TestPanelGui;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
 import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.apache.jmeter.engine.StandardJMeterEngine;
+import org.apache.jmeter.gui.GuiPackage;
+import org.apache.jmeter.gui.action.ActionNames;
+import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +30,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.rmi.ConnectException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Properties;
@@ -190,6 +201,172 @@ public class CloudPanel extends JPanel {
         });
 
         saveUploadButton.addActionListener(new SaveUploadButtonListener());
+
+
+        //Here should be all changes of TestInfo processed
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
+            @Override
+            public void onTestInfoChanged(TestInfo testInfo) {
+                if (testInfo == null) {
+                    return;
+                }
+                /*if (testInfo.getError() != null) {
+                    String errorTitle = "Problems with test";
+                    String errorMessage = testInfo.getError();
+                    if (errorMessage.equals("Insufficient credits")) {
+                        errorMessage = errorMessage + ": turn to customer support service";
+                    }
+                    if (errorMessage.equals("Test not found")) {
+                        testInfo.setError(null);
+                        return;
+                    }
+                    JMeterUtils.reportErrorToUser(errorMessage, errorTitle);
+                    testInfo.setError(null);
+                }*/
+
+                /*String item = testInfo.getId() + " - " + testInfo.getName();
+                boolean exists = false;
+
+                for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
+                    Object obj = testIdComboBox.getItemAt(index);
+                    if (obj instanceof TestInfo & obj != null) {
+                        TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
+                        exists = item.equals(ti.getId() + " - " + ti.getName());
+                    }
+                }
+                if (!exists & !testInfo.getId().isEmpty()) {
+                    testIdComboBox.addItem(item);
+                }
+*/
+                if (testInfo.getStatus() == TestStatus.Running) {
+                    runInTheCloud.setEnabled(true);
+//                    addFilesButton.setEnabled(false);
+//                    Utils.enableElements(cloudPanel, false);
+//                    runLocal.setEnabled(false);
+//                    runRemote.setEnabled(false);
+//                    Utils.enableElements(jMeterPropertyPanel, false);
+                }
+
+                if ((testInfo.getStatus() == TestStatus.NotRunning)) {
+//                    Utils.enableElements(jMeterPropertyPanel, true);
+                    boolean isTestIdEmpty = testInfo.getId().isEmpty();
+                    runInTheCloud.setEnabled(!isTestIdEmpty);
+                    addFilesButton.setEnabled(!isTestIdEmpty);
+//                    Utils.enableElements(cloudPanel, !isTestIdEmpty);
+
+                    boolean isTestRunning = BmTestManager.isTestRunning();
+//                    runLocal.setEnabled(!isTestRunning);
+//                    runRemote.setEnabled(!isTestRunning);
+
+//                    configureMainPanelControls(testInfo);
+
+                    if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
+                        try {
+                            String[] jmeterEngines = LocateRegistry.getRegistry(Registry.REGISTRY_PORT).list();
+                            if (jmeterEngines[0].equals("JMeterEngine")) {
+                                JToolBar jToolBar = GuiPackage.getInstance().getMainToolbar();
+                                Component[] components = jToolBar.getComponents();
+                                ActionRouter.getInstance().actionPerformed(new ActionEvent(components[0], ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_STOP_ALL));
+                            }
+
+                        } catch (ConnectException ce) {
+                            BmLog.error("Failed to connect to RMI registry: jmeter is running in non-distributed mode");
+                            StandardJMeterEngine.stopEngine();
+                        } catch (RemoteException re) {
+                            BmLog.error("Failed to get list of remote objects from RMI registry: jmeter is running in non-distributed mode");
+                        }
+                    }
+                }
+
+                setTestInfo(testInfo);
+
+                if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
+                    String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
+                    String currentTestId = null;
+                    if (!currentTest.isEmpty()) {
+                        currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
+                    } else {
+                        currentTestId = "";
+                    }
+                    if (testInfo != null && !currentTestId.equals(testInfo.getId())) {
+                        JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
+                        TestInfoController.stop();
+
+                    } else if (currentTestId.equals(testInfo.getId())) {
+                        TestInfoController.start(testInfo.getId());
+
+                    } else {
+                        return;
+
+                    }
+                    TestInfoController.start(testInfo.getId());
+                }
+
+                if (testInfo.getName().equals(Constants.NEW) || (testInfo.getName().isEmpty())) {
+                    TestInfoController.stop();
+                }
+
+            }
+        });
+
+
+
+        //Processing serverStatusChangedNotification
+        ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
+        serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
+            @Override
+            public void onServerStatusChanged() {
+                ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
+                switch (serverStatus) {
+                    case AVAILABLE:
+                        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                        boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
+                        runInTheCloud.setEnabled(!testIsRunning);
+                        break;
+                    case NOT_AVAILABLE:
+                        runInTheCloud.setEnabled(false);
+                        break;
+                }
+
+            }
+        });
+
+        runInTheCloud.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int dialogButton;
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                if ("start".equals(e.getActionCommand().toLowerCase())) {
+                    if (bmTestManager.getUserKey().isEmpty()) {
+                        JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
+                        return;
+                    }
+                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to start the test?",
+                            "Start test?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (dialogButton == JOptionPane.YES_OPTION) {
+                        startInTheCloud();
+
+                 /*
+                   OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                                "Operation will take a few seconds to execute. Your patience is appreciated.");
+                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
+                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
+                 */
+
+                    }
+
+                } else {
+                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to stop the test? ",
+                            "Stop test?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (dialogButton == JOptionPane.YES_OPTION) {
+                        bmTestManager.stopInTheCloud();
+                    }
+                }
+            }
+        });
 
         numberOfUsersSlider.addChangeListener(new ChangeListener() {
             @Override

@@ -56,13 +56,15 @@ public class TestPanelGui {
     private JButton createNewButton;
     private JButton goToTestPageButton;
     private JButton helpButton;
+
     private JTextField numberOfUserTextBox;
     private JTextField enginesDescription;
     private CloudPanel cloudPanel;
-    private JButton runInTheCloud;
+
     private JSpinner iterationsSpinner;
     private JSpinner durationSpinner;
     private JSpinner rampupSpinner;
+
     private JRadioButton runRemote;
     private JRadioButton runLocal;
     private JPanel overridesPanel;
@@ -183,43 +185,6 @@ public class TestPanelGui {
                 }
             }
         });
-
-        runInTheCloud.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int dialogButton;
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    if (bmTestManager.getUserKey().isEmpty()) {
-                        JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
-                        return;
-                    }
-                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to start the test?",
-                            "Start test?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (dialogButton == JOptionPane.YES_OPTION) {
-                        startInTheCloud();
-
-                 /*
-                   OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                                "Operation will take a few seconds to execute. Your patience is appreciated.");
-                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
-                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
-                 */
-
-                    }
-
-                } else {
-                    dialogButton = JOptionPane.showConfirmDialog(mainPanel, "Are you sure that you want to stop the test? ",
-                            "Stop test?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (dialogButton == JOptionPane.YES_OPTION) {
-                        bmTestManager.stopInTheCloud();
-                    }
-                }
-            }
-        });
-
 
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         rampupSpinner.addChangeListener(new ChangeListener() {
@@ -524,7 +489,6 @@ public class TestPanelGui {
                     }
 
                     if (testInfo.getStatus() == TestStatus.Running) {
-                        runInTheCloud.setEnabled(true);
                         addFilesButton.setEnabled(false);
                         Utils.enableElements(cloudPanel, false);
                         runLocal.setEnabled(false);
@@ -535,7 +499,6 @@ public class TestPanelGui {
                     if ((testInfo.getStatus() == TestStatus.NotRunning)) {
                         Utils.enableElements(jMeterPropertyPanel, true);
                         boolean isTestIdEmpty = testInfo.getId().isEmpty();
-                        runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
                         Utils.enableElements(cloudPanel, !isTestIdEmpty);
 
@@ -606,13 +569,11 @@ public class TestPanelGui {
                             boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
                             enableMainPanelControls(!testIsRunning);
                             Utils.enableElements(cloudPanel, !testIsRunning);
-                            runInTheCloud.setEnabled(!testIsRunning);
                             Utils.enableElements(jMeterPropertyPanel, !testIsRunning);
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);
                             Utils.enableElements(jMeterPropertyPanel, false);
-                            runInTheCloud.setEnabled(false);
                             Utils.enableElements(jMeterPropertyPanel, false);
                             TestInfoController.stop();
                             break;
@@ -966,16 +927,6 @@ public class TestPanelGui {
         label9.setText("Duration (minutes)");
         label9.setToolTipText("\"0\" means \"Limited by Test Session Time\"");
         panel10.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
-        runInTheCloud = new JButton();
-        runInTheCloud.setActionCommand("start");
-        runInTheCloud.setEnabled(false);
-        runInTheCloud.setFont(new Font(runInTheCloud.getFont().getName(), runInTheCloud.getFont().getStyle(), 16));
-        runInTheCloud.setHideActionText(false);
-        runInTheCloud.setInheritsPopupMenu(true);
-        runInTheCloud.setLabel("Run in the Cloud!");
-        runInTheCloud.setText("Run in the Cloud!");
-        runInTheCloud.setToolTipText("Update settings on server and start test");
-        cloudPanel.add(runInTheCloud, new GridConstraints(0, 3, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(275, 40), new Dimension(275, 40), new Dimension(275, 40), 0, false));
         editJMXLocallyButton = new JButton();
         editJMXLocallyButton.setText("Edit JMX ");
         editJMXLocallyButton.setToolTipText("Download JMX from server and open");
