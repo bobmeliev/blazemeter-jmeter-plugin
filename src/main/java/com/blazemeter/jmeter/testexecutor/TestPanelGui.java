@@ -615,11 +615,11 @@ public class TestPanelGui {
                     if (!currentTest.isEmpty()) {
                         StringBuilder currentTestId = new StringBuilder(currentTest.substring(0, currentTest.indexOf(";")));
                         for (TestInfo ti : tests) {
-                            if (ti.getId().equals(currentTestId)) {
+                            if (ti.getId().equals(currentTestId.toString())) {
                                 testIdComboBox.setSelectedItem(ti);
                             }
                         }
-                        if ((!testIdList.isEmpty() & currentTestId.length() != 0) && !testIdList.contains(currentTestId)) {
+                        if ((!testIdList.isEmpty() & currentTestId.length() != 0) && !testIdList.contains(currentTestId.toString())) {
                             JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
                                     , "Test was not found on server");
                             currentTestId.setLength(0);
