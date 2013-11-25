@@ -13,6 +13,9 @@ import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.apache.jmeter.util.JMeterUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -409,5 +412,22 @@ public class CloudPanel extends JPanel {
         addFilesButton.setEnabled(false);
     }
 
+    public void setLocations(JSONArray locations) {
+        if (locations.length() > 0) {
+            locationComboBox.removeAllItems();
+            try {
+                for (int i = 0; i < locations.length(); ++i) {
+                    JSONObject location = locations.getJSONObject(i);
+                    locationComboBox.addItem(location.get("title"));
+                }
+            } catch (JSONException je) {
+                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
+            }
+        }
+    }
+
+    public String getServerLocation() {
+        return (String) locationComboBox.getSelectedItem();
+    }
 
 }

@@ -22,8 +22,6 @@ import org.apache.jmeter.gui.action.ActionNames;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -61,7 +59,7 @@ public class TestPanelGui {
     private JSlider numberOfUsersSlider;
     private JTextField numberOfUserTextBox;
     private JTextField enginesDescription;
-    private JComboBox locationComboBox;
+    //    private JComboBox locationComboBox;
     private CloudPanel cloudPanel;
     private JButton runInTheCloud;
     private JSpinner iterationsSpinner;
@@ -85,7 +83,7 @@ public class TestPanelGui {
         cloudPanel.setVisible(true);
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
-        configureUIComponents();
+//        configureUIComponents();
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -122,7 +120,8 @@ public class TestPanelGui {
                 }
                 int numberOfUsers = numberOfUsersSlider.getValue();
                 TestInfo ti = bmTestManager.createTest(userKey, testName);
-                ti.setLocation((String) locationComboBox.getSelectedItem());
+//                ti.setLocation((String) locationComboBox.getSelectedItem());
+                ti.setLocation(cloudPanel.getServerLocation());
                 ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
                 ti.setStatus(TestStatus.NotRunning);
                 Properties jmeterProperties = null;
@@ -151,7 +150,7 @@ public class TestPanelGui {
         });
 
 
-        locationComboBox.addActionListener(new ActionListener() {
+        /*locationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -161,7 +160,8 @@ public class TestPanelGui {
                     BmTestManager.getInstance().getTestInfo().setLocation(locationId);
                 }
             }
-        });
+        });*/
+
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -458,7 +458,8 @@ public class TestPanelGui {
 
                         //set locations list
                         JSONArray locations = userInfo.getLocations();
-                        if (locations.length() > 0) {
+                        cloudPanel.setLocations(locations);
+                        /*if (locations.length() > 0) {
                             locationComboBox.removeAllItems();
                             try {
                                 for (int i = 0; i < locations.length(); ++i) {
@@ -468,7 +469,7 @@ public class TestPanelGui {
                             } catch (JSONException je) {
                                 BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
                             }
-                        }
+                        }*/
                     }
                 }
             });
@@ -851,7 +852,7 @@ public class TestPanelGui {
     public JPanel getjMeterPropertyPanel() {
         return jMeterPropertyPanel;
     }
-
+/*
     private void configureUIComponents() {
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("EU West (Ireland)");
@@ -863,7 +864,7 @@ public class TestPanelGui {
         defaultComboBoxModel1.addElement("South America (San Paulo)");
         defaultComboBoxModel1.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel1);
-    }
+    }*/
 
 
     private void createUIComponents() {
@@ -1048,12 +1049,14 @@ public class TestPanelGui {
         final JPanel panel7 = new JPanel();
         panel7.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         cloudPanel.add(panel7, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        /*
         locationComboBox = new JComboBox();
         locationComboBox.setDoubleBuffered(true);
         locationComboBox.setEditable(false);
         locationComboBox.setEnabled(true);
         locationComboBox.setToolTipText("Select location");
         panel7.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        */
         enginesDescription = new JTextField();
         enginesDescription.setEditable(false);
         enginesDescription.setEnabled(false);
