@@ -57,8 +57,6 @@ public class TestPanelGui {
     private JButton goToTestPageButton;
     private JButton helpButton;
 
-    private JTextField numberOfUserTextBox;
-    private JTextField enginesDescription;
     private CloudPanel cloudPanel;
 
 
@@ -66,8 +64,6 @@ public class TestPanelGui {
     private JRadioButton runLocal;
     private JPanel overridesPanel;
     private JLabel userInfoLabel;
-    private JButton addFilesButton;
-    private JButton editJMXLocallyButton;
     private JButton saveUploadButton;
     private JPanel jMeterPropertyPanel = new JMeterPropertyPanel();
 
@@ -162,37 +158,6 @@ public class TestPanelGui {
                 Utils.Navigate(Constants.HELP_URL);
             }
         });
-
-        editJMXLocallyButton.addActionListener(new EditJMXLocallyButtonListener());
-
-        numberOfUserTextBox.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent focusEvent) {
-                int numberOfUsers = 0;
-                try {
-                    numberOfUsers = Integer.valueOf(numberOfUserTextBox.getText().trim());
-                    if (numberOfUsers == 0) {
-                        numberOfUserTextBox.setText("1");
-                    }
-                } catch (NumberFormatException e) {
-                    BmLog.error("You've tried to enter not integer. Please, correct mistake!");
-                    numberOfUsers = 0;
-                } finally {
-                    cloudPanel.setNumberOfUsers(numberOfUsers);
-                }
-            }
-        });
-
-
-        addFilesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String url = BmTestManager.getInstance().getTestUrl() + "/files";
-                if (url != null)
-                    Utils.Navigate(url);
-            }
-        });
-
         saveUploadButton.addActionListener(new SaveUploadButtonListener());
     }
 
@@ -395,7 +360,6 @@ public class TestPanelGui {
                     }
 
                     if (testInfo.getStatus() == TestStatus.Running) {
-                        addFilesButton.setEnabled(false);
                         Utils.enableElements(cloudPanel, false);
                         runLocal.setEnabled(false);
                         runRemote.setEnabled(false);
@@ -405,7 +369,6 @@ public class TestPanelGui {
                     if ((testInfo.getStatus() == TestStatus.NotRunning)) {
                         Utils.enableElements(jMeterPropertyPanel, true);
                         boolean isTestIdEmpty = testInfo.getId().isEmpty();
-                        addFilesButton.setEnabled(!isTestIdEmpty);
                         Utils.enableElements(cloudPanel, !isTestIdEmpty);
 
                         boolean isTestRunning = BmTestManager.isTestRunning();
@@ -780,21 +743,9 @@ public class TestPanelGui {
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         cloudPanel.add(panel6, new GridConstraints(2, 1, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(-1, 50), new Dimension(-1, 50), new Dimension(-1, 50), 0, false));
-        numberOfUserTextBox = new JTextField();
-        numberOfUserTextBox.setEditable(true);
-        numberOfUserTextBox.setEnabled(true);
-        numberOfUserTextBox.setText("0");
-        numberOfUserTextBox.setToolTipText("Number of users for testing in cloud");
-        panel6.add(numberOfUserTextBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(40, -1), new Dimension(40, -1), new Dimension(40, -1), 0, false));
         final JPanel panel7 = new JPanel();
         panel7.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         cloudPanel.add(panel7, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        enginesDescription = new JTextField();
-        enginesDescription.setEditable(false);
-        enginesDescription.setEnabled(false);
-        enginesDescription.setText("JMETER CONSOLE");
-        enginesDescription.setToolTipText("Number of JMeter engines");
-        cloudPanel.add(enginesDescription, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         overridesPanel = new JPanel();
         overridesPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         cloudPanel.add(overridesPanel, new GridConstraints(4, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -822,21 +773,10 @@ public class TestPanelGui {
         label9.setText("Duration (minutes)");
         label9.setToolTipText("\"0\" means \"Limited by Test Session Time\"");
         panel10.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
-        editJMXLocallyButton = new JButton();
-        editJMXLocallyButton.setText("Edit JMX ");
-        editJMXLocallyButton.setToolTipText("Download JMX from server and open");
-        cloudPanel.add(editJMXLocallyButton, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 25), new Dimension(100, 25), new Dimension(100, 25), 0, false));
         saveUploadButton = new JButton();
         saveUploadButton.setText("Save/Upload JMX");
         saveUploadButton.setToolTipText("Upload JMX to server");
         cloudPanel.add(saveUploadButton, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(165, 25), new Dimension(165, 25), new Dimension(165, 25), 0, false));
-        addFilesButton = new JButton();
-        addFilesButton.setActionCommand("Add Files for Cloud Test");
-        addFilesButton.setEnabled(false);
-        addFilesButton.setLabel("Add Files for Cloud Test");
-        addFilesButton.setText("Add Files for Cloud Test");
-        addFilesButton.setToolTipText("Add data files for test");
-        cloudPanel.add(addFilesButton, new GridConstraints(4, 3, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(275, 25), new Dimension(275, 25), new Dimension(275, 25), 0, false));
         mainPanel.add(jMeterPropertyPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
         label1.setLabelFor(userKeyTextField);

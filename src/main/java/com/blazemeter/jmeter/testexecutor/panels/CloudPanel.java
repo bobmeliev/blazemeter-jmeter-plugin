@@ -76,7 +76,6 @@ public class CloudPanel extends JPanel {
             }
         });
 
-        editJMXLocallyButton.addActionListener(new EditJMXLocallyButtonListener());
 
         numberOfUserTextBox.addFocusListener(new FocusAdapter() {
             @Override
@@ -95,7 +94,6 @@ public class CloudPanel extends JPanel {
                 }
             }
         });
-
 
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         rampupSpinner.addChangeListener(new ChangeListener() {
@@ -217,6 +215,7 @@ public class CloudPanel extends JPanel {
         });
 
         saveUploadButton.addActionListener(new SaveUploadButtonListener());
+        editJMXLocallyButton.addActionListener(new EditJMXLocallyButtonListener());
 
 
         //Here should be all changes of TestInfo processed
@@ -257,7 +256,7 @@ public class CloudPanel extends JPanel {
 */
                 if (testInfo.getStatus() == TestStatus.Running) {
                     runInTheCloud.setEnabled(true);
-//                    addFilesButton.setEnabled(false);
+                    addFilesButton.setEnabled(false);
 //                    Utils.enableElements(cloudPanel, false);
 //                    runLocal.setEnabled(false);
 //                    runRemote.setEnabled(false);
