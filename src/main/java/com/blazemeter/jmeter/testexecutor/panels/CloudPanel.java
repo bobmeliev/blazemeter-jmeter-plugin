@@ -4,10 +4,8 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.TestPanelGui;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
-import com.blazemeter.jmeter.testinfo.Overrides;
-import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestInfoController;
-import com.blazemeter.jmeter.testinfo.TestStatus;
+import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -26,6 +24,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.Properties;
 
 /**
@@ -191,6 +190,66 @@ public class CloudPanel extends JPanel {
         });
 
         saveUploadButton.addActionListener(new SaveUploadButtonListener());
+
+        numberOfUsersSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int numberOfUsers = numberOfUsersSlider.getValue();
+                int engines;
+                String engineSize;
+                int usersPerEngine;
+                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+                testInfo.setNumberOfUsers(numberOfUsers);
+                ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
+                engines = Integer.valueOf(enginesParameters.get(0));
+                engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
+                usersPerEngine = Integer.valueOf(enginesParameters.get(2));
+                if (numberOfUsers <= 300) {
+                    enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
+                    numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
+                } else {
+                    enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
+                    numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
+                }
+            }
+        });
+        BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
+            @Override
+            public void onUserInfoChanged(UserInfo userInfo) {
+                if (userInfo == null) {
+                  return;
+                } else {
+                    if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
+                        userInfo.setMaxUsersLimit(8400);
+                        userInfo.setMaxEnginesLimit(14);
+                    }
+                    //configure numberOfUserSlider depending on UserInfo
+                    numberOfUsersSlider.setMinimum(0);
+                    numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
+                    numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
+                    numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
+                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
+                    numberOfUsersSlider.setLabelTable(labels);
+
+                    //set locations list
+                    JSONArray locations = userInfo.getLocations();
+                    setLocations(locations);
+//                    cloudPanel.setLocations(locations);
+                        /*if (locations.length() > 0) {
+                            locationComboBox.removeAllItems();
+                            try {
+                                for (int i = 0; i < locations.length(); ++i) {
+                                    JSONObject location = locations.getJSONObject(i);
+                                    locationComboBox.addItem(location.get("title"));
+                                }
+                            } catch (JSONException je) {
+                                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
+                            }
+                        }*/
+                }
+            }
+        });
+
     }
 
 
@@ -428,6 +487,14 @@ public class CloudPanel extends JPanel {
 
     public String getServerLocation() {
         return (String) locationComboBox.getSelectedItem();
+    }
+
+    public int getNumberOfUsers(){
+        return numberOfUsersSlider.getValue();
+    }
+
+    public void setNumberOfUsers(int numberOfUsers){
+        numberOfUsersSlider.setValue(numberOfUsers);
     }
 
 }

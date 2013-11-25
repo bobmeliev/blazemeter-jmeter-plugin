@@ -56,10 +56,8 @@ public class TestPanelGui {
     private JButton createNewButton;
     private JButton goToTestPageButton;
     private JButton helpButton;
-    private JSlider numberOfUsersSlider;
     private JTextField numberOfUserTextBox;
     private JTextField enginesDescription;
-    //    private JComboBox locationComboBox;
     private CloudPanel cloudPanel;
     private JButton runInTheCloud;
     private JSpinner iterationsSpinner;
@@ -83,7 +81,6 @@ public class TestPanelGui {
         cloudPanel.setVisible(true);
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
-//        configureUIComponents();
         reloadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -118,9 +115,8 @@ public class TestPanelGui {
                     JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
                     return;
                 }
-                int numberOfUsers = numberOfUsersSlider.getValue();
+                int numberOfUsers = cloudPanel.getNumberOfUsers();
                 TestInfo ti = bmTestManager.createTest(userKey, testName);
-//                ti.setLocation((String) locationComboBox.getSelectedItem());
                 ti.setLocation(cloudPanel.getServerLocation());
                 ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
                 ti.setStatus(TestStatus.NotRunning);
@@ -149,18 +145,6 @@ public class TestPanelGui {
             }
         });
 
-
-        /*locationComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-
-                String locationId = Utils.getLocationId((String) locationComboBox.getSelectedItem());
-                if (!locationId.isEmpty()) {
-                    BmTestManager.getInstance().getTestInfo().setLocation(locationId);
-                }
-            }
-        });*/
 
         goToTestPageButton.addActionListener(new ActionListener() {
             @Override
@@ -195,33 +179,11 @@ public class TestPanelGui {
                     BmLog.error("You've tried to enter not integer. Please, correct mistake!");
                     numberOfUsers = 0;
                 } finally {
-                    numberOfUsersSlider.setValue(numberOfUsers);
+                    cloudPanel.setNumberOfUsers(numberOfUsers);
                 }
             }
         });
 
-        numberOfUsersSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int numberOfUsers = numberOfUsersSlider.getValue();
-                int engines;
-                String engineSize;
-                int usersPerEngine;
-                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                testInfo.setNumberOfUsers(numberOfUsers);
-                ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
-                engines = Integer.valueOf(enginesParameters.get(0));
-                engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
-                usersPerEngine = Integer.valueOf(enginesParameters.get(2));
-                if (numberOfUsers <= 300) {
-                    enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
-                    numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
-                } else {
-                    enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
-                    numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
-                }
-            }
-        });
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -326,20 +288,6 @@ public class TestPanelGui {
     }
 
 
-/*
-    private void enableCloudControls(boolean isEnabled) {
-        locationComboBox.setEnabled(isEnabled);
-        numberOfUsersSlider.setEnabled(isEnabled);
-        numberOfUserTextBox.setEnabled(isEnabled);
-        rampupSpinner.setEnabled(isEnabled);
-        iterationsSpinner.setEnabled(isEnabled);
-        durationSpinner.setEnabled(isEnabled);
-        addFilesButton.setEnabled(isEnabled);
-        editJMXLocallyButton.setEnabled(isEnabled);
-        saveUploadButton.setEnabled(isEnabled);
-    }
-*/
-
     private void enableMainPanelControls(boolean isEnabled) {
         testIdTextField.setEnabled(isEnabled);
         testIdComboBox.setEnabled(isEnabled);
@@ -352,7 +300,7 @@ public class TestPanelGui {
 
     private void saveCloudTest() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        int numberOfUsers = numberOfUsersSlider.getValue();
+        int numberOfUsers = cloudPanel.getNumberOfUsers();
 
         ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
         int userPerEngine = Integer.valueOf(enginesParameters.get(2));
@@ -447,29 +395,11 @@ public class TestPanelGui {
                             userInfo.setMaxUsersLimit(8400);
                             userInfo.setMaxEnginesLimit(14);
                         }
-                        //configure numberOfUserSlider depending on UserInfo
-                        numberOfUsersSlider.setMinimum(0);
                         userInfoLabel.setText(userInfo.toString());
-                        numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
-                        numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
-                        numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
-                        Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
-                        numberOfUsersSlider.setLabelTable(labels);
 
                         //set locations list
                         JSONArray locations = userInfo.getLocations();
                         cloudPanel.setLocations(locations);
-                        /*if (locations.length() > 0) {
-                            locationComboBox.removeAllItems();
-                            try {
-                                for (int i = 0; i < locations.length(); ++i) {
-                                    JSONObject location = locations.getJSONObject(i);
-                                    locationComboBox.addItem(location.get("title"));
-                                }
-                            } catch (JSONException je) {
-                                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
-                            }
-                        }*/
                     }
                 }
             });
@@ -499,7 +429,6 @@ public class TestPanelGui {
                             configureMainPanelControls(null);
                             cloudPanel.reset();
                             Utils.enableElements(cloudPanel, false);
-//                            enableCloudControls(false);
                             TestInfo testInfo = new TestInfo();
                             testInfo.setName(Constants.NEW);
                             bmTestManager.setTestInfo(testInfo);
@@ -598,7 +527,6 @@ public class TestPanelGui {
                         runInTheCloud.setEnabled(true);
                         addFilesButton.setEnabled(false);
                         Utils.enableElements(cloudPanel, false);
-//                        enableCloudControls(false);
                         runLocal.setEnabled(false);
                         runRemote.setEnabled(false);
                         Utils.enableElements(jMeterPropertyPanel, false);
@@ -610,7 +538,6 @@ public class TestPanelGui {
                         runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
                         Utils.enableElements(cloudPanel, !isTestIdEmpty);
-//                        enableCloudControls(!isTestIdEmpty);
 
                         boolean isTestRunning = BmTestManager.isTestRunning();
                         runLocal.setEnabled(!isTestRunning);
@@ -678,14 +605,12 @@ public class TestPanelGui {
                             TestInfoController.start(testInfo.getId());
                             boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
                             enableMainPanelControls(!testIsRunning);
-//                            enableCloudControls(!testIsRunning);
                             Utils.enableElements(cloudPanel, !testIsRunning);
                             runInTheCloud.setEnabled(!testIsRunning);
                             Utils.enableElements(jMeterPropertyPanel, !testIsRunning);
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);
-//                            enableCloudControls(false);
                             Utils.enableElements(jMeterPropertyPanel, false);
                             runInTheCloud.setEnabled(false);
                             Utils.enableElements(jMeterPropertyPanel, false);
@@ -746,7 +671,6 @@ public class TestPanelGui {
                     BmTestManager.getInstance().setUserKeyValid(false);
                     cloudPanel.reset();
                     Utils.enableElements(cloudPanel, false);
-//                    enableCloudControls(false);
                     testIdComboBox.setSelectedItem(Constants.EMPTY);
                 }
             }
@@ -794,26 +718,6 @@ public class TestPanelGui {
         if (!bmTestManager.getIsLocalRunMode()) {
             // update Cloud panel
             cloudPanel.setTestInfo(testInfo);
-            /*
-            if ("jmeter".equals(testInfo.getType())) {
-                String locationTitle = Utils.getLocationTitle(testInfo.getLocation());
-                if (!locationTitle.isEmpty()) {
-                    locationComboBox.setSelectedItem(locationTitle);
-                }
-                numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
-                if (testInfo.getOverrides() != null) {
-                    rampupSpinner.setValue(testInfo.getOverrides().getRampup());
-                    iterationsSpinner.setValue(testInfo.getOverrides().getIterations() == -1 ? 0 : testInfo.getOverrides().getIterations());
-                    durationSpinner.setValue(testInfo.getOverrides().getDuration() == -1 ? 0 : testInfo.getOverrides().getDuration());
-                } else {
-                    rampupSpinner.setValue(0);
-                    iterationsSpinner.setValue(0);
-                    durationSpinner.setValue(0);
-                }
-                runInTheCloud.setActionCommand(testInfo.getStatus() == TestStatus.Running ? "stop" : "start");
-                runInTheCloud.setText(testInfo.getStatus() == TestStatus.Running ? "Stop" : "Run in the Cloud!");
-            }*/
-
         }
     }
 
@@ -852,19 +756,6 @@ public class TestPanelGui {
     public JPanel getjMeterPropertyPanel() {
         return jMeterPropertyPanel;
     }
-/*
-    private void configureUIComponents() {
-        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
-        defaultComboBoxModel1.addElement("EU West (Ireland)");
-        defaultComboBoxModel1.addElement("US East (Virginia)");
-        defaultComboBoxModel1.addElement("US West (N.California)");
-        defaultComboBoxModel1.addElement("US West (Oregon)");
-        defaultComboBoxModel1.addElement("Asia Pacific (Singapore)");
-        defaultComboBoxModel1.addElement("Japan (Tokyo)");
-        defaultComboBoxModel1.addElement("South America (San Paulo)");
-        defaultComboBoxModel1.addElement("Australia (Sydney)");
-        locationComboBox.setModel(defaultComboBoxModel1);
-    }*/
 
 
     private void createUIComponents() {
@@ -1028,35 +919,9 @@ public class TestPanelGui {
         numberOfUserTextBox.setText("0");
         numberOfUserTextBox.setToolTipText("Number of users for testing in cloud");
         panel6.add(numberOfUserTextBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(40, -1), new Dimension(40, -1), new Dimension(40, -1), 0, false));
-        numberOfUsersSlider = new JSlider();
-        numberOfUsersSlider.setInverted(false);
-        numberOfUsersSlider.setMajorTickSpacing(2100);
-        numberOfUsersSlider.setMaximum(8400);
-        numberOfUsersSlider.setMinimum(0);
-        numberOfUsersSlider.setMinorTickSpacing(700);
-        numberOfUsersSlider.setPaintLabels(true);
-        numberOfUsersSlider.setPaintTicks(true);
-        numberOfUsersSlider.setPaintTrack(true);
-        numberOfUsersSlider.setRequestFocusEnabled(true);
-        numberOfUsersSlider.setSnapToTicks(false);
-        numberOfUsersSlider.setToolTipText("Set number of test users");
-        numberOfUsersSlider.setValue(1);
-        numberOfUsersSlider.setValueIsAdjusting(true);
-        numberOfUsersSlider.putClientProperty("JSlider.isFilled", Boolean.FALSE);
-        numberOfUsersSlider.putClientProperty("html.disable", Boolean.FALSE);
-        numberOfUsersSlider.putClientProperty("Slider.paintThumbArrowShape", Boolean.FALSE);
-        panel6.add(numberOfUsersSlider, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 50), new Dimension(-1, 50), new Dimension(-1, 50), 0, false));
         final JPanel panel7 = new JPanel();
         panel7.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         cloudPanel.add(panel7, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        /*
-        locationComboBox = new JComboBox();
-        locationComboBox.setDoubleBuffered(true);
-        locationComboBox.setEditable(false);
-        locationComboBox.setEnabled(true);
-        locationComboBox.setToolTipText("Select location");
-        panel7.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        */
         enginesDescription = new JTextField();
         enginesDescription.setEditable(false);
         enginesDescription.setEnabled(false);
