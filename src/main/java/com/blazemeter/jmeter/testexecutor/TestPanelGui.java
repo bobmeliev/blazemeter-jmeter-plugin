@@ -62,7 +62,7 @@ public class TestPanelGui {
     private JTextField numberOfUserTextBox;
     private JTextField enginesDescription;
     private JComboBox locationComboBox;
-    private JPanel cloudPanel;
+    private CloudPanel cloudPanel;
     private JButton runInTheCloud;
     private JSpinner iterationsSpinner;
     private JSpinner durationSpinner;
@@ -209,7 +209,7 @@ public class TestPanelGui {
                 int usersPerEngine;
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 testInfo.setNumberOfUsers(numberOfUsers);
-                ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
+                ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
                 engines = Integer.valueOf(enginesParameters.get(0));
                 engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
                 usersPerEngine = Integer.valueOf(enginesParameters.get(2));
@@ -326,6 +326,7 @@ public class TestPanelGui {
     }
 
 
+/*
     private void enableCloudControls(boolean isEnabled) {
         locationComboBox.setEnabled(isEnabled);
         numberOfUsersSlider.setEnabled(isEnabled);
@@ -337,6 +338,7 @@ public class TestPanelGui {
         editJMXLocallyButton.setEnabled(isEnabled);
         saveUploadButton.setEnabled(isEnabled);
     }
+*/
 
     private void enableMainPanelControls(boolean isEnabled) {
         testIdTextField.setEnabled(isEnabled);
@@ -347,55 +349,12 @@ public class TestPanelGui {
         goToTestPageButton.setEnabled(isEnabled);
     }
 
-    private void resetCloudPanel() {
-        numberOfUsersSlider.setValue(0);
-        numberOfUserTextBox.setText("0");
-        rampupSpinner.setValue(0);
-        iterationsSpinner.setValue(0);
-        durationSpinner.setValue(0);
-        runInTheCloud.setEnabled(false);
-        addFilesButton.setEnabled(false);
-    }
-
-    private ArrayList<String> calculateEnginesForTest(int numberOfUsers) {
-        ArrayList<String> enginesParameters = new ArrayList<String>(3);
-        int engines = 0;
-        String engineSize = "m1.medium";
-        int userPerEngine = 0;
-
-        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
-
-
-        if (numberOfUsers <= 300) {
-            userPerEngine = numberOfUsers;
-        } else {
-            engines = numberOfUsers / 300;
-            if (engines < userInfo.getMaxEnginesLimit()) {
-                if (numberOfUsers % 300 > 0) {
-                    engines++;
-                }
-            } else {
-                engineSize = "m1.large";
-                engines = numberOfUsers / 600;
-                if (numberOfUsers % 600 > 0) {
-                    engines++;
-                }
-            }
-            userPerEngine = numberOfUsers / engines;
-        }
-
-        enginesParameters.add(String.valueOf(engines));
-        enginesParameters.add(engineSize);
-        enginesParameters.add(String.valueOf(userPerEngine));
-        return enginesParameters;
-    }
-
 
     private void saveCloudTest() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         int numberOfUsers = numberOfUsersSlider.getValue();
 
-        ArrayList<String> enginesParameters = calculateEnginesForTest(numberOfUsers);
+        ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
         int userPerEngine = Integer.valueOf(enginesParameters.get(2));
 
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
@@ -537,8 +496,9 @@ public class TestPanelGui {
                         } else if (selectedTest.toString().equals(Constants.NEW)) {
                             testIdComboBox.setSelectedItem(Constants.NEW);
                             configureMainPanelControls(null);
-                            resetCloudPanel();
-                            enableCloudControls(false);
+                            cloudPanel.reset();
+                            Utils.enableElements(cloudPanel, false);
+//                            enableCloudControls(false);
                             TestInfo testInfo = new TestInfo();
                             testInfo.setName(Constants.NEW);
                             bmTestManager.setTestInfo(testInfo);
@@ -636,7 +596,8 @@ public class TestPanelGui {
                     if (testInfo.getStatus() == TestStatus.Running) {
                         runInTheCloud.setEnabled(true);
                         addFilesButton.setEnabled(false);
-                        enableCloudControls(false);
+                        Utils.enableElements(cloudPanel, false);
+//                        enableCloudControls(false);
                         runLocal.setEnabled(false);
                         runRemote.setEnabled(false);
                         Utils.enableElements(jMeterPropertyPanel, false);
@@ -647,7 +608,8 @@ public class TestPanelGui {
                         boolean isTestIdEmpty = testInfo.getId().isEmpty();
                         runInTheCloud.setEnabled(!isTestIdEmpty);
                         addFilesButton.setEnabled(!isTestIdEmpty);
-                        enableCloudControls(!isTestIdEmpty);
+                        Utils.enableElements(cloudPanel, !isTestIdEmpty);
+//                        enableCloudControls(!isTestIdEmpty);
 
                         boolean isTestRunning = BmTestManager.isTestRunning();
                         runLocal.setEnabled(!isTestRunning);
@@ -715,13 +677,15 @@ public class TestPanelGui {
                             TestInfoController.start(testInfo.getId());
                             boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
                             enableMainPanelControls(!testIsRunning);
-                            enableCloudControls(!testIsRunning);
+//                            enableCloudControls(!testIsRunning);
+                            Utils.enableElements(cloudPanel, !testIsRunning);
                             runInTheCloud.setEnabled(!testIsRunning);
                             Utils.enableElements(jMeterPropertyPanel, !testIsRunning);
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);
-                            enableCloudControls(false);
+//                            enableCloudControls(false);
+                            Utils.enableElements(jMeterPropertyPanel, false);
                             runInTheCloud.setEnabled(false);
                             Utils.enableElements(jMeterPropertyPanel, false);
                             TestInfoController.stop();
@@ -779,8 +743,9 @@ public class TestPanelGui {
                 } else {
                     JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                     BmTestManager.getInstance().setUserKeyValid(false);
-                    resetCloudPanel();
-                    enableCloudControls(false);
+                    cloudPanel.reset();
+                    Utils.enableElements(cloudPanel, false);
+//                    enableCloudControls(false);
                     testIdComboBox.setSelectedItem(Constants.EMPTY);
                 }
             }
@@ -827,6 +792,8 @@ public class TestPanelGui {
         }
         if (!bmTestManager.getIsLocalRunMode()) {
             // update Cloud panel
+            cloudPanel.setTestInfo(testInfo);
+            /*
             if ("jmeter".equals(testInfo.getType())) {
                 String locationTitle = Utils.getLocationTitle(testInfo.getLocation());
                 if (!locationTitle.isEmpty()) {
@@ -844,7 +811,8 @@ public class TestPanelGui {
                 }
                 runInTheCloud.setActionCommand(testInfo.getStatus() == TestStatus.Running ? "stop" : "start");
                 runInTheCloud.setText(testInfo.getStatus() == TestStatus.Running ? "Stop" : "Run in the Cloud!");
-            }
+            }*/
+
         }
     }
 
@@ -878,6 +846,10 @@ public class TestPanelGui {
             gui = new TestPanelGui();
         }
         return gui;
+    }
+
+    public JPanel getjMeterPropertyPanel() {
+        return jMeterPropertyPanel;
     }
 
     private void configureUIComponents() {
@@ -1033,7 +1005,7 @@ public class TestPanelGui {
         panel5.add(runRemote, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
         panel1.add(spacer3, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        cloudPanel = new JPanel();
+        cloudPanel = new CloudPanel();
         cloudPanel.setLayout(new GridLayoutManager(5, 5, new Insets(1, 1, 1, 1), -1, -1));
         cloudPanel.setEnabled(true);
         cloudPanel.setVisible(true);

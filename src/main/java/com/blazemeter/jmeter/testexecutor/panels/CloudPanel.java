@@ -1,8 +1,10 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.TestPanelGui;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestInfoController;
 import com.blazemeter.jmeter.testinfo.TestStatus;
@@ -21,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -319,7 +322,7 @@ public class CloudPanel extends JPanel {
     }
 
     private void startInTheCloud() {
-//        saveCloudTest();
+        saveCloudTest();
         BmTestManager bmTestManager = BmTestManager.getInstance();
         TestInfoController.stop();
         bmTestManager.runInTheCloud();
@@ -330,6 +333,80 @@ public class CloudPanel extends JPanel {
                 url = url.substring(0, url.length() - 5);
             Utils.Navigate(url);
         }
+    }
+
+    private void saveCloudTest() {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        int numberOfUsers = numberOfUsersSlider.getValue();
+
+        ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
+        int userPerEngine = Integer.valueOf(enginesParameters.get(2));
+
+        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+        if (testInfo != null) {
+            if (userPerEngine == 0) {
+                JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
+                        " '1' will be saved");
+                userPerEngine = 1;
+                Overrides overrides = testInfo.getOverrides();
+                if (overrides != null) {
+                    testInfo.getOverrides().setThreads(userPerEngine);
+                } else {
+                    overrides = new Overrides((Integer) durationSpinner.getValue(),
+                            (Integer) iterationsSpinner.getValue(),
+                            (Integer) rampupSpinner.getValue(),
+                            userPerEngine);
+                    testInfo.setOverrides(overrides);
+                }
+                testInfo.setNumberOfUsers(Integer.valueOf(userPerEngine));
+            }
+            /*
+            BPC-207
+             */
+            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) TestPanelGui.getGui().getjMeterPropertyPanel();
+            Properties jmeterProperties = propertyPanel.getData();
+            testInfo.setJmeterProperties(jmeterProperties);
+            /*
+            BPC-207
+             */
+            testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
+                    bmTestManager.getTestInfo());
+            bmTestManager.setTestInfo(testInfo);
+
+        } else {
+            JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
+        }
+    }
+
+    public void setTestInfo(TestInfo testInfo) {
+        if ("jmeter".equals(testInfo.getType())) {
+            String locationTitle = Utils.getLocationTitle(testInfo.getLocation());
+            if (!locationTitle.isEmpty()) {
+                locationComboBox.setSelectedItem(locationTitle);
+            }
+            numberOfUsersSlider.setValue(testInfo.getNumberOfUsers());
+            if (testInfo.getOverrides() != null) {
+                rampupSpinner.setValue(testInfo.getOverrides().getRampup());
+                iterationsSpinner.setValue(testInfo.getOverrides().getIterations() == -1 ? 0 : testInfo.getOverrides().getIterations());
+                durationSpinner.setValue(testInfo.getOverrides().getDuration() == -1 ? 0 : testInfo.getOverrides().getDuration());
+            } else {
+                rampupSpinner.setValue(0);
+                iterationsSpinner.setValue(0);
+                durationSpinner.setValue(0);
+            }
+            runInTheCloud.setActionCommand(testInfo.getStatus() == TestStatus.Running ? "stop" : "start");
+            runInTheCloud.setText(testInfo.getStatus() == TestStatus.Running ? "Stop" : "Run in the Cloud!");
+        }
+    }
+
+    public void reset() {
+        numberOfUsersSlider.setValue(0);
+        numberOfUserTextBox.setText("0");
+        rampupSpinner.setValue(0);
+        iterationsSpinner.setValue(0);
+        durationSpinner.setValue(0);
+        runInTheCloud.setEnabled(false);
+        addFilesButton.setEnabled(false);
     }
 
 
