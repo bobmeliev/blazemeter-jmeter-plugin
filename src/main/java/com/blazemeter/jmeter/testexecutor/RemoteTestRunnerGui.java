@@ -41,7 +41,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         try {
             gui = TestPanelGui.getGui();
         } catch (Exception e) {
-            BmLog.error(e);
+            BmLog.error("Failed to construct RemoteTestRunnerGui instance:"+e);
         }
         init();
         getFilePanel().setVisible(false);

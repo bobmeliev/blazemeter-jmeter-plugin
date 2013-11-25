@@ -64,95 +64,100 @@ public class TestPanelGui {
 
 
     public TestPanelGui() {
+        try {
 
-        $$$setupUI$$$();
-        mainPanel.remove(cloudPanel);
-        cloudPanel = new CloudPanel();
-        cloudPanel.setVisible(true);
-        mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
-        reloadButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                fetchUserTestsAsync();
-            }
-        });
-        signUpToBlazemeterButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Utils.Navigate(BmTestManager.getServerUrl() + "/user");
-            }
-        });
+            $$$setupUI$$$();
+            cloudPanel = new CloudPanel();
+            mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+            cloudPanel.setVisible(true);
 
-        createNewButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                String userKey = bmTestManager.getUserKey();
-                if (userKey == null || userKey.isEmpty()) {
-                    JMeterUtils.reportErrorToUser("Please enter user key", "No user key");
-                    bmTestManager.setUserKeyValid(false);
-                    return;
-
+            reloadButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    fetchUserTestsAsync();
                 }
-                String testName = testNameTextField.getText().trim();
-                if (testName.isEmpty() | testName.equals(Constants.NEW)) {
-                    testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
-                    if (testName == null || testName.trim().isEmpty())
+            });
+            signUpToBlazemeterButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    Utils.Navigate(BmTestManager.getServerUrl() + "/user");
+                }
+            });
+
+            createNewButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    BmTestManager bmTestManager = BmTestManager.getInstance();
+                    String userKey = bmTestManager.getUserKey();
+                    if (userKey == null || userKey.isEmpty()) {
+                        JMeterUtils.reportErrorToUser("Please enter user key", "No user key");
+                        bmTestManager.setUserKeyValid(false);
                         return;
+
+                    }
+                    String testName = testNameTextField.getText().trim();
+                    if (testName.isEmpty() | testName.equals(Constants.NEW)) {
+                        testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
+                        if (testName == null || testName.trim().isEmpty())
+                            return;
+                    }
+                    if (Utils.isTestPlanEmpty()) {
+                        JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
+                        return;
+                    }
+                    int numberOfUsers = cloudPanel.getNumberOfUsers();
+                    TestInfo ti = bmTestManager.createTest(userKey, testName);
+                    ti.setLocation(cloudPanel.getServerLocation());
+                    ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
+                    ti.setStatus(TestStatus.NotRunning);
+                    Properties jmeterProperties = null;
+
+                    if (!bmTestManager.getIsLocalRunMode()) {
+                        jmeterProperties = bmTestManager.getTestInfo().getJmeterProperties();
+
+                    } else {
+                        jmeterProperties = new Properties();
+                    }
+
+                    ti.setJmeterProperties(jmeterProperties);
+                    ti = bmTestManager.updateTestSettings(userKey, ti);
+                    if (ti != null && ti.getStatus() != null) {
+                        addTestId(ti, true);
+                        bmTestManager.setTestInfo(ti);
+                    }
+                    GuiPackage guiPackage = GuiPackage.getInstance();
+                    if (guiPackage.getTestPlanFile() == null) {
+
+                        Utils.saveJMX(guiPackage);
+                    }
+                    bmTestManager.uploadJmx();
+
                 }
-                if (Utils.isTestPlanEmpty()) {
-                    JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
-                    return;
+            });
+
+
+            goToTestPageButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    String url = BmTestManager.getInstance().getTestUrl();
+                    if (url != null) {
+                        Utils.Navigate(url);
+                    } else {
+                        JMeterUtils.reportErrorToUser("Test is not selected. Nothing to open.");
+                    }
                 }
-                int numberOfUsers = cloudPanel.getNumberOfUsers();
-                TestInfo ti = bmTestManager.createTest(userKey, testName);
-                ti.setLocation(cloudPanel.getServerLocation());
-                ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
-                ti.setStatus(TestStatus.NotRunning);
-                Properties jmeterProperties = null;
-
-                if (!bmTestManager.getIsLocalRunMode()) {
-                    jmeterProperties = bmTestManager.getTestInfo().getJmeterProperties();
-
-                } else {
-                    jmeterProperties = new Properties();
+            });
+            helpButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent actionEvent) {
+                    Utils.Navigate(Constants.HELP_URL);
                 }
+            });
+        } catch (NullPointerException npe) {
+            BmLog.error("Failed to construct TestPanelGui instance: " + npe);
+        }
 
-                ti.setJmeterProperties(jmeterProperties);
-                ti = bmTestManager.updateTestSettings(userKey, ti);
-                if (ti != null && ti.getStatus() != null) {
-                    addTestId(ti, true);
-                    bmTestManager.setTestInfo(ti);
-                }
-                GuiPackage guiPackage = GuiPackage.getInstance();
-                if (guiPackage.getTestPlanFile() == null) {
-
-                    Utils.saveJMX(guiPackage);
-                }
-                bmTestManager.uploadJmx();
-
-            }
-        });
-
-
-        goToTestPageButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String url = BmTestManager.getInstance().getTestUrl();
-                if (url != null) {
-                    Utils.Navigate(url);
-                } else {
-                    JMeterUtils.reportErrorToUser("Test is not selected. Nothing to open.");
-                }
-            }
-        });
-        helpButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Utils.Navigate(Constants.HELP_URL);
-            }
-        });
     }
 
 
@@ -227,9 +232,6 @@ public class TestPanelGui {
                         }
                         userInfoLabel.setText(userInfo.toString());
 
-                        //set locations list
-                        JSONArray locations = userInfo.getLocations();
-                        cloudPanel.setLocations(locations);
                     }
                 }
             });
@@ -596,7 +598,7 @@ public class TestPanelGui {
     private void $$$setupUI$$$() {
         createUIComponents();
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAutoscrolls(true);
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(6, 3, new Insets(1, 1, 1, 1), -1, -1));
@@ -721,58 +723,12 @@ public class TestPanelGui {
         panel5.add(runRemote, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
         panel1.add(spacer3, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        cloudPanel = new CloudPanel();
-        cloudPanel.setLayout(new GridLayoutManager(5, 5, new Insets(1, 1, 1, 1), -1, -1));
-        cloudPanel.setEnabled(true);
-        cloudPanel.setVisible(true);
-        mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        cloudPanel.setBorder(BorderFactory.createTitledBorder("Run in the Cloud Settings"));
-        final JLabel label5 = new JLabel();
-        label5.setRequestFocusEnabled(false);
-        label5.setText("Users #");
-        cloudPanel.add(label5, new GridConstraints(2, 0, 2, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
-        final JLabel label6 = new JLabel();
-        label6.setText("Location");
-        cloudPanel.add(label6, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel6 = new JPanel();
-        panel6.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        cloudPanel.add(panel6, new GridConstraints(2, 1, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(-1, 50), new Dimension(-1, 50), new Dimension(-1, 50), 0, false));
-        final JPanel panel7 = new JPanel();
-        panel7.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        cloudPanel.add(panel7, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JPanel panel8 = new JPanel();
-        panel8.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
-        final JLabel label7 = new JLabel();
-        label7.setRequestFocusEnabled(false);
-        label7.setText("Rampup Period (seconds)");
-        label7.setToolTipText("How quickly will load increase");
-        panel8.add(label7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
-        final JPanel panel9 = new JPanel();
-        panel9.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        panel8.add(panel9, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label8 = new JLabel();
-        label8.setRequestFocusEnabled(false);
-        label8.setText("# Iterations");
-        label8.setToolTipText("\"0\" means \"FOREVER\"");
-        panel9.add(label8, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
-        final JPanel panel10 = new JPanel();
-        panel10.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        final JLabel label9 = new JLabel();
-        label9.setRequestFocusEnabled(false);
-        label9.setText("Duration (minutes)");
-        label9.setToolTipText("\"0\" means \"Limited by Test Session Time\"");
-        panel10.add(label9, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
         mainPanel.add(jMeterPropertyPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameTextField);
         label3.setLabelFor(testIdComboBox);
         label4.setLabelFor(testNameTextField);
-        label5.setLabelFor(testNameTextField);
-        label6.setLabelFor(testIdComboBox);
-        label7.setLabelFor(testNameTextField);
-        label8.setLabelFor(testNameTextField);
-        label9.setLabelFor(testNameTextField);
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();
         buttonGroup.add(runRemote);
