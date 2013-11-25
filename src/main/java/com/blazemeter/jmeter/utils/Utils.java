@@ -281,7 +281,7 @@ public class Utils {
                 if (node.getStaticLabel().equals("BlazeMeter")) {
                     containsRemoteTestRunner = true;
                 }
-                if (node.getStaticLabel().equals("Thread Group")) {
+                if (node.getStaticLabel().contains("Thread Group")) {
                     List<JMeterTreeNode> subNodes = Collections.list(node.children());
                     for (JMeterTreeNode subNode : subNodes) {
                         if (subNode.getStaticLabel().equals("BlazeMeter")) {
