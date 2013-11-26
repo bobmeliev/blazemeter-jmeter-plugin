@@ -63,16 +63,6 @@ public class TestPanelGui {
     public TestPanelGui() {
         try {
             createMainPanel();
-            cloudPanel = new CloudPanel();
-            mainPanel.remove(jMeterPropertyPanel);
-            mainPanel.add(cloudPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-            cloudPanel.setVisible(true);
-
-            mainPanel.add(jMeterPropertyPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-            jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
-            jMeterPropertyPanel.setVisible(true);
-
-
             reloadButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
@@ -722,6 +712,9 @@ public class TestPanelGui {
         buttonGroup = new ButtonGroup();
         buttonGroup.add(runRemote);
         buttonGroup.add(runLocal);
+        cloudPanel = new CloudPanel();
+        mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+
     }
 
     private void createUIComponents() {
