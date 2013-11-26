@@ -226,55 +226,17 @@ public class CloudPanel extends JPanel {
                 if (testInfo == null) {
                     return;
                 }
-                /*if (testInfo.getError() != null) {
-                    String errorTitle = "Problems with test";
-                    String errorMessage = testInfo.getError();
-                    if (errorMessage.equals("Insufficient credits")) {
-                        errorMessage = errorMessage + ": turn to customer support service";
-                    }
-                    if (errorMessage.equals("Test not found")) {
-                        testInfo.setError(null);
-                        return;
-                    }
-                    JMeterUtils.reportErrorToUser(errorMessage, errorTitle);
-                    testInfo.setError(null);
-                }*/
 
-                /*String item = testInfo.getId() + " - " + testInfo.getName();
-                boolean exists = false;
-
-                for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                    Object obj = testIdComboBox.getItemAt(index);
-                    if (obj instanceof TestInfo & obj != null) {
-                        TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                        exists = item.equals(ti.getId() + " - " + ti.getName());
-                    }
-                }
-                if (!exists & !testInfo.getId().isEmpty()) {
-                    testIdComboBox.addItem(item);
-                }
-*/
                 if (testInfo.getStatus() == TestStatus.Running) {
                     runInTheCloud.setEnabled(true);
                     addFilesButton.setEnabled(false);
-//                    Utils.enableElements(cloudPanel, false);
-//                    runLocal.setEnabled(false);
-//                    runRemote.setEnabled(false);
-//                    Utils.enableElements(jMeterPropertyPanel, false);
                 }
 
                 if ((testInfo.getStatus() == TestStatus.NotRunning)) {
-//                    Utils.enableElements(jMeterPropertyPanel, true);
                     boolean isTestIdEmpty = testInfo.getId().isEmpty();
                     runInTheCloud.setEnabled(!isTestIdEmpty);
                     addFilesButton.setEnabled(!isTestIdEmpty);
-//                    Utils.enableElements(cloudPanel, !isTestIdEmpty);
 
-                    boolean isTestRunning = BmTestManager.isTestRunning();
-//                    runLocal.setEnabled(!isTestRunning);
-//                    runRemote.setEnabled(!isTestRunning);
-
-//                    configureMainPanelControls(testInfo);
 
                     if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
                         try {
@@ -425,18 +387,6 @@ public class CloudPanel extends JPanel {
                     //set locations list
                     JSONArray locations = userInfo.getLocations();
                     setLocations(locations);
-//                    cloudPanel.setLocations(locations);
-                        /*if (locations.length() > 0) {
-                            locationComboBox.removeAllItems();
-                            try {
-                                for (int i = 0; i < locations.length(); ++i) {
-                                    JSONObject location = locations.getJSONObject(i);
-                                    locationComboBox.addItem(location.get("title"));
-                                }
-                            } catch (JSONException je) {
-                                BmLog.error("Error during parsing locations JSONArray: " + je.getMessage());
-                            }
-                        }*/
                 }
             }
         });
