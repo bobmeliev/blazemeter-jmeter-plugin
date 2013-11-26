@@ -1,8 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
-import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
-import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
@@ -24,7 +22,6 @@ import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.ActionNames;
 import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.util.JMeterUtils;
-import org.json.JSONArray;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,12 +62,16 @@ public class TestPanelGui {
 
     public TestPanelGui() {
         try {
-
-
-            $$$setupUI$$$();
+            createMainPanel();
             cloudPanel = new CloudPanel();
-            mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+            mainPanel.remove(jMeterPropertyPanel);
+            mainPanel.add(cloudPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
             cloudPanel.setVisible(true);
+
+            mainPanel.add(jMeterPropertyPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+            jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
+            jMeterPropertyPanel.setVisible(true);
+
 
             reloadButton.addActionListener(new ActionListener() {
                 @Override
@@ -584,9 +585,149 @@ public class TestPanelGui {
     }
 
 
+    private void createMainPanel() {
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setAutoscrolls(true);
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(6, 3, new Insets(1, 1, 1, 1), -1, -1));
+        panel1.setVisible(true);
+        mainPanel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel1.setBorder(BorderFactory.createTitledBorder("Info"));
+        final JLabel label1 = new JLabel();
+        label1.setText("User Key");
+        panel1.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("Test Info");
+        panel1.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("Select Test");
+        panel1.add(label3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel2, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        helpButton = new JButton();
+        helpButton.setEnabled(true);
+        helpButton.setFont(new Font("Tahoma", helpButton.getFont().getStyle(), 16));
+        helpButton.setHideActionText(false);
+        helpButton.setHorizontalAlignment(0);
+        helpButton.setHorizontalTextPosition(0);
+        helpButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/question.png")));
+        helpButton.setInheritsPopupMenu(true);
+        helpButton.setMaximumSize(new Dimension(22, 22));
+        helpButton.setMinimumSize(new Dimension(20, 20));
+        helpButton.setPreferredSize(new Dimension(20, 20));
+        helpButton.setText("");
+        helpButton.setToolTipText("Help");
+        panel2.add(helpButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(24, 21), null, null, 0, false));
+        userInfoLabel = new JLabel();
+        userInfoLabel.setText("");
+        panel2.add(userInfoLabel, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        userKeyTextField = new JTextField();
+        userKeyTextField.setText("Enter your user key");
+        userKeyTextField.setToolTipText("User key - can be found on your profile page , click \"?\" button for more info");
+        panel2.add(userKeyTextField, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel3, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        testIdTextField = new JTextField();
+        testIdTextField.setEditable(true);
+        testIdTextField.setEnabled(false);
+        testIdTextField.setToolTipText("Test id of current test");
+        panel3.add(testIdTextField, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(70, -1), new Dimension(70, -1), 0, false));
+        testNameTextField = new JTextField();
+        testNameTextField.setAutoscrolls(false);
+        testNameTextField.setToolTipText("Test name of current test");
+        panel3.add(testNameTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        createNewButton = new JButton();
+        createNewButton.setEnabled(true);
+        createNewButton.setFont(new Font("Tahoma", createNewButton.getFont().getStyle(), 16));
+        createNewButton.setHideActionText(false);
+        createNewButton.setHorizontalAlignment(0);
+        createNewButton.setHorizontalTextPosition(0);
+        createNewButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/plus.png")));
+        createNewButton.setMaximumSize(new Dimension(22, 22));
+        createNewButton.setMinimumSize(new Dimension(20, 20));
+        createNewButton.setPreferredSize(new Dimension(20, 20));
+        createNewButton.setText("");
+        createNewButton.setToolTipText("Create new test");
+        panel3.add(createNewButton, new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(24, 21), null, null, 0, false));
+        signUpToBlazemeterButton = new JButton();
+        signUpToBlazemeterButton.setActionCommand("Sign up to BlazeMeter!");
+        signUpToBlazemeterButton.setLabel("Sign up to BlazeMeter's free trial!");
+        signUpToBlazemeterButton.setText("Sign up to BlazeMeter's free trial!");
+        signUpToBlazemeterButton.setToolTipText("Register/Login to BlazeMeter site and find your User Key on a profile page.");
+        panel3.add(signUpToBlazemeterButton, new GridConstraints(0, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(250, -1), new Dimension(300, -1), new Dimension(300, -1), 0, false));
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel4, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        testIdComboBox = new JComboBox();
+        testIdComboBox.setDoubleBuffered(true);
+        testIdComboBox.setEditable(false);
+        testIdComboBox.setEnabled(false);
+        testIdComboBox.setToolTipText("Enter test id  or select test from list , click refresh button if you want to load test list from the server.");
+        panel4.add(testIdComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        reloadButton = new JButton();
+        reloadButton.setActionCommand("");
+        reloadButton.setEnabled(true);
+        reloadButton.setFont(new Font("Tahoma", reloadButton.getFont().getStyle(), 16));
+        reloadButton.setHorizontalTextPosition(0);
+        reloadButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/refresh.png")));
+        reloadButton.setMaximumSize(new Dimension(20, 20));
+        reloadButton.setMinimumSize(new Dimension(20, 20));
+        reloadButton.setPreferredSize(new Dimension(20, 20));
+        reloadButton.setText("");
+        reloadButton.setToolTipText("Reload tests list from server");
+        reloadButton.setVerticalAlignment(0);
+        panel4.add(reloadButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(24, 21), null, null, 0, false));
+        goToTestPageButton = new JButton();
+        goToTestPageButton.setActionCommand("Go to Test Page!");
+        goToTestPageButton.setEnabled(true);
+        goToTestPageButton.setHideActionText(false);
+        goToTestPageButton.setLabel("Go to Test Page!");
+        goToTestPageButton.setText("Go to Test Page!");
+        goToTestPageButton.setToolTipText("Navigate to test page on Blazemeter site");
+        goToTestPageButton.setVerifyInputWhenFocusTarget(false);
+        goToTestPageButton.setVisible(true);
+        panel4.add(goToTestPageButton, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(165, -1), new Dimension(165, -1), new Dimension(165, -1), 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("Run Mode");
+        panel1.add(label4, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        panel1.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
+        final JPanel panel5 = new JPanel();
+        panel5.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel5, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        runLocal = new JRadioButton();
+        runLocal.setSelected(false);
+        runLocal.setText("Locally (Reporting Only)");
+        runLocal.setToolTipText("Send results to cloud for displaying");
+        panel5.add(runLocal, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel5.add(spacer2, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        runRemote = new JRadioButton();
+        runRemote.setSelected(true);
+        runRemote.setText("Run in the Cloud");
+        runRemote.setToolTipText("Using cloud engines for test");
+        panel5.add(runRemote, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        panel1.add(spacer3, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        mainPanel.add(jMeterPropertyPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
+        label1.setLabelFor(userKeyTextField);
+        label2.setLabelFor(testNameTextField);
+        label3.setLabelFor(testIdComboBox);
+        label4.setLabelFor(testNameTextField);
+        ButtonGroup buttonGroup;
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(runRemote);
+        buttonGroup.add(runLocal);
+    }
+
     private void createUIComponents() {
         // TODO: place custom component creation code here
     }
+
 
     /**
      * Method generated by IntelliJ IDEA GUI Designer
