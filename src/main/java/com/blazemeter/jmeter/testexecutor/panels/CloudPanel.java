@@ -145,6 +145,7 @@ public class CloudPanel extends JPanel {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         startInTheCloud();
+                    }
 /*
 
                    OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
@@ -155,10 +156,8 @@ public class CloudPanel extends JPanel {
 */
 
 
-                    }
-
                 } else {
-                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to stop the test? ",
+                    dialogButton = JOptionPane.showConfirmDialog(TestPanelGui.getGui().getMainPanel(), "Are you sure that you want to stop the test? ",
                             "Stop test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
@@ -228,14 +227,14 @@ public class CloudPanel extends JPanel {
                 }
 
                 if (testInfo.getStatus() == TestStatus.Running) {
+                    Utils.enableElements(CloudPanel.this, false);
                     runInTheCloud.setEnabled(true);
-                    addFilesButton.setEnabled(false);
                 }
 
                 if ((testInfo.getStatus() == TestStatus.NotRunning)) {
                     boolean isTestIdEmpty = testInfo.getId().isEmpty();
+                    Utils.enableElements(CloudPanel.this, !isTestIdEmpty);
                     runInTheCloud.setEnabled(!isTestIdEmpty);
-                    addFilesButton.setEnabled(!isTestIdEmpty);
 
 
                     if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
@@ -308,41 +307,6 @@ public class CloudPanel extends JPanel {
             }
         });
 
-        runInTheCloud.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int dialogButton;
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    if (bmTestManager.getUserKey().isEmpty()) {
-                        JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
-                        return;
-                    }
-                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to start the test?",
-                            "Start test?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (dialogButton == JOptionPane.YES_OPTION) {
-                        startInTheCloud();
-
-                 /*
-                   OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                                "Operation will take a few seconds to execute. Your patience is appreciated.");
-                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
-                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
-                 */
-
-                    }
-
-                } else {
-                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to stop the test? ",
-                            "Stop test?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (dialogButton == JOptionPane.YES_OPTION) {
-                        bmTestManager.stopInTheCloud();
-                    }
-                }
-            }
-        });
 
         numberOfUsersSlider.addChangeListener(new ChangeListener() {
             @Override

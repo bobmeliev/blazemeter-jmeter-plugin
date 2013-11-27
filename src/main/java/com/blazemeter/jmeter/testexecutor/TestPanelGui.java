@@ -347,7 +347,6 @@ public class TestPanelGui {
                     }
 
                     if (testInfo.getStatus() == TestStatus.Running) {
-                        Utils.enableElements(cloudPanel, false);
                         runLocal.setEnabled(false);
                         runRemote.setEnabled(false);
                         Utils.enableElements(jMeterPropertyPanel, false);
@@ -355,9 +354,6 @@ public class TestPanelGui {
 
                     if ((testInfo.getStatus() == TestStatus.NotRunning)) {
                         Utils.enableElements(jMeterPropertyPanel, true);
-                        boolean isTestIdEmpty = testInfo.getId().isEmpty();
-                        Utils.enableElements(cloudPanel, !isTestIdEmpty);
-
                         boolean isTestRunning = BmTestManager.isTestRunning();
                         runLocal.setEnabled(!isTestRunning);
                         runRemote.setEnabled(!isTestRunning);
