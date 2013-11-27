@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.api;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestStatus;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -178,17 +179,12 @@ public class BlazemeterApi {
     }
 
 
-    public interface TestContainerNotifier {
-        public void testReceived(ArrayList<TestInfo> tests);
-    }
-
-
-    public synchronized void getTestsAsync(String userKey, TestContainerNotifier notifier) {
+    public synchronized void getTestsAsync(String userKey, ITestListReceivedNotification notifier) {
         class TestsFetcher implements Runnable {
             String userKey;
-            TestContainerNotifier notifier;
+            ITestListReceivedNotification notifier;
 
-            TestsFetcher(String userKey, TestContainerNotifier notifier) {
+            TestsFetcher(String userKey, ITestListReceivedNotification notifier) {
                 this.userKey = userKey;
                 this.notifier = notifier;
             }

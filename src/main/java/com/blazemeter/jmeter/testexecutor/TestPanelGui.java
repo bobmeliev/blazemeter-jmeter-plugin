@@ -1,10 +1,6 @@
 package com.blazemeter.jmeter.testexecutor;
 
-import com.blazemeter.jmeter.api.BlazemeterApi;
-import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
 import com.blazemeter.jmeter.testinfo.TestInfo;
@@ -61,6 +57,7 @@ public class TestPanelGui {
 
 
     public TestPanelGui() {
+        $$$setupUI$$$();
         try {
             createMainPanel();
             reloadButton.addActionListener(new ActionListener() {
@@ -448,7 +445,7 @@ public class TestPanelGui {
         testIdComboBox.removeAllItems();
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
-        BlazemeterApi.getInstance().getTestsAsync(userKey, new BlazemeterApi.TestContainerNotifier() {
+        ITestListReceivedNotification testListReceivedNotification = new ITestListReceivedNotification() {
             @Override
             public void testReceived(ArrayList<TestInfo> tests) {
                 testIdComboBox.removeAllItems();
@@ -487,7 +484,8 @@ public class TestPanelGui {
                     testIdComboBox.setSelectedItem(Constants.EMPTY);
                 }
             }
-        });
+        };
+        BmTestManager.getTestsAsync(userKey, testListReceivedNotification);
     }
 
     public void setUserKey(String key) {

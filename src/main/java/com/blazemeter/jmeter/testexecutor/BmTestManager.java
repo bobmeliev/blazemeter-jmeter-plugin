@@ -423,4 +423,9 @@ public class BmTestManager {
     public static String getServerUrl() {
         return BlazemeterApi.BmUrlManager.getServerUrl();
     }
+
+    public static void getTestsAsync(String userKey, ITestListReceivedNotification notification) {
+        BlazemeterApi blzApi = BlazemeterApi.getInstance();
+        blzApi.getTestsAsync(userKey, notification);
+    }
 }
