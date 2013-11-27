@@ -140,7 +140,7 @@ public class CloudPanel extends JPanel {
                         JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
                         return;
                     }
-                    dialogButton = JOptionPane.showConfirmDialog(CloudPanel.this, "Are you sure that you want to start the test?",
+                    dialogButton = JOptionPane.showConfirmDialog(TestPanelGui.getGui().getMainPanel(), "Are you sure that you want to start the test?",
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
