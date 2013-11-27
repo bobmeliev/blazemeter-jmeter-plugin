@@ -75,7 +75,7 @@ public class ServerStatusController {
                     BmLog.error("HTTP Request method was not set up for checking connection");
                     serverStatus = ServerStatus.NOT_AVAILABLE;
                 } catch (IOException e) {
-                    BmLog.error("Connection with" + serverURL + "was not established, server is unavailable");
+                    BmLog.error("Connection with " + serverURL + " was not established, server is unavailable");
                     serverStatus = ServerStatus.NOT_AVAILABLE;
                 } finally {
                     if (!latestServerStatus.equals(serverStatus)) {
