@@ -485,7 +485,7 @@ public class TestPanelGui {
                 }
             }
         };
-        BmTestManager.getTestsAsync(userKey, testListReceivedNotification);
+        BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
     }
 
     public void setUserKey(String key) {
