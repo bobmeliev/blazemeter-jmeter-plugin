@@ -458,11 +458,13 @@ public class TestPanelGui {
 
                     boolean exists = false;
 
-                    for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                        Object obj = testIdComboBox.getItemAt(index);
-                        if (obj instanceof TestInfo & obj != null) {
-                            TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                            exists = curTestId.toString().equals(ti.getId());
+                    if (curTestId != null) {
+                        for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
+                            Object obj = testIdComboBox.getItemAt(index);
+                            if (obj instanceof TestInfo & obj != null) {
+                                TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
+                                exists = curTestId.equals(ti.getId());
+                            }
                         }
                     }
                     //add current test to testIdComboBox if it is present in tests from server
