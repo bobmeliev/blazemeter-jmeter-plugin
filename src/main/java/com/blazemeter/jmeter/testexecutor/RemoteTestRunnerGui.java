@@ -86,7 +86,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 bmTestManager.setUserKey(userKey);
                 testInfo = remoteTestRunner.getTestInfo();
                 bmTestManager.setTestInfo(testInfo);
-                gui.setTestInfo(testInfo);
                 JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
             } else if (!userKey.isEmpty()) {
                 JMeterUtils.reportErrorToUser("UserKey " + '"' + userKey + '"' + " has invalid format",
