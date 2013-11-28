@@ -387,7 +387,7 @@ public class Utils {
         return writer.toString();
     }
 
-    public static boolean downloadFile(String filename, String url) throws MalformedURLException, IOException {
+    public static boolean downloadFile(String filename, String url) throws IOException {
         URL updateURL = new URL(url);
         File f = new File(filename);
         FileUtils.copyURLToFile(updateURL, f);
@@ -463,29 +463,6 @@ public class Utils {
         return enginesParameters;
     }
 
-    /*
-      This method closes JMeter and restarts it using daemon-thread.
-    */
-    public static void restartJMeter() {
-        final String CMD = "cmd.exe";
-        final String JMETER_START_SCRIPT = " C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.8\\bin\\jmeter.bat";
-        final String[] command = {CMD, "/C", JMETER_START_SCRIPT};
-
-
-        try {
-            Process proc = Runtime.getRuntime().exec(command);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(proc.getInputStream()));
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                BmLog.console(line);
-            }
-            System.exit(0);
-        } catch (IOException e) {
-            BmLog.error("jmeter.bat is not found - JMeter is not restarted");
-        }
-
-    }
 
     public static String getProjectName() {
         if (GuiPackage.getInstance() == null)
@@ -512,7 +489,7 @@ public class Utils {
     }
 
     public static PluginVersion getPluginVersion() {
-        return new PluginVersion(1, 4, "0"); //number of patch
+        return new PluginVersion(2, 1, "0"); //number of patch
         //should be changed before building version for publishing
     }
 
@@ -595,7 +572,6 @@ public class Utils {
                 } catch (IOException exception) {
                     BmLog.error("Error while saving file", exception);
                 }
-//                restartJMeter();
             }
         }
 
