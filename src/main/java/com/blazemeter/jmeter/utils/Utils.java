@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestStatus;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
@@ -386,30 +387,10 @@ public class Utils {
         return writer.toString();
     }
 
-    public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException {
-        BufferedInputStream in = null;
-        FileOutputStream fout = null;
-        try {
-            in = new BufferedInputStream(new URL(urlString).openStream());
-            fout = new FileOutputStream(filename);
-
-            byte data[] = new byte[1024];
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1) {
-                fout.write(data, 0, count);
-            }
-        } catch (MalformedURLException e) {
-            BmLog.error("Invalid updating URL!");
-            return false;
-        } catch (IOException e) {
-            BmLog.error("Unable to download and save file!");
-            return false;
-        } finally {
-            if (in != null)
-                in.close();
-            if (fout != null)
-                fout.close();
-        }
+    public static boolean downloadFile(String filename, String url) throws IOException {
+        URL updateURL = new URL(url);
+        File f = new File(filename);
+        FileUtils.copyURLToFile(updateURL, f);
         return true;
     }
 
@@ -482,29 +463,6 @@ public class Utils {
         return enginesParameters;
     }
 
-    /*
-      This method closes JMeter and restarts it using daemon-thread.
-    */
-    public static void restartJMeter() {
-        final String CMD = "cmd.exe";
-        final String JMETER_START_SCRIPT = " C:\\Program Files\\Apache Software Foundation\\apache-jmeter-2.8\\bin\\jmeter.bat";
-        final String[] command = {CMD, "/C", JMETER_START_SCRIPT};
-
-
-        try {
-            Process proc = Runtime.getRuntime().exec(command);
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(proc.getInputStream()));
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                BmLog.console(line);
-            }
-            System.exit(0);
-        } catch (IOException e) {
-            BmLog.error("jmeter.bat is not found - JMeter is not restarted");
-        }
-
-    }
 
     public static String getProjectName() {
         if (GuiPackage.getInstance() == null)
@@ -605,7 +563,7 @@ public class Utils {
 
                 try {
 
-                    isPluginDownloaded = saveUrl(PLUGIN_LOCAL_PATH, PLUGIN_UPDATE_URI);
+                    isPluginDownloaded = downloadFile(PLUGIN_LOCAL_PATH, PLUGIN_UPDATE_URI);
                     JOptionPane.showMessageDialog(versionPanel, "Please, restart JMeter manually to \n apply changes",
                             "Manual restart is needed",
                             JOptionPane.INFORMATION_MESSAGE);
@@ -614,7 +572,6 @@ public class Utils {
                 } catch (IOException exception) {
                     BmLog.error("Error while saving file", exception);
                 }
-//                restartJMeter();
             }
         }
 
