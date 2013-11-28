@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.testinfo.Overrides;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestStatus;
 import com.blazemeter.jmeter.testinfo.UserInfo;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.exceptions.IllegalUserActionException;
@@ -386,30 +387,10 @@ public class Utils {
         return writer.toString();
     }
 
-    public static boolean saveUrl(String filename, String urlString) throws MalformedURLException, IOException {
-        BufferedInputStream in = null;
-        FileOutputStream fout = null;
-        try {
-            in = new BufferedInputStream(new URL(urlString).openStream());
-            fout = new FileOutputStream(filename);
-
-            byte data[] = new byte[1024];
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1) {
-                fout.write(data, 0, count);
-            }
-        } catch (MalformedURLException e) {
-            BmLog.error("Invalid updating URL!");
-            return false;
-        } catch (IOException e) {
-            BmLog.error("Unable to download and save file!");
-            return false;
-        } finally {
-            if (in != null)
-                in.close();
-            if (fout != null)
-                fout.close();
-        }
+    public static boolean downloadFile(String filename, String url) throws MalformedURLException, IOException {
+        URL updateURL = new URL(url);
+        File f = new File(filename);
+        FileUtils.copyURLToFile(updateURL, f);
         return true;
     }
 
@@ -531,7 +512,7 @@ public class Utils {
     }
 
     public static PluginVersion getPluginVersion() {
-        return new PluginVersion(2, 1, "0"); //number of patch
+        return new PluginVersion(1, 4, "0"); //number of patch
         //should be changed before building version for publishing
     }
 
@@ -605,7 +586,7 @@ public class Utils {
 
                 try {
 
-                    isPluginDownloaded = saveUrl(PLUGIN_LOCAL_PATH, PLUGIN_UPDATE_URI);
+                    isPluginDownloaded = downloadFile(PLUGIN_LOCAL_PATH, PLUGIN_UPDATE_URI);
                     JOptionPane.showMessageDialog(versionPanel, "Please, restart JMeter manually to \n apply changes",
                             "Manual restart is needed",
                             JOptionPane.INFORMATION_MESSAGE);
