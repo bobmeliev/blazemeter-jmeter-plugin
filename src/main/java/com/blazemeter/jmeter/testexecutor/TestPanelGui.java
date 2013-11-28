@@ -759,14 +759,9 @@ public class TestPanelGui {
                             exists = curTestId.toString().equals(ti.getId());
                         }
                     }
+                    //add current test to testIdComboBox if it is present in tests from server
                     if (!exists & testIdList.contains(curTestId)) {
                         testIdComboBox.addItem(curTestId + " - " + curTestName);
-                    }
-
-
-                    //add current test to testIdComboBox if it is present in tests from server
-                    if (testIdList.contains(curTestId)) {
-                        testIdComboBox.addItem(curTestId);
                     }
 
                     // select current test(which was previously selected in testIdComboBox)
