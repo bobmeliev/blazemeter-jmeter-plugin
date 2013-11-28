@@ -13,6 +13,7 @@ import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.ActionNames;
@@ -328,21 +329,6 @@ public class TestPanelGui {
                         JMeterUtils.reportErrorToUser(errorMessage, errorTitle);
                         testInfo.setError(null);
                     }
-
-                    String item = testInfo.getId() + " - " + testInfo.getName();
-                    boolean exists = false;
-
-                    for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                        Object obj = testIdComboBox.getItemAt(index);
-                        if (obj instanceof TestInfo & obj != null) {
-                            TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                            exists = item.equals(ti.getId() + " - " + ti.getName());
-                        }
-                    }
-                    if (!exists & !testInfo.getId().isEmpty()) {
-                        testIdComboBox.addItem(item);
-                    }
-
                     if (testInfo.getStatus() == TestStatus.Running) {
                         runLocal.setEnabled(false);
                         runRemote.setEnabled(false);
@@ -456,24 +442,45 @@ public class TestPanelGui {
                     testIdComboBox.setSelectedItem(Constants.NEW);
                     BmTestManager.getInstance().setUserKeyValid(true);
                     java.util.List<String> testIdList = new ArrayList<String>();
+                    // create list of tests on server
                     for (TestInfo ti : tests) {
                         addTestId(ti, false);
                         testIdList.add(ti.getId());
                     }
-                    String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
-                    if (!currentTest.isEmpty()) {
-                        StringBuilder currentTestId = new StringBuilder(currentTest.substring(0, currentTest.indexOf(";")));
+                    String[] curTest = StringUtils.split(JMeterUtils.getPropDefault(Constants.CURRENT_TEST, ""), ";");
+                    String curTestId = null;
+                    String curTestName = null;
+                    if (curTest.length > 0) {
+                        curTestId = curTest[0];
+                        curTestName = curTest[1];
+
+                    }
+
+                    boolean exists = false;
+
+                    for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
+                        Object obj = testIdComboBox.getItemAt(index);
+                        if (obj instanceof TestInfo & obj != null) {
+                            TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
+                            exists = curTestId.toString().equals(ti.getId());
+                        }
+                    }
+                    //add current test to testIdComboBox if it is present in tests from server
+                    if (!exists & testIdList.contains(curTestId)) {
+                        testIdComboBox.addItem(curTestId + " - " + curTestName);
+                    }
+
+                    // select current test(which was previously selected in testIdComboBox)
+                    if (curTest.length != 0) {
                         for (TestInfo ti : tests) {
-                            if (ti.getId().equals(currentTestId.toString())) {
+                            if (ti.getId().equals(curTestId)) {
                                 testIdComboBox.setSelectedItem(ti);
                             }
                         }
-                        if ((!testIdList.isEmpty() & currentTestId.length() != 0) && !testIdList.contains(currentTestId.toString())) {
-                            JMeterUtils.reportErrorToUser("Test=" + currentTestId + " was not found on server. Select test from list."
+                        if ((!testIdList.isEmpty() & !curTestId.isEmpty()) && !testIdList.contains(curTestId)) {
+                            JMeterUtils.reportErrorToUser("Test=" + curTestId + " was not found on server. Select test from list."
                                     , "Test was not found on server");
-                            currentTestId.setLength(0);
                             JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
-
                         }
                     }
                 } else {
