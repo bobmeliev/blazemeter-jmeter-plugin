@@ -208,12 +208,15 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         addButton = new JButton(JMeterUtils.getResString("add")); // $NON-NLS-1$
         addButton.setActionCommand(ADD);
         addButton.setEnabled(true);
+        addButton.setToolTipText("Add properties from table");
 
         deleteButton = new JButton(JMeterUtils.getResString("delete")); // $NON-NLS-1$
         deleteButton.setActionCommand(DELETE);
+        deleteButton.setToolTipText("Delete properties from table");
 
         loadButton = new JButton(JMeterUtils.getResString("load"));
         loadButton.setActionCommand(LOAD);
+        loadButton.setToolTipText("Load properties from local JMeter instance");
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
