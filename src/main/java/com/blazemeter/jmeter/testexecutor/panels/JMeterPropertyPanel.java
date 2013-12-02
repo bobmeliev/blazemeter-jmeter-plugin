@@ -18,7 +18,7 @@ import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -66,7 +66,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     /**
      * A button for loading properties from the jmeter.properties.
      */
-    private JButton loadButton;
 
     public JMeterPropertyPanel() {
         super();
@@ -138,9 +137,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
                 }
             }
         }
-        if (LOAD.equals(command)) {
-            setUpData();
-        }
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.getTestInfo().setJmeterProperties(getData());
     }
@@ -155,35 +151,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     @Override
     public void configure(TestElement element) {
         super.configure(element);
-        setUpData();
-    }
-
-    private void setUpData() {
-        tableModel.clearData();
-        Properties p = null;
-        p = JMeterUtils.getJMeterProperties();
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.getTestInfo().setJmeterProperties(p);
-        if (p == null) {
-            return;
-        }
-        Set<Map.Entry<Object, Object>> s = p.entrySet();
-        ArrayList<Map.Entry<Object, Object>> al = new ArrayList<Map.Entry<Object, Object>>(s);
-        Collections.sort(al, new Comparator<Map.Entry<Object, Object>>() {
-            @Override
-            public int compare(Map.Entry<Object, Object> o1, Map.Entry<Object, Object> o2) {
-                String m1, m2;
-                m1 = (String) o1.getKey();
-                m2 = (String) o2.getKey();
-                return m1.compareTo(m2);
-            }
-        });
-        Iterator<Map.Entry<Object, Object>> i = al.iterator();
-        while (i.hasNext()) {
-            Map.Entry<Object, Object> row = i.next();
-            tableModel.addRow(new String[]{(String) row.getKey(), (String) row.getValue()});
-        }
-        deleteButton.setEnabled(true);
     }
 
     @Override
@@ -214,18 +181,13 @@ public class JMeterPropertyPanel extends AbstractConfigGui
         deleteButton.setActionCommand(DELETE);
         deleteButton.setToolTipText("Delete properties from table");
 
-        loadButton = new JButton(JMeterUtils.getResString("load"));
-        loadButton.setActionCommand(LOAD);
-        loadButton.setToolTipText("Load properties from local JMeter instance");
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         addButton.addActionListener(this);
         deleteButton.addActionListener(this);
-        loadButton.addActionListener(this);
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
-        buttonPanel.add(loadButton);
         return buttonPanel;
     }
 
@@ -248,7 +210,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
 
         add(p, BorderLayout.CENTER);
         table.revalidate();
-        setUpData();
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
             @Override
