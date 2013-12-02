@@ -334,9 +334,7 @@ public class TestPanelGui {
     }
 
     private void enableMainPanelControls(boolean isEnabled) {
-//        testIdTextField.setEnabled(isEnabled);
         testIdComboBox.setEnabled(isEnabled);
-//        testNameTextField.setEnabled(isEnabled);
         reloadButton.setEnabled(isEnabled);
         createNewButton.setEnabled(isEnabled);
         goToTestPageButton.setEnabled(isEnabled);
@@ -859,13 +857,11 @@ public class TestPanelGui {
         if (testInfo != null) {
             testNameTextField.setText(testInfo.getName());
             testIdTextField.setText(testInfo.getId());
-            testNameTextField.setEnabled(!isRunning);
             createNewButton.setEnabled(!isRunning);
             goToTestPageButton.setEnabled(!testInfo.getId().isEmpty());
         } else {
             testNameTextField.setText("");
             testIdTextField.setText("");
-            testNameTextField.setEnabled(!isRunning);
             createNewButton.setEnabled(!isRunning);
             goToTestPageButton.setEnabled(false);
         }
