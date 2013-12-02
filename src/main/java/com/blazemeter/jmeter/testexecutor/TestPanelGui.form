@@ -130,6 +130,7 @@
                 <properties>
                   <autoscrolls value="false"/>
                   <editable value="false"/>
+                  <enabled value="true"/>
                   <toolTipText value="Test name of current test"/>
                 </properties>
               </component>

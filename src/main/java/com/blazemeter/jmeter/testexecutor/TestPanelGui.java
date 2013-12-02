@@ -873,7 +873,6 @@ public class TestPanelGui {
             userKeyTextField.setEnabled(!isRunning);
         }
         testIdComboBox.setEnabled(!isRunning & testIdComboBox.getItemCount() > 0);
-//        testIdTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
     }
 
@@ -963,6 +962,7 @@ public class TestPanelGui {
         testNameTextField = new JTextField();
         testNameTextField.setAutoscrolls(false);
         testNameTextField.setEditable(false);
+        testNameTextField.setEnabled(true);
         testNameTextField.setToolTipText("Test name of current test");
         panel3.add(testNameTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createNewButton = new JButton();
