@@ -334,9 +334,9 @@ public class TestPanelGui {
     }
 
     private void enableMainPanelControls(boolean isEnabled) {
-        testIdTextField.setEnabled(isEnabled);
+//        testIdTextField.setEnabled(isEnabled);
         testIdComboBox.setEnabled(isEnabled);
-        testNameTextField.setEnabled(isEnabled);
+//        testNameTextField.setEnabled(isEnabled);
         reloadButton.setEnabled(isEnabled);
         createNewButton.setEnabled(isEnabled);
         goToTestPageButton.setEnabled(isEnabled);
@@ -873,7 +873,7 @@ public class TestPanelGui {
             userKeyTextField.setEnabled(!isRunning);
         }
         testIdComboBox.setEnabled(!isRunning & testIdComboBox.getItemCount() > 0);
-        testIdTextField.setEnabled(!isRunning);
+//        testIdTextField.setEnabled(!isRunning);
         reloadButton.setEnabled(!isRunning);
     }
 
@@ -956,12 +956,13 @@ public class TestPanelGui {
         panel3.setLayout(new GridLayoutManager(1, 5, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         testIdTextField = new JTextField();
-        testIdTextField.setEditable(true);
-        testIdTextField.setEnabled(false);
+        testIdTextField.setEditable(false);
+        testIdTextField.setEnabled(true);
         testIdTextField.setToolTipText("Test id of current test");
         panel3.add(testIdTextField, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(70, -1), new Dimension(70, -1), 0, false));
         testNameTextField = new JTextField();
         testNameTextField.setAutoscrolls(false);
+        testNameTextField.setEditable(false);
         testNameTextField.setToolTipText("Test name of current test");
         panel3.add(testNameTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createNewButton = new JButton();

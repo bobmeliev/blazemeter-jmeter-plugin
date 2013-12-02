@@ -118,8 +118,8 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <editable value="true"/>
-                  <enabled value="false"/>
+                  <editable value="false"/>
+                  <enabled value="true"/>
                   <toolTipText value="Test id of current test"/>
                 </properties>
               </component>
@@ -129,6 +129,7 @@
                 </constraints>
                 <properties>
                   <autoscrolls value="false"/>
+                  <editable value="false"/>
                   <toolTipText value="Test name of current test"/>
                 </properties>
               </component>
