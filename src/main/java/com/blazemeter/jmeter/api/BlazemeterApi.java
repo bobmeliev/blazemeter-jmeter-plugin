@@ -366,6 +366,7 @@ public class BlazemeterApi {
             return null;
         }
         String url = this.urlManager.scriptDownload(Constants.APP_KEY, userKey, testId);
+        BmLog.debug("Downloading JMX from server...");
         List<String> jmx = getJMXasList(url);
         String jmxName = jmx.get(0);
         FileOutputStream fileOutputStream = null;
@@ -373,28 +374,34 @@ public class BlazemeterApi {
         try {
             Map<String, String> env = System.getenv();
             file = new File(env.get("JMETER") + "/" + jmxName);
+            BmLog.debug("Saving JMX to " + file.getAbsoluteFile());
             // if file doesnt exists, then create it
             if (!file.exists()) {
                 file.createNewFile();
             }
             fileOutputStream = new FileOutputStream(file);
             // get the content in bytes
+            BmLog.debug("Getting JMX content..., JMX name=" + jmxName);
             byte[] jmxInBytes = jmx.get(1).getBytes();
+            BmLog.debug("Writing JMX to file...");
             fileOutputStream.write(jmxInBytes);
             fileOutputStream.flush();
             fileOutputStream.close();
             BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
         } catch (IOException ioe) {
-            BmLog.error(ioe);
+            BmLog.error("Failed to download&save JMX: " + ioe);
+            BmLog.debug("Failed to download&save JMX: " + ioe);
         } catch (IndexOutOfBoundsException ioube) {
             BmLog.error("Verify bug https://blazemeter.atlassian.net/browse/BPC-146");
+            BmLog.debug("Verify bug https://blazemeter.atlassian.net/browse/BPC-146");
         } finally {
             try {
                 if (fileOutputStream != null) {
                     fileOutputStream.close();
                 }
             } catch (IOException fioe) {
-                BmLog.error(fioe);
+                BmLog.debug("Failed to close fileinputstream: " + fioe);
+                BmLog.error("Failed to close fileinputstream: " + fioe);
             }
         }
         return file;
