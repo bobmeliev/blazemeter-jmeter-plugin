@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.api;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.testinfo.TestStatus;
 import com.blazemeter.jmeter.testinfo.UserInfo;
@@ -178,17 +179,12 @@ public class BlazemeterApi {
     }
 
 
-    public interface TestContainerNotifier {
-        public void testReceived(ArrayList<TestInfo> tests);
-    }
-
-
-    public synchronized void getTestsAsync(String userKey, TestContainerNotifier notifier) {
+    public synchronized void getTestsAsync(String userKey, ITestListReceivedNotification notifier) {
         class TestsFetcher implements Runnable {
             String userKey;
-            TestContainerNotifier notifier;
+            ITestListReceivedNotification notifier;
 
-            TestsFetcher(String userKey, TestContainerNotifier notifier) {
+            TestsFetcher(String userKey, ITestListReceivedNotification notifier) {
                 this.userKey = userKey;
                 this.notifier = notifier;
             }
@@ -202,28 +198,19 @@ public class BlazemeterApi {
     }
 
 
-    public int stopInTheCloud(String userKey, String testId) {
+    public TestInfo stopInTheCloud(String userKey, TestInfo testInfo) {
         if (userKey == null || userKey.trim().isEmpty()) {
             BmLog.debug("Test cannot be stopped in the cloud, userKey is empty");
-            return -1;
+            return testInfo;
         }
-
-        if (testId == null || testId.trim().isEmpty()) {
-            BmLog.debug("Test cannot be stopped in the cloud, testId is empty");
-            return -1;
-        }
-
-        String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testId);
+        String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testInfo.getId());
         JSONObject jo = getJson(url, null);
         try {
-            if (!jo.get("response_code").toString().equals("200"))
-                return -1;
-
-            return jo.getInt("response_code");
-        } catch (JSONException e) {
-            BmLog.error(e);
-            return -1;
+            testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.NotRunning : TestStatus.Running);
+        } catch (JSONException je) {
+            BmLog.debug("Failed to set test status: " + je.getMessage());
         }
+        return testInfo;
     }
 
     public TestInfo runInTheCloud(String userKey, String testId) {

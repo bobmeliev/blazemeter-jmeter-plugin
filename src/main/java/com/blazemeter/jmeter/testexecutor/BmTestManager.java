@@ -293,11 +293,8 @@ public class BmTestManager {
     public void stopInTheCloud() {
         TestInfo ti = this.getTestInfo();
         BmLog.console("Finishing test " + ti.getId() + "-" + ti.getName());
-        int stopSuccess = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo().getId());
-        testInfo = rpc.getTestRunStatus(this.getUserKey(), this.getTestInfo().getId(), false);
-        if (testInfo.getStatus() == TestStatus.NotRunning && stopSuccess != -1) {
-            NotifyTestInfoChanged();
-        }
+        ti = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo());
+        setTestInfo(ti);
     }
 
     public boolean getIsLocalRunMode() {
@@ -422,5 +419,9 @@ public class BmTestManager {
      */
     public static String getServerUrl() {
         return BlazemeterApi.BmUrlManager.getServerUrl();
+    }
+
+    public void getTestsAsync(String userKey, ITestListReceivedNotification notification) {
+        rpc.getTestsAsync(userKey, notification);
     }
 }
