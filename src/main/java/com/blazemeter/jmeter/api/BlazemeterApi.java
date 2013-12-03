@@ -377,6 +377,7 @@ public class BlazemeterApi {
             BmLog.debug("Saving JMX to " + file.getAbsoluteFile());
             // if file doesnt exists, then create it
             if (!file.exists()) {
+                BmLog.debug("Creating file " + file.getAbsoluteFile());
                 file.createNewFile();
             }
             fileOutputStream = new FileOutputStream(file);
