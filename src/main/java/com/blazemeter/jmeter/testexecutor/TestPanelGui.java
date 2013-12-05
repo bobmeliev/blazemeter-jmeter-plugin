@@ -749,7 +749,7 @@ public class TestPanelGui {
 
                         }
 
-                    } catch (IndexOutOfBoundsException iobe) {
+                    } catch (ArrayIndexOutOfBoundsException iobe) {
                         BmLog.error("Current test property was not applied to screen: " + iobe);
                     }
                     boolean exists = false;
