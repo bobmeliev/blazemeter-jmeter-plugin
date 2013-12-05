@@ -451,13 +451,21 @@ public class TestPanelGui {
                         if (curTest.length > 0) {
                             curTestId = curTest[0];
                             curTestName = curTest[1];
+<<<<<<< HEAD
 
                         }
 
                     } catch (ArrayIndexOutOfBoundsException iobe) {
                         BmLog.error("Current test property was not applied to screen: " + iobe);
                     }
+=======
 
+                        }
+>>>>>>> develop
+
+                    } catch (ArrayIndexOutOfBoundsException iobe) {
+                        BmLog.error("Current test property was not applied to screen: " + iobe);
+                    }
                     boolean exists = false;
 
                     if (curTestId != null) {
