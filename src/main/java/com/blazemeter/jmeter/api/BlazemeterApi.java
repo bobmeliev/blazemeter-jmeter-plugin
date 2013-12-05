@@ -111,8 +111,10 @@ public class BlazemeterApi {
             }
         } catch (IOException e) {
             BmLog.error("Error while decoding Json: " + e.getMessage());
+            BmLog.debug("Error while decoding Json: " + e.getMessage());
         } catch (JSONException e) {
             BmLog.error("Error while decoding Json: " + e.getMessage());
+            BmLog.debug("Error while decoding Json: " + e.getMessage());
         } finally {
             return jo;
         }
