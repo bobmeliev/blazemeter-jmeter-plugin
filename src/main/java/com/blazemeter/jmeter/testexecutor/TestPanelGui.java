@@ -98,7 +98,7 @@ public class TestPanelGui {
                     int numberOfUsers = cloudPanel.getNumberOfUsers();
                     TestInfo ti = bmTestManager.createTest(userKey, testName);
                     ti.setLocation(cloudPanel.getServerLocation());
-                    ti.setNumberOfUsers(numberOfUsers != 0 ? numberOfUsers : 1);
+                    ti.setNumberOfUsers(50);
                     ti.setStatus(TestStatus.NotRunning);
                     Properties jmeterProperties = null;
 
