@@ -447,10 +447,15 @@ public class TestPanelGui {
                     String[] curTest = StringUtils.split(JMeterUtils.getPropDefault(Constants.CURRENT_TEST, ""), ";");
                     String curTestId = null;
                     String curTestName = null;
-                    if (curTest.length > 0) {
-                        curTestId = curTest[0];
-                        curTestName = curTest[1];
+                    try {
+                        if (curTest.length > 0) {
+                            curTestId = curTest[0];
+                            curTestName = curTest[1];
 
+                        }
+
+                    } catch (IndexOutOfBoundsException iobe) {
+                        BmLog.error("Current test property was not applied to screen: " + iobe);
                     }
 
                     boolean exists = false;
