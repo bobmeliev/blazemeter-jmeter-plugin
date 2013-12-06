@@ -34,8 +34,8 @@ import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -117,10 +117,10 @@ public class CloudPanel extends JPanel {
                 int usersPerEngine;
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 testInfo.setNumberOfUsers(numberOfUsers);
-                ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
-                engines = Integer.valueOf(enginesParameters.get(0));
-                engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
-                usersPerEngine = Integer.valueOf(enginesParameters.get(2));
+                HashMap<String, String> enginesParameters = Utils.countEngines(numberOfUsers);
+                engines = Integer.valueOf(enginesParameters.get(Constants.ENGINES));
+                engineSize = enginesParameters.get(Constants.ENGINE_SIZE).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
+                usersPerEngine = Integer.valueOf(enginesParameters.get(Constants.USERS_PER_ENGINE));
                 if (numberOfUsers <= 300) {
                     enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
                     numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
@@ -317,10 +317,10 @@ public class CloudPanel extends JPanel {
                 int usersPerEngine;
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 testInfo.setNumberOfUsers(numberOfUsers);
-                ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
-                engines = Integer.valueOf(enginesParameters.get(0));
-                engineSize = enginesParameters.get(1).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
-                usersPerEngine = Integer.valueOf(enginesParameters.get(2));
+                HashMap<String, String> enginesParams = Utils.countEngines(numberOfUsers);
+                engines = Integer.valueOf(enginesParams.get(Constants.ENGINES));
+                engineSize = enginesParams.get(Constants.ENGINE_SIZE).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
+                usersPerEngine = Integer.valueOf(enginesParams.get(Constants.USERS_PER_ENGINE));
                 if (numberOfUsers <= 300) {
                     enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
                     numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
@@ -335,11 +335,11 @@ public class CloudPanel extends JPanel {
             public void onUserInfoChanged(UserInfo userInfo) {
                 if (userInfo == null) {
                     return;
-                } else {
+                } else { /*
                     if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
                         userInfo.setMaxUsersLimit(8400);
                         userInfo.setMaxEnginesLimit(14);
-                    }
+                    }*/
                     //configure numberOfUserSlider depending on UserInfo
                     numberOfUsersSlider.setMinimum(0);
                     numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
@@ -506,8 +506,8 @@ public class CloudPanel extends JPanel {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         int numberOfUsers = numberOfUsersSlider.getValue();
 
-        ArrayList<String> enginesParameters = Utils.calculateEnginesForTest(numberOfUsers);
-        int userPerEngine = Integer.valueOf(enginesParameters.get(2));
+        HashMap<String, String> enginesParams = Utils.countEngines(numberOfUsers);
+        int userPerEngine = Integer.valueOf(enginesParams.get(Constants.USERS_PER_ENGINE));
 
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         if (testInfo != null) {

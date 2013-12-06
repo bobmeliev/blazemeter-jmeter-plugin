@@ -40,5 +40,10 @@ public interface Constants {
     public static final String DATA = "data";
     public static final String SAMPLES = "samples";
     public static final String CALLBACK_URL = "callbackurl";
-    public static final String REMOTE_HOSTS = "remote_hosts";
+
+    //constans for HashMaps
+    public static final String ENGINES = "engines";
+    public static final String ENGINE_SIZE = "engineSize";
+    public static final String USERS_PER_ENGINE = "userPerEngine";
+
 }

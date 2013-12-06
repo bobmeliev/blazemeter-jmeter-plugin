@@ -430,8 +430,8 @@ public class Utils {
         return testInfo;
     }
 
-    public static ArrayList<String> calculateEnginesForTest(int numberOfUsers) {
-        ArrayList<String> enginesParameters = new ArrayList<String>(3);
+    public static HashMap<String, String> countEngines(int numberOfUsers) {
+        HashMap<String, String> enginesParameters = new HashMap<String, String>();
         int engines = 0;
         String engineSize = "m1.medium";
         int userPerEngine = 0;
@@ -457,9 +457,9 @@ public class Utils {
             userPerEngine = numberOfUsers / engines;
         }
 
-        enginesParameters.add(String.valueOf(engines));
-        enginesParameters.add(engineSize);
-        enginesParameters.add(String.valueOf(userPerEngine));
+        enginesParameters.put(Constants.ENGINES, String.valueOf(engines));
+        enginesParameters.put(Constants.ENGINE_SIZE, engineSize);
+        enginesParameters.put(Constants.USERS_PER_ENGINE, String.valueOf(userPerEngine));
         return enginesParameters;
     }
 
