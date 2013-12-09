@@ -87,21 +87,30 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (testInfo == null)
             testInfo = new TestInfo();
 
-        this.setProperty(Constants.TEST_NAME, testInfo.getName());
-        this.setProperty(Constants.TEST_ID, testInfo.getId());
-        this.setProperty(Constants.TEST_NUMBER_OF_USERS, testInfo.getNumberOfUsers());
-        if (!BmTestManager.getInstance().getIsLocalRunMode()) {
-            this.setProperty(Constants.TEST_LOCATION, testInfo.getLocation());
+        BmLog.debug("Setting testInfo " + testInfo.toString() + " to RemoteTestRunner");
+        try {
+            this.setProperty(Constants.TEST_NAME, testInfo.getName());
+            this.setProperty(Constants.TEST_ID, testInfo.getId());
+            this.setProperty(Constants.TEST_NUMBER_OF_USERS, testInfo.getNumberOfUsers());
+            if (!BmTestManager.getInstance().getIsLocalRunMode()) {
+                String location = testInfo.getLocation();
+                if (location != null) {
+                    this.setProperty(Constants.TEST_LOCATION, testInfo.getLocation());
+                }
 
-            Overrides overrides = testInfo.getOverrides();
-            if (overrides != null) {
-                overrides.setThreads(testInfo.getNumberOfUsers());
-                this.setProperty(Constants.TEST_DURATION, overrides.getDuration());
-                this.setProperty(Constants.TEST_ITERATIONS, overrides.getIterations());
-                this.setProperty(Constants.TEST_RAMP_UP, overrides.getRampup());
-                this.setProperty(Constants.TEST_THREADS, overrides.getThreads());
+                Overrides overrides = testInfo.getOverrides();
+                if (overrides != null) {
+                    overrides.setThreads(testInfo.getNumberOfUsers());
+                    this.setProperty(Constants.TEST_DURATION, overrides.getDuration());
+                    this.setProperty(Constants.TEST_ITERATIONS, overrides.getIterations());
+                    this.setProperty(Constants.TEST_RAMP_UP, overrides.getRampup());
+                    this.setProperty(Constants.TEST_THREADS, overrides.getThreads());
+                }
             }
+        } catch (NullPointerException npe) {
+            BmLog.error("Failed to set " + testInfo.toString() + " to RemoteTestRunner");
         }
+
     }
 
     public TestInfo getTestInfo() {
