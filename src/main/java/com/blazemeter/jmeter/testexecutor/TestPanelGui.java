@@ -624,7 +624,7 @@ public class TestPanelGui {
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+        Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
         testIdLabel = new JLabel(Constants.EMPTY);
         testIdLabel.setBorder(border);
         testIdLabel.setEnabled(true);

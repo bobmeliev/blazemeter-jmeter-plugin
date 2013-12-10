@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -49,7 +50,7 @@ public class CloudPanel extends JPanel {
     private JTextField numberOfUserTextBox;
     private JSlider numberOfUsersSlider;
     private JComboBox locationComboBox;
-    private JTextField enginesDescription;
+    private JTextArea enginesDescription;
     private JPanel overridesPanel;
     private JSpinner rampupSpinner;
     private JSpinner iterationsSpinner;
@@ -416,9 +417,10 @@ public class CloudPanel extends JPanel {
         defaultComboBoxModel.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel);
         panel3.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        enginesDescription = new JTextField();
-        enginesDescription.setEditable(false);
-        enginesDescription.setEnabled(false);
+        enginesDescription = new JTextArea(Constants.EMPTY);
+        Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
+//        enginesDescription.setBackground(Color.);
+        enginesDescription.setBorder(border);
         enginesDescription.setText("JMETER CONSOLE");
         enginesDescription.setToolTipText("Number of JMeter engines");
         this.add(enginesDescription, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
