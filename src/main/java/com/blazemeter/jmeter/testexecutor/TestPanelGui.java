@@ -44,8 +44,8 @@ public class TestPanelGui {
     private JTextField userKeyTextField;
     private JComboBox testIdComboBox;
     private JPanel mainPanel;
-    private JLabel testIdLabel;
-    private JLabel testNameLabel;
+    private JTextArea testIdArea;
+    private JTextArea testNameArea;
     private JButton reloadButton;
     private JButton signUpToBlazemeterButton;
     private JButton createNewButton;
@@ -85,7 +85,7 @@ public class TestPanelGui {
                         return;
 
                     }
-                    String testName = testNameLabel.getText().trim();
+                    String testName = testNameArea.getText().trim();
                     if (testName.isEmpty() | testName.equals(Constants.NEW)) {
                         testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
                         if (testName == null || testName.trim().isEmpty())
@@ -550,13 +550,13 @@ public class TestPanelGui {
         boolean isRunning = (testInfo != null && testInfo.getStatus() == TestStatus.Running);
 
         if (testInfo != null) {
-            testNameLabel.setText(testInfo.getName());
-            testIdLabel.setText(testInfo.getId());
+            testNameArea.setText(testInfo.getName());
+            testIdArea.setText(testInfo.getId());
             createNewButton.setEnabled(!isRunning);
             goToTestPageButton.setEnabled(!testInfo.getId().isEmpty());
         } else {
-            testNameLabel.setText(Constants.EMPTY);
-            testIdLabel.setText(Constants.EMPTY);
+            testNameArea.setText(Constants.EMPTY);
+            testIdArea.setText(Constants.EMPTY);
             createNewButton.setEnabled(!isRunning);
             goToTestPageButton.setEnabled(false);
         }
@@ -625,17 +625,20 @@ public class TestPanelGui {
         panel3.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel3, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
-        testIdLabel = new JLabel(Constants.EMPTY);
-        testIdLabel.setBorder(border);
-        testIdLabel.setEnabled(true);
-        testIdLabel.setToolTipText("Test id of current test");
-        panel3.add(testIdLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(70, -1), new Dimension(70, -1), 0, false));
-        testNameLabel = new JLabel(" ");
-        testNameLabel.setAutoscrolls(false);
-        testNameLabel.setBorder(border);
-        testNameLabel.setEnabled(true);
-        testNameLabel.setToolTipText("Test name of current test");
-        panel3.add(testNameLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        Color color = new Color(240, 240, 240);
+        testIdArea = new JTextArea(Constants.EMPTY, 1, 1);
+        testIdArea.setBorder(border);
+        testIdArea.setBackground(color);
+        testIdArea.setEnabled(true);
+        testIdArea.setToolTipText("Test id of current test");
+        panel3.add(testIdArea, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(70, -1), new Dimension(70, -1), 0, false));
+        testNameArea = new JTextArea(Constants.EMPTY, 1, 1);
+        testNameArea.setBackground(color);
+        testNameArea.setAutoscrolls(false);
+        testNameArea.setBorder(border);
+        testNameArea.setEnabled(true);
+        testNameArea.setToolTipText("Test name of current test");
+        panel3.add(testNameArea, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createNewButton = new JButton();
         createNewButton.setEnabled(true);
         createNewButton.setFont(new Font("Tahoma", createNewButton.getFont().getStyle(), 16));
@@ -712,9 +715,9 @@ public class TestPanelGui {
         mainPanel.add(jMeterPropertyPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
         label1.setLabelFor(userKeyTextField);
-        label2.setLabelFor(testNameLabel);
+        label2.setLabelFor(testNameArea);
         label3.setLabelFor(testIdComboBox);
-        label4.setLabelFor(testNameLabel);
+        label4.setLabelFor(testNameArea);
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();
         buttonGroup.add(runRemote);
