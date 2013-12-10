@@ -419,7 +419,8 @@ public class CloudPanel extends JPanel {
         panel3.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         enginesDescription = new JTextArea(Constants.EMPTY);
         Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
-//        enginesDescription.setBackground(Color.);
+        Color color = new Color(240, 240, 240);
+        enginesDescription.setBackground(color);
         enginesDescription.setBorder(border);
         enginesDescription.setText("JMETER CONSOLE");
         enginesDescription.setToolTipText("Number of JMeter engines");
