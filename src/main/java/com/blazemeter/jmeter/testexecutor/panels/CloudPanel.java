@@ -417,7 +417,7 @@ public class CloudPanel extends JPanel {
         defaultComboBoxModel.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel);
         panel3.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        enginesDescription = new JTextArea(Constants.EMPTY, 2, 1);
+        enginesDescription = new JTextArea(Constants.EMPTY, 1, 1);
         enginesDescription.setEditable(false);
         Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
         Color color = new Color(240, 240, 240);
