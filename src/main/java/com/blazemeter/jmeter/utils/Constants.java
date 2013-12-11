@@ -43,6 +43,7 @@ public interface Constants {
 
     //constans for HashMaps
     public static final String ENGINES = "engines";
+    public static final String CONSOLES = "consoles";
     public static final String ENGINE_SIZE = "engineSize";
     public static final String USERS_PER_ENGINE = "userPerEngine";
 

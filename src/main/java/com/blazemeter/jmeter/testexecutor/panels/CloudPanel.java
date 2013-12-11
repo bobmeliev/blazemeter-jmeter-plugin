@@ -113,22 +113,20 @@ public class CloudPanel extends JPanel {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int numberOfUsers = numberOfUsersSlider.getValue();
+                int consoles;
                 int engines;
                 String engineSize;
                 int usersPerEngine;
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 testInfo.setNumberOfUsers(numberOfUsers);
                 HashMap<String, String> enginesParameters = Utils.countEngines(numberOfUsers);
+                consoles = Integer.valueOf(enginesParameters.get(Constants.CONSOLES));
                 engines = Integer.valueOf(enginesParameters.get(Constants.ENGINES));
-                engineSize = enginesParameters.get(Constants.ENGINE_SIZE).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
+                engineSize = enginesParameters.get(Constants.ENGINE_SIZE).equals("m1.medium") ? "MEDIUM ENGINE(S)" : "LARGE ENGINE(S)";
                 usersPerEngine = Integer.valueOf(enginesParameters.get(Constants.USERS_PER_ENGINE));
-                if (numberOfUsers <= 300) {
-                    enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
-                    numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
-                } else {
-                    enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
-                    numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
-                }
+
+                enginesDescription.setText(consoles + " CONSOLE(S) x " + usersPerEngine + "users\n"
+                        + String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
             }
         });
         runInTheCloud.addActionListener(new ActionListener() {
@@ -417,7 +415,7 @@ public class CloudPanel extends JPanel {
         defaultComboBoxModel.addElement("Australia (Sydney)");
         locationComboBox.setModel(defaultComboBoxModel);
         panel3.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        enginesDescription = new JTextArea(Constants.EMPTY, 1, 1);
+        enginesDescription = new JTextArea(Constants.EMPTY, 2, 1);
         enginesDescription.setEditable(false);
         Border border = BorderFactory.createLineBorder(Color.GRAY, 1);
         Color color = new Color(240, 240, 240);

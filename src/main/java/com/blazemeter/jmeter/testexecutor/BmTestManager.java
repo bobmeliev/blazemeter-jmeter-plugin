@@ -248,7 +248,7 @@ public class BmTestManager {
         TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
                 testInfo.getId(),
                 testInfo.getLocation(),
-                Integer.parseInt(enginesParameters.get(Constants.ENGINES)),
+                Integer.parseInt(enginesParameters.get(Constants.CONSOLES)) + Integer.parseInt(enginesParameters.get(Constants.ENGINES)),
                 enginesParameters.get(Constants.ENGINE_SIZE),
                 Integer.parseInt(enginesParameters.get(Constants.USERS_PER_ENGINE)),
                 overrides == null ? 0 : overrides.getIterations(),
