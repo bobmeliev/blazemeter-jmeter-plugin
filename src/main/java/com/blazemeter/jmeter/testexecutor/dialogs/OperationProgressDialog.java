@@ -62,6 +62,10 @@ public class OperationProgressDialog extends JDialog implements WindowListener {
      */
     @Override
     public void windowClosed(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSED) {
+            this.setVisible(false);
+            this.dispose();
+        }
         //To change body of implemented methods use File | Settings | File Templates.
     }
 

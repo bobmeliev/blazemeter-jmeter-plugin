@@ -144,13 +144,6 @@ public class CloudPanel extends JPanel {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         startInTheCloud();
-                 /*
-                 Put progress bar into SwingWorker
-                   OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                                "Operation will take a few seconds to execute. Your patience is appreciated.");
-                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
-                        operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
-                  */
 
 
                     }
@@ -327,7 +320,7 @@ public class CloudPanel extends JPanel {
         });
 
 
-        numberOfUsersSlider.addChangeListener(new ChangeListener() {
+        /*numberOfUsersSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 int numberOfUsers = numberOfUsersSlider.getValue();
@@ -349,6 +342,7 @@ public class CloudPanel extends JPanel {
                 }
             }
         });
+        */
         BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
             @Override
             public void onUserInfoChanged(UserInfo userInfo) {
@@ -510,18 +504,47 @@ public class CloudPanel extends JPanel {
 
     }
 
-    private void startInTheCloud() {
-        saveCloudTest();
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        TestInfoController.stop();
-        bmTestManager.runInTheCloud();
-        TestInfo testInfo = bmTestManager.getTestInfo();
-        if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
-            String url = bmTestManager.getTestUrl();
-            if (url != null)
-                url = url.substring(0, url.length() - 5);
-            Utils.Navigate(url);
-        }
+    private void startInTheCloud() { 
+
+        /* Create SwingWorker
+        1.Open progress bar;
+        2.Start communication with server;
+        3.Close progress bar on notification from BmTestManager
+        *//*
+        SwingWorker<Void,Void> worker1=new SwingWorker<Void,Void>(){
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                        "Operation will take a few seconds to execute. Your patience is appreciated.");
+                operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
+
+                return null;
+            }
+        };
+        worker1.execute();
+*/
+        SwingWorker<Void, Void> worker2 = new SwingWorker<Void, Void>() {
+
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                saveCloudTest();
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                TestInfoController.stop();
+                bmTestManager.runInTheCloud();
+                TestInfo testInfo = bmTestManager.getTestInfo();
+                if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
+                    String url = bmTestManager.getTestUrl();
+                    if (url != null)
+                        url = url.substring(0, url.length() - 5);
+                    Utils.Navigate(url);
+                }
+                return null;
+            }
+        };
+        worker2.execute();
+
     }
 
     private void saveCloudTest() {
