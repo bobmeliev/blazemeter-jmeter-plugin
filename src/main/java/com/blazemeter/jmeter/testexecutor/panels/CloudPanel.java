@@ -178,6 +178,25 @@ public class CloudPanel extends JPanel {
             }
         });
 
+        /*
+        SpinnerListModel iterationsModel = new SpinnerListModel();
+        List<String> valuesList=Arrays.asList(Constants.INFINITY,"1","2","3","4","5","6","7","8");
+        iterationsModel.setList(valuesList);
+//        iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
+        iterationsSpinner.setModel(iterationsModel);
+        iterationsSpinner.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                try {
+                    Integer iterationValue=iterationsSpinner.getValue().equals(Constants.INFINITY)?0:Integer.valueOf((String)iterationsSpinner.getValue());
+                    BmTestManager.getInstance().getTestInfo().getOverrides().setIterations(iterationValue);
+                } catch (NullPointerException npe) {
+                    BmLog.error("IterationsSpinner was not activated yet. Try again later");
+                }
+            }
+        });
+         */
+
 
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
         iterationsSpinner.addChangeListener(new ChangeListener() {

@@ -47,4 +47,5 @@ public interface Constants {
     public static final String ENGINE_SIZE = "engineSize";
     public static final String USERS_PER_ENGINE = "userPerEngine";
 
+    public static final String INFINITY = Character.toString('\u221e');
 }
