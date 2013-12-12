@@ -20,14 +20,17 @@ import java.awt.event.WindowListener;
 public class OperationProgressDialog extends JDialog implements WindowListener {
     String title = null;
     String message = null;
+    TestStatus event = null;
 
-    public OperationProgressDialog(String title, String message) {
+    public OperationProgressDialog(String title, String message, TestStatus event) {
         super();
         this.title = title;
         this.message = message;
+        this.event = event;
         JProgressBar jProgressBar = new JProgressBar();
         jProgressBar.setIndeterminate(true);
-        final JOptionPane optionPane = new JOptionPane(jProgressBar, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
+        final JOptionPane optionPane = new JOptionPane(jProgressBar, JOptionPane.INFORMATION_MESSAGE,
+                JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
         this.setTitle(this.title);
         this.setModal(true);
         Container contentPane = this.getContentPane();
@@ -38,7 +41,7 @@ public class OperationProgressDialog extends JDialog implements WindowListener {
         BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
-                if (testInfo.getStatus() == TestStatus.Running) {
+                if (testInfo.getStatus() == OperationProgressDialog.this.event) {
                     OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
                 }
             }

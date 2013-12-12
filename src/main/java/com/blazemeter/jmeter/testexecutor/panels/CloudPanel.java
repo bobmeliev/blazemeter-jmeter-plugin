@@ -152,7 +152,17 @@ public class CloudPanel extends JPanel {
                             "Stop test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
-                        bmTestManager.stopInTheCloud();
+                        new SwingWorker<Void, Void>() {
+                            @Override
+                            protected Void doInBackground() throws Exception {
+                                BmTestManager.getInstance().stopTest();
+                                return null;
+                            }
+                        }.execute();
+                       /* OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                                "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.NotRunning);
+                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
+*/
                     }
                 }
             }
@@ -479,19 +489,13 @@ public class CloudPanel extends JPanel {
 
     }
 
-    private void startInTheCloud() { 
-
-        /* Create SwingWorker
-        1.Open progress bar;
-        2.Start communication with server;
-        3.Close progress bar on notification from BmTestManager
-        */
+    private void startInTheCloud() {
         new SwingWorker<Void, Void>() {
 
             @Override
             protected Void doInBackground() throws Exception {
                 OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                        "Operation will take a few seconds to execute. Your patience is appreciated.");
+                        "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.Running);
                 operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
 
                 return null;
