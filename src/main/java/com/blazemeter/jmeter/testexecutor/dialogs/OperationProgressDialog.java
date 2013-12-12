@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor;
+package com.blazemeter.jmeter.testexecutor.dialogs;
 
 import javax.swing.*;
 import java.awt.*;
