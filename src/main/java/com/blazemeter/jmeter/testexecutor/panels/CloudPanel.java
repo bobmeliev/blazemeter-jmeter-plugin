@@ -144,15 +144,16 @@ public class CloudPanel extends JPanel {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         startInTheCloud();
-                    }
-/*
-
+                 /*
+                 Put progress bar into SwingWorker
                    OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
                                 "Operation will take a few seconds to execute. Your patience is appreciated.");
                         operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_OPENED));
                         operationProgressDialog.windowClosing(new WindowEvent(operationProgressDialog,WindowEvent.WINDOW_CLOSING));
+                  */
 
-*/
+
+                    }
 
 
                 } else {
@@ -622,5 +623,4 @@ public class CloudPanel extends JPanel {
     public void setNumberOfUsers(int numberOfUsers) {
         numberOfUsersSlider.setValue(numberOfUsers);
     }
-
 }
