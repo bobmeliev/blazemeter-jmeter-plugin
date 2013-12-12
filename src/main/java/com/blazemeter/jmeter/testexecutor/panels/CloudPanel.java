@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor.panels;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.ServerStatusController;
 import com.blazemeter.jmeter.testexecutor.TestPanelGui;
+import com.blazemeter.jmeter.testexecutor.dialogs.OperationProgressDialog;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
@@ -27,10 +28,7 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -320,29 +318,6 @@ public class CloudPanel extends JPanel {
         });
 
 
-        /*numberOfUsersSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int numberOfUsers = numberOfUsersSlider.getValue();
-                int engines;
-                String engineSize;
-                int usersPerEngine;
-                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                testInfo.setNumberOfUsers(numberOfUsers);
-                HashMap<String, String> enginesParams = Utils.countEngines(numberOfUsers);
-                engines = Integer.valueOf(enginesParams.get(Constants.ENGINES));
-                engineSize = enginesParams.get(Constants.ENGINE_SIZE).equals("m1.medium") ? "MEDIUM ENGINE" : "LARGE ENGINE";
-                usersPerEngine = Integer.valueOf(enginesParams.get(Constants.USERS_PER_ENGINE));
-                if (numberOfUsers <= 300) {
-                    enginesDescription.setText(String.format("JMETER CONSOLE -  %d users", usersPerEngine));
-                    numberOfUserTextBox.setText(Integer.toString(numberOfUsers));
-                } else {
-                    enginesDescription.setText(String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
-                    numberOfUserTextBox.setText(Integer.toString(usersPerEngine * engines));
-                }
-            }
-        });
-        */
         BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
             @Override
             public void onUserInfoChanged(UserInfo userInfo) {
@@ -510,8 +485,8 @@ public class CloudPanel extends JPanel {
         1.Open progress bar;
         2.Start communication with server;
         3.Close progress bar on notification from BmTestManager
-        *//*
-        SwingWorker<Void,Void> worker1=new SwingWorker<Void,Void>(){
+        */
+        new SwingWorker<Void, Void>() {
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -521,10 +496,9 @@ public class CloudPanel extends JPanel {
 
                 return null;
             }
-        };
-        worker1.execute();
-*/
-        SwingWorker<Void, Void> worker2 = new SwingWorker<Void, Void>() {
+        }.execute();
+
+        new SwingWorker<Void, Void>() {
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -542,8 +516,7 @@ public class CloudPanel extends JPanel {
                 }
                 return null;
             }
-        };
-        worker2.execute();
+        }.execute();
 
     }
 

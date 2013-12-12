@@ -1,5 +1,10 @@
 package com.blazemeter.jmeter.testexecutor.dialogs;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
+import com.blazemeter.jmeter.testinfo.TestInfo;
+import com.blazemeter.jmeter.testinfo.TestStatus;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
@@ -30,7 +35,14 @@ public class OperationProgressDialog extends JDialog implements WindowListener {
         contentPane.add(optionPane, BorderLayout.SOUTH);
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.setSize(this.message.length() * 8, 130);
-
+        BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
+            @Override
+            public void onTestInfoChanged(TestInfo testInfo) {
+                if (testInfo.getStatus() == TestStatus.Running) {
+                    OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
+                }
+            }
+        });
     }
 
     /**
