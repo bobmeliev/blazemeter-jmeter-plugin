@@ -29,14 +29,14 @@ public class OperationProgressDialog extends JDialog implements WindowListener {
         this.event = event;
         JProgressBar jProgressBar = new JProgressBar();
         jProgressBar.setIndeterminate(true);
-        final JOptionPane optionPane = new JOptionPane(jProgressBar, JOptionPane.INFORMATION_MESSAGE,
+        final JOptionPane progressPane = new JOptionPane(jProgressBar, JOptionPane.INFORMATION_MESSAGE,
                 JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null);
         this.setTitle(this.title);
         this.setModal(true);
         Container contentPane = this.getContentPane();
         contentPane.add(new JLabel(this.message), BorderLayout.NORTH);
-        contentPane.add(optionPane, BorderLayout.SOUTH);
-        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        contentPane.add(progressPane, BorderLayout.SOUTH);
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setSize(this.message.length() * 8, 130);
         BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
             @Override
