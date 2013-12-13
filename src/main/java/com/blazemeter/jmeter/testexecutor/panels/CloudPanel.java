@@ -153,16 +153,18 @@ public class CloudPanel extends JPanel {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         new SwingWorker<Void, Void>() {
+
                             @Override
                             protected Void doInBackground() throws Exception {
-                                BmTestManager.getInstance().stopTest();
+                                OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
+                                        "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.NotRunning);
+                                operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
+
                                 return null;
                             }
                         }.execute();
-                       /* OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                                "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.NotRunning);
-                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
-*/
+                        bmTestManager.stopTest();
+
                     }
                 }
             }
