@@ -152,19 +152,7 @@ public class CloudPanel extends JPanel {
                             "Stop test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
-                        new SwingWorker<Void, Void>() {
-
-                            @Override
-                            protected Void doInBackground() throws Exception {
-                                OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                                        "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.NotRunning);
-                                operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
-
-                                return null;
-                            }
-                        }.execute();
                         bmTestManager.stopTest();
-
                     }
                 }
             }
@@ -503,6 +491,20 @@ public class CloudPanel extends JPanel {
                 return null;
             }
         }.execute();
+
+/*
+        saveCloudTest();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfoController.stop();
+        bmTestManager.runInTheCloud();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
+            String url = bmTestManager.getTestUrl();
+            if (url != null)
+                url = url.substring(0, url.length() - 5);
+            Utils.Navigate(url);
+        }
+*/
 
         new SwingWorker<Void, Void>() {
 
