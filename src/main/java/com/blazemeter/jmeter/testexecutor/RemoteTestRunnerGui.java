@@ -5,7 +5,7 @@ package com.blazemeter.jmeter.testexecutor;
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
-import com.blazemeter.jmeter.testexecutor.panels.TestPanelGui;
+import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
@@ -27,7 +27,7 @@ import java.awt.event.MouseListener;
 
 
 public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, IPluginUpdateNotification {
-    private static TestPanelGui gui;
+    private static TestPanel gui;
     private static JPanel versionPanel;
 
 
@@ -40,7 +40,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         super();
         Utils.checkJMeterVersion();
         try {
-            gui = TestPanelGui.getGui();
+            gui = TestPanel.getGui();
         } catch (Exception e) {
             BmLog.error("Failed to construct RemoteTestRunnerGui instance:" + e);
         }

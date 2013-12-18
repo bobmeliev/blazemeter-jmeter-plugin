@@ -417,7 +417,7 @@ public class BmTestManager {
 
     /*
     Wrapper-method, which provides server URL.
-    Incapsulates BlazemeterAPI from TestPanelGui
+    Incapsulates BlazemeterAPI from TestPanel
        @return String
 
      */

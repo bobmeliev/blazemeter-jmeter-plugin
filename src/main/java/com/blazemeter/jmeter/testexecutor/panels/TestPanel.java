@@ -37,8 +37,8 @@ import java.util.Properties;
  * Date: 3/29/12
  * Time: 12:29
  */
-public class TestPanelGui {
-    private static TestPanelGui gui;
+public class TestPanel {
+    private static TestPanel gui;
 
     //Gui controls
     private JTextField userKeyTextField;
@@ -58,7 +58,7 @@ public class TestPanelGui {
     private JPanel jMeterPropertyPanel = new JMeterPropertyPanel();
 
 
-    public TestPanelGui() {
+    public TestPanel() {
         try {
             createMainPanel();
             reloadButton.addActionListener(new ActionListener() {
@@ -144,7 +144,7 @@ public class TestPanelGui {
                 }
             });
         } catch (NullPointerException npe) {
-            BmLog.error("Failed to construct TestPanelGui instance: " + npe);
+            BmLog.error("Failed to construct TestPanel instance: " + npe);
         }
 
     }
@@ -567,9 +567,9 @@ public class TestPanelGui {
         reloadButton.setEnabled(!isRunning);
     }
 
-    public static TestPanelGui getGui() {
+    public static TestPanel getGui() {
         if (gui == null) {
-            gui = new TestPanelGui();
+            gui = new TestPanel();
         }
         return gui;
     }
