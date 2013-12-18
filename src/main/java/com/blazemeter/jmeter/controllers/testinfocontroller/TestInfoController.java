@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.controllers;
+package com.blazemeter.jmeter.controllers.testinfocontroller;
 
 import com.blazemeter.jmeter.utils.BmLog;
 
