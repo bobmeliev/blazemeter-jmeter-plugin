@@ -38,6 +38,9 @@ import java.util.HashMap;
 import java.util.Properties;
 
 /**
+ This is panel, which appear after switching JMeter BLazemeter Plugin to "Run in the Cloud" mode;
+ It is responsible for controlling BM server from the local instance of JMeter.
+
  * Created with IntelliJ IDEA.
  * User: dzmitrykashlach
  * Date: 11/23/13
@@ -64,6 +67,10 @@ public class CloudPanel extends JPanel {
     }
 
 
+    /*
+      Helper method for keeping all necessary operations for initializing GUI components,
+      listeners, etc.
+     */
     private void init() {
         locationComboBox.addActionListener(new ActionListener() {
             @Override
@@ -76,6 +83,10 @@ public class CloudPanel extends JPanel {
         });
 
 
+        /*
+        add processor to numberOfUserTextBox
+        Value will be read after moving mouse outside of component
+         */
         numberOfUserTextBox.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent focusEvent) {
@@ -94,6 +105,9 @@ public class CloudPanel extends JPanel {
             }
         });
 
+        /*
+        JSpinner for controlling rampUp value.
+         */
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         rampupSpinner.addChangeListener(new ChangeListener() {
             @Override
@@ -107,6 +121,10 @@ public class CloudPanel extends JPanel {
         });
 
 
+        /*
+        Slider for controlling number of users. It is attached to numberOfUserTextBox,
+        so if user changes slider - > textbox also changes
+         */
         numberOfUsersSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -127,6 +145,10 @@ public class CloudPanel extends JPanel {
                         + String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
             }
         });
+        /*
+        Button for starting/stopping test in the cloud.
+
+         */
         runInTheCloud.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -183,24 +205,6 @@ public class CloudPanel extends JPanel {
             }
         });
 
-        /*
-        SpinnerListModel iterationsModel = new SpinnerListModel();
-        List<String> valuesList=Arrays.asList(Constants.INFINITY,"1","2","3","4","5","6","7","8");
-        iterationsModel.setList(valuesList);
-//        iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
-        iterationsSpinner.setModel(iterationsModel);
-        iterationsSpinner.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                try {
-                    Integer iterationValue=iterationsSpinner.getValue().equals(Constants.INFINITY)?0:Integer.valueOf((String)iterationsSpinner.getValue());
-                    BmTestManager.getInstance().getTestInfo().getOverrides().setIterations(iterationValue);
-                } catch (NullPointerException npe) {
-                    BmLog.error("IterationsSpinner was not activated yet. Try again later");
-                }
-            }
-        });
-         */
 
 
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
@@ -311,6 +315,10 @@ public class CloudPanel extends JPanel {
 
 
         //Processing serverStatusChangedNotification
+        /*
+        This Controller checks if BM server is available over Internet or not.
+        Here we apply ServerStatus to CloudPanel.
+         */
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
             @Override
@@ -331,6 +339,9 @@ public class CloudPanel extends JPanel {
         });
 
 
+        /*
+          If userInfo was changed in BmTestManager, Cloud Panel will be notified about this to take appropriate reaction
+         */
         BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
             @Override
             public void onUserInfoChanged(UserInfo userInfo) {
@@ -358,6 +369,9 @@ public class CloudPanel extends JPanel {
 
     }
 
+    /*
+    Method for starting test on BM server
+    */
     private void startInTheCloud() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -390,6 +404,10 @@ public class CloudPanel extends JPanel {
         }.execute();
     }
 
+    /*
+    Called before starting test.
+    This method updates test settings on BM server
+     */
     private void saveCloudTest() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         int numberOfUsers = numberOfUsersSlider.getValue();
@@ -433,6 +451,9 @@ public class CloudPanel extends JPanel {
         }
     }
 
+    /*
+    Here testInfo object is applied to Cloud Panel
+     */
     public void setTestInfo(TestInfo testInfo) {
         if ("jmeter".equals(testInfo.getType())) {
             String locationTitle = Utils.getLocationTitle(testInfo.getLocation());
@@ -454,6 +475,9 @@ public class CloudPanel extends JPanel {
         }
     }
 
+    /*
+    Resetting Cloud Panel to the default(initial state) state
+     */
     public void reset() {
         numberOfUsersSlider.setValue(0);
         numberOfUserTextBox.setText("0");
@@ -464,6 +488,12 @@ public class CloudPanel extends JPanel {
         addFilesButton.setEnabled(false);
     }
 
+    /*
+    JSONArray locations contains info about all locations,
+    available to current user.
+    This info is applied to
+    locationComboBox
+     */
     public void setLocations(JSONArray locations) {
         if (locations.length() > 0) {
             locationComboBox.removeAllItems();
@@ -478,10 +508,16 @@ public class CloudPanel extends JPanel {
         }
     }
 
+    /*
+    @return current location from locationComboBox
+     */
     public String getServerLocation() {
         return (String) locationComboBox.getSelectedItem();
     }
 
+    /*
+    @return current number of users
+     */
     public int getNumberOfUsers() {
         return numberOfUsersSlider.getValue();
     }
@@ -491,6 +527,9 @@ public class CloudPanel extends JPanel {
     }
 
 
+    /*
+    Creates Cloud Panel
+     */
     private void createGui() {
         this.setLayout(new GridLayoutManager(5, 5, new Insets(1, 1, 1, 1), -1, -1));
         this.setEnabled(true);
