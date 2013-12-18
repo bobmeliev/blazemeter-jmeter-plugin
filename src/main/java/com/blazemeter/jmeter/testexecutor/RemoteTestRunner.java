@@ -2,15 +2,16 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.blazemeter.jmeter.controllers.ServerStatusController;
+import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.results.LogUploader;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
-import com.blazemeter.jmeter.testinfo.Overrides;
-import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestInfoController;
-import com.blazemeter.jmeter.testinfo.TestStatus;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;

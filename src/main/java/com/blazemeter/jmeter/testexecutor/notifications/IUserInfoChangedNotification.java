@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.notifications;
 
-import com.blazemeter.jmeter.testinfo.UserInfo;
+import com.blazemeter.jmeter.entities.UserInfo;
 
 /**
  * Created with IntelliJ IDEA.

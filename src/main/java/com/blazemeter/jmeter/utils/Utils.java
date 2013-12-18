@@ -1,13 +1,13 @@
 package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
-import com.blazemeter.jmeter.testinfo.Overrides;
-import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestStatus;
-import com.blazemeter.jmeter.testinfo.UserInfo;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.JMeter;

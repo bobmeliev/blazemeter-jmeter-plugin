@@ -1,9 +1,9 @@
 package com.blazemeter.jmeter.testexecutor.dialogs;
 
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testinfo.TestInfo;
-import com.blazemeter.jmeter.testinfo.TestStatus;
 
 import javax.swing.*;
 import java.awt.*;

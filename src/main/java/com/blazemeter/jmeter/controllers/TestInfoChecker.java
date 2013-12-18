@@ -1,6 +1,7 @@
-package com.blazemeter.jmeter.testinfo;
+package com.blazemeter.jmeter.controllers;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 
 /**

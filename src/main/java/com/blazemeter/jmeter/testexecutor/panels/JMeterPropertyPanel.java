@@ -1,8 +1,8 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
+import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testinfo.TestInfo;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.UnsharedComponent;

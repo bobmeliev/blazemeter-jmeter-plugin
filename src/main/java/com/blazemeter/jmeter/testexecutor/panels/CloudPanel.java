@@ -1,14 +1,17 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
+import com.blazemeter.jmeter.controllers.ServerStatusController;
+import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.ServerStatusController;
-import com.blazemeter.jmeter.testexecutor.TestPanelGui;
 import com.blazemeter.jmeter.testexecutor.dialogs.OperationProgressDialog;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
-import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;

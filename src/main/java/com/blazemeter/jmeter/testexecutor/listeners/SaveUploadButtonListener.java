@@ -1,7 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
@@ -25,7 +25,7 @@ public class SaveUploadButtonListener implements ActionListener {
         try {
             BmTestManager bmTestManager = BmTestManager.getInstance();
             GuiPackage guiPackage = GuiPackage.getInstance();
-            if(Utils.isTestPlanEmpty()){
+            if (Utils.isTestPlanEmpty()) {
                 JMeterUtils.reportErrorToUser("Test-plan should have at least one Thread Group");
                 return;
             }

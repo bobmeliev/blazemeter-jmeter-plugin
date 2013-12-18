@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testinfo;
+package com.blazemeter.jmeter.entities;
 
 /**
  * Created by IntelliJ IDEA.

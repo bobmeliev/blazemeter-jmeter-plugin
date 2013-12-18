@@ -1,9 +1,13 @@
 package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testinfo.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.PluginUpdate;
@@ -347,7 +351,7 @@ public class BmTestManager {
     }
 
 
-    List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
+    public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
 
     public void NotifyUserKeyChanged() {
         for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {

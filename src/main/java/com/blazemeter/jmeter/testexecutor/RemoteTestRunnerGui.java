@@ -3,9 +3,10 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
+import com.blazemeter.jmeter.testexecutor.panels.TestPanelGui;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
-import com.blazemeter.jmeter.testinfo.TestInfo;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.PluginUpdate;
@@ -41,7 +42,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         try {
             gui = TestPanelGui.getGui();
         } catch (Exception e) {
-            BmLog.error("Failed to construct RemoteTestRunnerGui instance:"+e);
+            BmLog.error("Failed to construct RemoteTestRunnerGui instance:" + e);
         }
         init();
         getFilePanel().setVisible(false);
