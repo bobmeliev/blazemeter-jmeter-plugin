@@ -52,7 +52,7 @@ public class TestPanel {
     private JTextArea testIdArea;
     private JTextArea testNameArea;
     private JButton reloadButton;
-    private JButton signUpToBlazemeterButton;
+    private JButton signUpButton;
     private JButton createNewButton;
     private JButton goToTestPageButton;
     private JButton helpButton;
@@ -72,7 +72,7 @@ public class TestPanel {
                     fetchUserTestsAsync();
                 }
             });
-            signUpToBlazemeterButton.addActionListener(new ActionListener() {
+            signUpButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
                     Utils.Navigate(BmTestManager.getServerUrl() + "/user");
@@ -207,7 +207,7 @@ public class TestPanel {
             runRemote.addActionListener(listener);
 
 
-            signUpToBlazemeterButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
+            signUpButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
                     getInstance().
                     getUserKey().
                     isEmpty());
@@ -234,7 +234,7 @@ public class TestPanel {
                 @Override
                 public void onTestUserKeyChanged(String userKey) {
                     setUserKey(userKey);
-                    signUpToBlazemeterButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & BmTestManager.getInstance().isUserKeyValid()));
+                    signUpButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & BmTestManager.getInstance().isUserKeyValid()));
                 }
             });
 
@@ -248,7 +248,7 @@ public class TestPanel {
                 setUserKey(key);
                 userKeyTextField.setEnabled(false);
                 userKeyTextField.setToolTipText("User key found in jmeter.properties file");
-                signUpToBlazemeterButton.setVisible(false);
+                signUpButton.setVisible(false);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -265,7 +265,7 @@ public class TestPanel {
             } else {
                 String userKey = BmTestManager.getInstance().getUserKey();
                 if (!userKey.isEmpty()) {
-                    signUpToBlazemeterButton.setVisible(false);
+                    signUpButton.setVisible(false);
                     userKeyTextField.setText(userKey);
                     fetchUserTestsAsync();
 
@@ -286,7 +286,7 @@ public class TestPanel {
                             bmTestManager.setUserKey(newVal);
                             if (!newVal.isEmpty()) {
                                 fetchUserTestsAsync();
-                                signUpToBlazemeterButton.setVisible(false);
+                                signUpButton.setVisible(false);
                             }
                         }
                     }
@@ -567,12 +567,12 @@ public class TestPanel {
         createNewButton.setText("");
         createNewButton.setToolTipText("Create new test");
         panel3.add(createNewButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(24, 21), null, null, 0, false));
-        signUpToBlazemeterButton = new JButton();
-        signUpToBlazemeterButton.setActionCommand("Sign up to BlazeMeter!");
-        signUpToBlazemeterButton.setLabel("Sign up to BlazeMeter's free trial!");
-        signUpToBlazemeterButton.setText("Sign up to BlazeMeter's free trial!");
-        signUpToBlazemeterButton.setToolTipText("Register/Login to BlazeMeter site and find your User Key on a profile page.");
-        panel3.add(signUpToBlazemeterButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(250, -1), new Dimension(300, -1), new Dimension(300, -1), 0, false));
+        signUpButton = new JButton();
+        signUpButton.setActionCommand("Sign up to BlazeMeter!");
+        signUpButton.setLabel("Sign up to BlazeMeter's free trial!");
+        signUpButton.setText("Sign up to BlazeMeter's free trial!");
+        signUpButton.setToolTipText("Register/Login to BlazeMeter site and find your User Key on a profile page.");
+        panel3.add(signUpButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(250, -1), new Dimension(300, -1), new Dimension(300, -1), 0, false));
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel4, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
