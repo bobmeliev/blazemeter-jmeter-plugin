@@ -9,8 +9,10 @@ import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
 import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
-import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
@@ -34,7 +36,6 @@ import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -70,7 +71,8 @@ public class TestPanel {
             reloadButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    getUserTests();
+                    GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+
                 }
             });
             signUpButton.addActionListener(new ActionListener() {
@@ -252,7 +254,8 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        getUserTests();
+                        GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+
 
                     }
                 }).start();
@@ -267,8 +270,7 @@ public class TestPanel {
                 if (!userKey.isEmpty()) {
                     signUpButton.setVisible(false);
                     userKeyTextField.setText(userKey);
-                    getUserTests();
-
+                    GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
                 }
                 userKeyTextField.getDocument().addDocumentListener(new UserKeyListener(userKeyTextField));
                 userKeyTextField.addFocusListener(new FocusListener() {
@@ -286,7 +288,7 @@ public class TestPanel {
                             BmTestManager bmTestManager = BmTestManager.getInstance();
                             bmTestManager.setUserKey(newVal);
                             if (!newVal.isEmpty()) {
-                                getUserTests();
+                                GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
                                 signUpButton.setVisible(false);
                             }
                         }
@@ -405,7 +407,7 @@ public class TestPanel {
     }
 
 
-    private void getUserTests() {
+    /*private void getUserTests() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         String userKey = bmTestManager.getUserKey();
         if (userKey == null || userKey.isEmpty()) {
@@ -421,7 +423,7 @@ public class TestPanel {
         applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
         ITestListReceivedNotification testListReceivedNotification = new TestListNotification(applyNotificationTo);
         BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
-    }
+    }*/
 
     public void setUserKey(String key) {
         if (key.isEmpty()) {

@@ -1,10 +1,16 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
+import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 /**
  * Created by dzmitrykashlach on 12/19/13.
@@ -35,4 +41,24 @@ public class GuiUtils {
             }
         }
     }
+
+    public static void getUserTests(JComboBox testIdComboBox, JPanel mainPanel, CloudPanel cloudPanel) {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        String userKey = bmTestManager.getUserKey();
+        if (userKey == null || userKey.isEmpty()) {
+            JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        testIdComboBox.removeAllItems();
+        testIdComboBox.addItem("LOADING...");
+        testIdComboBox.setEnabled(false);
+        HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
+        applyNotificationTo.put(TestListNotification.TEST_ID_COMBOBOX, testIdComboBox);
+        applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
+        applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
+        ITestListReceivedNotification testListReceivedNotification = new TestListNotification(applyNotificationTo);
+        BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
+    }
+
+
 }
