@@ -182,8 +182,8 @@ public class BlazemeterApi {
 
 
     public synchronized void getTestsAsync(String userKey, ITestListReceivedNotification notifier) {
-        TestsFetcher testsFetcher = new TestsFetcher(userKey, notifier);
-        new Thread(testsFetcher).start();
+        TestsChecker testsChecker = new TestsChecker(userKey, notifier);
+        new Thread(testsChecker).start();
     }
 
 

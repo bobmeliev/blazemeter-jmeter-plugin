@@ -41,9 +41,9 @@ import java.util.HashMap;
 import java.util.Properties;
 
 /**
- This is panel, which appear after switching JMeter BLazemeter Plugin to "Run in the Cloud" mode;
- It is responsible for controlling BM server from the local instance of JMeter.
-
+ * This is panel, which appear after switching JMeter BLazemeter Plugin to "Run in the Cloud" mode;
+ * It is responsible for controlling BM server from the local instance of JMeter.
+ * <p/>
  * Created with IntelliJ IDEA.
  * User: dzmitrykashlach
  * Date: 11/23/13
@@ -178,19 +178,6 @@ public class CloudPanel extends JPanel {
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
                         BmTestManager.getInstance().stopTest();
-
-
-
-                        /*new SwingWorker<Void, Void>() {
-
-                            @Override
-                            protected Void doInBackground() throws Exception {
-                        OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                                "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.NotRunning);
-                        operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
-        return null;
-                            }
-                        }.execute();*/
                     }
                 }
             }
@@ -207,7 +194,6 @@ public class CloudPanel extends JPanel {
                 }
             }
         });
-
 
 
         iterationsSpinner.setModel(new SpinnerNumberModel(0, 0, 1010, 1));
@@ -663,8 +649,5 @@ public class CloudPanel extends JPanel {
         addFilesButton.setText("Add Files for Cloud Test");
         addFilesButton.setToolTipText("Add data files for test");
         this.add(addFilesButton, new GridConstraints(4, 3, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(275, 25), new Dimension(275, 25), new Dimension(275, 25), 0, false));
-
     }
-
-
 }

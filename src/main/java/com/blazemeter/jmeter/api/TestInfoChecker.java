@@ -1,6 +1,5 @@
-package com.blazemeter.jmeter.controllers.testinfocontroller;
+package com.blazemeter.jmeter.api;
 
-import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 
@@ -14,7 +13,7 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 public class TestInfoChecker implements Runnable {
     private String testId;
 
-    TestInfoChecker(String testId) {
+    public TestInfoChecker(String testId) {
         this.testId = testId;
     }
 

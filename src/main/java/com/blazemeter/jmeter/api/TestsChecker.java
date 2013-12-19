@@ -8,11 +8,11 @@ import java.util.ArrayList;
 /**
  * Created by dzmitrykashlach on 12/19/13.
  */
-public class TestsFetcher implements Runnable {
+public class TestsChecker implements Runnable {
     String userKey;
     ITestListReceivedNotification notifier;
 
-    public TestsFetcher(String userKey, ITestListReceivedNotification notifier) {
+    public TestsChecker(String userKey, ITestListReceivedNotification notifier) {
         this.userKey = userKey;
         this.notifier = notifier;
     }

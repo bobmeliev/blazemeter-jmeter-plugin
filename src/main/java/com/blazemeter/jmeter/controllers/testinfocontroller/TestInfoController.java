@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.controllers.testinfocontroller;
 
+import com.blazemeter.jmeter.api.TestInfoChecker;
 import com.blazemeter.jmeter.utils.BmLog;
 
 import java.util.concurrent.Executors;
