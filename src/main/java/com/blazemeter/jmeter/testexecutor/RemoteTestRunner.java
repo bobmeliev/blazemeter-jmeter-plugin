@@ -14,6 +14,7 @@ import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotificat
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.StandardJMeterEngine;
@@ -183,7 +184,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
             if (!JMeterUtils.getPropDefault(Constants.TEST_URL_WAS_OPENED, false)) {
                 String url = bmTestManager.getTestUrl();
-                Utils.Navigate(url);
+                GuiUtils.Navigate(url);
                 BmLog.debug("Opening test URL: " + url);
                 JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "true");
             }

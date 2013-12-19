@@ -6,6 +6,7 @@ import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.PluginUpdate;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
+import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 
 import javax.swing.*;
@@ -179,7 +180,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.INFORMATION_MESSAGE,
                         null, null, null)) {
-                    Utils.Navigate(update.getMoreInfoUrl());
+                    GuiUtils.Navigate(update.getMoreInfoUrl());
                 }
             }
 

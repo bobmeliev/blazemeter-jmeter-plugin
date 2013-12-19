@@ -524,7 +524,7 @@ public class Utils {
         @Override
         public void mouseClicked(MouseEvent e) {
             if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-                Navigate(uri);
+                GuiUtils.Navigate(uri);
             }
         }
 

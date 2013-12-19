@@ -14,6 +14,7 @@ import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -225,7 +226,7 @@ public class CloudPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 String url = BmTestManager.getInstance().getTestUrl() + "/files";
                 if (url != null)
-                    Utils.Navigate(url);
+                    GuiUtils.Navigate(url);
             }
         });
 
@@ -386,7 +387,7 @@ public class CloudPanel extends JPanel {
                     String url = bmTestManager.getTestUrl();
                     if (url != null)
                         url = url.substring(0, url.length() - 5);
-                    Utils.Navigate(url);
+                    GuiUtils.Navigate(url);
                 }
                 return null;
             }

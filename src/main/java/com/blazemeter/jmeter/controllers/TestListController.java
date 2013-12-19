@@ -23,7 +23,7 @@ public class TestListController {
     public static void start(String userKey, ITestListReceivedNotification notification) {
         if ((task == null || task.isDone()) & !userKey.isEmpty()) {
             final TestsChecker testsChecker = new TestsChecker(userKey, notification);
-            task = scheduler.scheduleAtFixedRate(testsChecker, 0, 30, TimeUnit.SECONDS);
+            task = scheduler.scheduleAtFixedRate(testsChecker, 30, 30, TimeUnit.SECONDS);
             BmLog.console("TestListController is started with userKey=" + userKey);
         }
     }
