@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotificationGui;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -24,7 +25,10 @@ import org.apache.jmeter.util.JMeterUtils;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -234,29 +238,8 @@ public class TestPanel {
                 }
             });
 
-            testIdComboBox.addItemListener(new ItemListener() {
-                @Override
-                public void itemStateChanged(ItemEvent itemEvent) {
-                    BmTestManager bmTestManager = BmTestManager.getInstance();
-                    if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-                        Object selectedTest = testIdComboBox.getSelectedItem();
-                        if (selectedTest instanceof TestInfo) {
-                            TestInfo testInfo = (TestInfo) selectedTest;
-                            if (!testInfo.getName().equals(Constants.NEW) & !testInfo.getName().isEmpty()) {
-                                bmTestManager.setTestInfo(testInfo);
-                            }
-                        } else if (selectedTest.toString().equals(Constants.NEW)) {
-                            testIdComboBox.setSelectedItem(Constants.NEW);
-                            configureMainPanelControls(null);
-                            cloudPanel.reset();
-                            Utils.enableElements(cloudPanel, false);
-                            TestInfo testInfo = new TestInfo();
-                            testInfo.setName(Constants.NEW);
-                            bmTestManager.setTestInfo(testInfo);
-                        }
-                    }
-                }
-            });
+            TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);
+            testIdComboBox.addItemListener(comboBoxListener);
 
             if (bmTestManager.isUserKeyFromProp()) {
                 String key = bmTestManager.getUserKey();
@@ -341,7 +324,7 @@ public class TestPanel {
                         runLocal.setEnabled(!isTestRunning);
                         runRemote.setEnabled(!isTestRunning);
 
-                        configureMainPanelControls(testInfo);
+                        configureMainPanel(testInfo);
 
                         if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
                             try {
@@ -465,10 +448,10 @@ public class TestPanel {
             testInfo = new TestInfo();
             testInfo.setName(Constants.NEW);
             testIdComboBox.setSelectedItem(testInfo.getName());
-            configureMainPanelControls(null);
+            configureMainPanel(null);
         } else {
             testIdComboBox.setSelectedItem(testInfo);
-            configureMainPanelControls(testInfo);
+            configureMainPanel(testInfo);
             runModeChanged(bmTestManager.getIsLocalRunMode());
         }
         if (!bmTestManager.getIsLocalRunMode()) {
@@ -478,7 +461,7 @@ public class TestPanel {
     }
 
 
-    private void configureMainPanelControls(TestInfo testInfo) {
+    public void configureMainPanel(TestInfo testInfo) {
         boolean isRunning = (testInfo != null && testInfo.getStatus() == TestStatus.Running);
 
         if (testInfo != null) {
