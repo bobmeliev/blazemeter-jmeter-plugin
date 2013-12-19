@@ -18,14 +18,14 @@ import java.util.HashMap;
 /**
  * Created by dzmitrykashlach on 12/19/13.
  */
-public class TestListNotificationBG implements ITestListReceivedNotification {
+public class TestListNotificationBg implements ITestListReceivedNotification {
     private HashMap<String, Object> applyNotificationTo;
 
     public static final String TEST_ID_COMBOBOX = "testIdComboBox";
     public static final String MAIN_PANEL = "mainPanel";
     public static final String CLOUD_PANEL = "cloudPanel";
 
-    public TestListNotificationBG(HashMap<String, Object> applyNotificationTo) {
+    public TestListNotificationBg(HashMap<String, Object> applyNotificationTo) {
         this.applyNotificationTo = applyNotificationTo;
     }
 
