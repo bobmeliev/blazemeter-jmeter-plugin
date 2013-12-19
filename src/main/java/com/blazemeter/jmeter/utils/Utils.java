@@ -37,7 +37,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
 
@@ -229,20 +232,6 @@ public class Utils {
         }
     }
 
-
-    public static void Navigate(String url) {
-        if (java.awt.Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().browse(new URI(url));
-            } catch (IOException e) {
-                BmLog.error(e);
-            } catch (URISyntaxException e) {
-                BmLog.error(e);
-            } catch (NullPointerException npe) {
-                BmLog.error("URL is empty, nothing to open in browser", npe);
-            }
-        }
-    }
 
     public static boolean isWindows() {
         String OS = System.getProperty("os.name").toLowerCase();

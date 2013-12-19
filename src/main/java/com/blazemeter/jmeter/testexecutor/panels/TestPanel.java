@@ -9,7 +9,7 @@ import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotificationGui;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
@@ -75,7 +75,7 @@ public class TestPanel {
             signUpButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    Utils.Navigate(BmTestManager.getServerUrl() + "/user");
+                    GuiUtils.Navigate(BmTestManager.getServerUrl() + "/user");
                 }
             });
 
@@ -100,10 +100,10 @@ public class TestPanel {
                         JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
                         return;
                     }
-//                    int numberOfUsers = cloudPanel.getNumberOfUsers();
+                    int numberOfUsers = cloudPanel.getNumberOfUsers();
                     TestInfo ti = bmTestManager.createTest(userKey, testName);
                     ti.setLocation(cloudPanel.getServerLocation());
-                    ti.setNumberOfUsers(50);
+                    ti.setNumberOfUsers(numberOfUsers);
                     ti.setStatus(TestStatus.NotRunning);
                     Properties jmeterProperties = null;
 
@@ -118,7 +118,6 @@ public class TestPanel {
                     ti = bmTestManager.updateTestSettings(userKey, ti);
                     if (ti != null && ti.getStatus() != null) {
                         GuiUtils.addTestId(testIdComboBox, ti, true);
-//                        addTestId(ti, true);
                         bmTestManager.setTestInfo(ti);
                     }
                     GuiPackage guiPackage = GuiPackage.getInstance();
@@ -137,7 +136,7 @@ public class TestPanel {
                 public void actionPerformed(ActionEvent actionEvent) {
                     String url = BmTestManager.getInstance().getTestUrl();
                     if (url != null) {
-                        Utils.Navigate(url);
+                        GuiUtils.Navigate(url);
                     } else {
                         JMeterUtils.reportErrorToUser("Test is not selected. Nothing to open.");
                     }
@@ -146,7 +145,7 @@ public class TestPanel {
             helpButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    Utils.Navigate(Constants.HELP_URL);
+                    GuiUtils.Navigate(Constants.HELP_URL);
                 }
             });
         } catch (NullPointerException npe) {
@@ -270,6 +269,7 @@ public class TestPanel {
                     fetchUserTestsAsync();
 
                 }
+
                 userKeyTextField.addFocusListener(new FocusListener() {
                     String oldVal = "";
 
@@ -415,10 +415,10 @@ public class TestPanel {
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
         HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
-        applyNotificationTo.put(TestListNotificationGui.TEST_ID_COMBOBOX, testIdComboBox);
-        applyNotificationTo.put(TestListNotificationGui.MAIN_PANEL, mainPanel);
-        applyNotificationTo.put(TestListNotificationGui.CLOUD_PANEL, cloudPanel);
-        ITestListReceivedNotification testListReceivedNotification = new TestListNotificationGui(applyNotificationTo);
+        applyNotificationTo.put(TestListNotification.TEST_ID_COMBOBOX, testIdComboBox);
+        applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
+        applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
+        ITestListReceivedNotification testListReceivedNotification = new TestListNotification(applyNotificationTo);
         BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
     }
 

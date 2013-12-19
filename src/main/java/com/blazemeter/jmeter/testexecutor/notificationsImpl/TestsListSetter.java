@@ -20,24 +20,26 @@ public class TestsListSetter implements Runnable {
     private JComboBox testIdComboBox;
     private CloudPanel cloudPanel;
     private JPanel mainPanel;
-    ArrayList<TestInfo> tests;
+    private ArrayList<TestInfo> tests;
+    private boolean silentMode;
 
     public TestsListSetter(JComboBox testIdComboBox,
                            CloudPanel cloudPanel,
                            JPanel mainPanel,
-                           ArrayList<TestInfo> tests) {
+                           ArrayList<TestInfo> tests, boolean silentMode) {
 
         this.testIdComboBox = testIdComboBox;
         this.cloudPanel = cloudPanel;
         this.mainPanel = mainPanel;
         this.tests = tests;
+        this.silentMode = silentMode;
+
     }
 
 
     @Override
     public void run() {
         testIdComboBox.removeAllItems();
-        testIdComboBox.setEnabled(true);
         if (tests != null) {
             testIdComboBox.removeAllItems();
             testIdComboBox.addItem(Constants.NEW);
@@ -93,11 +95,15 @@ public class TestsListSetter implements Runnable {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
-            BmTestManager.getInstance().setUserKeyValid(false);
-            cloudPanel.reset();
-            Utils.enableElements(cloudPanel, false);
-            testIdComboBox.setSelectedItem(Constants.EMPTY);
+            if (silentMode == false) {
+                JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
+                BmTestManager.getInstance().setUserKeyValid(false);
+                cloudPanel.reset();
+                Utils.enableElements(cloudPanel, false);
+                testIdComboBox.setSelectedItem(Constants.EMPTY);
+            } else {
+                BmLog.debug("Invalid userKey was found. Tests are not received from BM server");
+            }
         }
     }
 }
