@@ -432,9 +432,9 @@ public class TestPanel {
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
         HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
-        applyNotificationTo.put("testIdComboBox", testIdComboBox);
-        applyNotificationTo.put("mainPanel", mainPanel);
-        applyNotificationTo.put("cloudPanel", cloudPanel);
+        applyNotificationTo.put(TestListReceivedNotification.TEST_ID_COMBOBOX, testIdComboBox);
+        applyNotificationTo.put(TestListReceivedNotification.MAIN_PANEL, mainPanel);
+        applyNotificationTo.put(TestListReceivedNotification.CLOUD_PANEL, cloudPanel);
         ITestListReceivedNotification testListReceivedNotification = new TestListReceivedNotification(applyNotificationTo);
         BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
     }

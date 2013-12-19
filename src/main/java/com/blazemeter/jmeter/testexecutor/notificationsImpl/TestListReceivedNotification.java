@@ -21,15 +21,19 @@ import java.util.HashMap;
 public class TestListReceivedNotification implements ITestListReceivedNotification {
     private HashMap<String, Object> applyNotificationTo;
 
+    public static final String TEST_ID_COMBOBOX = "testIdComboBox";
+    public static final String MAIN_PANEL = "mainPanel";
+    public static final String CLOUD_PANEL = "cloudPanel";
+
     public TestListReceivedNotification(HashMap<String, Object> applyNotificationTo) {
         this.applyNotificationTo = applyNotificationTo;
     }
 
     @Override
     public void testReceived(ArrayList<TestInfo> tests) {
-        JComboBox testIdComboBox = (JComboBox) applyNotificationTo.get("testIdComboBox");
-        JPanel mainPanel = (JPanel) applyNotificationTo.get("mainPanel");
-        CloudPanel cloudPanel = (CloudPanel) applyNotificationTo.get("cloudPanel");
+        JComboBox testIdComboBox = (JComboBox) applyNotificationTo.get(TEST_ID_COMBOBOX);
+        JPanel mainPanel = (JPanel) applyNotificationTo.get(MAIN_PANEL);
+        CloudPanel cloudPanel = (CloudPanel) applyNotificationTo.get(CLOUD_PANEL);
         testIdComboBox.removeAllItems();
         testIdComboBox.setEnabled(true);
         if (tests != null) {
@@ -41,7 +45,6 @@ public class TestListReceivedNotification implements ITestListReceivedNotificati
             // create list of tests on server
             for (TestInfo ti : tests) {
                 GuiUtils.addTestId(testIdComboBox, ti, false);
-//                addTestId(ti, false);
                 testIdList.add(ti.getId());
             }
             String[] curTest = StringUtils.split(JMeterUtils.getPropDefault(Constants.CURRENT_TEST, ""), ";");
