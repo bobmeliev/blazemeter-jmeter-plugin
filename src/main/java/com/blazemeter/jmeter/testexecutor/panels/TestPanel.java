@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.testinfocontroller.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
@@ -7,13 +8,13 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListReceivedNotification;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.Constants;
+import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.engine.StandardJMeterEngine;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.gui.action.ActionNames;
@@ -28,7 +29,7 @@ import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -38,7 +39,7 @@ import java.util.Properties;
  * Time: 12:29
  */
 public class TestPanel {
-    private static TestPanel gui;
+    private static TestPanel testPanel;
 
     //Gui controls
     private JTextField userKeyTextField;
@@ -95,7 +96,7 @@ public class TestPanel {
                         JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
                         return;
                     }
-                    int numberOfUsers = cloudPanel.getNumberOfUsers();
+//                    int numberOfUsers = cloudPanel.getNumberOfUsers();
                     TestInfo ti = bmTestManager.createTest(userKey, testName);
                     ti.setLocation(cloudPanel.getServerLocation());
                     ti.setNumberOfUsers(50);
@@ -112,7 +113,8 @@ public class TestPanel {
                     ti.setJmeterProperties(jmeterProperties);
                     ti = bmTestManager.updateTestSettings(userKey, ti);
                     if (ti != null && ti.getStatus() != null) {
-                        addTestId(ti, true);
+                        GuiUtils.addTestId(testIdComboBox, ti, true);
+//                        addTestId(ti, true);
                         bmTestManager.setTestInfo(ti);
                     }
                     GuiPackage guiPackage = GuiPackage.getInstance();
@@ -429,74 +431,11 @@ public class TestPanel {
         testIdComboBox.removeAllItems();
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
-        ITestListReceivedNotification testListReceivedNotification = new ITestListReceivedNotification() {
-            @Override
-            public void testReceived(ArrayList<TestInfo> tests) {
-                testIdComboBox.removeAllItems();
-                testIdComboBox.setEnabled(true);
-                if (tests != null) {
-                    testIdComboBox.removeAllItems();
-                    testIdComboBox.addItem(Constants.NEW);
-                    testIdComboBox.setSelectedItem(Constants.NEW);
-                    BmTestManager.getInstance().setUserKeyValid(true);
-                    java.util.List<String> testIdList = new ArrayList<String>();
-                    // create list of tests on server
-                    for (TestInfo ti : tests) {
-                        addTestId(ti, false);
-                        testIdList.add(ti.getId());
-                    }
-                    String[] curTest = StringUtils.split(JMeterUtils.getPropDefault(Constants.CURRENT_TEST, ""), ";");
-                    String curTestId = null;
-                    String curTestName = null;
-                    try {
-                        if (curTest.length > 0) {
-                            curTestId = curTest[0];
-                            curTestName = curTest[1];
-
-                        }
-
-                    } catch (ArrayIndexOutOfBoundsException iobe) {
-                        BmLog.error("Current test property was not applied to screen: " + iobe);
-                    }
-
-                    boolean exists = false;
-
-                    if (curTestId != null) {
-                        for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                            Object obj = testIdComboBox.getItemAt(index);
-                            if (obj instanceof TestInfo & obj != null) {
-                                TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                                exists = curTestId.equals(ti.getId());
-                            }
-                        }
-                    }
-                    //add current test to testIdComboBox if it is present in tests from server
-                    if (!exists & testIdList.contains(curTestId)) {
-                        testIdComboBox.addItem(curTestId + " - " + curTestName);
-                    }
-
-                    // select current test(which was previously selected in testIdComboBox)
-                    if (curTest.length != 0) {
-                        for (TestInfo ti : tests) {
-                            if (ti.getId().equals(curTestId)) {
-                                testIdComboBox.setSelectedItem(ti);
-                            }
-                        }
-                        if ((!testIdList.isEmpty() & !curTestId.isEmpty()) && !testIdList.contains(curTestId)) {
-                            JMeterUtils.reportErrorToUser("Test=" + curTestId + " was not found on server. Select test from list."
-                                    , "Test was not found on server");
-                            JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
-                    BmTestManager.getInstance().setUserKeyValid(false);
-                    cloudPanel.reset();
-                    Utils.enableElements(cloudPanel, false);
-                    testIdComboBox.setSelectedItem(Constants.EMPTY);
-                }
-            }
-        };
+        HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
+        applyNotificationTo.put("testIdComboBox", testIdComboBox);
+        applyNotificationTo.put("mainPanel", mainPanel);
+        applyNotificationTo.put("cloudPanel", cloudPanel);
+        ITestListReceivedNotification testListReceivedNotification = new TestListReceivedNotification(applyNotificationTo);
         BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
     }
 
@@ -510,13 +449,6 @@ public class TestPanel {
 
     public String getUserKey() {
         return userKeyTextField.getText();
-    }
-
-    public void addTestId(Object test, boolean selected) {
-        testIdComboBox.addItem(test);
-        if (selected) {
-            testIdComboBox.setSelectedItem(test);
-        }
     }
 
 
@@ -568,10 +500,10 @@ public class TestPanel {
     }
 
     public static TestPanel getTestPanel() {
-        if (gui == null) {
-            gui = new TestPanel();
+        if (testPanel == null) {
+            testPanel = new TestPanel();
         }
-        return gui;
+        return testPanel;
     }
 
     public JPanel getjMeterPropertyPanel() {

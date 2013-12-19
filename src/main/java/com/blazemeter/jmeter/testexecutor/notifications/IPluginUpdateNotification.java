@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.notifications;
 
-import com.blazemeter.jmeter.utils.PluginUpdate;
+import com.blazemeter.jmeter.entities.PluginUpdate;
 
 /**
  * Created with IntelliJ IDEA.

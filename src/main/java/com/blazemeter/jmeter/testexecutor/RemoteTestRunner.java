@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 //~--- non-JDK imports --------------------------------------------------------
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.testinfocontroller.TestInfoController;
 import com.blazemeter.jmeter.entities.Overrides;
@@ -13,7 +14,6 @@ import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotificat
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.engine.StandardJMeterEngine;

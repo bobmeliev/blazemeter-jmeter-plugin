@@ -1,11 +1,11 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
+import com.blazemeter.jmeter.entities.PluginUpdate;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
-import com.blazemeter.jmeter.utils.Constants;
-import com.blazemeter.jmeter.utils.PluginUpdate;
 import com.blazemeter.jmeter.utils.Utils;
 
 import javax.swing.*;

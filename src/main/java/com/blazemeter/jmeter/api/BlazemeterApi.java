@@ -1,11 +1,11 @@
 package com.blazemeter.jmeter.api;
 
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
-import com.blazemeter.jmeter.entities.UserInfo;
+import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
-import com.blazemeter.jmeter.utils.*;
+import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Utils;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpResponse;

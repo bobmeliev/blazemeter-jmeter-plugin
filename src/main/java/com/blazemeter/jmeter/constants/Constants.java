@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils;
+package com.blazemeter.jmeter.constants;
 
 /**
  * Created with IntelliJ IDEA.

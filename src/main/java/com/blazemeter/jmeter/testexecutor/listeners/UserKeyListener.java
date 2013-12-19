@@ -1,7 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.utils.Constants;
 
 import javax.swing.*;
 import javax.swing.border.Border;

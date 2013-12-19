@@ -3,11 +3,11 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.Constants;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.samplers.SampleResult;
