@@ -70,17 +70,6 @@ public class BmTestManager {
         this.testInfo = new TestInfo();
         rpc = BlazemeterApi.getInstance();
         this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
-        this.testUserKeyNotificationListeners.add(new ITestUserKeyNotification() {
-            @Override
-            public void onTestUserKeyChanged(String userKey) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getUserInfo(true);
-                    }
-                }).start();
-            }
-        });
     }
 
     public boolean isUserKeyFromProp() {

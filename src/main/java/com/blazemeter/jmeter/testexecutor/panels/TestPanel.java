@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
+import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
 import com.blazemeter.jmeter.utils.BmLog;
@@ -69,7 +70,7 @@ public class TestPanel {
             reloadButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    fetchUserTestsAsync();
+                    getUserTests();
                 }
             });
             signUpButton.addActionListener(new ActionListener() {
@@ -251,7 +252,7 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        fetchUserTestsAsync();
+                        getUserTests();
 
                     }
                 }).start();
@@ -266,10 +267,10 @@ public class TestPanel {
                 if (!userKey.isEmpty()) {
                     signUpButton.setVisible(false);
                     userKeyTextField.setText(userKey);
-                    fetchUserTestsAsync();
+                    getUserTests();
 
                 }
-
+                userKeyTextField.getDocument().addDocumentListener(new UserKeyListener(userKeyTextField));
                 userKeyTextField.addFocusListener(new FocusListener() {
                     String oldVal = "";
 
@@ -285,7 +286,7 @@ public class TestPanel {
                             BmTestManager bmTestManager = BmTestManager.getInstance();
                             bmTestManager.setUserKey(newVal);
                             if (!newVal.isEmpty()) {
-                                fetchUserTestsAsync();
+                                getUserTests();
                                 signUpButton.setVisible(false);
                             }
                         }
@@ -404,7 +405,7 @@ public class TestPanel {
     }
 
 
-    private void fetchUserTestsAsync() {
+    private void getUserTests() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         String userKey = bmTestManager.getUserKey();
         if (userKey == null || userKey.isEmpty()) {
