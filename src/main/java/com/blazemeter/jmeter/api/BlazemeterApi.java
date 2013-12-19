@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.api;
 
+import com.blazemeter.jmeter.api.checkers.TestsChecker;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
@@ -181,7 +182,7 @@ public class BlazemeterApi {
     }
 
 
-    public synchronized void getTestsAsync(String userKey, ITestListReceivedNotification notifier) {
+    public synchronized void getTests(String userKey, ITestListReceivedNotification notifier) {
         TestsChecker testsChecker = new TestsChecker(userKey, notifier);
         new Thread(testsChecker).start();
     }

@@ -1,5 +1,6 @@
-package com.blazemeter.jmeter.api;
+package com.blazemeter.jmeter.api.checkers;
 
+import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 

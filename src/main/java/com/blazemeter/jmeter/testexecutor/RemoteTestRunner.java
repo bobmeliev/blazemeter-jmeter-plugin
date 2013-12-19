@@ -4,7 +4,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
-import com.blazemeter.jmeter.controllers.testinfocontroller.TestInfoController;
+import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;

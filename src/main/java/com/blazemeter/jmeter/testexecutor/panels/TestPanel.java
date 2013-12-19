@@ -2,13 +2,13 @@ package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
-import com.blazemeter.jmeter.controllers.testinfocontroller.TestInfoController;
+import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListReceivedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotificationGui;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
@@ -432,10 +432,10 @@ public class TestPanel {
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
         HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
-        applyNotificationTo.put(TestListReceivedNotification.TEST_ID_COMBOBOX, testIdComboBox);
-        applyNotificationTo.put(TestListReceivedNotification.MAIN_PANEL, mainPanel);
-        applyNotificationTo.put(TestListReceivedNotification.CLOUD_PANEL, cloudPanel);
-        ITestListReceivedNotification testListReceivedNotification = new TestListReceivedNotification(applyNotificationTo);
+        applyNotificationTo.put(TestListNotificationGui.TEST_ID_COMBOBOX, testIdComboBox);
+        applyNotificationTo.put(TestListNotificationGui.MAIN_PANEL, mainPanel);
+        applyNotificationTo.put(TestListNotificationGui.CLOUD_PANEL, cloudPanel);
+        ITestListReceivedNotification testListReceivedNotification = new TestListNotificationGui(applyNotificationTo);
         BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
     }
 

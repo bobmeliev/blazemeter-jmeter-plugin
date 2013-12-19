@@ -2,7 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.constants.Constants;
-import com.blazemeter.jmeter.controllers.testinfocontroller.TestInfoController;
+import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
@@ -422,6 +422,6 @@ public class BmTestManager {
     }
 
     public void getTestsAsync(String userKey, ITestListReceivedNotification notification) {
-        rpc.getTestsAsync(userKey, notification);
+        rpc.getTests(userKey, notification);
     }
 }
