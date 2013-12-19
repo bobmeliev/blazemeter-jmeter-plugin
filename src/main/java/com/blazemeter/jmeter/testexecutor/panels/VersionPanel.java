@@ -2,11 +2,16 @@ package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.utils.Constants;
+import com.blazemeter.jmeter.utils.PluginUpdate;
 import com.blazemeter.jmeter.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +20,7 @@ import java.awt.*;
  * Time: 12:42 PM
  * To change this template use File | Settings | File Templates.
  */
-public class VersionPanel extends JPanel {
+public class VersionPanel extends JPanel implements IPluginUpdateNotification {
 
 
     private static VersionPanel versionPanel;
@@ -131,6 +136,10 @@ public class VersionPanel extends JPanel {
             }
         }
         );
+
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.pluginUpdateNotificationListeners.add(this);
+
     }
 
     public static VersionPanel getVersionPanel() {
@@ -143,4 +152,63 @@ public class VersionPanel extends JPanel {
     public JPanel getPanelLink() {
         return panelLink;
     }
+
+    @Override
+    public void onPluginUpdate(final PluginUpdate update) {
+        if (update == null)
+            return;
+
+        versionPanel.removeAll();
+
+        JLabel newVersion = new JLabel(String.format("New version - %s, is available", update.getVersion().toString()));
+        newVersion.setForeground(Color.WHITE);
+        versionPanel.add(newVersion);
+        JLabel moreInfo = new JLabel();
+        moreInfo.setText("<html><u>More info</u></html>");
+        moreInfo.setToolTipText("Click here to see changes in new version");
+        moreInfo.setForeground(Color.WHITE);
+        moreInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        moreInfo.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null,
+                        "Main changes are:\n" +
+                                update.getChanges() +
+                                "\n\nFull list of changes can be viewed on our site,\nDo you want to see full list of changes?",
+                        "Changes list",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null, null, null)) {
+                    Utils.Navigate(update.getMoreInfoUrl());
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        versionPanel.add(moreInfo);
+        JLabel download = new JLabel("<html><u>Download</u></html>");
+        download.setForeground(Color.WHITE);
+        download.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        download.setToolTipText("Click here to download new version");
+        Utils.PluginInstaller pluginInstaller = new Utils.PluginInstaller();
+        download.addMouseListener(pluginInstaller);
+        versionPanel.add(download);
+
+
+    }
+
 }

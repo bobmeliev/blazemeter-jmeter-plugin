@@ -567,7 +567,7 @@ public class TestPanel {
         reloadButton.setEnabled(!isRunning);
     }
 
-    public static TestPanel getGui() {
+    public static TestPanel getTestPanel() {
         if (gui == null) {
             gui = new TestPanel();
         }

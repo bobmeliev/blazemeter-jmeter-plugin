@@ -4,12 +4,10 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Constants;
-import com.blazemeter.jmeter.utils.PluginUpdate;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.samplers.SampleResult;
@@ -22,12 +20,10 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 
-public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener, IPluginUpdateNotification {
-    private static TestPanel gui;
+public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener {
+    private static TestPanel testPanel;
     private static JPanel versionPanel;
 
 
@@ -40,7 +36,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         super();
         Utils.checkJMeterVersion();
         try {
-            gui = TestPanel.getGui();
+            testPanel = TestPanel.getTestPanel();
         } catch (Exception e) {
             BmLog.error("Failed to construct RemoteTestRunnerGui instance:" + e);
         }
@@ -97,7 +93,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
         boolean isLocalRunMode = remoteTestRunner.getIsLocalRunMode();
         bmTestManager.setIsLocalRunMode(isLocalRunMode);
-        gui.init();
+        testPanel.init();
 
         bmTestManager.getInstance().checkForUpdates();
     }
@@ -140,17 +136,13 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         setBorder(makeBorder());
         Box box = Box.createVerticalBox();
         box.add(getTopPanel(), BorderLayout.NORTH);
-        box.add(gui.getMainPanel(), BorderLayout.NORTH);
+        box.add(testPanel.getMainPanel(), BorderLayout.NORTH);
         add(box, BorderLayout.NORTH);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_RUNNERGUI_INITIALIZED, false)) {
                     JMeterUtils.setProperty(Constants.BLAZEMETER_RUNNERGUI_INITIALIZED, "true");
-
-                    BmTestManager bmTestManager = BmTestManager.getInstance();
-                    bmTestManager.pluginUpdateNotificationListeners.add(RemoteTestRunnerGui.this);
-
                 }
             }
         }).start();
@@ -187,64 +179,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    }
-
-    @Override
-    public void onPluginUpdate(final PluginUpdate update) {
-        if (update == null)
-            return;
-
-        versionPanel.removeAll();
-
-        JLabel newVersion = new JLabel(String.format("New version - %s, is available", update.getVersion().toString()));
-        newVersion.setForeground(Color.WHITE);
-        versionPanel.add(newVersion);
-        JLabel moreInfo = new JLabel();
-        moreInfo.setText("<html><u>More info</u></html>");
-        moreInfo.setToolTipText("Click here to see changes in new version");
-        moreInfo.setForeground(Color.WHITE);
-        moreInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        moreInfo.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null,
-                        "Main changes are:\n" +
-                                update.getChanges() +
-                                "\n\nFull list of changes can be viewed on our site,\nDo you want to see full list of changes?",
-                        "Changes list",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE,
-                        null, null, null)) {
-                    Utils.Navigate(update.getMoreInfoUrl());
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        });
-        versionPanel.add(moreInfo);
-        JLabel download = new JLabel("<html><u>Download</u></html>");
-        download.setForeground(Color.WHITE);
-        download.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        download.setToolTipText("Click here to download new version");
-        Utils.PluginInstaller pluginInstaller = new Utils.PluginInstaller();
-        download.addMouseListener(pluginInstaller);
-        versionPanel.add(download);
-
-
     }
 
     public void add(SampleResult sample) {

@@ -162,7 +162,7 @@ public class CloudPanel extends JPanel {
                         JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
                         return;
                     }
-                    dialogButton = JOptionPane.showConfirmDialog(TestPanel.getGui().getMainPanel(), "Are you sure that you want to start the test?",
+                    dialogButton = JOptionPane.showConfirmDialog(TestPanel.getTestPanel().getMainPanel(), "Are you sure that you want to start the test?",
                             "Start test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
@@ -173,7 +173,7 @@ public class CloudPanel extends JPanel {
 
 
                 } else {
-                    dialogButton = JOptionPane.showConfirmDialog(TestPanel.getGui().getMainPanel(), "Are you sure that you want to stop the test? ",
+                    dialogButton = JOptionPane.showConfirmDialog(TestPanel.getTestPanel().getMainPanel(), "Are you sure that you want to stop the test? ",
                             "Stop test?",
                             JOptionPane.YES_NO_OPTION);
                     if (dialogButton == JOptionPane.YES_OPTION) {
@@ -439,7 +439,7 @@ public class CloudPanel extends JPanel {
             /*
             BPC-207
              */
-            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) TestPanel.getGui().getjMeterPropertyPanel();
+            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) TestPanel.getTestPanel().getjMeterPropertyPanel();
             Properties jmeterProperties = propertyPanel.getData();
             testInfo.setJmeterProperties(jmeterProperties);
             /*
