@@ -82,6 +82,5 @@ public class UserKeyListener implements DocumentListener {
 
             }
         });
-
     }
 }
