@@ -8,7 +8,6 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.dialogs.OperationProgressDialog;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
@@ -32,7 +31,10 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -363,7 +365,7 @@ public class CloudPanel extends JPanel {
     Method for starting test on BM server
     */
     private void startInTheCloud() {
-        SwingUtilities.invokeLater(new Runnable() {
+/*        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
@@ -371,7 +373,7 @@ public class CloudPanel extends JPanel {
                 operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
 
             }
-        });
+        });*/
 
         new SwingWorker<Void, Void>() {
 

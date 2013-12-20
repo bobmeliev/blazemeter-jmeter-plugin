@@ -41,7 +41,8 @@ public class OperationProgressDialog extends JDialog implements WindowListener {
         BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
-                if (testInfo.getStatus().equals(OperationProgressDialog.this.event)) {
+                TestStatus testStatus = testInfo.getStatus();
+                if (testStatus != null && testStatus.equals(OperationProgressDialog.this.event)) {
                     OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
                     BmTestManager.getInstance().testInfoNotificationListeners.remove(this);
                 }
