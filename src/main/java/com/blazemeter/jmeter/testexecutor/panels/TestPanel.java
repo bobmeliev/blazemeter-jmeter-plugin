@@ -152,7 +152,6 @@ public class TestPanel {
         } catch (NullPointerException npe) {
             BmLog.error("Failed to construct TestPanel instance: " + npe);
         }
-
     }
 
 
@@ -273,7 +272,6 @@ public class TestPanel {
                 UserKeyListener userKeyListener = new UserKeyListener(userKeyTextField,
                         signUpButton, testIdComboBox, mainPanel, cloudPanel);
                 userKeyTextField.getDocument().addDocumentListener(userKeyListener);
-                userKeyTextField.addFocusListener(userKeyListener);
 
             }
             //Here should be all changes of TestInfo processed
@@ -386,25 +384,6 @@ public class TestPanel {
 
         }
     }
-
-
-    /*private void getUserTests() {
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        String userKey = bmTestManager.getUserKey();
-        if (userKey == null || userKey.isEmpty()) {
-            JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        testIdComboBox.removeAllItems();
-        testIdComboBox.addItem("LOADING...");
-        testIdComboBox.setEnabled(false);
-        HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
-        applyNotificationTo.put(TestListNotification.TEST_ID_COMBOBOX, testIdComboBox);
-        applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
-        applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
-        ITestListReceivedNotification testListReceivedNotification = new TestListNotification(applyNotificationTo);
-        BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
-    }*/
 
     public void setUserKey(String key) {
         if (key.isEmpty()) {

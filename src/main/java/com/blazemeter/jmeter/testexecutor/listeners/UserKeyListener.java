@@ -7,8 +7,6 @@ import com.blazemeter.jmeter.utils.GuiUtils;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +15,7 @@ import java.awt.event.FocusListener;
  * Time: 12:33 PM
  * To change this template use File | Settings | File Templates.
  */
-public class UserKeyListener implements DocumentListener, FocusListener {
-    private String oldVal = "";
+public class UserKeyListener implements DocumentListener {
     private JTextField userKeyTextField;
     private JButton signUpButton;
     private JComboBox testIdComboBox;
@@ -71,31 +68,20 @@ public class UserKeyListener implements DocumentListener, FocusListener {
         process();
     }
 
-
-    @Override
-    public void focusGained(FocusEvent e) {
-        oldVal = userKeyTextField.getText();
-    }
-
-    @Override
-    public void focusLost(FocusEvent e) {
-
-    }
-
     private void process() {
-        String newVal = userKeyTextField.getText();
-        if (!newVal.equals(oldVal)) {
-            BmTestManager bmTestManager = BmTestManager.getInstance();
-            if (!newVal.isEmpty()) {
-
-                if (!GuiUtils.validUserKeyField(userKeyTextField)) {
-                    return;
-                }
-                GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
-                signUpButton.setVisible(false);
-                bmTestManager.setUserKey(newVal);
+        if (!GuiUtils.validUserKeyField(userKeyTextField)) {
+            return;
+        }
+        GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+        signUpButton.setVisible(false);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                BmTestManager bmTestManager = BmTestManager.getInstance();
+                bmTestManager.setUserKey(userKeyTextField.getText());
 
             }
-        }
+        });
+
     }
 }
