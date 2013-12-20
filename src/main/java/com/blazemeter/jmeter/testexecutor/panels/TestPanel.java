@@ -9,10 +9,8 @@ import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
 import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
-import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.*;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
@@ -34,6 +32,7 @@ import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -232,8 +231,20 @@ public class TestPanel {
             BmTestManager.getInstance().testUserKeyNotificationListeners.add(new ITestUserKeyNotification() {
                 @Override
                 public void onTestUserKeyChanged(String userKey) {
-                    setUserKey(userKey);
-                    signUpButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & BmTestManager.getInstance().isUserKeyValid()));
+                    boolean isUserKeyValid = BmTestManager.getInstance().isUserKeyValid();
+                    if (signUpButton.isVisible()) {
+                        signUpButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & isUserKeyValid));
+                    }
+                    if (isUserKeyValid) {
+                        HashMap<String, Object> applyNotificationTo = new HashMap<String, Object>();
+                        applyNotificationTo.put(TestListNotification.TEST_ID_COMBOBOX, testIdComboBox);
+                        applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
+                        applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
+                        ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo);
+//                        TestListController.start(userKey,testListNotification);
+                    } else {
+//                        TestListController.stop();
+                    }
                 }
             });
 
@@ -373,7 +384,6 @@ public class TestPanel {
                             break;
                         case NOT_AVAILABLE:
                             enableMainPanelControls(false);
-                            Utils.enableElements(jMeterPropertyPanel, false);
                             Utils.enableElements(jMeterPropertyPanel, false);
                             TestInfoController.stop();
                             break;

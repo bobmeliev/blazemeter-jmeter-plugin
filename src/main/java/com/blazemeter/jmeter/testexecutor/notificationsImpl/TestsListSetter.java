@@ -111,4 +111,3 @@ public class TestsListSetter implements Runnable {
         }
     }
 }
-
