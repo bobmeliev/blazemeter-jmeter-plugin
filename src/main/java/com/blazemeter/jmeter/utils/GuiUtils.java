@@ -1,11 +1,13 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -61,4 +63,17 @@ public class GuiUtils {
     }
 
 
+    public static boolean validUserKeyField(JTextField userKeyTextField) {
+        boolean valid = false;
+        String userKey = userKeyTextField.getText();
+        if (userKey.matches(Constants.USERKEY_REGEX)) {
+            Border greyBorder = BorderFactory.createLineBorder(Color.GRAY);
+            userKeyTextField.setBorder(greyBorder);
+            valid = true;
+        } else {
+            Border redBorder = BorderFactory.createLineBorder(Color.RED);
+            userKeyTextField.setBorder(redBorder);
+        }
+        return valid;
+    }
 }

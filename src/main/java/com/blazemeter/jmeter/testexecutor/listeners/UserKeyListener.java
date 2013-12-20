@@ -1,12 +1,10 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
-import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.utils.GuiUtils;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,7 +28,7 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void insertUpdate(DocumentEvent e) {
-        validateTextField(userKeyTextField);
+        GuiUtils.validUserKeyField(userKeyTextField);
     }
 
 
@@ -43,7 +41,7 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void removeUpdate(DocumentEvent e) {
-        validateTextField(userKeyTextField);
+        GuiUtils.validUserKeyField(userKeyTextField);
     }
 
     /**
@@ -53,19 +51,8 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void changedUpdate(DocumentEvent e) {
-        validateTextField(userKeyTextField);
+        GuiUtils.validUserKeyField(userKeyTextField);
     }
 
 
-    private void validateTextField(JTextField userKeyTextField) {
-        String userKey = userKeyTextField.getText();
-        if (userKey.matches(Constants.USERKEY_REGEX)) {
-            Border greyBorder = BorderFactory.createLineBorder(Color.GRAY);
-            userKeyTextField.setBorder(greyBorder);
-
-        } else {
-            Border redBorder = BorderFactory.createLineBorder(Color.RED);
-            userKeyTextField.setBorder(redBorder);
-        }
-    }
 }
