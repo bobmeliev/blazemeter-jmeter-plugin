@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor.panels;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.controllers.TestListController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
@@ -241,7 +242,7 @@ public class TestPanel {
                         applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
                         applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
                         ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo);
-//                        TestListController.start(userKey,testListNotification);
+                        TestListController.start(userKey, testListNotification);
                     } else {
 //                        TestListController.stop();
                     }

@@ -200,7 +200,7 @@ public class BmTestManager {
     }
 
     public void setUserKey(String userKey) {
-        if (this.userKey == null || !this.userKey.equals(userKey)) {
+        if (this.userKey == null | !this.userKey.equals(userKey)) {
             this.userKey = userKey;
             NotifyUserKeyChanged();
         }
