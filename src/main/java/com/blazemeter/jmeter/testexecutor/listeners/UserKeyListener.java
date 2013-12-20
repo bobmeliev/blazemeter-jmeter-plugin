@@ -1,10 +1,14 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,11 +17,24 @@ import javax.swing.event.DocumentListener;
  * Time: 12:33 PM
  * To change this template use File | Settings | File Templates.
  */
-public class UserKeyListener implements DocumentListener {
+public class UserKeyListener implements DocumentListener, FocusListener {
+    private String oldVal = "";
     private JTextField userKeyTextField;
+    private JButton signUpButton;
+    private JComboBox testIdComboBox;
+    private JPanel mainPanel;
+    private CloudPanel cloudPanel;
 
-    public UserKeyListener(JTextField userKeyTextField) {
+    public UserKeyListener(JTextField userKeyTextField,
+                           JButton signUpButton,
+                           JComboBox testIdComboBox,
+                           JPanel mainPanel,
+                           CloudPanel cloudPanel) {
         this.userKeyTextField = userKeyTextField;
+        this.signUpButton = signUpButton;
+        this.testIdComboBox = testIdComboBox;
+        this.mainPanel = mainPanel;
+        this.cloudPanel = cloudPanel;
     }
 
     /**
@@ -28,7 +45,7 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void insertUpdate(DocumentEvent e) {
-        GuiUtils.validUserKeyField(userKeyTextField);
+        process();
     }
 
 
@@ -41,7 +58,7 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void removeUpdate(DocumentEvent e) {
-        GuiUtils.validUserKeyField(userKeyTextField);
+        process();
     }
 
     /**
@@ -51,8 +68,34 @@ public class UserKeyListener implements DocumentListener {
      */
     @Override
     public void changedUpdate(DocumentEvent e) {
-        GuiUtils.validUserKeyField(userKeyTextField);
+        process();
     }
 
 
+    @Override
+    public void focusGained(FocusEvent e) {
+        oldVal = userKeyTextField.getText();
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+
+    }
+
+    private void process() {
+        String newVal = userKeyTextField.getText();
+        if (!newVal.equals(oldVal)) {
+            BmTestManager bmTestManager = BmTestManager.getInstance();
+            if (!newVal.isEmpty()) {
+
+                if (!GuiUtils.validUserKeyField(userKeyTextField)) {
+                    return;
+                }
+                GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+                signUpButton.setVisible(false);
+                bmTestManager.setUserKey(newVal);
+
+            }
+        }
+    }
 }

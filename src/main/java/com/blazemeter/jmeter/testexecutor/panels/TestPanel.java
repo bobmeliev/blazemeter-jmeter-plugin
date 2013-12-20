@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
+import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
@@ -29,8 +30,6 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -271,33 +270,11 @@ public class TestPanel {
                     userKeyTextField.setText(userKey);
                     GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
                 }
-//                userKeyTextField.getDocument().addDocumentListener(new UserKeyListener(userKeyTextField));
-                userKeyTextField.addFocusListener(new FocusListener() {
-                    String oldVal = "";
+                UserKeyListener userKeyListener = new UserKeyListener(userKeyTextField,
+                        signUpButton, testIdComboBox, mainPanel, cloudPanel);
+                userKeyTextField.getDocument().addDocumentListener(userKeyListener);
+                userKeyTextField.addFocusListener(userKeyListener);
 
-                    @Override
-                    public void focusGained(FocusEvent focusEvent) {
-                        oldVal = userKeyTextField.getText();
-                    }
-
-                    @Override
-                    public void focusLost(FocusEvent focusEvent) {
-                        String newVal = userKeyTextField.getText();
-                        if (!newVal.equals(oldVal)) {
-                            BmTestManager bmTestManager = BmTestManager.getInstance();
-                            if (!newVal.isEmpty()) {
-
-                                if (!GuiUtils.validUserKeyField(userKeyTextField)) {
-                                    return;
-                                }
-                                GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
-                                signUpButton.setVisible(false);
-                                bmTestManager.setUserKey(newVal);
-
-                            }
-                        }
-                    }
-                });
             }
             //Here should be all changes of TestInfo processed
             bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
