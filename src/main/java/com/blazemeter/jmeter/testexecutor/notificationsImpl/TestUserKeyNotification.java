@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.notificationsImpl;
 
 import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.controllers.TestListController;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
@@ -47,6 +48,7 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
             TestListController.start(userKey, testListNotification);
         } else {
             TestListController.stop();
+            TestInfoController.stop();
         }
     }
 }
