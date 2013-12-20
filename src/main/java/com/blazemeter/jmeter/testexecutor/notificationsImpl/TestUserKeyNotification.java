@@ -46,7 +46,7 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
             ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo);
             TestListController.start(userKey, testListNotification);
         } else {
-//                        TestListController.stop();
+            TestListController.stop();
         }
     }
 }

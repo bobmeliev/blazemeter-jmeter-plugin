@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.CreateNewButtonListener;
+import com.blazemeter.jmeter.testexecutor.listeners.GoToTestButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
 import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
@@ -94,23 +95,10 @@ public class TestPanel {
 
             createNewButton.addActionListener(createNewButtonListener);
 
-            goToTestPageButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    String url = BmTestManager.getInstance().getTestUrl();
-                    if (url != null) {
-                        GuiUtils.Navigate(url);
-                    } else {
-                        JMeterUtils.reportErrorToUser("Test is not selected. Nothing to open.");
-                    }
-                }
-            });
-            helpButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent actionEvent) {
-                    GuiUtils.Navigate(Constants.HELP_URL);
-                }
-            });
+            GoToTestButtonListener goToTestButtonListener = new GoToTestButtonListener();
+
+            goToTestPageButton.addActionListener(goToTestButtonListener);
+
         } catch (NullPointerException npe) {
             BmLog.error("Failed to construct TestPanel instance: " + npe);
         }
