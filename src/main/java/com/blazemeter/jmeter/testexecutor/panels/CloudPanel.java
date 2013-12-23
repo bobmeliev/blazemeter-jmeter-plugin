@@ -12,15 +12,12 @@ import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestInfoNotificationCP;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.apache.jmeter.engine.StandardJMeterEngine;
-import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.gui.action.ActionNames;
-import org.apache.jmeter.gui.action.ActionRouter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,10 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.rmi.ConnectException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Properties;
@@ -238,72 +231,8 @@ public class CloudPanel extends JPanel {
 
         //Here should be all changes of TestInfo processed
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
-            @Override
-            public void onTestInfoChanged(TestInfo testInfo) {
-                if (testInfo == null) {
-                    return;
-                }
-
-                if (testInfo.getStatus() == TestStatus.Running) {
-                    Utils.enableElements(CloudPanel.this, false);
-                    runInTheCloud.setEnabled(true);
-                }
-
-                if ((testInfo.getStatus() == TestStatus.NotRunning)) {
-                    boolean isTestIdEmpty = testInfo.getId().isEmpty();
-                    Utils.enableElements(CloudPanel.this, !isTestIdEmpty);
-                    runInTheCloud.setEnabled(!isTestIdEmpty);
-
-
-                    if (BmTestManager.getInstance().getIsLocalRunMode() & BmTestManager.isTestRunning()) {
-                        try {
-                            String[] jmeterEngines = LocateRegistry.getRegistry(Registry.REGISTRY_PORT).list();
-                            if (jmeterEngines[0].equals("JMeterEngine")) {
-                                JToolBar jToolBar = GuiPackage.getInstance().getMainToolbar();
-                                Component[] components = jToolBar.getComponents();
-                                ActionRouter.getInstance().actionPerformed(new ActionEvent(components[0], ActionEvent.ACTION_PERFORMED, ActionNames.REMOTE_STOP_ALL));
-                            }
-
-                        } catch (ConnectException ce) {
-                            BmLog.error("Failed to connect to RMI registry: jmeter is running in non-distributed mode");
-                            StandardJMeterEngine.stopEngine();
-                        } catch (RemoteException re) {
-                            BmLog.error("Failed to get list of remote objects from RMI registry: jmeter is running in non-distributed mode");
-                        }
-                    }
-                }
-
-                setTestInfo(testInfo);
-
-                if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
-                    String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
-                    String currentTestId = null;
-                    if (!currentTest.isEmpty()) {
-                        currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
-                    } else {
-                        currentTestId = "";
-                    }
-                    if (testInfo != null && !currentTestId.equals(testInfo.getId())) {
-                        JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
-                        TestInfoController.stop();
-
-                    } else if (currentTestId.equals(testInfo.getId())) {
-                        TestInfoController.start(testInfo.getId());
-
-                    } else {
-                        return;
-
-                    }
-                    TestInfoController.start(testInfo.getId());
-                }
-
-                if (testInfo.getName().equals(Constants.NEW) || (testInfo.getName().isEmpty())) {
-                    TestInfoController.stop();
-                }
-
-            }
-        });
+        ITestInfoNotification testInfoNotification = new TestInfoNotificationCP(this);
+        bmTestManager.testInfoNotificationListeners.add(testInfoNotification);
 
 
         //Processing serverStatusChangedNotification
@@ -507,9 +436,13 @@ public class CloudPanel extends JPanel {
         return (String) locationComboBox.getSelectedItem();
     }
 
+    public JButton getRunInTheCloud() {
+        return runInTheCloud;
+    }
+
     /*
-    @return current number of users
-     */
+        @return current number of users
+         */
     public int getNumberOfUsers() {
         return numberOfUsersSlider.getValue();
     }

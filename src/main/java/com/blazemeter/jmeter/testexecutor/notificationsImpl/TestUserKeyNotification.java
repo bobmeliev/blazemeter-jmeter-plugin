@@ -35,7 +35,8 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
 
     @Override
     public void onTestUserKeyChanged(String userKey) {
-        boolean isUserKeyValid = BmTestManager.getInstance().isUserKeyValid();
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        boolean isUserKeyValid = bmTestManager.isUserKeyValid();
         if (signUpButton.isVisible()) {
             signUpButton.setEnabled(!(userKey.matches(Constants.USERKEY_REGEX) & isUserKeyValid));
         }
@@ -49,6 +50,8 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
         } else {
             TestListController.stop();
             TestInfoController.stop();
+            bmTestManager.setUserKeyValid(false);
+
         }
     }
 }

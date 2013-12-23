@@ -104,7 +104,7 @@ public class TestInfoNotificationTP implements ITestInfoNotification {
                 JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
                 TestInfoController.stop();
 
-            } else if (currentTestId.equals(testInfo.getId())) {
+            } else if (currentTestId.equals(testInfo.getId()) & BmTestManager.getInstance().isUserKeyValid()) {
                 TestInfoController.start(testInfo.getId());
 
             } else {
