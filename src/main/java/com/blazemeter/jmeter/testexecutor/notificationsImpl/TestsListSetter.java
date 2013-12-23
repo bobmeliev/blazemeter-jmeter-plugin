@@ -97,6 +97,7 @@ public class TestsListSetter implements Runnable {
                 }
             }
         } else {
+            BmTestManager.getInstance().setUserKeyValid(false);
             if (silentMode == false) {
                 JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 BmTestManager.getInstance().setUserKeyValid(false);

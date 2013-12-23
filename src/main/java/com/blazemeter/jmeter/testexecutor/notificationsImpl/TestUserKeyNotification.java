@@ -50,8 +50,6 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
         } else {
             TestListController.stop();
             TestInfoController.stop();
-            bmTestManager.setUserKeyValid(false);
-
         }
     }
 }
