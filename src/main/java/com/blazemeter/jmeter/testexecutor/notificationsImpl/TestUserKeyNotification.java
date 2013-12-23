@@ -46,7 +46,8 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
             applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
             applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
             ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo);
-            TestListController.start(userKey, testListNotification);
+            TestListController.setNotification(testListNotification);
+            TestListController.start(userKey);
         } else {
             TestListController.stop();
             TestInfoController.stop();

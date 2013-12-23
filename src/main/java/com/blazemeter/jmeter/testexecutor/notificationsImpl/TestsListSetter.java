@@ -47,7 +47,9 @@ public class TestsListSetter implements Runnable {
             testIdComboBox.removeAllItems();
             testIdComboBox.addItem(Constants.NEW);
             testIdComboBox.setSelectedItem(Constants.NEW);
-            BmTestManager.getInstance().setUserKeyValid(true);
+            BmTestManager bmTestManager = BmTestManager.getInstance();
+            bmTestManager.setUserKeyValid(true);
+            TestListController.start(bmTestManager.getUserKey());
             java.util.List<String> testIdList = new ArrayList<String>();
             // create list of tests on server
             for (TestInfo ti : tests) {

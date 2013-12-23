@@ -15,12 +15,16 @@ import java.util.concurrent.TimeUnit;
 public class TestListController {
     private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static ScheduledFuture<?> task;
+    private static ITestListReceivedNotification notification;
 
     private TestListController() {
     }
 
+    public static void setNotification(ITestListReceivedNotification notification) {
+        TestListController.notification = notification;
+    }
 
-    public static void start(String userKey, ITestListReceivedNotification notification) {
+    public static void start(String userKey) {
         if ((task == null || task.isDone()) & !userKey.isEmpty()) {
             final TestsChecker testsChecker = new TestsChecker(userKey, notification);
             task = scheduler.scheduleAtFixedRate(testsChecker, 30, 30, TimeUnit.SECONDS);

@@ -64,7 +64,7 @@ public class TestPanel {
             reloadButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+                    GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
 
                 }
             });
@@ -186,7 +186,7 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+                        GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
 
 
                     }
@@ -202,7 +202,7 @@ public class TestPanel {
                 if (!userKey.isEmpty()) {
                     signUpButton.setVisible(false);
                     userKeyTextField.setText(userKey);
-                    GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel);
+                    GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
                 }
                 UserKeyListener userKeyListener = new UserKeyListener(userKeyTextField,
                         signUpButton, testIdComboBox, mainPanel, cloudPanel);

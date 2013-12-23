@@ -44,13 +44,13 @@ public class GuiUtils {
         }
     }
 
-    public static void getUserTests(JComboBox testIdComboBox, JPanel mainPanel, CloudPanel cloudPanel) {
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        String userKey = bmTestManager.getUserKey();
+    public static void getUserTests(JComboBox testIdComboBox, JPanel mainPanel, CloudPanel cloudPanel, String userKey) {
         if (userKey == null || userKey.isEmpty()) {
             JOptionPane.showMessageDialog(mainPanel, "Please enter user key", "No user key", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        bmTestManager.setUserKey(userKey);
         testIdComboBox.removeAllItems();
         testIdComboBox.addItem("LOADING...");
         testIdComboBox.setEnabled(false);
