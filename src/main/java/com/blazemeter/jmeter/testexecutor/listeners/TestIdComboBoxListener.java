@@ -30,7 +30,7 @@ public class TestIdComboBoxListener implements ItemListener {
             Object selectedTest = testIdComboBox.getSelectedItem();
             if (selectedTest instanceof TestInfo) {
                 TestInfo testInfo = (TestInfo) selectedTest;
-                if (!testInfo.getName().equals(Constants.NEW) & !testInfo.getName().isEmpty()) {
+                if (!testInfo.getName().equals(Constants.NEW) & !testInfo.getName().isEmpty() & bmTestManager.isUserKeyValid()) {
                     bmTestManager.setTestInfo(testInfo);
                 }
             } else if (selectedTest.toString().equals(Constants.NEW)) {

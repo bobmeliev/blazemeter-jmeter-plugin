@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor.notificationsImpl;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.controllers.TestListController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
@@ -104,8 +105,9 @@ public class TestsListSetter implements Runnable {
                 cloudPanel.reset();
                 Utils.enableElements(cloudPanel, false);
                 testIdComboBox.setSelectedItem(Constants.EMPTY);
-                TestInfoController.stop();
                 TestPanel.getTestPanel().configureMainPanel(null);
+                TestInfoController.stop();
+                TestListController.stop();
             } else {
                 BmLog.debug("Invalid userKey was found. Tests are not received from BM server");
             }
