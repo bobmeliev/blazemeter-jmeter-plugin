@@ -2,13 +2,12 @@ package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
-import com.blazemeter.jmeter.controllers.TestInfoController;
-import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
+import com.blazemeter.jmeter.testexecutor.listeners.RunInTheCloudListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
@@ -20,7 +19,6 @@ import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +34,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Properties;
 
 /**
  * This is panel, which appear after switching JMeter BLazemeter Plugin to "Run in the Cloud" mode;
@@ -150,36 +147,8 @@ public class CloudPanel extends JPanel {
         Button for starting/stopping test in the cloud.
 
          */
-        runInTheCloud.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int dialogButton;
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                if ("start".equals(e.getActionCommand().toLowerCase())) {
-                    if (bmTestManager.getUserKey().isEmpty()) {
-                        JMeterUtils.reportErrorToUser("Please, set up user key.", "User key is not set.");
-                        return;
-                    }
-                    dialogButton = JOptionPane.showConfirmDialog(TestPanel.getTestPanel().getMainPanel(), "Are you sure that you want to start the test?",
-                            "Start test?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (dialogButton == JOptionPane.YES_OPTION) {
-                        startInTheCloud();
-
-
-                    }
-
-
-                } else {
-                    dialogButton = JOptionPane.showConfirmDialog(TestPanel.getTestPanel().getMainPanel(), "Are you sure that you want to stop the test? ",
-                            "Stop test?",
-                            JOptionPane.YES_NO_OPTION);
-                    if (dialogButton == JOptionPane.YES_OPTION) {
-                        BmTestManager.getInstance().stopTest();
-                    }
-                }
-            }
-        });
+        ActionListener runInTheCloudListener = new RunInTheCloudListener(this);
+        runInTheCloud.addActionListener(runInTheCloudListener);
 
         rampupSpinner.setModel(new SpinnerNumberModel(0, 0, 3600, 60));
         rampupSpinner.addChangeListener(new ChangeListener() {
@@ -278,88 +247,6 @@ public class CloudPanel extends JPanel {
     }
 
     /*
-    Method for starting test on BM server
-    */
-    private void startInTheCloud() {
-/*        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                OperationProgressDialog operationProgressDialog = new OperationProgressDialog("Please, wait...",
-                        "Operation will take a few seconds to execute. Your patience is appreciated.", TestStatus.Running);
-                operationProgressDialog.windowOpened(new WindowEvent(operationProgressDialog, WindowEvent.WINDOW_OPENED));
-
-            }
-        });*/
-
-        new SwingWorker<Void, Void>() {
-
-            @Override
-            protected Void doInBackground() throws Exception {
-
-                saveCloudTest();
-                BmTestManager bmTestManager = BmTestManager.getInstance();
-                TestInfoController.stop();
-                bmTestManager.runInTheCloud();
-                TestInfo testInfo = bmTestManager.getTestInfo();
-                if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
-                    String url = bmTestManager.getTestUrl();
-                    if (url != null)
-                        url = url.substring(0, url.length() - 5);
-                    GuiUtils.Navigate(url);
-                }
-                return null;
-            }
-        }.execute();
-    }
-
-    /*
-    Called before starting test.
-    This method updates test settings on BM server
-     */
-    private void saveCloudTest() {
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        int numberOfUsers = numberOfUsersSlider.getValue();
-
-        HashMap<String, String> enginesParams = Utils.countEngines(numberOfUsers);
-        int userPerEngine = Integer.valueOf(enginesParams.get(Constants.USERS_PER_ENGINE));
-
-        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-        if (testInfo != null) {
-            if (userPerEngine == 0) {
-                JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
-                        " '1' will be saved");
-                userPerEngine = 1;
-                Overrides overrides = testInfo.getOverrides();
-                if (overrides != null) {
-                    testInfo.getOverrides().setThreads(userPerEngine);
-                } else {
-                    overrides = new Overrides((Integer) durationSpinner.getValue(),
-                            (Integer) iterationsSpinner.getValue(),
-                            (Integer) rampupSpinner.getValue(),
-                            userPerEngine);
-                    testInfo.setOverrides(overrides);
-                }
-                testInfo.setNumberOfUsers(Integer.valueOf(userPerEngine));
-            }
-            /*
-            BPC-207
-             */
-            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) TestPanel.getTestPanel().getjMeterPropertyPanel();
-            Properties jmeterProperties = propertyPanel.getData();
-            testInfo.setJmeterProperties(jmeterProperties);
-            /*
-            BPC-207
-             */
-            testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
-                    bmTestManager.getTestInfo());
-            bmTestManager.setTestInfo(testInfo);
-
-        } else {
-            JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
-        }
-    }
-
-    /*
     Here testInfo object is applied to Cloud Panel
      */
     public void setTestInfo(TestInfo testInfo) {
@@ -427,9 +314,25 @@ public class CloudPanel extends JPanel {
         return runInTheCloud;
     }
 
+    public JSlider getNumberOfUsersSlider() {
+        return numberOfUsersSlider;
+    }
+
+    public JSpinner getRampupSpinner() {
+        return rampupSpinner;
+    }
+
+    public JSpinner getIterationsSpinner() {
+        return iterationsSpinner;
+    }
+
+    public JSpinner getDurationSpinner() {
+        return durationSpinner;
+    }
+
     /*
-        @return current number of users
-         */
+            @return current number of users
+             */
     public int getNumberOfUsers() {
         return numberOfUsersSlider.getValue();
     }

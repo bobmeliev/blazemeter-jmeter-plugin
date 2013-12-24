@@ -1,10 +1,17 @@
 package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
+import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
+import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -13,6 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * Created by dzmitrykashlach on 12/19/13.
@@ -76,4 +84,75 @@ public class GuiUtils {
         }
         return valid;
     }
+
+    public static void startInTheCloud(JSlider numberOfUsersSlider,
+                                       JSpinner durationSpinner,
+                                       JSpinner iterationsSpinner,
+                                       JSpinner rampupSpinner) {
+        saveCloudTest(numberOfUsersSlider,
+                durationSpinner,
+                iterationsSpinner,
+                rampupSpinner);
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfoController.stop();
+        bmTestManager.runInTheCloud();
+        TestInfo testInfo = bmTestManager.getTestInfo();
+        if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
+            String url = bmTestManager.getTestUrl();
+            if (url != null)
+                url = url.substring(0, url.length() - 5);
+            GuiUtils.Navigate(url);
+        }
+    }
+
+    /*
+    Called before starting test.
+    This method updates test settings on BM server
+     */
+    public static void saveCloudTest(JSlider numberOfUsersSlider,
+                                     JSpinner durationSpinner,
+                                     JSpinner iterationsSpinner,
+                                     JSpinner rampupSpinner) {
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        int numberOfUsers = numberOfUsersSlider.getValue();
+
+        HashMap<String, String> enginesParams = Utils.countEngines(numberOfUsers);
+        int userPerEngine = Integer.valueOf(enginesParams.get(Constants.USERS_PER_ENGINE));
+
+        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+        if (testInfo != null) {
+            if (userPerEngine == 0) {
+                JMeterUtils.reportErrorToUser("Can't set up test with 0 users. " +
+                        " '1' will be saved");
+                userPerEngine = 1;
+                Overrides overrides = testInfo.getOverrides();
+                if (overrides != null) {
+                    testInfo.getOverrides().setThreads(userPerEngine);
+                } else {
+                    overrides = new Overrides((Integer) durationSpinner.getValue(),
+                            (Integer) iterationsSpinner.getValue(),
+                            (Integer) rampupSpinner.getValue(),
+                            userPerEngine);
+                    testInfo.setOverrides(overrides);
+                }
+                testInfo.setNumberOfUsers(Integer.valueOf(userPerEngine));
+            }
+            /*
+            BPC-207
+             */
+            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) TestPanel.getTestPanel().getjMeterPropertyPanel();
+            Properties jmeterProperties = propertyPanel.getData();
+            testInfo.setJmeterProperties(jmeterProperties);
+            /*
+            BPC-207
+             */
+            testInfo = bmTestManager.updateTestSettings(bmTestManager.getUserKey(),
+                    bmTestManager.getTestInfo());
+            bmTestManager.setTestInfo(testInfo);
+
+        } else {
+            JMeterUtils.reportErrorToUser("Please, select test", "Test is not selected");
+        }
+    }
+
 }
