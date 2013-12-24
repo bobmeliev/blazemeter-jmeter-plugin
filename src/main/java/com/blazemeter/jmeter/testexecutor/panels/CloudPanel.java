@@ -266,6 +266,8 @@ public class CloudPanel extends JPanel {
         durationSpinner.setValue(0);
         runInTheCloud.setEnabled(false);
         addFilesButton.setEnabled(false);
+        editJMXLocallyButton.setEnabled(false);
+        saveUploadButton.setEnabled(false);
     }
 
     /*

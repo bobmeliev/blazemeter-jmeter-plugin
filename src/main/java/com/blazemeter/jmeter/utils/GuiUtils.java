@@ -66,7 +66,7 @@ public class GuiUtils {
         applyNotificationTo.put(TestListNotification.TEST_ID_COMBOBOX, testIdComboBox);
         applyNotificationTo.put(TestListNotification.MAIN_PANEL, mainPanel);
         applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
-        ITestListReceivedNotification testListReceivedNotification = new TestListNotification(applyNotificationTo);
+        ITestListReceivedNotification testListReceivedNotification = new TestListNotification(applyNotificationTo, false);
         BmTestManager.getInstance().getTestsAsync(userKey, testListReceivedNotification);
     }
 

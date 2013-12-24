@@ -12,6 +12,7 @@ import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dzmitrykashlach on 12/19/13.
@@ -39,16 +40,37 @@ public class TestsListSetter implements Runnable {
 
     @Override
     public void run() {
-        testIdComboBox.removeAllItems();
         if (tests != null) {
-            testIdComboBox.removeAllItems();
-            testIdComboBox.addItem(Constants.NEW);
-            testIdComboBox.setSelectedItem(Constants.NEW);
+
+            /*
+            1.Prepare testIdComboBox for adding new components;
+              - if silent_mode -> remove everything, except --NEW--
+              - if !silent_mode -> remove everything;
+
+
+            2.Create current list of tests;
+            3.Add current list of tests to testIdComboBox;
+            4.Select test which was previously selected:
+            */
+
             BmTestManager bmTestManager = BmTestManager.getInstance();
             bmTestManager.setUserKeyValid(true);
             TestListController.start(bmTestManager.getUserKey());
-            java.util.List<String> testIdList = new ArrayList<String>();
+            testIdComboBox.removeAllItems();
+            testIdComboBox.addItem(Constants.NEW);
+
+            /*
+            TODO
+            1.Implement differences between silent and !silent modes
+             */
+
+            if (!silentMode) {
+            } else {
+            }
+
+            List<String> testIdList = new ArrayList<String>();
             // create list of tests on server
+
             for (TestInfo ti : tests) {
                 GuiUtils.addTestId(testIdComboBox, ti, false);
                 testIdList.add(ti.getId());
@@ -96,9 +118,11 @@ public class TestsListSetter implements Runnable {
                     JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
                 }
             }
+
+
         } else {
             BmTestManager.getInstance().setUserKeyValid(false);
-            if (silentMode == false) {
+            if (!silentMode) {
                 JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 BmTestManager.getInstance().setUserKeyValid(false);
                 cloudPanel.reset();

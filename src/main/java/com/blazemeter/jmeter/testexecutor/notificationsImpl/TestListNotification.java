@@ -17,13 +17,16 @@ This class defines actions upon receiving list of tests from BM server
  */
 public class TestListNotification implements ITestListReceivedNotification {
     private HashMap<String, Object> applyNotificationTo;
+    private boolean silent;
 
     public static final String TEST_ID_COMBOBOX = "testIdComboBox";
     public static final String MAIN_PANEL = "mainPanel";
     public static final String CLOUD_PANEL = "cloudPanel";
 
-    public TestListNotification(HashMap<String, Object> applyNotificationTo) {
+
+    public TestListNotification(HashMap<String, Object> applyNotificationTo, boolean silent) {
         this.applyNotificationTo = applyNotificationTo;
+        this.silent = silent;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class TestListNotification implements ITestListReceivedNotification {
         final JComboBox testIdComboBox = (JComboBox) applyNotificationTo.get(TEST_ID_COMBOBOX);
         final JPanel mainPanel = (JPanel) applyNotificationTo.get(MAIN_PANEL);
         final CloudPanel cloudPanel = (CloudPanel) applyNotificationTo.get(CLOUD_PANEL);
-        TestsListSetter testsListSetter = new TestsListSetter(testIdComboBox, cloudPanel, mainPanel, tests, false);
+        TestsListSetter testsListSetter = new TestsListSetter(testIdComboBox, cloudPanel, mainPanel, tests, silent);
         SwingUtilities.invokeLater(testsListSetter);
     }
 }

@@ -36,7 +36,6 @@ public class TestIdComboBoxListener implements ItemListener {
             } else if (selectedTest.toString().equals(Constants.NEW)) {
                 testIdComboBox.setSelectedItem(Constants.NEW);
                 TestPanel.getTestPanel().configureMainPanel(null);
-                cloudPanel.reset();
                 Utils.enableElements(cloudPanel, false);
                 TestInfo testInfo = new TestInfo();
                 testInfo.setName(Constants.NEW);
