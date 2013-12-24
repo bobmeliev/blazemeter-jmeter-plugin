@@ -10,8 +10,10 @@ import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
+import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationCP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestInfoNotificationCP;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
@@ -241,23 +243,8 @@ public class CloudPanel extends JPanel {
         Here we apply ServerStatus to CloudPanel.
          */
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
-        serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
-            @Override
-            public void onServerStatusChanged() {
-                ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
-                switch (serverStatus) {
-                    case AVAILABLE:
-                        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                        boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
-                        runInTheCloud.setEnabled(!testIsRunning);
-                        break;
-                    case NOT_AVAILABLE:
-                        runInTheCloud.setEnabled(false);
-                        break;
-                }
-
-            }
-        });
+        IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationCP(runInTheCloud);
+        serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
 
 
         /*

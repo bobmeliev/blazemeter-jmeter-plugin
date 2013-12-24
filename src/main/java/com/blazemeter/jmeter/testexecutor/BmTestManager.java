@@ -40,6 +40,12 @@ public class BmTestManager {
     private static BmTestManager instance;
     private static final Object lock = new Object();
 
+    public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
+    public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
+    public List<IUserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<IUserInfoChangedNotification>();
+    public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
+    public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
+
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -336,7 +342,6 @@ public class BmTestManager {
     }
 
 
-    public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
 
     public void NotifyUserKeyChanged() {
         for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {
@@ -346,7 +351,6 @@ public class BmTestManager {
     }
 
 
-    public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
 
     public void NotifyTestInfoChanged() {
         for (ITestInfoNotification ti : testInfoNotificationListeners) {
@@ -354,7 +358,6 @@ public class BmTestManager {
         }
     }
 
-    public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
 
     public void NotifyPluginUpdateReceived(PluginUpdate update) {
         for (IPluginUpdateNotification ti : pluginUpdateNotificationListeners) {
@@ -362,7 +365,6 @@ public class BmTestManager {
         }
     }
 
-    public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
 
     public void NotifyRunModeChanged(boolean isLocalRunMode) {
         for (IRunModeChangedNotification rmc : runModeChangedNotificationListeners) {
@@ -371,7 +373,6 @@ public class BmTestManager {
     }
 
 
-    public List<IUserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<IUserInfoChangedNotification>();
 
     public void NotifyUserInfoChanged(UserInfo userInfo) {
         for (IUserInfoChangedNotification uic : userInfoChangedNotificationListeners) {

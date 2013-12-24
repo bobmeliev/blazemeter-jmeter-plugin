@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.controllers;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class ServerStatusController {
     private ScheduledFuture<?> task;
     private Thread connectionController;
     private static ServerStatusController serverStatusController = null;
+    public List<IServerStatusChangedNotification> serverStatusChangedNotificationListeners = new ArrayList<IServerStatusChangedNotification>();
 
     private ServerStatusController() {
     }
@@ -98,14 +100,8 @@ public class ServerStatusController {
         }
     }
 
-    public interface ServerStatusChangedNotification {
-        public void onServerStatusChanged();
-    }
-
-    public List<ServerStatusChangedNotification> serverStatusChangedNotificationListeners = new ArrayList<ServerStatusChangedNotification>();
-
     public void NotifyServerStatusChanged() {
-        for (ServerStatusChangedNotification sscn : serverStatusChangedNotificationListeners) {
+        for (IServerStatusChangedNotification sscn : serverStatusChangedNotificationListeners) {
             sscn.onServerStatusChanged();
         }
     }

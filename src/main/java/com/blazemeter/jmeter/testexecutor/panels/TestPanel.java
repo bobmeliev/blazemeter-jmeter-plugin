@@ -2,7 +2,6 @@ package com.blazemeter.jmeter.testexecutor.panels;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
-import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
@@ -11,15 +10,12 @@ import com.blazemeter.jmeter.testexecutor.listeners.CreateNewButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.GoToTestButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
 import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
-import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.*;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationTP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestInfoNotificationTP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestUserKeyNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
-import com.blazemeter.jmeter.utils.Utils;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -103,7 +99,7 @@ public class TestPanel {
     }
 
 
-    private void enableMainPanelControls(boolean isEnabled) {
+    public void enableMainPanelControls(boolean isEnabled) {
         testIdComboBox.setEnabled(isEnabled);
         reloadButton.setEnabled(isEnabled);
         createNewButton.setEnabled(isEnabled);
@@ -149,8 +145,7 @@ public class TestPanel {
             runRemote.addActionListener(listener);
 
 
-            signUpButton.setEnabled(BmTestManager.getInstance().getUserKey() == null || BmTestManager.
-                    getInstance().
+            signUpButton.setEnabled(bmTestManager.getUserKey() == null || bmTestManager.
                     getUserKey().
                     isEmpty());
 
@@ -175,6 +170,7 @@ public class TestPanel {
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);
             testIdComboBox.addItemListener(comboBoxListener);
 
+            // init userKey
             if (bmTestManager.isUserKeyFromProp()) {
                 String key = bmTestManager.getUserKey();
                 if (key.length() >= 20)
@@ -209,13 +205,17 @@ public class TestPanel {
                 userKeyTextField.getDocument().addDocumentListener(userKeyListener);
 
             }
+            // init userKey
+
             //Here should be all changes of TestInfo processed
             ITestInfoNotification testInfoNotification = new TestInfoNotificationTP(runLocal, runRemote, jMeterPropertyPanel);
             bmTestManager.testInfoNotificationListeners.add(testInfoNotification);
 
             //Processing serverStatusChangedNotification
             ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
-            serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
+            IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationTP(this, cloudPanel, (JMeterPropertyPanel) jMeterPropertyPanel);
+            serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
+            /*new ServerStatusController.IServerStatusChangedNotification() {
                 @Override
                 public void onServerStatusChanged() {
                     ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
@@ -234,9 +234,8 @@ public class TestPanel {
                             TestInfoController.stop();
                             break;
                     }
-
                 }
-            });
+            }*/
 
         }
     }

@@ -6,6 +6,8 @@ import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.PluginUpdate;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationVP;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
 
@@ -120,23 +122,8 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         connectionStatus.setForeground(Color.GREEN);
 
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
-        serverStatusController.serverStatusChangedNotificationListeners.add(new ServerStatusController.ServerStatusChangedNotification() {
-            @Override
-            public void onServerStatusChanged() {
-                ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
-                switch (serverStatus) {
-                    case AVAILABLE:
-                        connectionStatus.setText("SERVER IS AVAILABLE");
-                        connectionStatus.setForeground(Color.GREEN);
-                        break;
-                    case NOT_AVAILABLE:
-                        connectionStatus.setText("SERVER IS NOT AVAILABLE");
-                        connectionStatus.setForeground(Color.RED);
-                        break;
-                }
-            }
-        }
-        );
+        IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationVP(connectionStatus);
+        serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
 
         BmTestManager bmTestManager = BmTestManager.getInstance();
         bmTestManager.pluginUpdateNotificationListeners.add(this);
