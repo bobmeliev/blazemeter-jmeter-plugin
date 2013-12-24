@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
+import com.blazemeter.jmeter.testexecutor.listeners.NumberOfUsersSliderListener;
 import com.blazemeter.jmeter.testexecutor.listeners.RunInTheCloudListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
@@ -33,7 +34,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Dictionary;
-import java.util.HashMap;
 
 /**
  * This is panel, which appear after switching JMeter BLazemeter Plugin to "Run in the Cloud" mode;
@@ -123,26 +123,11 @@ public class CloudPanel extends JPanel {
         Slider for controlling number of users. It is attached to numberOfUserTextBox,
         so if user changes slider - > textbox also changes
          */
-        numberOfUsersSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                int numberOfUsers = numberOfUsersSlider.getValue();
-                int consoles;
-                int engines;
-                String engineSize;
-                int usersPerEngine;
-                TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                testInfo.setNumberOfUsers(numberOfUsers);
-                HashMap<String, String> enginesParameters = Utils.countEngines(numberOfUsers);
-                consoles = Integer.valueOf(enginesParameters.get(Constants.CONSOLES));
-                engines = Integer.valueOf(enginesParameters.get(Constants.ENGINES));
-                engineSize = enginesParameters.get(Constants.ENGINE_SIZE).equals("m1.medium") ? "MEDIUM ENGINE(S)" : "LARGE ENGINE(S)";
-                usersPerEngine = Integer.valueOf(enginesParameters.get(Constants.USERS_PER_ENGINE));
+        ChangeListener changeListener = new NumberOfUsersSliderListener(numberOfUserTextBox,
+                numberOfUsersSlider,
+                enginesDescription);
+        numberOfUsersSlider.addChangeListener(changeListener);
 
-                enginesDescription.setText(consoles + " CONSOLE(S) x " + usersPerEngine + "users\n"
-                        + String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
-            }
-        });
         /*
         Button for starting/stopping test in the cloud.
 
