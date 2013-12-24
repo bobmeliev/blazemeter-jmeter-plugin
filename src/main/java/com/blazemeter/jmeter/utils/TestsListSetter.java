@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.notificationsImpl;
+package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
@@ -7,9 +7,6 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
-import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.GuiUtils;
-import com.blazemeter.jmeter.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.util.JMeterUtils;
 
