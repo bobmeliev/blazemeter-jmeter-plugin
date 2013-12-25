@@ -45,7 +45,6 @@ public class TestsListSetter implements Runnable {
             TestListController.start(bmTestManager.getUserKey());
             testIdComboBox.removeAllItems();
 
-
             List<String> testIdList = new ArrayList<String>();
             // create list of tests on server
 
@@ -55,13 +54,10 @@ public class TestsListSetter implements Runnable {
             }
             String[] curTest = StringUtils.split(JMeterUtils.getPropDefault(Constants.CURRENT_TEST, ""), ";");
             String curTestId = null;
-            String curTestName = null;
-
 
             try {
                 if (curTest.length > 0) {
                     curTestId = curTest[0];
-                    curTestName = curTest[1];
                 }
             } catch (ArrayIndexOutOfBoundsException iobe) {
                 BmLog.error("Current test property was not applied to screen: " + iobe);
@@ -78,10 +74,6 @@ public class TestsListSetter implements Runnable {
                         exists = curTestId.equals(ti.getId());
                     }
                 }
-            }
-            //add current test to testIdComboBox if it is present in tests from server
-            if (!exists & testIdList.contains(curTestId)) {
-                testIdComboBox.addItem(curTestId + " - " + curTestName);
             }
 
             // select current test(which was previously selected in testIdComboBox)
