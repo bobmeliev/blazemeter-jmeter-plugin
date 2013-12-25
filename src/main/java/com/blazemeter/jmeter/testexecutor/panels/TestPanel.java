@@ -51,6 +51,7 @@ public class TestPanel {
     private JRadioButton runRemote;
     private JRadioButton runLocal;
     private JLabel userInfoLabel;
+    private AdvancedPropertiesPanel advancedPropertiesPanel;
     private JPanel jMeterPropertyPanel = new JMeterPropertyPanel();
 
 
@@ -438,6 +439,8 @@ public class TestPanel {
         buttonGroup.add(runLocal);
         cloudPanel = new CloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        advancedPropertiesPanel = new AdvancedPropertiesPanel();
+        mainPanel.add(advancedPropertiesPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
     }
 }
