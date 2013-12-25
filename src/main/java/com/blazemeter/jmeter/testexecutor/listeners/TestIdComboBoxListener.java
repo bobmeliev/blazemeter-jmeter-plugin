@@ -5,6 +5,7 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
+import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
 
 import javax.swing.*;
@@ -42,5 +43,6 @@ public class TestIdComboBoxListener implements ItemListener {
                 bmTestManager.setTestInfo(testInfo);
             }
         }
+        BmLog.debug(testIdComboBox.getSelectedItem() + " was selected in testId drop-down list");
     }
 }

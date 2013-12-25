@@ -34,39 +34,17 @@ public class TestsListSetter implements Runnable {
         this.mainPanel = mainPanel;
         this.tests = tests;
         this.silentMode = silentMode;
-
     }
 
 
     @Override
     public void run() {
         if (tests != null) {
-
-            /*
-            1.Prepare testIdComboBox for adding new components;
-              - if silent_mode -> remove everything, except --NEW--
-              - if !silent_mode -> remove everything;
-
-
-            2.Create current list of tests;
-            3.Add current list of tests to testIdComboBox;
-            4.Select test which was previously selected:
-            */
-
             BmTestManager bmTestManager = BmTestManager.getInstance();
             bmTestManager.setUserKeyValid(true);
             TestListController.start(bmTestManager.getUserKey());
             testIdComboBox.removeAllItems();
-            testIdComboBox.addItem(Constants.NEW);
 
-            /*
-            TODO
-            1.Implement differences between silent and !silent modes
-             */
-
-            if (!silentMode) {
-            } else {
-            }
 
             List<String> testIdList = new ArrayList<String>();
             // create list of tests on server
@@ -78,16 +56,17 @@ public class TestsListSetter implements Runnable {
             String[] curTest = StringUtils.split(JMeterUtils.getPropDefault(Constants.CURRENT_TEST, ""), ";");
             String curTestId = null;
             String curTestName = null;
+
+
             try {
                 if (curTest.length > 0) {
                     curTestId = curTest[0];
                     curTestName = curTest[1];
-
                 }
-
             } catch (ArrayIndexOutOfBoundsException iobe) {
                 BmLog.error("Current test property was not applied to screen: " + iobe);
             }
+
 
             boolean exists = false;
 
@@ -135,5 +114,6 @@ public class TestsListSetter implements Runnable {
                 BmLog.debug("Invalid userKey was found. Tests are not received from BM server");
             }
         }
+        testIdComboBox.insertItemAt(Constants.NEW, 0);
     }
 }

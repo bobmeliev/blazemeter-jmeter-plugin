@@ -215,27 +215,7 @@ public class TestPanel {
             ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
             IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationTP(this, cloudPanel, (JMeterPropertyPanel) jMeterPropertyPanel);
             serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
-            /*new ServerStatusController.IServerStatusChangedNotification() {
-                @Override
-                public void onServerStatusChanged() {
-                    ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
-                    switch (serverStatus) {
-                        case AVAILABLE:
-                            TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
-                            TestInfoController.start(testInfo.getId());
-                            boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
-                            enableMainPanelControls(!testIsRunning);
-                            Utils.enableElements(cloudPanel, !testIsRunning);
-                            Utils.enableElements(jMeterPropertyPanel, !testIsRunning);
-                            break;
-                        case NOT_AVAILABLE:
-                            enableMainPanelControls(false);
-                            Utils.enableElements(jMeterPropertyPanel, false);
-                            TestInfoController.stop();
-                            break;
-                    }
-                }
-            }*/
+
 
         }
     }
@@ -394,7 +374,8 @@ public class TestPanel {
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel4, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        testIdComboBox = new JComboBox();
+        DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
+        testIdComboBox = new JComboBox(comboBoxModel);
         testIdComboBox.setDoubleBuffered(true);
         testIdComboBox.setEditable(false);
         testIdComboBox.setEnabled(false);
