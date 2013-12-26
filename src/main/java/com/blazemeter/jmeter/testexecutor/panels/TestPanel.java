@@ -4,16 +4,10 @@ import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
-import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.listeners.CreateNewButtonListener;
-import com.blazemeter.jmeter.testexecutor.listeners.GoToTestButtonListener;
-import com.blazemeter.jmeter.testexecutor.listeners.TestIdComboBoxListener;
-import com.blazemeter.jmeter.testexecutor.listeners.UserKeyListener;
+import com.blazemeter.jmeter.testexecutor.listeners.*;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationTP;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestInfoNotificationTP;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -108,11 +102,6 @@ public class TestPanel {
     }
 
 
-    private void clearTestInfo() {
-        testIdComboBox.removeAllItems();
-        BmTestManager.getInstance().setTestInfo(null);
-    }
-
     /**
      * Here some heavy GUI listeners are initialized;
      */
@@ -122,50 +111,24 @@ public class TestPanel {
         if (!JMeterUtils.getPropDefault(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, false)) {
             JMeterUtils.setProperty(Constants.BLAZEMETER_TESTPANELGUI_INITIALIZED, "true");
 
-            final IRunModeChangedNotification runModeChanged = new IRunModeChangedNotification() {
-                @Override
-                public void onRunModeChanged(boolean isLocalRunMode) {
-                    runModeChanged(isLocalRunMode);
-
-                }
-            };
+            final IRunModeChangedNotification runModeChanged = new RunModeChangedNotification(runLocal,
+                    runRemote,
+                    cloudPanel,
+                    jMeterPropertyPanel);
             BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
 
-            ActionListener listener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    BmTestManager bmTestManager = BmTestManager.getInstance();
-                    bmTestManager.setIsLocalRunMode(e.getActionCommand().equals("Locally (Reporting Only)"));
-                    boolean isLocalRunMode = bmTestManager.getIsLocalRunMode();
-                    runModeChanged.onRunModeChanged(isLocalRunMode);
-                    BmLog.console(e.getActionCommand());
-                }
-            };
+            RunModeListener runModeListener = new RunModeListener(runModeChanged);
 
-            runLocal.addActionListener(listener);
-            runRemote.addActionListener(listener);
+            runLocal.addActionListener(runModeListener);
+            runRemote.addActionListener(runModeListener);
 
 
             signUpButton.setEnabled(bmTestManager.getUserKey() == null || bmTestManager.
                     getUserKey().
                     isEmpty());
 
-            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
-                @Override
-                public void onUserInfoChanged(UserInfo userInfo) {
-                    if (userInfo == null) {
-                        userInfoLabel.setText("");
-                        clearTestInfo();
-                    } else {
-                        if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
-                            userInfo.setMaxUsersLimit(8400);
-                            userInfo.setMaxEnginesLimit(14);
-                        }
-                        userInfoLabel.setText(userInfo.toString());
-
-                    }
-                }
-            });
+            IUserInfoChangedNotification userInfoChangedNotification = new UserInfoChangedNotification(userInfoLabel, testIdComboBox);
+            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(userInfoChangedNotification);
 
 
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);
@@ -234,13 +197,6 @@ public class TestPanel {
     }
 
 
-    private void runModeChanged(boolean isLocalRunMode) {
-        runLocal.setSelected(isLocalRunMode);
-        runRemote.setSelected(!isLocalRunMode);
-        cloudPanel.setVisible(!isLocalRunMode);
-        jMeterPropertyPanel.setVisible(!isLocalRunMode);
-    }
-
     public void setTestInfo(TestInfo testInfo) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         if (testInfo == null || testInfo.isEmpty() || !testInfo.isValid()) {
@@ -251,7 +207,9 @@ public class TestPanel {
         } else {
             testIdComboBox.setSelectedItem(testInfo);
             configureMainPanel(testInfo);
-            runModeChanged(bmTestManager.getIsLocalRunMode());
+            GuiUtils.runModeChanged(runLocal, runRemote, cloudPanel,
+                    (JMeterPropertyPanel) jMeterPropertyPanel,
+                    bmTestManager.getIsLocalRunMode());
         }
         if (!bmTestManager.getIsLocalRunMode()) {
             // update Cloud panel
@@ -440,6 +398,8 @@ public class TestPanel {
         cloudPanel = new CloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         advancedPropertiesPanel = new AdvancedPropertiesPanel();
+//        advancedPropertiesPanel.add("JMeter Properties",jMeterPropertyPanel);
+//        advancedPropertiesPanel.setVisible(true);
         mainPanel.add(advancedPropertiesPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
     }

@@ -155,4 +155,18 @@ public class GuiUtils {
         }
     }
 
+    public static void runModeChanged(JRadioButton runLocal, JRadioButton runRemote,
+                                      CloudPanel cloudPanel, JPanel jMeterPropertyPanel,
+                                      boolean isLocalRunMode) {
+        runLocal.setSelected(isLocalRunMode);
+        runRemote.setSelected(!isLocalRunMode);
+        cloudPanel.setVisible(!isLocalRunMode);
+        jMeterPropertyPanel.setVisible(!isLocalRunMode);
+//        advancedPropertiesPanel.setVisible(!isLocalRunMode);
+    }
+
+    public static void clearTestInfo(JComboBox testIdComboBox) {
+        testIdComboBox.removeAllItems();
+        BmTestManager.getInstance().setTestInfo(null);
+    }
 }
