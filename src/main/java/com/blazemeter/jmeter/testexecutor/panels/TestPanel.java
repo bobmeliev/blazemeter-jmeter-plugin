@@ -396,8 +396,8 @@ public class TestPanel {
         cloudPanel = new CloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         advancedPropertiesPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-        advancedPropertiesPane.insertTab("JMeter Properties", null, jMeterPropertyPanel, null, 0);
-//        advancedPropertiesPane.insertTab("Hosts", null, jMeterPropertyPanel, null, 1);
+        advancedPropertiesPane.addTab("JMeter Properties", null, jMeterPropertyPanel, "JMeter Properties");
+        advancedPropertiesPane.addTab("Hosts Override", null, new JMeterPropertyPanel(), "Hosts Override");
         mainPanel.add(advancedPropertiesPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
     }
