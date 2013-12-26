@@ -18,8 +18,7 @@ public class AdvancedPropertiesPane extends JTabbedPane {
             hostsOverridePanel = new HostsOverridePanel();
         }
         addTab("JMeter Properties", null, jMeterPropertyPanel, "JMeter Properties");
-        addTab("Hosts Override", null, hostsOverridePanel, "Hosts Override");
-
+//        addTab("Hosts Override", null, hostsOverridePanel, "Hosts Override");
     }
 
     public JPanel getjMeterPropertyPanel() {
