@@ -45,7 +45,7 @@ public class TestPanel {
     private JRadioButton runRemote;
     private JRadioButton runLocal;
     private JLabel userInfoLabel;
-    private AdvancedPropertiesPanel advancedPropertiesPanel;
+    private JTabbedPane advancedPropertiesPane;
     private JPanel jMeterPropertyPanel = new JMeterPropertyPanel();
 
 
@@ -114,7 +114,7 @@ public class TestPanel {
             final IRunModeChangedNotification runModeChanged = new RunModeChangedNotification(runLocal,
                     runRemote,
                     cloudPanel,
-                    jMeterPropertyPanel);
+                    advancedPropertiesPane);
             BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
 
             RunModeListener runModeListener = new RunModeListener(runModeChanged);
@@ -208,7 +208,7 @@ public class TestPanel {
             testIdComboBox.setSelectedItem(testInfo);
             configureMainPanel(testInfo);
             GuiUtils.runModeChanged(runLocal, runRemote, cloudPanel,
-                    (JMeterPropertyPanel) jMeterPropertyPanel,
+                    advancedPropertiesPane,
                     bmTestManager.getIsLocalRunMode());
         }
         if (!bmTestManager.getIsLocalRunMode()) {
@@ -385,8 +385,6 @@ public class TestPanel {
         panel5.add(runRemote, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer3 = new Spacer();
         panel1.add(spacer3, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        mainPanel.add(jMeterPropertyPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        jMeterPropertyPanel.setBorder(BorderFactory.createTitledBorder("JMeter Properties"));
         label1.setLabelFor(userKeyTextField);
         label2.setLabelFor(testNameArea);
         label3.setLabelFor(testIdComboBox);
@@ -397,10 +395,10 @@ public class TestPanel {
         buttonGroup.add(runLocal);
         cloudPanel = new CloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        advancedPropertiesPanel = new AdvancedPropertiesPanel();
-//        advancedPropertiesPanel.add("JMeter Properties",jMeterPropertyPanel);
-//        advancedPropertiesPanel.setVisible(true);
-        mainPanel.add(advancedPropertiesPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        advancedPropertiesPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+        advancedPropertiesPane.insertTab("JMeter Properties", null, jMeterPropertyPanel, null, 0);
+//        advancedPropertiesPane.insertTab("Hosts", null, jMeterPropertyPanel, null, 1);
+        mainPanel.add(advancedPropertiesPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
     }
 }

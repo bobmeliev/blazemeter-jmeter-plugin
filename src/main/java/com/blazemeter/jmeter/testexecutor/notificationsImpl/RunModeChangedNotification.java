@@ -13,19 +13,19 @@ public class RunModeChangedNotification implements IRunModeChangedNotification {
     private JRadioButton runLocal;
     private JRadioButton runRemote;
     private CloudPanel cloudPanel;
-    private JPanel jMeterPropertyPanel;
+    private JTabbedPane advancedPropertiesPane;
     private boolean isLocalRunMode;
 
     public RunModeChangedNotification(JRadioButton runLocal, JRadioButton runRemote,
-                                      CloudPanel cloudPanel, JPanel jMeterPropertyPanel) {
+                                      CloudPanel cloudPanel, JTabbedPane advancedPropertiesPane) {
         this.runLocal = runLocal;
         this.runRemote = runRemote;
         this.cloudPanel = cloudPanel;
-        this.jMeterPropertyPanel = jMeterPropertyPanel;
+        this.advancedPropertiesPane = advancedPropertiesPane;
     }
 
     @Override
     public void onRunModeChanged(boolean isLocalRunMode) {
-        GuiUtils.runModeChanged(runLocal, runRemote, cloudPanel, jMeterPropertyPanel, isLocalRunMode);
+        GuiUtils.runModeChanged(runLocal, runRemote, cloudPanel, advancedPropertiesPane, isLocalRunMode);
     }
 }

@@ -156,13 +156,13 @@ public class GuiUtils {
     }
 
     public static void runModeChanged(JRadioButton runLocal, JRadioButton runRemote,
-                                      CloudPanel cloudPanel, JPanel jMeterPropertyPanel,
+                                      CloudPanel cloudPanel, JTabbedPane advancedPropertiesPane,
                                       boolean isLocalRunMode) {
         runLocal.setSelected(isLocalRunMode);
         runRemote.setSelected(!isLocalRunMode);
         cloudPanel.setVisible(!isLocalRunMode);
-        jMeterPropertyPanel.setVisible(!isLocalRunMode);
-//        advancedPropertiesPanel.setVisible(!isLocalRunMode);
+//        jMeterPropertyPanel.setVisible(!isLocalRunMode);
+        advancedPropertiesPane.setVisible(!isLocalRunMode);
     }
 
     public static void clearTestInfo(JComboBox testIdComboBox) {
