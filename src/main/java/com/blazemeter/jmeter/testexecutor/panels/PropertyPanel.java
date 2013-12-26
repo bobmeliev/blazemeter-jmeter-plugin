@@ -1,8 +1,5 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
 import org.apache.jmeter.gui.UnsharedComponent;
@@ -48,7 +45,6 @@ implements ActionListener, UnsharedComponent {
     /**
      * The model for the arguments table.
      */
-//    protected transient ObjectTableModel tableModel;
     private transient PowerTableModel tableModel;
 
     /**
@@ -65,7 +61,7 @@ implements ActionListener, UnsharedComponent {
      * A button for loading properties from the jmeter.properties.
      */
 
-    public PropertyPanel() {
+    protected PropertyPanel() {
         super();
         init();
     }
@@ -91,12 +87,10 @@ implements ActionListener, UnsharedComponent {
                 deleteButton.setEnabled(true);
             }
 
-
             // Highlight (select) the appropriate row.
             int rowToSelect = tableModel.getRowCount() - 1;
             table.setRowSelectionInterval(rowToSelect, rowToSelect);
 
-//            return;
         }
         if (DELETE.equals(command)) {
             if (tableModel.getRowCount() > 0) {
@@ -135,8 +129,6 @@ implements ActionListener, UnsharedComponent {
                 }
             }
         }
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.getTestInfo().setJmeterProperties(getData());
     }
 
     @Override
@@ -192,7 +184,7 @@ implements ActionListener, UnsharedComponent {
     /**
      * Initialize the components and layout of this component.
      */
-    private void init() {
+    protected void init() {
         JPanel p = this;
 
         setLayout(new BorderLayout(0, 5));
@@ -208,17 +200,6 @@ implements ActionListener, UnsharedComponent {
 
         add(p, BorderLayout.CENTER);
         table.revalidate();
-        BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
-            @Override
-            public void onTestInfoChanged(TestInfo testInfo) {
-                if (testInfo.getJmeterProperties() == null) {
-                    testInfo.setJmeterProperties(getData());
-                }
-
-            }
-
-        });
     }
 
     private void initializeTableModel() {

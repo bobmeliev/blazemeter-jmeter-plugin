@@ -46,7 +46,7 @@ public class TestPanel {
     private JRadioButton runLocal;
     private JLabel userInfoLabel;
     private JTabbedPane advancedPropertiesPane;
-    private JPanel jMeterPropertyPanel = new PropertyPanel();
+    private JPanel jMeterPropertyPanel;
 
 
     public TestPanel() {
@@ -396,6 +396,7 @@ public class TestPanel {
         cloudPanel = new CloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         advancedPropertiesPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+        jMeterPropertyPanel = new JMeterPropertyPanel();
         advancedPropertiesPane.addTab("JMeter Properties", null, jMeterPropertyPanel, "JMeter Properties");
         advancedPropertiesPane.addTab("Hosts Override", null, new PropertyPanel(), "Hosts Override");
         mainPanel.add(advancedPropertiesPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
