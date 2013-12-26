@@ -9,7 +9,7 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
-import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
+import com.blazemeter.jmeter.testexecutor.panels.PropertyPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import org.apache.jmeter.util.JMeterUtils;
 
@@ -140,7 +140,7 @@ public class GuiUtils {
             /*
             BPC-207
              */
-            JMeterPropertyPanel propertyPanel = (JMeterPropertyPanel) TestPanel.getTestPanel().getjMeterPropertyPanel();
+            PropertyPanel propertyPanel = (PropertyPanel) TestPanel.getTestPanel().getjMeterPropertyPanel();
             Properties jmeterProperties = propertyPanel.getData();
             testInfo.setJmeterProperties(jmeterProperties);
             /*

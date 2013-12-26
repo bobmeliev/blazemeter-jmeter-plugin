@@ -7,7 +7,7 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
-import com.blazemeter.jmeter.testexecutor.panels.JMeterPropertyPanel;
+import com.blazemeter.jmeter.testexecutor.panels.PropertyPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.utils.Utils;
 
@@ -17,9 +17,9 @@ import com.blazemeter.jmeter.utils.Utils;
 public class ServerStatusChangedNotificationTP implements IServerStatusChangedNotification {
     private TestPanel testPanel;
     private CloudPanel cloudPanel;
-    private JMeterPropertyPanel jMeterPropertyPanel;
+    private PropertyPanel jMeterPropertyPanel;
 
-    public ServerStatusChangedNotificationTP(TestPanel testPanel, CloudPanel cloudPanel, JMeterPropertyPanel jMeterPropertyPanel) {
+    public ServerStatusChangedNotificationTP(TestPanel testPanel, CloudPanel cloudPanel, PropertyPanel jMeterPropertyPanel) {
         this.testPanel = testPanel;
         this.cloudPanel = cloudPanel;
         this.jMeterPropertyPanel = jMeterPropertyPanel;

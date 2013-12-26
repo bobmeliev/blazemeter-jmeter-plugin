@@ -27,8 +27,8 @@ import java.util.Properties;
  * Time: 12:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JMeterPropertyPanel extends AbstractConfigGui
-        implements ActionListener, UnsharedComponent {
+public class PropertyPanel extends AbstractConfigGui
+implements ActionListener, UnsharedComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,8 +39,6 @@ public class JMeterPropertyPanel extends AbstractConfigGui
     private static final String ADD = "add"; // $NON-NLS-1$
 
     private static final String DELETE = "delete"; // $NON-NLS-1$
-
-    private static final String LOAD = "load"; // $NON-NLS-1$
 
     /**
      * The table containing the list of arguments.
@@ -67,7 +65,7 @@ public class JMeterPropertyPanel extends AbstractConfigGui
      * A button for loading properties from the jmeter.properties.
      */
 
-    public JMeterPropertyPanel() {
+    public PropertyPanel() {
         super();
         init();
     }

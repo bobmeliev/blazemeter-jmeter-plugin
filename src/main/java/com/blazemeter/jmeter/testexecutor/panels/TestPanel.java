@@ -46,7 +46,7 @@ public class TestPanel {
     private JRadioButton runLocal;
     private JLabel userInfoLabel;
     private JTabbedPane advancedPropertiesPane;
-    private JPanel jMeterPropertyPanel = new JMeterPropertyPanel();
+    private JPanel jMeterPropertyPanel = new PropertyPanel();
 
 
     public TestPanel() {
@@ -177,7 +177,7 @@ public class TestPanel {
 
             //Processing serverStatusChangedNotification
             ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
-            IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationTP(this, cloudPanel, (JMeterPropertyPanel) jMeterPropertyPanel);
+            IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationTP(this, cloudPanel, (PropertyPanel) jMeterPropertyPanel);
             serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
 
 
@@ -397,7 +397,7 @@ public class TestPanel {
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         advancedPropertiesPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
         advancedPropertiesPane.addTab("JMeter Properties", null, jMeterPropertyPanel, "JMeter Properties");
-        advancedPropertiesPane.addTab("Hosts Override", null, new JMeterPropertyPanel(), "Hosts Override");
+        advancedPropertiesPane.addTab("Hosts Override", null, new PropertyPanel(), "Hosts Override");
         mainPanel.add(advancedPropertiesPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
 
     }
