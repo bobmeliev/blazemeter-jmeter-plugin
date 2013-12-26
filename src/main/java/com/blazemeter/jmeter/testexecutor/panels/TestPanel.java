@@ -45,9 +45,9 @@ public class TestPanel {
     private JRadioButton runRemote;
     private JRadioButton runLocal;
     private JLabel userInfoLabel;
-    private JTabbedPane advancedPropertiesPane;
-    private JPanel jMeterPropertyPanel;
-
+    private AdvancedPropertiesPane advancedPropertiesPane;
+//    private JPanel jMeterPropertyPanel;
+//    private JPanel hostsOverridePanel;
 
     public TestPanel() {
         try {
@@ -172,12 +172,14 @@ public class TestPanel {
             // init userKey
 
             //Here should be all changes of TestInfo processed
-            ITestInfoNotification testInfoNotification = new TestInfoNotificationTP(runLocal, runRemote, jMeterPropertyPanel);
+            ITestInfoNotification testInfoNotification = new TestInfoNotificationTP(runLocal, runRemote,
+                    advancedPropertiesPane.getjMeterPropertyPanel());
             bmTestManager.testInfoNotificationListeners.add(testInfoNotification);
 
             //Processing serverStatusChangedNotification
             ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
-            IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationTP(this, cloudPanel, (PropertyPanel) jMeterPropertyPanel);
+            IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationTP(this, cloudPanel,
+                    (PropertyPanel) advancedPropertiesPane.getjMeterPropertyPanel());
             serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
 
 
@@ -246,9 +248,14 @@ public class TestPanel {
         return testPanel;
     }
 
+    public AdvancedPropertiesPane getAdvancedPropertiesPane() {
+        return advancedPropertiesPane;
+    }
+
+    /*
     public JPanel getjMeterPropertyPanel() {
         return jMeterPropertyPanel;
-    }
+    }*/
 
 
     private void createMainPanel() {
@@ -395,11 +402,13 @@ public class TestPanel {
         buttonGroup.add(runLocal);
         cloudPanel = new CloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        advancedPropertiesPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+        advancedPropertiesPane = new AdvancedPropertiesPane();
+/*
         jMeterPropertyPanel = new JMeterPropertyPanel();
+        hostsOverridePanel = new HostsOverridePanel();
         advancedPropertiesPane.addTab("JMeter Properties", null, jMeterPropertyPanel, "JMeter Properties");
-        advancedPropertiesPane.addTab("Hosts Override", null, new PropertyPanel(), "Hosts Override");
+        advancedPropertiesPane.addTab("Hosts Override", null, hostsOverridePanel, "Hosts Override");
+*/
         mainPanel.add(advancedPropertiesPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-
     }
 }

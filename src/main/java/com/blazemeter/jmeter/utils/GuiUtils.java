@@ -140,7 +140,7 @@ public class GuiUtils {
             /*
             BPC-207
              */
-            PropertyPanel propertyPanel = (PropertyPanel) TestPanel.getTestPanel().getjMeterPropertyPanel();
+            PropertyPanel propertyPanel = (PropertyPanel) TestPanel.getTestPanel().getAdvancedPropertiesPane().getjMeterPropertyPanel();
             Properties jmeterProperties = propertyPanel.getData();
             testInfo.setJmeterProperties(jmeterProperties);
             /*
