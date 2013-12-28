@@ -2,10 +2,10 @@ package com.blazemeter.jmeter.utils;
 
 import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 
 /**
  * Created by dzmitrykashlach on 12/27/13.
@@ -14,13 +14,22 @@ import org.aspectj.lang.annotation.Before;
 public class Log {
     private static Logger logger = LoggingManager.getLoggerFor("bm-logger");
 
-    @Before("execution(* com.blazemeter.jmeter.*(..))")
-    public void logBefore(JoinPoint joinPoint) {
-        logger.debug("Start execution : " + joinPoint.getSignature().getName());
+    @Pointcut
+            ("execution(* com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui(..))")
+    private void loggable() {
     }
 
-    @After("execution(* com.blazemeter.jmeter.*(..))")
-    public void logAfter(JoinPoint joinPoint) {
-        logger.debug("End execution : " + joinPoint.getSignature().getName());
+
+    @Around("loggable()")
+    public void logAfter(ProceedingJoinPoint joinPoint) {
+        String methodName = joinPoint.getSignature().getName();
+        Object[] methodArgs = joinPoint.getArgs();
+        logger.debug("Call method " + methodName + " with args " + methodArgs);
+        Object result = null;
+        try {
+            result = joinPoint.proceed();
+        } catch (Throwable e) {
+        }
+        logger.debug("Method " + methodName + " returns " + result);
     }
 }
