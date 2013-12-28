@@ -24,8 +24,8 @@ import java.util.Properties;
  * Time: 12:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PropertyPanel extends AbstractConfigGui
-implements ActionListener, UnsharedComponent {
+public abstract class PropertyPanel extends AbstractConfigGui
+        implements ActionListener, UnsharedComponent {
 
     private static final long serialVersionUID = 1L;
 
@@ -61,7 +61,7 @@ implements ActionListener, UnsharedComponent {
      * A button for loading properties from the jmeter.properties.
      */
 
-    protected PropertyPanel() {
+    PropertyPanel() {
         super();
         init();
     }
@@ -184,7 +184,7 @@ implements ActionListener, UnsharedComponent {
     /**
      * Initialize the components and layout of this component.
      */
-    protected void init() {
+    void init() {
         JPanel p = this;
 
         setLayout(new BorderLayout(0, 5));
