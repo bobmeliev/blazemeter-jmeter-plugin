@@ -346,17 +346,27 @@ public class BlazemeterApi {
         BmLog.debug("Downloading JMX from server...");
         List<String> jmx = getJMXasList(url);
         String jmxName = jmx.get(0);
+        BmLog.debug("jmx list size=" + String.valueOf(jmx.size()));
+        BmLog.debug("jmx.get(0)=" + jmx.get(0));
         FileOutputStream fileOutputStream = null;
         File file = null;
         try {
             Map<String, String> env = System.getenv();
+            BmLog.debug("JMX name=" + jmxName);
             file = new File(env.get("JMETER") + "/" + jmxName);
-            BmLog.debug("Saving JMX to " + file.getAbsoluteFile());
             // if file doesnt exists, then create it
             if (!file.exists()) {
-                BmLog.debug("Creating file " + file.getAbsoluteFile());
-                file.createNewFile();
+                try {
+                    BmLog.debug("Creating file " + file.getAbsoluteFile());
+                    file.createNewFile();
+
+                } catch (IOException io) {
+                    BmLog.error("Failed to create file for saving JMX: " + io);
+                    BmLog.debug("Failed to create file for saving JMX: " + io);
+
+                }
             }
+            BmLog.debug("Saving JMX to " + file.getAbsoluteFile());
             fileOutputStream = new FileOutputStream(file);
             // get the content in bytes
             BmLog.debug("Getting JMX content..., JMX name=" + jmxName);
