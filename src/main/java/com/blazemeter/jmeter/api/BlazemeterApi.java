@@ -349,16 +349,21 @@ public class BlazemeterApi {
         BmLog.debug("jmx list size=" + String.valueOf(jmx.size()));
         BmLog.debug("jmx.get(0)=" + jmx.get(0));
         FileOutputStream fileOutputStream = null;
-        File file = null;
+        File jmxFile = null;
         try {
             Map<String, String> env = System.getenv();
             BmLog.debug("JMX name=" + jmxName);
-            file = new File(env.get("JMETER") + "/" + jmxName);
+
+
+            jmxFile = new File(env.get("JMETER") + File.separator + jmxName);
+            BmLog.debug("Using $JMETER=" + env.get("JMETER"));
+            BmLog.debug("Using file.separator=" + File.separator);
+            BmLog.debug("Setting JMX file=" + jmxFile.getCanonicalPath());
             // if file doesnt exists, then create it
-            if (!file.exists()) {
+            if (!jmxFile.exists()) {
                 try {
-                    BmLog.debug("Creating file " + file.getAbsoluteFile());
-                    file.createNewFile();
+                    BmLog.debug("Creating file " + jmxFile.getCanonicalPath());
+                    jmxFile.createNewFile();
 
                 } catch (IOException io) {
                     BmLog.error("Failed to create file for saving JMX: " + io);
@@ -366,8 +371,10 @@ public class BlazemeterApi {
 
                 }
             }
-            BmLog.debug("Saving JMX to " + file.getAbsoluteFile());
-            fileOutputStream = new FileOutputStream(file);
+
+
+            BmLog.debug("Saving JMX to " + jmxFile.getCanonicalPath());
+            fileOutputStream = new FileOutputStream(jmxFile);
             // get the content in bytes
             BmLog.debug("Getting JMX content..., JMX name=" + jmxName);
             byte[] jmxInBytes = jmx.get(1).getBytes();
@@ -375,7 +382,7 @@ public class BlazemeterApi {
             fileOutputStream.write(jmxInBytes);
             fileOutputStream.flush();
             fileOutputStream.close();
-            BmLog.debug("JMX script was saved to " + file.getAbsolutePath());
+            BmLog.debug("JMX script was saved to " + jmxFile.getCanonicalPath());
         } catch (IOException ioe) {
             BmLog.error("Failed to download&save JMX: " + ioe);
             BmLog.debug("Failed to download&save JMX: " + ioe);
@@ -392,7 +399,7 @@ public class BlazemeterApi {
                 BmLog.error("Failed to close fileinputstream: " + fioe);
             }
         }
-        return file;
+        return jmxFile;
     }
 
 
