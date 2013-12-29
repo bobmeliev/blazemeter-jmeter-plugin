@@ -1,6 +1,5 @@
 package com.blazemeter.jmeter.utils;
 
-import org.apache.jorphan.logging.LoggingManager;
 import org.apache.log.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,7 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
  */
 @Aspect
 public class Log {
-    private static Logger logger = LoggingManager.getLoggerFor("bm-logger");
+    private static Logger logger = BmLog.getLogger();
 
     @Pointcut
             ("execution(* com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui.configure(..))")
@@ -28,29 +27,25 @@ public class Log {
     public void logRemoteTestRunnerGui(ProceedingJoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         Object[] methodArgs = joinPoint.getArgs();
-        BmLog.debug("Call method " + methodName + " with args " + methodArgs);
-        logger.debug("Call method " + methodName + " with args " + methodArgs);
+        logger.debug("LOGGING ASPECT: Call method " + methodName + " with args " + methodArgs);
         Object result = null;
         try {
             result = joinPoint.proceed();
         } catch (Throwable e) {
         }
-        logger.debug("Method " + methodName + " returns " + result);
-        BmLog.debug("Method " + methodName + " returns " + result);
+        logger.debug("LOGGING ASPECT: Method " + methodName + " returns " + result);
     }
 
     @Around("bmTestManager()")
     public void logNotify(ProceedingJoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
         Object[] methodArgs = joinPoint.getArgs();
-        BmLog.debug("Call method " + methodName + " with args " + methodArgs);
-        logger.debug("Call method " + methodName + " with args " + methodArgs);
+        logger.debug("LOGGING ASPECT: Call method " + methodName + " with args " + methodArgs);
         Object result = null;
         try {
             result = joinPoint.proceed();
         } catch (Throwable e) {
         }
-        logger.debug("Method " + methodName + " returns " + result);
-        BmLog.debug("Method " + methodName + " returns " + result);
+        logger.debug("LOGGING ASPECT: Method " + methodName + " returns " + result);
     }
 }
