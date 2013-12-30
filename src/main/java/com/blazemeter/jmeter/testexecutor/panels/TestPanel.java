@@ -94,7 +94,7 @@ public class TestPanel {
 
     public void enableMainPanelControls(boolean isEnabled) {
         testIdComboBox.setEnabled(isEnabled);
-        reloadButton.setEnabled(isEnabled);
+        reloadButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
         createNewButton.setEnabled(isEnabled);
         goToTestPageButton.setEnabled(isEnabled);
     }
@@ -341,7 +341,7 @@ public class TestPanel {
         panel4.add(testIdComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         reloadButton = new JButton();
         reloadButton.setActionCommand("");
-        reloadButton.setEnabled(true);
+        reloadButton.setEnabled(false);
         reloadButton.setFont(new Font("Tahoma", reloadButton.getFont().getStyle(), 16));
         reloadButton.setHorizontalTextPosition(0);
         reloadButton.setIcon(new ImageIcon(getClass().getResource("/com/blazemeter/jmeter/images/refresh.png")));

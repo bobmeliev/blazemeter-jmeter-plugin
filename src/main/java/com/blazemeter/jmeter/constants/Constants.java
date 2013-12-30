@@ -40,12 +40,12 @@ public interface Constants {
     public static final String DATA = "data";
     public static final String SAMPLES = "samples";
     public static final String CALLBACK_URL = "callbackurl";
-
+    public static final String ENTER_YOUR_USER_KEY = "Enter your user key";
     //constans for HashMaps
     public static final String ENGINES = "engines";
     public static final String CONSOLES = "consoles";
     public static final String ENGINE_SIZE = "engineSize";
     public static final String USERS_PER_ENGINE = "userPerEngine";
-
+    public static final String BM_LOGGER = "bm-logger";
     public static final String INFINITY = Character.toString('\u221e');
 }

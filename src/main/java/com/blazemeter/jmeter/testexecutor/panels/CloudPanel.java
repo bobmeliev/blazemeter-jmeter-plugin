@@ -396,7 +396,7 @@ public class CloudPanel extends JPanel {
         Color color = new Color(240, 240, 240);
         enginesDescription.setBackground(color);
         enginesDescription.setBorder(border);
-        enginesDescription.setText("JMETER CONSOLE");
+        enginesDescription.setText("");
         enginesDescription.setToolTipText("Number of JMeter engines");
         this.add(enginesDescription, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         overridesPanel = new JPanel();
