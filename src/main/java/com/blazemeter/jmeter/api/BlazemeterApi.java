@@ -350,14 +350,11 @@ public class BlazemeterApi {
         BmLog.debug("Downloading JMX from server...");
         List<String> jmx = getJMXasList(url);
         String jmxName = jmx.get(0);
-        BmLog.debug("jmx list size=" + String.valueOf(jmx.size()));
-        BmLog.debug("jmx.get(0)=" + jmx.get(0));
         FileOutputStream fileOutputStream = null;
         File jmxFile = null;
         try {
             BmLog.debug("JMX name=" + jmxName);
             jmxFile = new File(FileServer.getDefaultBase() + File.separator + jmxName);
-            BmLog.debug("Using file.separator=" + File.separator);
             BmLog.debug("Setting JMX file=" + jmxFile.getCanonicalPath());
             // if file doesnt exists, then create it
             if (!jmxFile.exists()) {
@@ -366,7 +363,6 @@ public class BlazemeterApi {
                     jmxFile.createNewFile();
 
                 } catch (IOException io) {
-                    BmLog.error("Failed to create file for saving JMX: " + io);
                     BmLog.debug("Failed to create file for saving JMX: " + io);
 
                 }
@@ -376,18 +372,14 @@ public class BlazemeterApi {
             BmLog.debug("Saving JMX to " + jmxFile.getCanonicalPath());
             fileOutputStream = new FileOutputStream(jmxFile);
             // get the content in bytes
-            BmLog.debug("Getting JMX content..., JMX name=" + jmxName);
             byte[] jmxInBytes = jmx.get(1).getBytes();
-            BmLog.debug("Writing JMX to file...");
             fileOutputStream.write(jmxInBytes);
             fileOutputStream.flush();
             fileOutputStream.close();
             BmLog.debug("JMX script was saved to " + jmxFile.getCanonicalPath());
         } catch (IOException ioe) {
-            BmLog.error("Failed to download&save JMX: " + ioe);
             BmLog.debug("Failed to download&save JMX: " + ioe);
         } catch (IndexOutOfBoundsException ioube) {
-            BmLog.error("Verify bug https://blazemeter.atlassian.net/browse/BPC-146");
             BmLog.debug("Verify bug https://blazemeter.atlassian.net/browse/BPC-146");
         } finally {
             try {
@@ -396,7 +388,6 @@ public class BlazemeterApi {
                 }
             } catch (IOException fioe) {
                 BmLog.debug("Failed to close fileinputstream: " + fioe);
-                BmLog.error("Failed to close fileinputstream: " + fioe);
             }
         }
         return jmxFile;
