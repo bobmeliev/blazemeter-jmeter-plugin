@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +26,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
 public class BlazemeterApi {
 
@@ -351,12 +355,8 @@ public class BlazemeterApi {
         FileOutputStream fileOutputStream = null;
         File jmxFile = null;
         try {
-            Map<String, String> env = System.getenv();
             BmLog.debug("JMX name=" + jmxName);
-
-
-            jmxFile = new File(env.get("JMETER") + File.separator + jmxName);
-            BmLog.debug("Using $JMETER=" + env.get("JMETER"));
+            jmxFile = new File(FileServer.getDefaultBase() + File.separator + jmxName);
             BmLog.debug("Using file.separator=" + File.separator);
             BmLog.debug("Setting JMX file=" + jmxFile.getCanonicalPath());
             // if file doesnt exists, then create it
