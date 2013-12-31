@@ -89,7 +89,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         if (testInfo == null)
             testInfo = new TestInfo();
 
-        BmLog.debug("Setting testInfo " + testInfo.toString() + " to RemoteTestRunner");
         try {
             this.setProperty(Constants.TEST_NAME, testInfo.getName());
             this.setProperty(Constants.TEST_ID, testInfo.getId());

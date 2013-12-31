@@ -40,7 +40,7 @@ public interface Constants {
     public static final String DATA = "data";
     public static final String SAMPLES = "samples";
     public static final String CALLBACK_URL = "callbackurl";
-
+    public static final String ENTER_YOUR_USER_KEY = "Enter your user key";
     //constans for HashMaps
     public static final String ENGINES = "engines";
     public static final String CONSOLES = "consoles";
