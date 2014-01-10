@@ -255,11 +255,11 @@ public class BmTestManager {
     }
 
     public void logUpload(String testId, String reportName, String buff, String dataType) {
-        BlazemeterApi.getInstance().logUpload(getUserKey(), testId, reportName, buff, dataType);
+        rpc.logUpload(getUserKey(), testId, reportName, buff, dataType);
     }
 
     public void samplesUpload(List<JSONObject> samples, String callBackUrl) {
-        BlazemeterApi.getInstance().samplesUpload(samples, callBackUrl);
+        rpc.samplesUpload(samples, callBackUrl);
     }
 
     public void uploadJmx() {
@@ -342,14 +342,12 @@ public class BmTestManager {
     }
 
 
-
     public void NotifyUserKeyChanged() {
         for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {
             ti.onTestUserKeyChanged(userKey);
         }
 
     }
-
 
 
     public void NotifyTestInfoChanged() {
@@ -371,7 +369,6 @@ public class BmTestManager {
             rmc.onRunModeChanged(isLocalRunMode);
         }
     }
-
 
 
     public void NotifyUserInfoChanged(UserInfo userInfo) {

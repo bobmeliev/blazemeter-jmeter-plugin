@@ -95,6 +95,7 @@ public class TestPanel {
     public void enableMainPanelControls(boolean isEnabled) {
         testIdComboBox.setEnabled(isEnabled);
         reloadButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
+        userKeyTextField.setEnabled(isEnabled);
         createNewButton.setEnabled(isEnabled);
         goToTestPageButton.setEnabled(isEnabled);
     }
@@ -301,9 +302,11 @@ public class TestPanel {
         testIdArea.setBorder(border);
         testIdArea.setBackground(color);
         testIdArea.setEnabled(true);
+        testIdArea.setEditable(false);
         testIdArea.setToolTipText("Test id of current test");
         panel3.add(testIdArea, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(70, -1), new Dimension(70, -1), 0, false));
         testNameArea = new JTextArea(Constants.EMPTY, 1, 1);
+        testNameArea.setEditable(false);
         testNameArea.setBackground(color);
         testNameArea.setAutoscrolls(false);
         testNameArea.setBorder(border);

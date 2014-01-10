@@ -43,7 +43,8 @@ public class TestsListSetter implements Runnable {
             bmTestManager.setUserKeyValid(true);
 //            TestListController.start(bmTestManager.getUserKey());
             testIdComboBox.removeAllItems();
-
+            testIdComboBox.setEnabled(true);
+            testIdComboBox.addItem(Constants.NEW);
             List<String> testIdList = new ArrayList<String>();
             // create list of tests on server
 
@@ -62,19 +63,6 @@ public class TestsListSetter implements Runnable {
                 BmLog.error("Current test property was not applied to screen: " + iobe);
             }
 
-
-            boolean exists = false;
-
-            if (curTestId != null) {
-                for (int index = 1; index <= testIdComboBox.getItemCount() && !exists; index++) {
-                    Object obj = testIdComboBox.getItemAt(index);
-                    if (obj instanceof TestInfo & obj != null) {
-                        TestInfo ti = (TestInfo) testIdComboBox.getItemAt(index);
-                        exists = curTestId.equals(ti.getId());
-                    }
-                }
-            }
-
             // select current test(which was previously selected in testIdComboBox)
             if (curTest.length != 0) {
                 for (TestInfo ti : tests) {
@@ -87,12 +75,14 @@ public class TestsListSetter implements Runnable {
                             , "Test was not found on server");
                     JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
                 }
+                testIdComboBox.setSelectedItem(Constants.NEW);
             }
 
 
         } else {
             BmTestManager.getInstance().setUserKeyValid(false);
             if (!silentMode) {
+                testIdComboBox.removeAllItems();
                 JOptionPane.showMessageDialog(mainPanel, "Please enter valid user key", "Invalid user key", JOptionPane.ERROR_MESSAGE);
                 BmTestManager.getInstance().setUserKeyValid(false);
                 cloudPanel.reset();
@@ -105,6 +95,6 @@ public class TestsListSetter implements Runnable {
                 BmLog.debug("Invalid userKey was found. Tests are not received from BM server");
             }
         }
-        testIdComboBox.insertItemAt(Constants.NEW, 0);
+
     }
 }
