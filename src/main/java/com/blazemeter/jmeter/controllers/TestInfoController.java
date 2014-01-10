@@ -27,7 +27,7 @@ public class TestInfoController {
         if ((task == null || task.isDone()) & !testId.isEmpty()) {
             final TestInfoChecker testInfoChecker = new TestInfoChecker(testId);
             task = scheduler.scheduleAtFixedRate(testInfoChecker, 0, 30, TimeUnit.SECONDS);
-            BmLog.console("TestInfoController is started with test.id=" + testId);
+            BmLog.info("TestInfoController is started with test.id=" + testId);
         }
     }
 
@@ -35,7 +35,7 @@ public class TestInfoController {
         if (task != null && !task.isDone()) {
             task.cancel(true);
             task = null;
-            BmLog.console("TestInfoController is stopped");
+            BmLog.info("TestInfoController is stopped");
         }
     }
 }

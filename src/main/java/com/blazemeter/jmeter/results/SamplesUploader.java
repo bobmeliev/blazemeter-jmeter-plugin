@@ -60,7 +60,7 @@ public class SamplesUploader {
             }
         });
         task = scheduler.schedule(samplesUploaderThread, 0, TimeUnit.SECONDS);
-        BmLog.console("Samples uploading is started: " + Constants.CALLBACK_URL + "=" + callBackUrl);
+        BmLog.info("Samples uploading is started: " + Constants.CALLBACK_URL + "=" + callBackUrl);
     }
 
     public static void stop() {
@@ -74,7 +74,7 @@ public class SamplesUploader {
         }
         if (task != null && !task.isDone()) {
             task.cancel(true);
-            BmLog.console("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
+            BmLog.info("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
         }
     }
 

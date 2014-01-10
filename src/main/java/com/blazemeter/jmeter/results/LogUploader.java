@@ -42,7 +42,7 @@ public class LogUploader {
                 filename = new StringBuilder(JMeterUtils.getJMeterBinDir() + "/").append(filename);
             }
             try {
-                BmLog.console("Log file path at host= " + host + " is: " + filename);
+                BmLog.info("Log file path at host= " + host + " is: " + filename);
 
                 BufferedReader logBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filename.toString())));
                 logFileReaders.put(entry.getKey(), logBufferedReader);

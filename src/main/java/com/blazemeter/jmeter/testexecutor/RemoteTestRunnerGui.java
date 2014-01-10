@@ -8,6 +8,7 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.URIOpener;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.samplers.SampleResult;
@@ -110,7 +111,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
                 new ImageIcon(
                         Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        icon.addMouseListener(new Utils.URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
+        icon.addMouseListener(new URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
 
         JLabel version = new JLabel("Version:" + Utils.getPluginVersion().toString());
 

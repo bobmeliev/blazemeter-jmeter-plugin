@@ -175,7 +175,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
                 return;
             }
 
-            BmLog.console("Test is started at " + host);
+            BmLog.info("Test is started at " + host);
 
 
             BmTestManager.setTestRunning(true);
@@ -199,7 +199,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "false");
             BmTestManager bmTestManager = BmTestManager.getInstance();
             BmTestManager.setTestRunning(false);
-            BmLog.console("Test is ended at " + host);
+            BmLog.info("Test is ended at " + host);
             StandardJMeterEngine.stopEngine();
             if (JMeter.isNonGUI()) {
                 System.exit(0);
