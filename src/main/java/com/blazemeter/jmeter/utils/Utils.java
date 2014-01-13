@@ -69,7 +69,7 @@ public class Utils {
             hostIP = InetAddress.getLocalHost().getHostAddress();
 
         } catch (UnknownHostException uhe) {
-
+            BmLog.error("Failed to get host IP: ", uhe);
         }
         return hostIP;
     }
@@ -509,12 +509,4 @@ public class Utils {
             }
         }
     }
-
-    /*public static class URIOpener extends com.blazemeter.jmeter.utils.URIOpener {
-
-        public URIOpener(String aURI) {
-            super(aURI);
-        }
-
-    }*/
 }

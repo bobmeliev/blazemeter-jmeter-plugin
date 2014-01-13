@@ -308,6 +308,10 @@ public class BmTestManager {
         return getUserInfo(false);
     }
 
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
     public UserInfo getUserInfo(boolean force) {
         String userKey = this.getUserKey();
         if ((force & !userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
