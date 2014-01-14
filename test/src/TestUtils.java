@@ -18,6 +18,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Properties;
+
 
 /**
  * Created by dzmitrykashlach on 1/9/14.
@@ -25,7 +31,8 @@ import org.junit.Test;
 public class TestUtils {
     private JMeterContext jmctx;
     private BmTestManager bmTestManager;
-    private String LOCATIONS = System.getProperty("user.dir") + "/test/src/resources/locations.txt";
+    private String RESOURCES = System.getProperty("user.dir") + "/test/src/resources";
+    private String LOCATIONS = RESOURCES + "/locations.txt";
     private String TEST_INFO = System.getProperty("user.dir") + "/test/src/resources/test-info.txt";
 
     @Before
@@ -107,5 +114,35 @@ public class TestUtils {
         Assert.assertEquals(ti_expected.getStatus(), ti_actual.getStatus());
         Assert.assertEquals(ti_expected.getType(), ti_actual.getType());
     }
+
+    @Test
+    public void countEngines() {
+        HashMap<String, String> enginesMap_expected = new HashMap<String, String>(4);
+        enginesMap_expected.put("userPerEngine", "216");
+        enginesMap_expected.put("consoles", "1");
+        enginesMap_expected.put("engineSize", "m1.medium");
+        enginesMap_expected.put("engines", "2");
+        HashMap<String, String> enginesMapActual = Utils.countEngines(650);
+        Assert.assertEquals(enginesMap_expected, enginesMapActual);
+    }
+
+    @Test
+    public void convertToJSON() {
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream(RESOURCES + "/jmeter.properties"));
+            JSONObject expected = Utils.convertToJSON(props);
+            String actual = Utils.getFileContents(RESOURCES + "/jmeter.properties.json");
+            Assert.assertEquals(expected.toString(), actual);
+        } catch (JSONException je) {
+            System.out.println("Failed to convert properties to JSON..." + je);
+            Assert.fail();
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Failed to read jmeter.properties..." + fnfe);
+            Assert.fail();
+        } catch (IOException ioe) {
+            System.out.println("Failed to read jmeter.properties..." + ioe);
+            Assert.fail();
+        }
+    }
 }
-//411711 - load_test

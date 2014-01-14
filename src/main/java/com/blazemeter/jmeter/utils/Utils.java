@@ -169,7 +169,7 @@ public class Utils {
             }
         } catch (IOException ignored) {
         }
-        return contents.toString();
+        return StringUtils.strip(contents.toString());
     }
 
     public static void checkChangesInTestPlan() {
