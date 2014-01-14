@@ -1,4 +1,4 @@
-package src;
+package src.com.tests;
 
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
@@ -31,9 +31,9 @@ import java.util.Properties;
 public class TestUtils {
     private JMeterContext jmctx;
     private BmTestManager bmTestManager;
-    private String RESOURCES = System.getProperty("user.dir") + "/test/src/resources";
+    private String RESOURCES = System.getProperty("user.dir") + "/test/src/com/resources";
     private String LOCATIONS = RESOURCES + "/locations.txt";
-    private String TEST_INFO = System.getProperty("user.dir") + "/test/src/resources/test-info.txt";
+    private String TEST_INFO = System.getProperty("user.dir") + "/test/src/com/resources/test-info.txt";
 
     @Before
     public void setUp() {
