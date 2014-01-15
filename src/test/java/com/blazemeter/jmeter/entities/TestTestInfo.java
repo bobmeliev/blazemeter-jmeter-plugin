@@ -1,12 +1,10 @@
-package src.com.tests;
+package com.blazemeter.jmeter.entities;
 
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.constants.TestConstants;
 import com.blazemeter.jmeter.utils.Utils;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import src.com.Constants;
 
 /**
  * Created by dzmitrykashlach on 1/14/14.
@@ -70,7 +68,7 @@ public class TestTestInfo {
     @Test
     public void test_toString() {
         String actual = ti1.toString();
-        String expected = Utils.getFileContents(Constants.RESOURCES + "/test-info-to-string.txt");
+        String expected = Utils.getFileContents(TestConstants.RESOURCES + "/test-info-to-string.txt");
         Assert.assertEquals(expected, actual);
     }
 }

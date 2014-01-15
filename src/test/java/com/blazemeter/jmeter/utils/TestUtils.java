@@ -1,12 +1,11 @@
-package src.com.tests;
+package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.constants.TestConstants;
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.Utils;
 import junit.framework.Assert;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.threads.JMeterContext;
@@ -17,7 +16,6 @@ import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import src.com.Constants;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,8 +30,8 @@ import java.util.Properties;
 public class TestUtils {
     private JMeterContext jmctx;
     private BmTestManager bmTestManager;
-    private String LOCATIONS = Constants.RESOURCES + "/locations.txt";
-    private String TEST_INFO = System.getProperty("user.dir") + "/test/src/com/resources/test-info.txt";
+    private String LOCATIONS = TestConstants.RESOURCES + "/locations.txt";
+    private String TEST_INFO = TestConstants.RESOURCES + "/test-info.txt";
 
     @Before
     public void setUp() {
@@ -130,9 +128,9 @@ public class TestUtils {
     public void convertToJSON() {
         Properties props = new Properties();
         try {
-            props.load(new FileInputStream(Constants.RESOURCES + "/jmeter.properties"));
+            props.load(new FileInputStream(TestConstants.RESOURCES + "/jmeter.properties"));
             JSONObject expected = Utils.convertToJSON(props);
-            String actual = Utils.getFileContents(Constants.RESOURCES + "/jmeter.properties.json");
+            String actual = Utils.getFileContents(TestConstants.RESOURCES + "/jmeter.properties.json");
             Assert.assertEquals(expected.toString(), actual);
         } catch (JSONException je) {
             System.out.println("Failed to convert properties to JSON..." + je);
