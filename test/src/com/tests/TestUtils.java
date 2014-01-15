@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import src.com.Constants;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,8 +32,7 @@ import java.util.Properties;
 public class TestUtils {
     private JMeterContext jmctx;
     private BmTestManager bmTestManager;
-    private String RESOURCES = System.getProperty("user.dir") + "/test/src/com/resources";
-    private String LOCATIONS = RESOURCES + "/locations.txt";
+    private String LOCATIONS = Constants.RESOURCES + "/locations.txt";
     private String TEST_INFO = System.getProperty("user.dir") + "/test/src/com/resources/test-info.txt";
 
     @Before
@@ -130,9 +130,9 @@ public class TestUtils {
     public void convertToJSON() {
         Properties props = new Properties();
         try {
-            props.load(new FileInputStream(RESOURCES + "/jmeter.properties"));
+            props.load(new FileInputStream(Constants.RESOURCES + "/jmeter.properties"));
             JSONObject expected = Utils.convertToJSON(props);
-            String actual = Utils.getFileContents(RESOURCES + "/jmeter.properties.json");
+            String actual = Utils.getFileContents(Constants.RESOURCES + "/jmeter.properties.json");
             Assert.assertEquals(expected.toString(), actual);
         } catch (JSONException je) {
             System.out.println("Failed to convert properties to JSON..." + je);

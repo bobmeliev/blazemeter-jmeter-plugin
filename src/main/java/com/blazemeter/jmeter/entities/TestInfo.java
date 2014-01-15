@@ -97,17 +97,30 @@ public class TestInfo {
         return ret;
     }
 
-    public boolean equals(TestInfo testInfo) {
-        boolean equals;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TestInfo)) return false;
 
-        equals = (this == null & testInfo == null);
-        if (!equals | (this == null & testInfo == null)) {
-            return equals;
-        }
-        return testInfo.name.equals(this.name) &&
-                testInfo.id.equals(this.id)
-                && testInfo.status.equals(this.status);
+        TestInfo testInfo = (TestInfo) o;
+
+        if (numberOfUsers != testInfo.numberOfUsers) return false;
+        if (!id.equals(testInfo.id)) return false;
+        if (!name.equals(testInfo.name)) return false;
+        if (status != testInfo.status) return false;
+
+        return true;
     }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + status.hashCode();
+        result = 31 * result + numberOfUsers;
+        return result;
+    }
+
 
     public boolean isEmpty() {
         return (id == null) && (name == null);
