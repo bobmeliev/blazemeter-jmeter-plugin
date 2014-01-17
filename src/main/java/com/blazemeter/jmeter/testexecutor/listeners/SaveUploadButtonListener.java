@@ -30,7 +30,7 @@ public class SaveUploadButtonListener implements ActionListener {
                 return;
             }
             if (guiPackage.getTestPlanFile() == null | guiPackage.isDirty()) {
-                Utils.saveJMX(guiPackage);
+                Utils.saveJMX();
             }
             TestInfo testInfo = bmTestManager.getTestInfo();
             if (testInfo.getNumberOfUsers() == 0) {

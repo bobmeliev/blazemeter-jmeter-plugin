@@ -74,7 +74,7 @@ public class CreateNewButtonListener implements ActionListener {
         GuiPackage guiPackage = GuiPackage.getInstance();
         if (guiPackage.getTestPlanFile() == null) {
 
-            Utils.saveJMX(guiPackage);
+            Utils.saveJMX();
         }
         bmTestManager.uploadJmx();
 

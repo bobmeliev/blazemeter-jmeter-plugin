@@ -38,7 +38,7 @@ public class EditJMXLocallyButtonListener implements ActionListener {
                 return;
             } else if (chosenOption == JOptionPane.YES_OPTION) {
 
-                Utils.saveJMX(guiPackage);
+                Utils.saveJMX();
 
 
                 Utils.downloadJMX();
