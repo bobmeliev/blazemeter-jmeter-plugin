@@ -70,7 +70,8 @@ public class TestsListSetter implements Runnable {
                         testIdComboBox.setSelectedItem(ti);
                     }
                 }
-                if ((!testIdList.isEmpty() & !curTestId.isEmpty()) && !testIdList.contains(curTestId)) {
+                if ((!testIdList.isEmpty() & !curTestId.isEmpty()) && !testIdList.contains(curTestId)
+                        && !curTestId.equals(Constants.NEW)) {
                     JMeterUtils.reportErrorToUser("Test=" + curTestId + " was not found on server. Select test from list."
                             , "Test was not found on server");
                     JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
