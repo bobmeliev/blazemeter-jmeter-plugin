@@ -592,9 +592,9 @@ public class BlazemeterApi {
 
         protected BmUrlManager() {
             SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
-            BmLog.console("Server url is :" + SERVER_URL);
-            BmLog.console("Jmeter version :" + JMeterUtils.getJMeterVersion());
-            BmLog.console("Plugin version :" + Utils.getPluginVersion().toString(true));
+            BmLog.info("Server url is :" + SERVER_URL);
+            BmLog.info("Jmeter version :" + JMeterUtils.getJMeterVersion());
+            BmLog.info("Plugin version :" + Utils.getPluginVersion().toString(true));
         }
 
         protected static BmUrlManager getBmUrlManager() {

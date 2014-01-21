@@ -9,6 +9,8 @@ import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotificatio
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationVP;
 import com.blazemeter.jmeter.utils.GuiUtils;
+import com.blazemeter.jmeter.utils.PluginInstaller;
+import com.blazemeter.jmeter.utils.URIOpener;
 import com.blazemeter.jmeter.utils.Utils;
 
 import javax.swing.*;
@@ -39,7 +41,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
                 new ImageIcon(
                         Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        icon.addMouseListener(new Utils.URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
+        icon.addMouseListener(new URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
 
         JLabel version = new JLabel("Version:" + Utils.getPluginVersion().toString());
 
@@ -90,7 +92,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         gridBagConstraints.anchor = GridBagConstraints.EAST;
         gridBagConstraints.insets = new Insets(2, 0, 0, 10);
         panelLink.add(reportBug, gridBagConstraints);
-        reportBug.addMouseListener(new Utils.URIOpener(Constants.REQUEST_FEATURE_REPORT_BUG_URL));
+        reportBug.addMouseListener(new URIOpener(Constants.REQUEST_FEATURE_REPORT_BUG_URL));
 
 
         gridBagConstraints = new GridBagConstraints();
@@ -100,7 +102,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         gridBagConstraints.anchor = GridBagConstraints.EAST;
         gridBagConstraints.insets = new Insets(2, 0, 0, 10);
         panelLink.add(requestFeature, gridBagConstraints);
-        requestFeature.addMouseListener(new Utils.URIOpener(Constants.REQUEST_FEATURE_REPORT_BUG_URL));
+        requestFeature.addMouseListener(new URIOpener(Constants.REQUEST_FEATURE_REPORT_BUG_URL));
 
 
         gridBagConstraints = new GridBagConstraints();
@@ -192,7 +194,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         download.setForeground(Color.WHITE);
         download.setCursor(new Cursor(Cursor.HAND_CURSOR));
         download.setToolTipText("Click here to download new version");
-        Utils.PluginInstaller pluginInstaller = new Utils.PluginInstaller();
+        PluginInstaller pluginInstaller = new PluginInstaller();
         download.addMouseListener(pluginInstaller);
         versionPanel.add(download);
 

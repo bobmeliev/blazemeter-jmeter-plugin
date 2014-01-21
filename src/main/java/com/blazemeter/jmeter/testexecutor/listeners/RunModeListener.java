@@ -23,7 +23,7 @@ public class RunModeListener implements ActionListener {
         bmTestManager.setIsLocalRunMode(e.getActionCommand().equals("Locally (Reporting Only)"));
         boolean isLocalRunMode = bmTestManager.getIsLocalRunMode();
         runModeChangedNotification.onRunModeChanged(isLocalRunMode);
-        BmLog.console(e.getActionCommand());
+        BmLog.info(e.getActionCommand());
 
     }
 }

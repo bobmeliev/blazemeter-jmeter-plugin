@@ -88,7 +88,7 @@ public class ServerStatusController {
         });
         if (this.task == null || this.task.isDone()) {
             this.task = scheduler.scheduleAtFixedRate(connectionController, 1, 10, TimeUnit.SECONDS);
-            BmLog.console("ConnectionController is started");
+            BmLog.info("ConnectionController is started");
         }
     }
 
@@ -96,7 +96,7 @@ public class ServerStatusController {
         if (this.task != null && !this.task.isDone()) {
             this.task.cancel(true);
             this.task = null;
-            BmLog.console("ConnectionController is stopped");
+            BmLog.info("ConnectionController is stopped");
         }
     }
 

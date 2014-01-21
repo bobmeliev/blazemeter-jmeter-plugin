@@ -26,9 +26,9 @@ public class BmLog {
         return logger;
     }
 
-    public static void console(String msg) {
+    public static void info(String msg) {
         if (console_write) {
-            System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
+            console(msg);
         }
         if (log_write)
             logger.info(msg);
@@ -37,7 +37,7 @@ public class BmLog {
     public static void debug(String msg) {
         logger.setPriority(Priority.DEBUG);
         if (console_write) {
-            System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
+            console(msg);
         }
         if (log_write) {
             logger.debug(msg);
@@ -50,7 +50,8 @@ public class BmLog {
     public static void error(String msg, Throwable ex) {
         logger.setPriority(Priority.ERROR);
         if (console_write) {
-            System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
+            console(msg);
+
         }
         if (log_write) {
             logger.error(msg, ex);
@@ -64,5 +65,9 @@ public class BmLog {
 
     public static void error(Throwable ex) {
         error("", ex);
+    }
+
+    private static void console(String msg) {
+        System.out.println(format.format(new Date()) + " - " + Thread.currentThread().getId() + " : " + msg);
     }
 }

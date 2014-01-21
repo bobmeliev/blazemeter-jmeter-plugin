@@ -99,7 +99,7 @@ public class BmTestManager {
             testInfo.setError(error);
             NotifyTestInfoChanged();
             BmLog.error(error);
-            BmLog.console(error);
+            BmLog.info(error);
             return callBackUrl;
         }
 
@@ -110,7 +110,7 @@ public class BmTestManager {
             testInfo.setError(error);
             NotifyTestInfoChanged();
             BmLog.error(callBackUrl);
-            BmLog.console(callBackUrl);
+            BmLog.info(callBackUrl);
             return callBackUrl;
         }
 
@@ -120,11 +120,11 @@ public class BmTestManager {
             testInfo.setError(error);
             NotifyTestInfoChanged();
             BmLog.error(callBackUrl);
-            BmLog.console(callBackUrl);
+            BmLog.info(callBackUrl);
             return callBackUrl;
         }
 
-        BmLog.console("Start test " + testInfo);
+        BmLog.info("Start test " + testInfo);
 
         if (testInfo.getStatus() != TestStatus.Running) {
             if (testInfo.getId().isEmpty()) {
@@ -134,7 +134,7 @@ public class BmTestManager {
                     projectName = "non-gui-test";
                 }
                 projectName = projectName + new SimpleDateFormat(" dd/MM/yyyy - HH:mm").format(new Date());
-                BmLog.console("Starting local test...");
+                BmLog.info("Starting local test...");
                 testInfo = BlazemeterApi.getInstance().createTest(userKey, projectName);
                 if (testInfo == null) {
                     BmLog.error("TestInfo is not set! Enter userkey and select a test!", new NullPointerException());
@@ -162,7 +162,7 @@ public class BmTestManager {
                     testInfo.setError(error);
                     NotifyTestInfoChanged();
                     BmLog.error(error);
-                    BmLog.console(error);
+                    BmLog.info(error);
                     return callBackUrl;
 
                 } else if (res.containsKey(Constants.CALLBACK_URL)) {
@@ -179,7 +179,7 @@ public class BmTestManager {
     }
 
     public void stopTest() {
-        BmLog.console("Finishing test...");
+        BmLog.info("Finishing test...");
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
         SamplesUploader.stop();
@@ -279,7 +279,7 @@ public class BmTestManager {
             BmLog.error("TestInfo is null, test won't be started");
             return;
         }
-        BmLog.console("Starting test " + testInfo.getId() + "-" + testInfo.getName());
+        BmLog.info("Starting test " + testInfo.getId() + "-" + testInfo.getName());
         TestInfoController.stop();
         testInfo = rpc.runInTheCloud(this.getUserKey(), testInfo.getId());
         setTestInfo(testInfo);
@@ -287,7 +287,7 @@ public class BmTestManager {
 
     public void stopInTheCloud() {
         TestInfo ti = this.getTestInfo();
-        BmLog.console("Finishing test " + ti.getId() + "-" + ti.getName());
+        BmLog.info("Finishing test " + ti.getId() + "-" + ti.getName());
         ti = rpc.stopInTheCloud(this.getUserKey(), this.getTestInfo());
         setTestInfo(ti);
     }
@@ -308,10 +308,14 @@ public class BmTestManager {
         return getUserInfo(false);
     }
 
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
     public UserInfo getUserInfo(boolean force) {
         String userKey = this.getUserKey();
         if ((force & !userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
-            BmLog.console("Getting user information...");
+            BmLog.info("Getting user information...");
             userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
             NotifyUserInfoChanged(userInfo);
         }
@@ -389,10 +393,10 @@ public class BmTestManager {
             public void run() {
                 PluginUpdate update = BlazemeterApi.getInstance().getUpdate(BmTestManager.getInstance().getUserKey());
                 if (update != null && update.getVersion().isNewerThan(Utils.getPluginVersion())) {
-                    BmLog.console(String.format("Update found from %s to %s", Utils.getPluginVersion().toString(true), update.getVersion().toString(true)));
+                    BmLog.info(String.format("Update found from %s to %s", Utils.getPluginVersion().toString(true), update.getVersion().toString(true)));
                     NotifyPluginUpdateReceived(update);
                 } else {
-                    BmLog.console("No update found");
+                    BmLog.info("No update found");
                 }
             }
         }).start();

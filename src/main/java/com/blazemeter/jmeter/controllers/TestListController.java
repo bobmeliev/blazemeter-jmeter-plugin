@@ -28,7 +28,7 @@ public class TestListController {
         if ((task == null || task.isDone()) & !userKey.isEmpty()) {
             final TestsChecker testsChecker = new TestsChecker(userKey, notification);
             task = scheduler.scheduleAtFixedRate(testsChecker, 30, 30, TimeUnit.SECONDS);
-            BmLog.console("TestListController is started with userKey=" + userKey);
+            BmLog.info("TestListController is started with userKey=" + userKey);
         }
     }
 
@@ -36,7 +36,7 @@ public class TestListController {
         if (task != null && !task.isDone()) {
             task.cancel(true);
             task = null;
-            BmLog.console("TestListController is stopped");
+            BmLog.info("TestListController is stopped");
         }
     }
 
