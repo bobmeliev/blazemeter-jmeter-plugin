@@ -19,11 +19,9 @@ import org.apache.jmeter.visualizers.gui.AbstractVisualizer;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
-public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionListener {
+public class RemoteTestRunnerGui extends AbstractVisualizer {
     private static TestPanel testPanel;
     private static JPanel versionPanel;
 
@@ -45,7 +43,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         getFilePanel().setVisible(false);
     }
 
-
+    @Override
     public TestElement createTestElement() {
         RemoteTestRunner testRunner = new RemoteTestRunner();
         modifyTestElement(testRunner);
@@ -177,10 +175,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer implements ActionLis
         return null;
     }
 
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
 
     public void add(SampleResult sample) {
 
