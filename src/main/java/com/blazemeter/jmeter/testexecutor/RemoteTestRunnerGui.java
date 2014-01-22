@@ -51,7 +51,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
         modifyTestElement(testRunner);
 
         String currentTestId = Utils.getCurrentTestId();
-        if (!currentTestId.isEmpty()) {
+        if (currentTestId!=null&&!currentTestId.isEmpty()) {
             TestInfoController.start(currentTestId);
         }
 

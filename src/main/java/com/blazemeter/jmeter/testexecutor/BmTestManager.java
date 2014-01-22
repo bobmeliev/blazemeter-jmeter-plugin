@@ -34,7 +34,7 @@ public class BmTestManager {
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
     private boolean isUserKeyValid = true;
-    private boolean isLocalRunMode = false;
+    private boolean isLocalRunMode = true;
 
     private static boolean isTestRunning = false;
     private static BmTestManager instance;
