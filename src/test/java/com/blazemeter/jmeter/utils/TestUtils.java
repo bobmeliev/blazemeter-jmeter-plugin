@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.constants.TestConstants;
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
@@ -10,6 +11,7 @@ import junit.framework.Assert;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jmeter.threads.JMeterContext;
 import org.apache.jmeter.threads.JMeterContextService;
+import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 
 
@@ -130,8 +133,16 @@ public class TestUtils {
         try {
             props.load(new FileInputStream(TestConstants.RESOURCES + "/jmeter.properties"));
             JSONObject expected = Utils.convertToJSON(props);
-            String actual = Utils.getFileContents(TestConstants.RESOURCES + "/jmeter.properties.json");
-            Assert.assertEquals(expected.toString(), actual);
+            String s = Utils.getFileContents(TestConstants.RESOURCES + "/jmeter.properties.json");
+            JSONObject actual = new JSONObject(s);
+
+            Iterator<String> i = actual.keys();
+            StringBuilder k = new StringBuilder();
+            while (i.hasNext()) {
+                k.append(i.next());
+                Assert.assertTrue(actual.get(k.toString()).equals(expected.get(k.toString())));
+                k.setLength(0);
+            }
         } catch (JSONException je) {
             System.out.println("Failed to convert properties to JSON..." + je);
             Assert.fail();
@@ -142,5 +153,15 @@ public class TestUtils {
             System.out.println("Failed to read jmeter.properties..." + ioe);
             Assert.fail();
         }
+    }
+
+    @Test
+    public void getCurrentTestId() {
+        String expected_curTestId = "1111";
+        String currentTest = expected_curTestId + ";aaaaaaaaaaaaa";
+        JMeterUtils.loadJMeterProperties(TestConstants.RESOURCES + "/jmeter.properties");
+        JMeterUtils.setProperty(Constants.CURRENT_TEST, currentTest);
+        String actual_currentTestId = Utils.getCurrentTestId();
+        Assert.assertEquals(expected_curTestId, actual_currentTestId);
     }
 }

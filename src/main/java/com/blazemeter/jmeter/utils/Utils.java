@@ -507,4 +507,14 @@ public class Utils {
             }
         }
     }
+
+    public static String getCurrentTestId() {
+        String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
+        String currentTestId = null;
+        if (!currentTest.isEmpty()) {
+            currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
+        }
+
+        return currentTestId;
+    }
 }

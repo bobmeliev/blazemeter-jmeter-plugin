@@ -93,13 +93,8 @@ public class TestInfoNotificationTP implements ITestInfoNotification {
         testPanel.setTestInfo(testInfo);
 
         if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
-            String currentTest = JMeterUtils.getPropDefault(Constants.CURRENT_TEST, "");
-            String currentTestId = null;
-            if (!currentTest.isEmpty()) {
-                currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
-            } else {
-                currentTestId = "";
-            }
+            String currentTestId = Utils.getCurrentTestId();
+
             if (testInfo != null && !currentTestId.equals(testInfo.getId())) {
                 JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
                 TestInfoController.stop();

@@ -4,6 +4,8 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.controllers.ServerStatusController;
+import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
@@ -47,6 +49,13 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
     public TestElement createTestElement() {
         RemoteTestRunner testRunner = new RemoteTestRunner();
         modifyTestElement(testRunner);
+
+        String currentTestId = Utils.getCurrentTestId();
+        if (!currentTestId.isEmpty()) {
+            TestInfoController.start(currentTestId);
+        }
+
+        ServerStatusController.getServerStatusController().start();
         return testRunner;
     }
 
