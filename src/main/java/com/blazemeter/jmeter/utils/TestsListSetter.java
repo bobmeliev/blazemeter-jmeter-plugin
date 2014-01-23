@@ -64,6 +64,7 @@ public class TestsListSetter implements Runnable {
             }
 
             // select current test(which was previously selected in testIdComboBox)
+            testIdComboBox.setSelectedItem(Constants.NEW);
             if (curTest.length != 0) {
                 for (TestInfo ti : tests) {
                     if (ti.getId().equals(curTestId)) {
@@ -76,7 +77,6 @@ public class TestsListSetter implements Runnable {
                             , "Test was not found on server");
                     JMeterUtils.setProperty(Constants.CURRENT_TEST, "");
                 }
-                testIdComboBox.setSelectedItem(Constants.NEW);
             }
 
 

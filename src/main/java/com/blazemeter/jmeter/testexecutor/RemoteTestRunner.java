@@ -264,9 +264,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     public boolean canRemove() {
         ServerStatusController.getServerStatusController().stop();
         TestInfoController.stop();
-        /*TODO
-        Place here code for stopping all checkers;
-        */
         return true;
     }
 }
