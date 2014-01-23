@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
 import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
@@ -53,16 +54,19 @@ public class CreateNewButtonListener implements ActionListener {
         }
         int numberOfUsers = cloudPanel.getNumberOfUsers();
         TestInfo ti = bmTestManager.createTest(userKey, testName);
-        ti.setLocation(cloudPanel.getServerLocation());
-        ti.setNumberOfUsers(numberOfUsers);
-        ti.setStatus(TestStatus.NotRunning);
+
         Properties jmeterProperties = null;
+        ti.setLocation(cloudPanel.getServerLocation());
 
-        if (!bmTestManager.getIsLocalRunMode()) {
-            jmeterProperties = bmTestManager.getTestInfo().getJmeterProperties();
-
-        } else {
+        if (bmTestManager.getIsLocalRunMode()) {
             jmeterProperties = new Properties();
+            ti.setNumberOfUsers(50);
+            Overrides overrides=new Overrides(50,0,30,50);
+            ti.setOverrides(overrides);
+        } else {
+            jmeterProperties = bmTestManager.getTestInfo().getJmeterProperties();
+            ti.setNumberOfUsers(numberOfUsers);
+            ti.setStatus(TestStatus.NotRunning);
         }
 
         ti.setJmeterProperties(jmeterProperties);
