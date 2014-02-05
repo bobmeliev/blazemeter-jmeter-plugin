@@ -136,7 +136,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
     }
 
     public boolean getIsLocalRunMode() {
-        return this.getPropertyAsBoolean("isLocalRun", false);
+        return this.getPropertyAsBoolean("isLocalRun", true);
     }
 
 
