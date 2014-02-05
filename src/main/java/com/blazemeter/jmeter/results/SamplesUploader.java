@@ -63,18 +63,21 @@ public class SamplesUploader {
         BmLog.info("Samples uploading is started: " + Constants.CALLBACK_URL + "=" + callBackUrl);
     }
 
-    public static void stop() {
-        try {
-            List<JSONObject> samples = samplesQueue.take(MAX_DELAY);
-            if (samples.size() > 0) {
-                send(samples, callBackUrl.toString());
+    public static void stop(boolean force) {
+        if (!force) {
+            try {
+                List<JSONObject> samples = samplesQueue.take(MAX_DELAY);
+                if (samples.size() > 0) {
+                    send(samples, callBackUrl.toString());
+                }
+            } catch (InterruptedException ie) {
+                BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
             }
-        } catch (InterruptedException ie) {
-            BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
-        }
-        if (task != null && !task.isDone()) {
-            task.cancel(true);
-            BmLog.info("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
+        } else {
+            if (task != null && !task.isDone()) {
+                task.cancel(true);
+                BmLog.info("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
+            }
         }
     }
 

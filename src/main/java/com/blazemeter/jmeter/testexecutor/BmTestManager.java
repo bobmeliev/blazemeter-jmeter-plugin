@@ -182,7 +182,7 @@ public class BmTestManager {
         BmLog.info("Finishing test...");
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
-        SamplesUploader.stop();
+        SamplesUploader.stop(true);
         rpc.stopTest(userKey, testInfo.getId());
     }
 

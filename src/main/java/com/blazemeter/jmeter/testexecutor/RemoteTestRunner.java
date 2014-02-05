@@ -200,14 +200,12 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmTestManager bmTestManager = BmTestManager.getInstance();
             BmTestManager.setTestRunning(false);
             BmLog.info("Test is ended at " + host);
+            bmTestManager.stopTest();
             StandardJMeterEngine.stopEngine();
             if (JMeter.isNonGUI()) {
                 System.exit(0);
-            } else {
-                SamplesUploader.stop();
             }
             LogUploader.getInstance().stopListening();
-            bmTestManager.stopTest();
         }
     }
 
