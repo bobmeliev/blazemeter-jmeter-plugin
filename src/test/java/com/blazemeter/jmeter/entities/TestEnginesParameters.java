@@ -38,7 +38,9 @@ public class TestEnginesParameters {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(300);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 300);
         Assert.assertTrue(enginesParameters.getConsoles() == 1);
-        Assert.assertTrue(enginesParameters.getEngineSize().equals("m1.medium"));
+        Assert.assertTrue("Expected enginesParameters.getEngineSize()=m1.medium " +
+                " actual enginesParameters.getEngineSize()=" + enginesParameters.getEngineSize()
+                , enginesParameters.getEngineSize().equals("m1.medium"));
         Assert.assertTrue(enginesParameters.getEngines() == 0);
     }
 
