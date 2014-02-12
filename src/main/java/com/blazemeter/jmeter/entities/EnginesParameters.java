@@ -53,14 +53,12 @@ public class EnginesParameters {
             this.userPerEngine = 0;
             this.engines = 0;
             this.consoles = 0;
-            return;
         }
 
         if (numberOfUsers <= 300 & numberOfUsers > 0) {
             this.userPerEngine = numberOfUsers;
             this.engines = 0;
             this.consoles = 1;
-            return;
         }
 
 
@@ -72,12 +70,15 @@ public class EnginesParameters {
 
                 if (numberOfUsers / 300 > 0) {
                     this.servers = numberOfUsers / 300;
+                    if (numberOfUsers % 300 > 0) {
+                        this.servers++;
+                    }
                     if (this.servers / 15 > 0) {
                         this.consoles = this.servers / 15;
-                        this.engines = this.servers - this.consoles;
 
                     }
-                    return;
+                    this.engines = this.servers - this.consoles;
+                    this.userPerEngine = numberOfUsers / this.servers;
                 }
             }
 
@@ -86,19 +87,22 @@ public class EnginesParameters {
                 this.engineSize.setLength(0);
                 this.engineSize.append("m1.large");
                 this.servers = numberOfUsers / 600;
+
+
                 if (numberOfUsers % 600 > 0) {
                     this.servers++;
                 }
+
+                if (this.servers / 15 > 0) {
+                    this.consoles = this.servers / 15;
+
+                }
+                this.engines = this.servers - this.consoles;
+
+
             }
             this.userPerEngine = numberOfUsers / this.servers;
         }
 
-        if (this.servers > 1 & this.servers <= 14) {
-            this.engines = this.servers - this.consoles;
-        }
-        if (this.servers > 14) {
-            this.consoles = 2;
-            this.engines = this.servers - this.consoles;
-        }
     }
 }

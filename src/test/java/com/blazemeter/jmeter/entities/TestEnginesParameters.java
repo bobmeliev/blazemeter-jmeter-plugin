@@ -20,6 +20,7 @@ public class TestEnginesParameters {
                 9999, "dzmitrykashlach@gmail.com",
                 36000, 60, 300, 600, "enterprise", null);
         bmTestManager.setUserInfo(userInfo);
+
         /*
 
         <result>
