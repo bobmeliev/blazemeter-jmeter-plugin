@@ -12,15 +12,16 @@ public class EnginesParameters {
     private int consoles = 1;
     private int engines = 0;
     private int servers = 0;
-    private String engineSize = "m1.medium";
+    private StringBuilder engineSize = new StringBuilder("m1.medium");
     private int userPerEngine = 0;
 
 
-    public static EnginesParameters getEnginesParameters(int numberOfUsers) {
+    public static synchronized EnginesParameters getEnginesParameters(int numberOfUsers) {
         if (enginesParameters == null) {
             enginesParameters = new EnginesParameters();
         }
         if (numberOfUsers != enginesParameters.numberOfUsers) {
+            enginesParameters.numberOfUsers = numberOfUsers;
             enginesParameters.countParameters(numberOfUsers);
         }
 
@@ -28,7 +29,7 @@ public class EnginesParameters {
     }
 
     public String getEngineSize() {
-        return engineSize;
+        return engineSize.toString();
     }
 
     public int getUserPerEngine() {
@@ -43,21 +44,47 @@ public class EnginesParameters {
         return engines;
     }
 
-    private void countParameters(int numberOfUsers) {
+    private synchronized void countParameters(int numberOfUsers) {
 
         UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
 
 
-        if (numberOfUsers <= 300) {
+        if (numberOfUsers == 0) {
+            this.userPerEngine = 0;
+            this.engines = 0;
+            this.consoles = 0;
+            return;
+        }
+
+        if (numberOfUsers <= 300 & numberOfUsers > 0) {
             this.userPerEngine = numberOfUsers;
-        } else {
+            this.engines = 0;
+            this.consoles = 1;
+            return;
+        }
+
+
+        if (numberOfUsers > 300) {
             this.servers = numberOfUsers / 300;
-            if (this.servers < userInfo.getMaxEnginesLimit()) {
-                if (numberOfUsers % 300 > 0) {
-                    this.servers++;
+            if (this.servers <= userInfo.getMaxEnginesLimit()) {
+                this.engineSize.setLength(0);
+                this.engineSize.append("m1.medium");
+
+                if (numberOfUsers / 300 > 0) {
+                    this.servers = numberOfUsers / 300;
+                    if (this.servers / 15 > 0) {
+                        this.consoles = this.servers / 15;
+                        this.engines = this.servers - this.consoles;
+
+                    }
+                    return;
                 }
-            } else {
-                this.engineSize = "m1.large";
+            }
+
+
+            if (this.servers > userInfo.getMaxEnginesLimit()) {
+                this.engineSize.setLength(0);
+                this.engineSize.append("m1.large");
                 this.servers = numberOfUsers / 600;
                 if (numberOfUsers % 600 > 0) {
                     this.servers++;
@@ -65,13 +92,13 @@ public class EnginesParameters {
             }
             this.userPerEngine = numberOfUsers / this.servers;
         }
+
         if (this.servers > 1 & this.servers <= 14) {
             this.engines = this.servers - this.consoles;
-        } else if (this.servers > 14) {
+        }
+        if (this.servers > 14) {
             this.consoles = 2;
             this.engines = this.servers - this.consoles;
-        } else {
-            this.engines = 0;
         }
     }
 }

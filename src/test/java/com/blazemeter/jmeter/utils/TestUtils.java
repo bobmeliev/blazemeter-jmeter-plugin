@@ -2,7 +2,10 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.constants.TestConstants;
-import com.blazemeter.jmeter.entities.*;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.entities.UserInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import junit.framework.Assert;
 import org.apache.commons.lang3.StringUtils;
@@ -112,14 +115,6 @@ public class TestUtils {
         Assert.assertEquals(ti_expected.getType(), ti_actual.getType());
     }
 
-    @Test
-    public void countEngines() {
-        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(650);
-        Assert.assertTrue(enginesParameters.getUserPerEngine() == 216);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
-        Assert.assertTrue(enginesParameters.getEngineSize().equals("m1.medium"));
-        Assert.assertTrue(enginesParameters.getEngines() == 2);
-    }
 
     @Test
     public void convertToJSON() {
