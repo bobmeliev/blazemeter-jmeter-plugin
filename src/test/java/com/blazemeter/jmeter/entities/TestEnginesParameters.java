@@ -128,5 +128,14 @@ public class TestEnginesParameters {
         Assert.assertTrue(enginesParameters.getEngines() == 30);
     }
 
+    @Test
+    public void countParameters_36000_users() {
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(36000);
+        Assert.assertTrue(enginesParameters.getUserPerEngine() == 600);
+        Assert.assertTrue(enginesParameters.getConsoles() == 4);
+        Assert.assertTrue(enginesParameters.getEngineSize().equals("m1.large"));
+        Assert.assertTrue(enginesParameters.getEngines() == 56);
+    }
+
 
 }
