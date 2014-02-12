@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
+import com.blazemeter.jmeter.entities.EnginesParameters;
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
@@ -115,9 +116,10 @@ public class GuiUtils {
                                      JSpinner rampupSpinner) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         int numberOfUsers = numberOfUsersSlider.getValue();
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(numberOfUsers);
 
-        HashMap<String, String> enginesParams = Utils.countEngines(numberOfUsers);
-        int userPerEngine = Integer.valueOf(enginesParams.get(Constants.USERS_PER_ENGINE));
+        int userPerEngine = enginesParameters.getUserPerEngine();
+
 
         TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
         if (testInfo != null) {
@@ -161,7 +163,6 @@ public class GuiUtils {
         runLocal.setSelected(isLocalRunMode);
         runRemote.setSelected(!isLocalRunMode);
         cloudPanel.setVisible(!isLocalRunMode);
-//        jMeterPropertyPanel.setVisible(!isLocalRunMode);
         advancedPropertiesPane.setVisible(!isLocalRunMode);
     }
 

@@ -2,7 +2,10 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.constants.Constants;
-import com.blazemeter.jmeter.entities.*;
+import com.blazemeter.jmeter.entities.Overrides;
+import com.blazemeter.jmeter.entities.PluginVersion;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
@@ -37,8 +40,10 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by IntelliJ IDEA.
@@ -409,51 +414,6 @@ public class Utils {
         }
 
         return testInfo;
-    }
-
-    public static HashMap<String, String> countEngines(int numberOfUsers) {
-        HashMap<String, String> enginesParameters = new HashMap<String, String>();
-        int servers = 0;
-        String engineSize = "m1.medium";
-        int userPerEngine = 0;
-        int engines = 0;
-        int consoles = 1;
-
-        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
-
-
-        if (numberOfUsers <= 300) {
-            userPerEngine = numberOfUsers;
-        } else {
-            servers = numberOfUsers / 300;
-            if (servers < userInfo.getMaxEnginesLimit()) {
-                if (numberOfUsers % 300 > 0) {
-                    servers++;
-                }
-            } else {
-                engineSize = "m1.large";
-                servers = numberOfUsers / 600;
-                if (numberOfUsers % 600 > 0) {
-                    servers++;
-                }
-            }
-            userPerEngine = numberOfUsers / servers;
-        }
-        if (servers > 1 & servers <= 14) {
-            engines = servers - consoles;
-        } else if (servers > 14) {
-            consoles = 2;
-            engines = servers - consoles;
-        } else {
-            engines = 0;
-        }
-
-
-        enginesParameters.put(Constants.CONSOLES, String.valueOf(consoles));
-        enginesParameters.put(Constants.ENGINES, String.valueOf(engines));
-        enginesParameters.put(Constants.ENGINE_SIZE, engineSize);
-        enginesParameters.put(Constants.USERS_PER_ENGINE, String.valueOf(userPerEngine));
-        return enginesParameters;
     }
 
 

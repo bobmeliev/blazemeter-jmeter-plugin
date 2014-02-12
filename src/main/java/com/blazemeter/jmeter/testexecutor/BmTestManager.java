@@ -238,15 +238,15 @@ public class BmTestManager {
     }
 
     public TestInfo updateTestSettings(String userKey, TestInfo testInfo) {
-        HashMap<String, String> enginesParameters = Utils.countEngines(testInfo.getNumberOfUsers());
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(testInfo.getNumberOfUsers());
         Overrides overrides = testInfo.getOverrides();
-        int engines=Integer.parseInt(enginesParameters.get(Constants.CONSOLES)) + Integer.parseInt(enginesParameters.get(Constants.ENGINES))-1;
+        int engines = enginesParameters.getConsoles() + enginesParameters.getEngines() - 1;
         TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
                 testInfo.getId(),
                 testInfo.getLocation(),
                 engines,
-                enginesParameters.get(Constants.ENGINE_SIZE),
-                Integer.parseInt(enginesParameters.get(Constants.USERS_PER_ENGINE)),
+                enginesParameters.getEngineSize(),
+                enginesParameters.getUserPerEngine(),
                 overrides == null ? 0 : overrides.getIterations(),
                 overrides == null ? 0 : overrides.getRampup(),
                 overrides == null ? 0 : overrides.getDuration(),

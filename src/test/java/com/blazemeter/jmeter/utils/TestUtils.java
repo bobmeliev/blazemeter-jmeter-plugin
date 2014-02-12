@@ -2,10 +2,7 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.constants.TestConstants;
-import com.blazemeter.jmeter.entities.Overrides;
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
-import com.blazemeter.jmeter.entities.UserInfo;
+import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import junit.framework.Assert;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +19,6 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -118,13 +114,11 @@ public class TestUtils {
 
     @Test
     public void countEngines() {
-        HashMap<String, String> enginesMap_expected = new HashMap<String, String>(4);
-        enginesMap_expected.put("userPerEngine", "216");
-        enginesMap_expected.put("consoles", "1");
-        enginesMap_expected.put("engineSize", "m1.medium");
-        enginesMap_expected.put("engines", "2");
-        HashMap<String, String> enginesMapActual = Utils.countEngines(650);
-        Assert.assertEquals(enginesMap_expected, enginesMapActual);
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(650);
+        Assert.assertTrue(enginesParameters.getUserPerEngine() == 216);
+        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue(enginesParameters.getEngineSize().equals("m1.medium"));
+        Assert.assertTrue(enginesParameters.getEngines() == 2);
     }
 
     @Test
