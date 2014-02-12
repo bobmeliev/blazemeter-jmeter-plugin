@@ -21,26 +21,6 @@ public class TestEnginesParameters {
                 36000, 60, 300, 600, "enterprise", null);
         bmTestManager.setUserInfo(userInfo);
 
-        /*
-
-        <result>
-<response_code>200</response_code>
-<error/>
-<username>dzmitrykashlach</username>
-<credits>4458</credits>
-<mail>dzmitry.kashlach@blazemeter.com</mail>
-<max_users_limit>36000</max_users_limit>
-<max_engines_limit>60</max_engines_limit>
-<max_threads_medium>300</max_threads_medium>
-<max_threads_large>600</max_threads_large>
-<plan>ENTERPRISE</plan>
-<recurring>1</recurring>
-<locations is_array="true">...</locations>
-</result>
-
-         */
-
-
     }
 
 

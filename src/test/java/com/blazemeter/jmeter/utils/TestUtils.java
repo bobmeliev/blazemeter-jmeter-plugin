@@ -49,9 +49,9 @@ public class TestUtils {
             BmLog.error("Failed to construct LOCATIONS from locations.txt: " + e);
         }
 
-        UserInfo userInfo = new UserInfo("dzmitry",
-                1234, "dzmitrykashlach@gmail.com",
-                12, 14, 15, 16, "enterprise", locations);
+        UserInfo userInfo = new UserInfo("dzmitrykashlach",
+                9999, "dzmitrykashlach@gmail.com",
+                36000, 60, 300, 600, "enterprise", locations);
         bmTestManager.setUserInfo(userInfo);
 
     }
