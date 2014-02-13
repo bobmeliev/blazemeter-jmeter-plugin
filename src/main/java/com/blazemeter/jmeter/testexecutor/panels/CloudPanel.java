@@ -177,7 +177,7 @@ public class CloudPanel extends JPanel {
             public void actionPerformed(ActionEvent actionEvent) {
                 String url = BmTestManager.getInstance().getTestUrl() + "/files";
                 if (url != null)
-                    GuiUtils.Navigate(url);
+                    GuiUtils.navigate(url);
             }
         });
 

@@ -15,7 +15,7 @@ public class GoToTestButtonListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String url = BmTestManager.getInstance().getTestUrl();
         if (url != null) {
-            GuiUtils.Navigate(url);
+            GuiUtils.navigate(url);
         } else {
             JMeterUtils.reportErrorToUser("Test is not selected. Nothing to open.");
         }

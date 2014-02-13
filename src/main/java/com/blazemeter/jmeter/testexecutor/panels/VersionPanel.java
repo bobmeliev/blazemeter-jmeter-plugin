@@ -169,7 +169,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.INFORMATION_MESSAGE,
                         null, null, null)) {
-                    GuiUtils.Navigate(update.getMoreInfoUrl());
+                    GuiUtils.navigate(update.getMoreInfoUrl());
                 }
             }
 
@@ -190,10 +190,10 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
             }
         });
         versionPanel.add(moreInfo);
-        JLabel download = new JLabel("<html><u>Download</u></html>");
+        JLabel download = new JLabel("<html><u>Open plugin page</u></html>");
         download.setForeground(Color.WHITE);
         download.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        download.setToolTipText("Click here to download new version");
+        download.setToolTipText("Click here to open plugin page");
         PluginInstaller pluginInstaller = new PluginInstaller();
         download.addMouseListener(pluginInstaller);
         versionPanel.add(download);

@@ -6,8 +6,6 @@ import javax.swing.*;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.net.MalformedURLException;
 
 /**
  * Created by dzmitrykashlach on 1/10/14.
@@ -18,11 +16,12 @@ public class PluginInstaller extends MouseAdapter {
 
 
     private String PLUGIN_UPDATE_URI = "https://a.blazemeter.com/jmeter-plugin-download";
+    private String PLUGIN_PAGE_URI = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter";
     private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter.jar";
     public static boolean isPluginDownloaded = false;
     public static JPanel versionPanel = RemoteTestRunnerGui.getVersionPanel();
 
-    @Override
+    /*@Override
     public void mouseClicked(MouseEvent e) {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
 
@@ -36,6 +35,18 @@ public class PluginInstaller extends MouseAdapter {
                 BmLog.error("Wrong URL", exception);
             } catch (IOException exception) {
                 BmLog.error("Error while saving file", exception);
+            }
+        }
+    }*/
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+
+            try {
+                GuiUtils.navigate(PLUGIN_PAGE_URI);
+            } catch (Throwable exception) {
+                BmLog.error("Wrong URL", exception);
             }
         }
     }

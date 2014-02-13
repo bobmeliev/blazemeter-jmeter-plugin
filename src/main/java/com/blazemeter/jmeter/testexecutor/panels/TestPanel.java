@@ -66,7 +66,7 @@ public class TestPanel {
             signUpButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
-                    GuiUtils.Navigate(BmTestManager.getServerUrl() + "/user");
+                    GuiUtils.navigate(BmTestManager.getServerUrl() + "/user");
                 }
             });
 

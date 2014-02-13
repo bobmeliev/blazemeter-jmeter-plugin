@@ -39,7 +39,7 @@ public class GuiUtils {
     }
 
 
-    public static void Navigate(String url) {
+    public static void navigate(String url) {
         if (java.awt.Desktop.isDesktopSupported()) {
             try {
                 Desktop.getDesktop().browse(new URI(url));
@@ -102,7 +102,7 @@ public class GuiUtils {
             String url = bmTestManager.getTestUrl();
             if (url != null)
                 url = url.substring(0, url.length() - 5);
-            GuiUtils.Navigate(url);
+            GuiUtils.navigate(url);
         }
     }
 

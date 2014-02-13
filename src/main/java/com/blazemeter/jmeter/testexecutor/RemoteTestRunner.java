@@ -183,7 +183,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
             if (!JMeterUtils.getPropDefault(Constants.TEST_URL_WAS_OPENED, false)) {
                 String url = bmTestManager.getTestUrl();
-                GuiUtils.Navigate(url);
+                GuiUtils.navigate(url);
                 BmLog.debug("Opening test URL: " + url);
                 JMeterUtils.setProperty(Constants.TEST_URL_WAS_OPENED, "true");
             }
