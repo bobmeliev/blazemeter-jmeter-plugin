@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 
 import javax.swing.*;
@@ -16,7 +17,6 @@ public class PluginInstaller extends MouseAdapter {
 
 
     private String PLUGIN_UPDATE_URI = "https://a.blazemeter.com/jmeter-plugin-download";
-    private String PLUGIN_PAGE_URI = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter";
     private String PLUGIN_LOCAL_PATH = "../lib/ext/blazemeter.jar";
     public static boolean isPluginDownloaded = false;
     public static JPanel versionPanel = RemoteTestRunnerGui.getVersionPanel();
@@ -44,7 +44,7 @@ public class PluginInstaller extends MouseAdapter {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
 
             try {
-                GuiUtils.navigate(PLUGIN_PAGE_URI);
+                GuiUtils.navigate(BlazemeterApi.BmUrlManager.getPluginPage());
             } catch (Throwable exception) {
                 BmLog.error("Wrong URL", exception);
             }

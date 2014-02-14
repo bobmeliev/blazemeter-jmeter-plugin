@@ -589,6 +589,7 @@ public class BlazemeterApi {
     public static class BmUrlManager {
         private static String SERVER_URL = "https://a.blazemeter.com";
         private static BmUrlManager bmUrlManager = null;
+        private static String PLUGIN_PAGE_URI = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter";
 
         protected BmUrlManager() {
             SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
@@ -606,6 +607,10 @@ public class BlazemeterApi {
 
         public static String getServerUrl() {
             return SERVER_URL;
+        }
+
+        public static String getPluginPage() {
+            return PLUGIN_PAGE_URI;
         }
 
         public String testStatus(String appKey, String userKey, String testId, boolean detailed) {

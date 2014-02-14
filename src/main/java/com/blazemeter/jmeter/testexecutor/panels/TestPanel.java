@@ -81,6 +81,9 @@ public class TestPanel {
 
             goToTestPageButton.addActionListener(goToTestButtonListener);
 
+            HelpButtonListener helpButtonListener = new HelpButtonListener();
+            helpButton.addActionListener(helpButtonListener);
+
         } catch (NullPointerException npe) {
             BmLog.error("Failed to construct TestPanel instance: " + npe);
         }
