@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.notificationsImpl;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
@@ -31,11 +32,12 @@ public class ServerStatusChangedNotificationTP implements IServerStatusChangedNo
         ServerStatusController.ServerStatus serverStatus = ServerStatusController.getServerStatus();
         switch (serverStatus) {
             case AVAILABLE:
+
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 TestInfoController.start(testInfo.getId());
                 boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
                 testPanel.enableMainPanelControls(!testIsRunning);
-                Utils.enableElements(cloudPanel, !testIsRunning);
+                Utils.enableElements(cloudPanel, !testPanel.getUserKey().equals(Constants.ENTER_YOUR_USER_KEY) && !testIsRunning);
                 Utils.enableElements(jMeterPropertyPanel, !testIsRunning);
                 break;
             case NOT_AVAILABLE:

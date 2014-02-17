@@ -96,11 +96,12 @@ public class TestPanel {
 
 
     public void enableMainPanelControls(boolean isEnabled) {
-        testIdComboBox.setEnabled(isEnabled);
+
+        testIdComboBox.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
         reloadButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
         userKeyTextField.setEnabled(isEnabled);
-        createNewButton.setEnabled(isEnabled);
-        goToTestPageButton.setEnabled(isEnabled);
+        createNewButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
+        goToTestPageButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
     }
 
 
@@ -360,7 +361,7 @@ public class TestPanel {
         panel4.add(reloadButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, new Dimension(24, 21), null, null, 0, false));
         goToTestPageButton = new JButton();
         goToTestPageButton.setActionCommand("Go to Test Page!");
-        goToTestPageButton.setEnabled(true);
+        goToTestPageButton.setEnabled(false);
         goToTestPageButton.setHideActionText(false);
         goToTestPageButton.setLabel("Go to Test Page!");
         goToTestPageButton.setText("Go to Test Page!");
