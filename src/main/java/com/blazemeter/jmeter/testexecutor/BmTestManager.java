@@ -1,6 +1,7 @@
 package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.api.BmUrlManager;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.*;
@@ -224,7 +225,7 @@ public class BmTestManager {
     public String getTestUrl() {
         String url = null;
         if (testInfo != null && testInfo.isValid()) {
-            url = BlazemeterApi.BmUrlManager.getServerUrl() + "/node/" + testInfo.getId();
+            url = BmUrlManager.getServerUrl() + "/node/" + testInfo.getId();
             if (this.testInfo.getStatus() == TestStatus.Running) {
                 url += "/gjtl";
             }
@@ -410,7 +411,7 @@ public class BmTestManager {
 
      */
     public static String getServerUrl() {
-        return BlazemeterApi.BmUrlManager.getServerUrl();
+        return BmUrlManager.getServerUrl();
     }
 
     public void getTestsAsync(String userKey, ITestListReceivedNotification notification) {

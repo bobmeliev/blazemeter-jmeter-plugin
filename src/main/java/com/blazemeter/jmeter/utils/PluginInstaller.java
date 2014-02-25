@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.utils;
 
-import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.api.BmUrlManager;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
 
 import javax.swing.*;
@@ -44,7 +44,7 @@ public class PluginInstaller extends MouseAdapter {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
 
             try {
-                GuiUtils.navigate(BlazemeterApi.BmUrlManager.getPluginPage());
+                GuiUtils.navigate(BmUrlManager.getPluginPage());
             } catch (Throwable exception) {
                 BmLog.error("Wrong URL", exception);
             }

@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.controllers;
 
-import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.api.BmUrlManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 
@@ -51,7 +51,7 @@ public class ServerStatusController {
         connectionController = new Thread(new Runnable() {
             @Override
             public void run() {
-                String serverURL = BlazemeterApi.BmUrlManager.getServerUrl();
+                String serverURL = BmUrlManager.getServerUrl();
                 ServerStatus latestServerStatus = serverStatus;
 
                 try {

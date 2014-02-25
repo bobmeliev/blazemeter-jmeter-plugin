@@ -16,7 +16,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.jmeter.services.FileServer;
-import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,8 +23,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +46,7 @@ public class BlazemeterApi {
         BmLog.debug("Requesting : " + url);
         HttpGet getRequest = new HttpGet(url);
         getRequest.setHeader("Connection", "keep-alive");
-        getRequest.setHeader("Host", BmUrlManager.SERVER_URL.substring(8, BmUrlManager.SERVER_URL.length()));
+        getRequest.setHeader("Host", BmUrlManager.SERVER_URL.substring(8, com.blazemeter.jmeter.api.BmUrlManager.SERVER_URL.length()));
         HttpResponse response = null;
         try {
             response = new DefaultHttpClient().execute(getRequest);
@@ -583,168 +580,5 @@ public class BlazemeterApi {
 
         String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testId);
         getJson(url, null);
-    }
-
-
-    public static class BmUrlManager {
-        private static String SERVER_URL = "https://a.blazemeter.com";
-        private static BmUrlManager bmUrlManager = null;
-        private static String PLUGIN_PAGE_URI = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter";
-
-        protected BmUrlManager() {
-            SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
-            BmLog.info("Server url is :" + SERVER_URL);
-            BmLog.info("Jmeter version :" + JMeterUtils.getJMeterVersion());
-            BmLog.info("Plugin version :" + Utils.getPluginVersion().toString(true));
-        }
-
-        protected static BmUrlManager getBmUrlManager() {
-            if (bmUrlManager == null)
-                bmUrlManager = new BmUrlManager();
-            return bmUrlManager;
-
-        }
-
-        public static String getServerUrl() {
-            return SERVER_URL;
-        }
-
-        public static String getPluginPage() {
-            return PLUGIN_PAGE_URI;
-        }
-
-        public String testStatus(String appKey, String userKey, String testId, boolean detailed) {
-
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testGetStatus/?app_key=%s&user_key=%s&test_id=%s&detailed=%s", SERVER_URL, appKey, userKey, testId, detailed);
-        }
-
-        public String scriptCreation(String appKey, String userKey, String testName) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testName = URLEncoder.encode(testName, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testCreate/?app_key=%s&user_key=%s&test_name=%s", SERVER_URL, appKey, userKey, testName);
-        }
-
-        public String scriptUpload(String appKey, String userKey, String testId, String fileName) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-                fileName = URLEncoder.encode(fileName, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testScriptUpload/?app_key=%s&user_key=%s&test_id=%s&file_name=%s", SERVER_URL, appKey, userKey, testId, fileName);
-        }
-
-        public String scriptDownload(String appKey, String userKey, String testId) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testScriptDownload/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-        }
-
-        public String testStartLocal(String appKey, String userKey, String testId) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testStartExternal/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-        }
-
-        public String testStop(String appKey, String userKey, String testId) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testStop/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-        }
-
-        public String logUpload(String appKey, String userKey, String testId, String fileName, String dataType) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-                fileName = URLEncoder.encode(fileName, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testDataUpload/?app_key=%s&user_key=%s&test_id=%s&file_name=%s&data_type=%s", SERVER_URL, appKey, userKey, testId, fileName, dataType);
-        }
-
-        public String getTests(String appKey, String userKey, String type) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-
-            return String.format("%s/api/rest/blazemeter/getTests/?app_key=%s&user_key=%s&type=%s", SERVER_URL, appKey, userKey, type);
-        }
-
-        public String testUpdateUrl(String appKey, String userKey, String testId) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testUpdate/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-        }
-
-        public String testStart(String appKey, String userKey, String testId) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                testId = URLEncoder.encode(testId, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/testStart/?app_key=%s&user_key=%s&test_id=%s", SERVER_URL, appKey, userKey, testId);
-        }
-
-        public String getUpdate(String appKey, String userKey, String version) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-                version = URLEncoder.encode(version, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&current_version=%s", SERVER_URL, appKey, userKey, version);
-        }
-
-        public String getUserInfo(String appKey, String userKey) {
-            try {
-                appKey = URLEncoder.encode(appKey, "UTF-8");
-                userKey = URLEncoder.encode(userKey, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                BmLog.error(e);
-            }
-            return String.format("%s/api/rest/blazemeter/getUserInfo/?app_key=%s&user_key=%s", SERVER_URL, appKey, userKey);
-        }
     }
 }

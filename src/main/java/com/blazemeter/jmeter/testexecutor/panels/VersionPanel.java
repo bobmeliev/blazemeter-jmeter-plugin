@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.panels;
 
-import com.blazemeter.jmeter.api.BlazemeterApi;
+import com.blazemeter.jmeter.api.BmUrlManager;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.PluginUpdate;
@@ -41,7 +41,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
                 new ImageIcon(
                         Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        icon.addMouseListener(new URIOpener(BlazemeterApi.BmUrlManager.getServerUrl()));
+        icon.addMouseListener(new URIOpener(BmUrlManager.getServerUrl()));
 
         JLabel version = new JLabel("Version:" + Utils.getPluginVersion().toString());
 
