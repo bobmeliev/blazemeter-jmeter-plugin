@@ -161,4 +161,13 @@ public class BmUrlManager {
         }
         return String.format("%s/api/rest/blazemeter/getUserInfo/?app_key=%s&user_key=%s", SERVER_URL, appKey, userKey);
     }
+
+    public String getUsers(String userKey) {
+        try {
+            userKey = URLEncoder.encode(userKey, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            BmLog.error(e);
+        }
+        return String.format("%s/api/latest/users/?api_key=%s", SERVER_URL, userKey);
+    }
 }

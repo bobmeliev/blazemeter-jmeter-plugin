@@ -106,6 +106,13 @@ public class TestBmUrlManager {
                 bmUrlManager.getUserInfo("75bad111c06f4e10c001", "881a84b35e97c4342bf11"));
     }
 
+    @Test
+    public void getUsers() {
+        Assert.assertEquals("https://a.blazemeter.com/api/latest/users/?api_key=881a84b35e97c4342bf11",
+                bmUrlManager.getUsers("881a84b35e97c4342bf11"));
+
+    }
+
 
     @AfterClass
     public static void tearDown() {
