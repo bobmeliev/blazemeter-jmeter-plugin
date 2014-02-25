@@ -1,6 +1,8 @@
 package com.blazemeter.jmeter.api;
 
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.Utils;
+import org.apache.jmeter.util.JMeterUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -12,6 +14,13 @@ public class BmUrlManager {
     protected static String SERVER_URL = "https://a.blazemeter.com";
     private static BmUrlManager bmUrlManager = null;
     private static String PLUGIN_PAGE_URI = "http://community.blazemeter.com/knowledgebase/articles/83191-blazemeter-plugin-to-jmeter";
+
+    protected BmUrlManager() {
+        SERVER_URL = JMeterUtils.getPropDefault("blazemeter.url", SERVER_URL);
+        BmLog.info("Server url is :" + SERVER_URL);
+        BmLog.info("Jmeter version :" + JMeterUtils.getJMeterVersion());
+        BmLog.info("Plugin version :" + Utils.getPluginVersion().toString(true));
+    }
 
     protected static BmUrlManager getBmUrlManager() {
         if (bmUrlManager == null)
@@ -152,22 +161,13 @@ public class BmUrlManager {
         return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&current_version=%s", SERVER_URL, appKey, userKey, version);
     }
 
-    public String getUserInfo(String appKey, String userKey) {
+    public String getUserInfo(String app_key, String userKey) {
         try {
-            appKey = URLEncoder.encode(appKey, "UTF-8");
+            app_key = URLEncoder.encode(app_key, "UTF-8");
             userKey = URLEncoder.encode(userKey, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             BmLog.error(e);
         }
-        return String.format("%s/api/rest/blazemeter/getUserInfo/?app_key=%s&user_key=%s", SERVER_URL, appKey, userKey);
-    }
-
-    public String getUsers(String userKey) {
-        try {
-            userKey = URLEncoder.encode(userKey, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            BmLog.error(e);
-        }
-        return String.format("%s/api/latest/users/?api_key=%s", SERVER_URL, userKey);
+        return String.format("%s/api/latest/users/?app_key=%s&api_key=%s", SERVER_URL, app_key, userKey);
     }
 }
