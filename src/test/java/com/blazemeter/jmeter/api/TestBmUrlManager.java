@@ -103,9 +103,17 @@ public class TestBmUrlManager {
     @Test
     public void getUsers() {
         Assert.assertEquals("https://a.blazemeter.com/api/latest/users/?app_key=75bad111c06f4e10c001&api_key=881a84b35e97c4342bf11",
+                bmUrlManager.getUsers("75bad111c06f4e10c001", "881a84b35e97c4342bf11"));
+
+    }
+
+    @Test
+    public void getUserInfo() {
+        Assert.assertEquals("https://a.blazemeter.com/api/rest/blazemeter/getUserInfo/?app_key=75bad111c06f4e10c001&user_key=881a84b35e97c4342bf11",
                 bmUrlManager.getUserInfo("75bad111c06f4e10c001", "881a84b35e97c4342bf11"));
 
     }
+
 
     @AfterClass
     public static void tearDown() {

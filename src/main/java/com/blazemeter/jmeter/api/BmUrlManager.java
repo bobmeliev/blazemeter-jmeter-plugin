@@ -161,7 +161,7 @@ public class BmUrlManager {
         return String.format("%s/api/rest/blazemeter/jmeter_plugin_update/?app_key=%s&user_key=%s&current_version=%s", SERVER_URL, appKey, userKey, version);
     }
 
-    public String getUserInfo(String app_key, String userKey) {
+    public String getUsers(String app_key, String userKey) {
         try {
             app_key = URLEncoder.encode(app_key, "UTF-8");
             userKey = URLEncoder.encode(userKey, "UTF-8");
@@ -169,5 +169,15 @@ public class BmUrlManager {
             BmLog.error(e);
         }
         return String.format("%s/api/latest/users/?app_key=%s&api_key=%s", SERVER_URL, app_key, userKey);
+    }
+
+    public String getUserInfo(String appKey, String userKey) {
+        try {
+            appKey = URLEncoder.encode(appKey, "UTF-8");
+            userKey = URLEncoder.encode(userKey, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            BmLog.error(e);
+        }
+        return String.format("%s/api/rest/blazemeter/getUserInfo/?app_key=%s&user_key=%s", SERVER_URL, appKey, userKey);
     }
 }
