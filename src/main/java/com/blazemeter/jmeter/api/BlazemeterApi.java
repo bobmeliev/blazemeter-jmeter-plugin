@@ -175,8 +175,38 @@ public class BlazemeterApi {
                 );
             }
         } catch (JSONException e) {
-            BmLog.error("status getting status", e);
+            BmLog.error("Error while getting UserInfo: ", e);
         } catch (Throwable e) {
+            BmLog.error("Error while getting UserInfo: ", e);
+        }
+        return userInfo;
+    }
+
+
+    public UserInfo getUsers(String userKey) {
+        UserInfo userInfo = null;
+        if (userKey == null || userKey.isEmpty())
+            return userInfo;
+
+        try {
+            String url = this.urlManager.getUsers(Constants.APP_KEY, userKey);
+
+            JSONObject jo = getJson(url, null);
+            /*if (jo.getInt("response_code") == 200) {
+                userInfo = new UserInfo(jo.getString("username"),
+                        jo.getInt("credits"),
+                        jo.getString("mail"),
+                        jo.getInt("max_users_limit"),
+                        jo.getInt("max_engines_limit"),
+                        jo.getInt("max_threads_medium"),
+                        jo.getInt("max_threads_large"),
+                        jo.getString("plan"),
+                        jo.getJSONArray("locations")
+                );
+            }*/
+        } /*catch (JSONException e) {
+            BmLog.error("status getting status", e);
+        } */ catch (Throwable e) {
             BmLog.error("status getting status", e);
         }
         return userInfo;

@@ -157,7 +157,7 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        BmTestManager.getInstance().getUserInfo();
+                        BmTestManager.getInstance().getUserInfo(true);
                     }
                 }).start();
             } else {
