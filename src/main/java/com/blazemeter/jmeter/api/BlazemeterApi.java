@@ -466,7 +466,12 @@ public class BlazemeterApi {
             obj.put("options", options);
             JSONObject jo = getJson(url, obj);
             if (jo == null || jo.getInt("response_code") != 200) {
-                BmLog.error("Failed to update" + testId);
+                BmLog.error("Failed to update: " + testId);
+                BmLog.error("JSON options were sent with JSON object: " + options.toString());
+                BmLog.error("UserKey = " + userKey);
+                BmLog.error("Test id = " + userKey);
+                BmLog.error("LOCATION = " + location);
+
             } else if (jo.getInt("response_code") == 200) {
                 testInfo = Utils.parseTestInfo(jo);
             }
