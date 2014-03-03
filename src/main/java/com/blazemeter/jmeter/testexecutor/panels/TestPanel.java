@@ -142,8 +142,6 @@ public class TestPanel {
             // init userKey
             if (bmTestManager.isUserKeyFromProp()) {
                 String key = bmTestManager.getUserKey();
-                if (key.length() >= 20)
-                    key = key.substring(0, 5) + "**********" + key.substring(14, key.length());
                 setUserKey(key);
                 userKeyTextField.setEnabled(false);
                 userKeyTextField.setToolTipText("User key found in jmeter.properties file");
