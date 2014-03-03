@@ -73,7 +73,7 @@
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${env.JMETER_HOME}/lib/ext</outputDirectory>
-                                    <destFileName>blazemeter.jar</destFileName>
+                                    <destFileName>blazemeter-${blazemeter.jmeter.plugin.version}.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
