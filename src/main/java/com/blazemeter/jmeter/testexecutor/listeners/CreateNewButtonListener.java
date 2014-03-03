@@ -1,6 +1,5 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
-import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
@@ -42,11 +41,11 @@ public class CreateNewButtonListener implements ActionListener {
             return;
 
         }
-        String testName = testNameArea.getText().trim();
-        if (testName.isEmpty() | testName.equals(Constants.NEW)) {
-            testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
-            if (testName == null || testName.trim().isEmpty())
-                return;
+
+        String testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
+
+        if (testName == null || testName.trim().isEmpty()) {
+            return;
         }
         if (Utils.isTestPlanEmpty()) {
             JMeterUtils.reportErrorToUser("Test-plan should contain at least one Thread Group");
