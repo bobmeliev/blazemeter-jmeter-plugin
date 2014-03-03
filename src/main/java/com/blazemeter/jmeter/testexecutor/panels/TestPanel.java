@@ -102,6 +102,8 @@ public class TestPanel {
         userKeyTextField.setEnabled(isEnabled);
         createNewButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
         goToTestPageButton.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
+        runLocal.setEnabled(isEnabled);
+        runRemote.setEnabled(isEnabled);
     }
 
 
@@ -157,7 +159,7 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        BmTestManager.getInstance().getUserInfo();
+                        BmTestManager.getInstance().getUserInfo(true);
                     }
                 }).start();
             } else {
