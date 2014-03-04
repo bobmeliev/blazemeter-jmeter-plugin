@@ -5,18 +5,16 @@ import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.PluginUpdate;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.listeners.VersionMouseListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationVP;
-import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.PluginInstaller;
 import com.blazemeter.jmeter.utils.URIOpener;
 import com.blazemeter.jmeter.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -158,37 +156,9 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         moreInfo.setToolTipText("Click here to see changes in new version");
         moreInfo.setForeground(Color.WHITE);
         moreInfo.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        moreInfo.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (JOptionPane.YES_OPTION == JOptionPane.showOptionDialog(null,
-                        "Main changes are:\n" +
-                                update.getChanges() +
-                                "\n\nFull list of changes can be viewed on our site,\nDo you want to see full list of changes?",
-                        "Changes list",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE,
-                        null, null, null)) {
-                    GuiUtils.navigate(update.getMoreInfoUrl());
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-            }
-        });
+        VersionMouseListener mouseListener = new VersionMouseListener(update);
+        moreInfo.addMouseListener(mouseListener);
+        moreInfo.setVisible(true);
         versionPanel.add(moreInfo);
         JLabel download = new JLabel("<html><u>Open plugin page</u></html>");
         download.setForeground(Color.WHITE);
