@@ -45,6 +45,7 @@ public class CreateNewButtonListener implements ActionListener {
         String testName = JOptionPane.showInputDialog(mainPanel, "Please enter valid test name!");
 
         if (testName == null || testName.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(mainPanel, "Cannot create test with empty name!");
             return;
         }
         if (Utils.isTestPlanEmpty()) {
