@@ -183,33 +183,43 @@ public class BlazemeterApi {
     }
 
 
-    public UserInfo getUsers(String userKey) {
-        UserInfo userInfo = null;
+    public Users getUsers(String userKey) {
+        Users users = null;
         if (userKey == null || userKey.isEmpty())
-            return userInfo;
+            return users;
 
         try {
             String url = this.urlManager.getUsers(Constants.APP_KEY, userKey);
 
             JSONObject jo = getJson(url, null);
-            /*if (jo.getInt("response_code") == 200) {
-                userInfo = new UserInfo(jo.getString("username"),
-                        jo.getInt("credits"),
+            if (jo.getInt("response_code") == 200) {
+
+                users = new Users(jo.getString("id"),
+                        jo.getString("name"),
                         jo.getString("mail"),
-                        jo.getInt("max_users_limit"),
-                        jo.getInt("max_engines_limit"),
-                        jo.getInt("max_threads_medium"),
-                        jo.getInt("max_threads_large"),
-                        jo.getString("plan"),
-                        jo.getJSONArray("locations")
+                        jo.getString("access"),
+                        jo.getString("login"),
+                        jo.getString("created"),
+                        jo.getBoolean("enabled"),
+                        null
                 );
-            }*/
-        } /*catch (JSONException e) {
+
+                JSONObject plan_JO = jo.getJSONObject("plan");
+                Plan plan = new Plan(plan_JO.getString("id"),
+                        plan_JO.getInt("concurrency"),
+                        plan_JO.getInt("engines"),
+                        plan_JO.getBoolean("isMetered"),
+                        plan_JO.getInt("threadsPerEngine"),
+                        plan_JO.getInt("threadsPerMediumEngine"));
+                users.setPlan(plan);
+
+            }
+        } catch (JSONException e) {
             BmLog.error("status getting status", e);
-        } */ catch (Throwable e) {
+        } catch (Throwable e) {
             BmLog.error("status getting status", e);
         }
-        return userInfo;
+        return users;
     }
 
 

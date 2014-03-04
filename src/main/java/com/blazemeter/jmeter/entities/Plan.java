@@ -5,13 +5,13 @@ package com.blazemeter.jmeter.entities;
  */
 public class Plan {
     private String id;
-    private String concurrency;
+    private int concurrency;
     private int engines;
     private boolean isMetered;
     private int threadsPerEngine;
     private int threadsPerMediumEngine;
 
-    public Plan(String id, String concurrency, int engines, boolean isMetered, int threadsPerEngine, int threadsPerMediumEngine) {
+    public Plan(String id, int concurrency, int engines, boolean isMetered, int threadsPerEngine, int threadsPerMediumEngine) {
         this.id = id;
         this.concurrency = concurrency;
         this.engines = engines;
@@ -28,11 +28,11 @@ public class Plan {
         this.id = id;
     }
 
-    public String getConcurrency() {
+    public int getConcurrency() {
         return concurrency;
     }
 
-    public void setConcurrency(String concurrency) {
+    public void setConcurrency(int concurrency) {
         this.concurrency = concurrency;
     }
 

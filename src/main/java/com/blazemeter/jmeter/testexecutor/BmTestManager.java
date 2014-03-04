@@ -32,6 +32,7 @@ public class BmTestManager {
 
     private long lastUpdateCheck = 0;
     private UserInfo userInfo;
+    private Users users;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
     private boolean isUserKeyValid = true;
@@ -324,6 +325,17 @@ public class BmTestManager {
         return userInfo;
     }
 
+    public Users getUsers(boolean force) {
+        /*
+        String userKey = this.getUserKey();
+        if ((force & !userKey.isEmpty()) || users == null || user.getTime() + 3600000 < new Date().getTime()) {
+            BmLog.info("Getting user information...");
+            users = BlazemeterApi.getInstance().getUsers(this.getUserKey());
+            NotifyUserInfoChanged(users);
+        }*/
+        return users;
+    }
+
     class jmxUploader implements Runnable {
 
         @Override
@@ -404,12 +416,7 @@ public class BmTestManager {
         }).start();
     }
 
-    /*
-    Wrapper-method, which provides server URL.
-    Incapsulates BlazemeterAPI from TestPanel
-       @return String
 
-     */
     public static String getServerUrl() {
         return BmUrlManager.getServerUrl();
     }
