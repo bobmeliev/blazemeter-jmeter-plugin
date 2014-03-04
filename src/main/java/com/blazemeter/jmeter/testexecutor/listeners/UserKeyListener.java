@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor.listeners;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
 
 import javax.swing.*;
@@ -78,6 +79,7 @@ public class UserKeyListener implements DocumentListener {
                 GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
                 signUpButton.setVisible(false);
                 BmTestManager.getInstance().getUserInfo(true);
+                TestPanel.getTestPanel().enableMainPanelControls(true);
             }
         });
     }
