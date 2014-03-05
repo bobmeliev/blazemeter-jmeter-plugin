@@ -2,10 +2,7 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
-import com.blazemeter.jmeter.entities.EnginesParameters;
-import com.blazemeter.jmeter.entities.Overrides;
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
@@ -115,8 +112,9 @@ public class GuiUtils {
                                      JSpinner iterationsSpinner,
                                      JSpinner rampupSpinner) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
+        Users users = bmTestManager.getUsers();
         int numberOfUsers = numberOfUsersSlider.getValue();
-        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(numberOfUsers);
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, numberOfUsers);
 
         int userPerEngine = enginesParameters.getUserPerEngine();
 

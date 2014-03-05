@@ -1,6 +1,6 @@
 package com.blazemeter.jmeter.entities;
 
-import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.constants.Constants;
 
 /**
  * Created by dzmitrykashlach on 2/12/14.
@@ -12,17 +12,17 @@ public class EnginesParameters {
     private int consoles = 1;
     private int engines = 0;
     private int servers = 0;
-    private StringBuilder engineSize = new StringBuilder("m1.medium");
+    private StringBuilder engineSize = new StringBuilder(Constants.LARGE_ENGINE);
     private int userPerEngine = 0;
 
 
-    public static synchronized EnginesParameters getEnginesParameters(int numberOfUsers) {
+    public static synchronized EnginesParameters getEnginesParameters(Users users, int numberOfUsers) {
         if (enginesParameters == null) {
             enginesParameters = new EnginesParameters();
         }
         if (numberOfUsers != enginesParameters.numberOfUsers) {
             enginesParameters.numberOfUsers = numberOfUsers;
-            enginesParameters.countParameters(numberOfUsers);
+            enginesParameters.countParameters(users, numberOfUsers);
         }
 
         return enginesParameters;
@@ -44,63 +44,48 @@ public class EnginesParameters {
         return engines;
     }
 
-    private synchronized void countParameters(int numberOfUsers) {
+    private synchronized void countParameters(Users users, int numberOfUsers) {
 
-        UserInfo userInfo = BmTestManager.getInstance().getUserInfo();
-
+        Plan plan = users.getPlan();
+        int thrPerEngine = plan.getThreadsPerEngine();
+        int testPlanEngines = plan.getEngines();
 
         if (numberOfUsers == 0) {
             this.userPerEngine = 0;
             this.engines = 0;
-            this.consoles = 0;
+            this.consoles = 1;
+            return;
         }
 
-        if (numberOfUsers <= 300 & numberOfUsers > 0) {
+        if (numberOfUsers <= thrPerEngine & numberOfUsers > 0) {
             this.userPerEngine = numberOfUsers;
             this.engines = 0;
             this.consoles = 1;
+            return;
         }
 
-
-        if (numberOfUsers > 300) {
-            this.servers = numberOfUsers / 300;
-            if (this.servers <= userInfo.getMaxEnginesLimit()) {
+        if (numberOfUsers > thrPerEngine) {
+            this.servers = numberOfUsers / thrPerEngine;
+            if (this.servers <= testPlanEngines) {
                 this.engineSize.setLength(0);
-                this.engineSize.append("m1.medium");
+                this.engineSize.append(Constants.LARGE_ENGINE);
 
-                if (numberOfUsers / 300 > 0) {
-                    this.servers = numberOfUsers / 300;
-                    if (numberOfUsers % 300 > 0) {
+                if (numberOfUsers / thrPerEngine > 0) {
+                    this.servers = numberOfUsers / thrPerEngine;
+                    if (numberOfUsers % thrPerEngine > 0) {
                         this.servers++;
                     }
                     if (this.servers / 15 > 0) {
                         this.consoles = this.servers / 15;
-
+                        if (this.servers % 15 > 0) {
+                            this.consoles++;
+                        }
                     }
                     this.engines = this.servers - this.consoles;
                     this.userPerEngine = numberOfUsers / this.servers;
                 }
             }
 
-
-            if (this.servers > userInfo.getMaxEnginesLimit()) {
-                this.engineSize.setLength(0);
-                this.engineSize.append("m1.large");
-                this.servers = numberOfUsers / 600;
-
-
-                if (numberOfUsers % 600 > 0) {
-                    this.servers++;
-                }
-
-                if (this.servers / 15 > 0) {
-                    this.consoles = this.servers / 15;
-
-                }
-                this.engines = this.servers - this.consoles;
-
-
-            }
             this.userPerEngine = numberOfUsers / this.servers;
         }
 

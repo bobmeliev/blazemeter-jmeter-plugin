@@ -1,7 +1,9 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.entities.EnginesParameters;
 import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.Users;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 
 import javax.swing.*;
@@ -32,12 +34,15 @@ public class NumberOfUsersSliderListener implements ChangeListener {
         int engines;
         StringBuilder engineSize = new StringBuilder();
         int usersPerEngine;
-        TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
+
+        BmTestManager bmTestManager = BmTestManager.getInstance();
+        TestInfo testInfo = bmTestManager.getTestInfo();
         testInfo.setNumberOfUsers(numberOfUsers);
-        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(numberOfUsers);
+        Users users = bmTestManager.getUsers();
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, numberOfUsers);
         consoles = Integer.valueOf(enginesParameters.getConsoles());
         engines = Integer.valueOf(enginesParameters.getEngines());
-        engineSize.append(enginesParameters.getEngineSize().equals("m1.medium") ? "MEDIUM ENGINE(S)" : "LARGE ENGINE(S)");
+        engineSize.append(enginesParameters.getEngineSize().equals(Constants.MEDIUM_ENGINE) ? "MEDIUM ENGINE(S)" : "LARGE ENGINE(S)");
         usersPerEngine = enginesParameters.getUserPerEngine();
 
         enginesDescription.removeAll();

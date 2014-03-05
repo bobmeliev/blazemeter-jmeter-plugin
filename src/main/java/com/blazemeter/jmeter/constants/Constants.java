@@ -48,4 +48,6 @@ public interface Constants {
     public static final String USERS_PER_ENGINE = "userPerEngine";
     public static final String BM_LOGGER = "bm-logger";
     public static final String INFINITY = Character.toString('\u221e');
+    public static final String MEDIUM_ENGINE = "m1.medium";
+    public static final String LARGE_ENGINE = "m1.large";
 }

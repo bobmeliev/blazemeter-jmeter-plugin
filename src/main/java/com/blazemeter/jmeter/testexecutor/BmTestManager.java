@@ -45,6 +45,7 @@ public class BmTestManager {
     public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
     public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
     public List<IUserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<IUserInfoChangedNotification>();
+    public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
     public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
     public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
 
@@ -240,7 +241,7 @@ public class BmTestManager {
     }
 
     public TestInfo updateTestSettings(String userKey, TestInfo testInfo) {
-        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(testInfo.getNumberOfUsers());
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(this.users, testInfo.getNumberOfUsers());
         Overrides overrides = testInfo.getOverrides();
         int engines = enginesParameters.getConsoles() + enginesParameters.getEngines() - 1;
         TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
@@ -326,14 +327,21 @@ public class BmTestManager {
     }
 
     public Users getUsers(boolean force) {
-        /*
         String userKey = this.getUserKey();
-        if ((force & !userKey.isEmpty()) || users == null || user.getTime() + 3600000 < new Date().getTime()) {
-            BmLog.info("Getting user information...");
+        if ((force & !userKey.isEmpty()) || users == null || Integer.parseInt(users.getAccess()) + 3600000 < new Date().getTime()) {
+            BmLog.info("Getting users information...");
             users = BlazemeterApi.getInstance().getUsers(this.getUserKey());
-            NotifyUserInfoChanged(users);
-        }*/
+            NotifyUsersChanged(users);
+        }
         return users;
+    }
+
+    public Users getUsers() {
+        return getUsers(false);
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     class jmxUploader implements Runnable {
@@ -392,6 +400,12 @@ public class BmTestManager {
     public void NotifyUserInfoChanged(UserInfo userInfo) {
         for (IUserInfoChangedNotification uic : userInfoChangedNotificationListeners) {
             uic.onUserInfoChanged(userInfo);
+        }
+    }
+
+    public void NotifyUsersChanged(Users users) {
+        for (IUsersChangedNotification uc : usersChangedNotificationListeners) {
+            uc.onUsersChanged(users);
         }
     }
 

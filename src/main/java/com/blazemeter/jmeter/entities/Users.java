@@ -81,7 +81,7 @@ public class Users {
     }
 
     public Plan getPlan() {
-        return plan;
+        return this.plan;
     }
 
     public void setPlan(Plan plan) {
