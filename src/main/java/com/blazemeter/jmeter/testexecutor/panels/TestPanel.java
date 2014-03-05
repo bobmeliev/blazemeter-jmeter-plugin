@@ -132,8 +132,8 @@ public class TestPanel {
                     getUserKey().
                     isEmpty());
 
-            IUserInfoChangedNotification userInfoChangedNotification = new UserInfoChangedNotification(userInfoLabel, testIdComboBox);
-            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(userInfoChangedNotification);
+            IUsersChangedNotification usersChangedNotification = new UsersChangedNotificationTP(userInfoLabel, testIdComboBox);
+            BmTestManager.getInstance().usersChangedNotificationListeners.add(usersChangedNotification);
 
 
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);

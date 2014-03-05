@@ -87,4 +87,8 @@ public class Users {
     public void setPlan(Plan plan) {
         this.plan = plan;
     }
+
+    public String toString() {
+        return String.format("%s: %d users", name, plan.getConcurrency());
+    }
 }

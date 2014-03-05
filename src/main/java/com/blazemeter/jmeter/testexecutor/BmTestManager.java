@@ -31,7 +31,6 @@ public class BmTestManager {
     private String userKey = "";
 
     private long lastUpdateCheck = 0;
-    private UserInfo userInfo;
     private Users users;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
@@ -44,7 +43,6 @@ public class BmTestManager {
 
     public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
     public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
-    public List<IUserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<IUserInfoChangedNotification>();
     public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
     public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
     public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
@@ -308,24 +306,6 @@ public class BmTestManager {
     }
 
 
-    public UserInfo getUserInfo() {
-        return getUserInfo(false);
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
-
-    public UserInfo getUserInfo(boolean force) {
-        String userKey = this.getUserKey();
-        if ((force & !userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
-            BmLog.info("Getting user information...");
-            userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
-            NotifyUserInfoChanged(userInfo);
-        }
-        return userInfo;
-    }
-
     public Users getUsers(boolean force) {
         String userKey = this.getUserKey();
         if ((force & !userKey.isEmpty()) || users == null || Integer.parseInt(users.getAccess()) + 3600000 < new Date().getTime()) {
@@ -396,12 +376,6 @@ public class BmTestManager {
         }
     }
 
-
-    public void NotifyUserInfoChanged(UserInfo userInfo) {
-        for (IUserInfoChangedNotification uic : userInfoChangedNotificationListeners) {
-            uic.onUserInfoChanged(userInfo);
-        }
-    }
 
     public void NotifyUsersChanged(Users users) {
         for (IUsersChangedNotification uc : usersChangedNotificationListeners) {
