@@ -20,7 +20,7 @@ public class TestEnginesParameters {
         bmTestManager = BmTestManager.getInstance();
         plan = new Plan("HV40KOD", 40000, 40, true, 1000, 0);
         users = new Users("1689", "dzmitrykashlach", "dzmitry.kashlach@blazemeter.com",
-                "1394008114", "1392730300", "1324748306", true, plan);
+                "1394008114", "1392730300", "1324748306", true, plan, null);
         bmTestManager.setUsers(users);
 
     }

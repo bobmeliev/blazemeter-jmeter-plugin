@@ -153,37 +153,28 @@ public class BlazemeterApi {
     }
 
 
-    public UserInfo getUserInfo(String userKey) {
-        UserInfo userInfo = null;
+    private synchronized JSONArray getLocations(String userKey) {
+        JSONArray locations = null;
         if (userKey == null || userKey.isEmpty())
-            return userInfo;
+            return locations;
 
         try {
             String url = this.urlManager.getUserInfo(Constants.APP_KEY, userKey);
 
             JSONObject jo = getJson(url, null);
             if (jo.getInt("response_code") == 200) {
-                userInfo = new UserInfo(jo.getString("username"),
-                        jo.getInt("credits"),
-                        jo.getString("mail"),
-                        jo.getInt("max_users_limit"),
-                        jo.getInt("max_engines_limit"),
-                        jo.getInt("max_threads_medium"),
-                        jo.getInt("max_threads_large"),
-                        jo.getString("plan"),
-                        jo.getJSONArray("locations")
-                );
+                locations = jo.getJSONArray("locations");
             }
         } catch (JSONException e) {
-            BmLog.error("Error while getting UserInfo: ", e);
+            BmLog.error("Error while getting locations: ", e);
         } catch (Throwable e) {
-            BmLog.error("Error while getting UserInfo: ", e);
+            BmLog.error("Error while getting locations: ", e);
         }
-        return userInfo;
+        return locations;
     }
 
 
-    public Users getUsers(String userKey) {
+    public synchronized Users getUsers(String userKey) {
         Users users = null;
         if (userKey == null || userKey.isEmpty())
             return users;
@@ -201,7 +192,7 @@ public class BlazemeterApi {
                         jo.getString("login"),
                         jo.getString("created"),
                         jo.getBoolean("enabled"),
-                        null
+                        null, null
                 );
 
                 JSONObject plan_JO = jo.getJSONObject("plan");
@@ -212,7 +203,8 @@ public class BlazemeterApi {
                         plan_JO.getInt("threadsPerEngine"),
                         plan_JO.getInt("threadsPerMediumEngine"));
                 users.setPlan(plan);
-
+                JSONArray locations = this.getLocations(userKey);
+                users.setLocations(locations);
             }
         } catch (JSONException e) {
             BmLog.error("status getting status", e);

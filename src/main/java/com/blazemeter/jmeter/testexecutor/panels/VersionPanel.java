@@ -8,7 +8,7 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.VersionMouseListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationVP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationVP;
 import com.blazemeter.jmeter.utils.PluginInstaller;
 import com.blazemeter.jmeter.utils.URIOpener;
 import com.blazemeter.jmeter.utils.Utils;

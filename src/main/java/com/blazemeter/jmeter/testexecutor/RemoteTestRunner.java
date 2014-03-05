@@ -161,7 +161,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.error("UserKey is not found, test results won't be uploaded to server");
             return;
         }
-        bmTestManager.setUserKeyValid(bmTestManager.getUserInfo() != null);
+        bmTestManager.setUserKeyValid(bmTestManager.getUsers() != null);
         if (!bmTestManager.isUserKeyValid()) {
             BmLog.error("UserKey is invalid, test will be started without uploading results");
             return;

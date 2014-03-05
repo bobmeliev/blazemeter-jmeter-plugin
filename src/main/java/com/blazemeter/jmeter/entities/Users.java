@@ -1,5 +1,7 @@
 package com.blazemeter.jmeter.entities;
 
+import org.json.JSONArray;
+
 /**
  * Created by dzmitrykashlach on 3/4/14.
  */
@@ -12,8 +14,10 @@ public class Users {
     private String created;
     private boolean enabled;
     private Plan plan;
+    private JSONArray locations;
 
-    public Users(String id, String name, String mail, String access, String login, String created, boolean enabled, Plan plan) {
+
+    public Users(String id, String name, String mail, String access, String login, String created, boolean enabled, Plan plan, JSONArray locations) {
         this.id = id;
         this.name = name;
         this.mail = mail;
@@ -22,6 +26,7 @@ public class Users {
         this.created = created;
         this.enabled = enabled;
         this.plan = plan;
+        this.locations = locations;
     }
 
     public String getId() {
@@ -86,6 +91,14 @@ public class Users {
 
     public void setPlan(Plan plan) {
         this.plan = plan;
+    }
+
+    public JSONArray getLocations() {
+        return locations;
+    }
+
+    public void setLocations(JSONArray locations) {
+        this.locations = locations;
     }
 
     public String toString() {

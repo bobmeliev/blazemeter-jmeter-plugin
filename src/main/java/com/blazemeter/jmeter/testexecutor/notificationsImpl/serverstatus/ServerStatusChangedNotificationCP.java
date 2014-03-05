@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.notificationsImpl;
+package com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus;
 
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.TestInfo;

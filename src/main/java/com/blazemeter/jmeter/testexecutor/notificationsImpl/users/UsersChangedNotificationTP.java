@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.notificationsImpl;
+package com.blazemeter.jmeter.testexecutor.notificationsImpl.users;
 
 import com.blazemeter.jmeter.entities.Users;
 import com.blazemeter.jmeter.testexecutor.notifications.IUsersChangedNotification;

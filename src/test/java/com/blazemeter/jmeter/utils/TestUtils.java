@@ -2,21 +2,16 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.constants.TestConstants;
-import com.blazemeter.jmeter.entities.Overrides;
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
-import com.blazemeter.jmeter.entities.UserInfo;
+import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import junit.framework.Assert;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jmeter.threads.JMeterContext;
-import org.apache.jmeter.threads.JMeterContextService;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.FileInputStream;
@@ -30,16 +25,21 @@ import java.util.Properties;
  * Created by dzmitrykashlach on 1/9/14.
  */
 public class TestUtils {
-    private JMeterContext jmctx;
-    private BmTestManager bmTestManager;
-    private String LOCATIONS = TestConstants.RESOURCES + "/locations.txt";
-    private String TEST_INFO = TestConstants.RESOURCES + "/test-info.txt";
+    private static String LOCATIONS = TestConstants.RESOURCES + "/locations.txt";
+    private static String TEST_INFO = TestConstants.RESOURCES + "/test-info.txt";
+    private static BmTestManager bmTestManager;
+    private static Users users;
+    private static Plan plan;
 
-    @Before
-    public void setUp() {
 
-        jmctx = JMeterContextService.getContext();
+    @BeforeClass
+    public static void setUp() {
         bmTestManager = BmTestManager.getInstance();
+        plan = new Plan("HV40KOD", 40000, 40, true, 1000, 0);
+        users = new Users("1689", "dzmitrykashlach", "dzmitry.kashlach@blazemeter.com",
+                "1394008114", "1392730300", "1324748306", true, plan, null);
+        bmTestManager.setUsers(users);
+
         String str = Utils.getFileContents(LOCATIONS);
         JSONArray locations = null;
 
@@ -48,18 +48,13 @@ public class TestUtils {
         } catch (JSONException e) {
             BmLog.error("Failed to construct LOCATIONS from locations.txt: " + e);
         }
+        users.setLocations(locations);
 
-        UserInfo userInfo = new UserInfo("dzmitrykashlach",
-                9999, "dzmitrykashlach@gmail.com",
-                36000, 60, 300, 600, "enterprise", locations);
-        bmTestManager.setUserInfo(userInfo);
 
     }
 
-
-    @After
-    public void tearDown() {
-        jmctx = null;
+    @AfterClass
+    public static void tearDown() {
         bmTestManager = null;
     }
 
@@ -72,12 +67,12 @@ public class TestUtils {
 
     @Test
     public void getLocationId() {
-        Assert.assertEquals("SANDBOX_FT", Utils.getLocationId("SANDBOX"));
+        Assert.assertEquals("SANDBOX_FT", Utils.getLocationId(users, "SANDBOX"));
     }
 
     @Test
     public void getLocationTitle() {
-        Assert.assertEquals("SANDBOX", Utils.getLocationTitle("SANDBOX_FT"));
+        Assert.assertEquals("SANDBOX", Utils.getLocationTitle(users, "SANDBOX_FT"));
     }
 
     @Test

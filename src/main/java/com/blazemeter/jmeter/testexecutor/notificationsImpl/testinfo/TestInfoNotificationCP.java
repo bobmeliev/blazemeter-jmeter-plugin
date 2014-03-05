@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.notificationsImpl;
+package com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo;
 
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;

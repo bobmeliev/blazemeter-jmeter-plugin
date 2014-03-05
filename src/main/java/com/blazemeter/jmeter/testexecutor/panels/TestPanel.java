@@ -7,7 +7,11 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.*;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.*;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.RunModeChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationTP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo.TestInfoNotificationTP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.users.UsersChangedNotificationTP;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -157,7 +161,7 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        BmTestManager.getInstance().getUserInfo(true);
+                        BmTestManager.getInstance().getUsers(true);
                     }
                 }).start();
             } else {
