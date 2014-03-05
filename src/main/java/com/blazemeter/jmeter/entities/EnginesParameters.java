@@ -48,46 +48,26 @@ public class EnginesParameters {
 
         Plan plan = users.getPlan();
         int thrPerEngine = plan.getThreadsPerEngine();
-        int testPlanEngines = plan.getEngines();
 
-        if (numberOfUsers == 0) {
-            this.userPerEngine = 0;
-            this.engines = 0;
-            this.consoles = 1;
-            return;
-        }
+        this.servers = numberOfUsers / thrPerEngine;
+        this.engineSize.setLength(0);
+        this.engineSize.append(Constants.LARGE_ENGINE);
 
-        if (numberOfUsers <= thrPerEngine & numberOfUsers > 0) {
-            this.userPerEngine = numberOfUsers;
-            this.engines = 0;
-            this.consoles = 1;
-            return;
-        }
 
-        if (numberOfUsers > thrPerEngine) {
+        if (numberOfUsers / thrPerEngine > 0) {
             this.servers = numberOfUsers / thrPerEngine;
-            if (this.servers <= testPlanEngines) {
-                this.engineSize.setLength(0);
-                this.engineSize.append(Constants.LARGE_ENGINE);
-
-                if (numberOfUsers / thrPerEngine > 0) {
-                    this.servers = numberOfUsers / thrPerEngine;
-                    if (numberOfUsers % thrPerEngine > 0) {
-                        this.servers++;
-                    }
-                    if (this.servers / 15 > 0) {
-                        this.consoles = this.servers / 15;
-                        if (this.servers % 15 > 0) {
-                            this.consoles++;
-                        }
-                    }
-                    this.engines = this.servers - this.consoles;
-                    this.userPerEngine = numberOfUsers / this.servers;
+            if (this.servers / 15 > 0) {
+                this.consoles = this.servers / 15;
+                if (this.servers % 15 > 0) {
+                    this.consoles++;
                 }
             }
-
-            this.userPerEngine = numberOfUsers / this.servers;
+        }
+        if (numberOfUsers % thrPerEngine > 0) {
+            this.servers++;
         }
 
+        this.engines = this.servers - this.consoles;
+        this.userPerEngine = numberOfUsers / this.servers;
     }
 }
