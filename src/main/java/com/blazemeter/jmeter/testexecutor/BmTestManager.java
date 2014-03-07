@@ -8,14 +8,12 @@ import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
-import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,7 +28,6 @@ public class BmTestManager {
     private String propUserKey = "";
     private String userKey = "";
 
-    private long lastUpdateCheck = 0;
     private Users users;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
@@ -265,7 +262,7 @@ public class BmTestManager {
     }
 
     public void uploadJmx() {
-        Thread jmxUploader = new Thread(new jmxUploader());
+        Thread jmxUploader = new Thread(new JMXUploader());
         jmxUploader.start();
         try {
             jmxUploader.join();
@@ -324,29 +321,6 @@ public class BmTestManager {
         this.users = users;
     }
 
-    class jmxUploader implements Runnable {
-
-        @Override
-        public void run() {
-            FileServer fileServer = FileServer.getFileServer();
-            String projectPath = null;
-            if (fileServer.getScriptName() != null) {
-                projectPath = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
-            } else if (!JMeter.isNonGUI()) {
-                projectPath = GuiPackage.getInstance().getTestPlanFile();
-            }
-            try {
-                String filename = new File(projectPath).getName();
-                BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.getId(), filename, projectPath);
-            } catch (NullPointerException npe) {
-                BmLog.error("JMX was not uploaded to server: test-plan is needed to be saved first ");
-            } catch (Exception ex) {
-                BmLog.error(ex);
-
-            }
-        }
-    }
-
 
     public void NotifyUserKeyChanged() {
         for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {
@@ -383,26 +357,7 @@ public class BmTestManager {
         }
     }
 
-    public void checkForUpdates() {
-        long now = new Date().getTime();
-        if (lastUpdateCheck + 3600000 > now) {
-            return;
-        }
 
-        lastUpdateCheck = now;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PluginUpdate update = BlazemeterApi.getInstance().getUpdate(BmTestManager.getInstance().getUserKey());
-                if (update != null && update.getVersion().isNewerThan(Utils.getPluginVersion())) {
-                    BmLog.info(String.format("Update found from %s to %s", Utils.getPluginVersion().toString(true), update.getVersion().toString(true)));
-                    NotifyPluginUpdateReceived(update);
-                } else {
-                    BmLog.info("No update found");
-                }
-            }
-        }).start();
-    }
 
 
     public static String getServerUrl() {

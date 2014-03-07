@@ -3,6 +3,7 @@ package com.blazemeter.jmeter.testexecutor;
 //~--- non-JDK imports --------------------------------------------------------
 
 import com.blazemeter.jmeter.api.BmUrlManager;
+import com.blazemeter.jmeter.api.checkers.UpdateChecker;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.TestInfoController;
@@ -103,7 +104,7 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
         bmTestManager.setIsLocalRunMode(isLocalRunMode);
         testPanel.init();
 
-        bmTestManager.getInstance().checkForUpdates();
+        UpdateChecker.checkForUpdates();
     }
 
     private Component getTopPanel() {
