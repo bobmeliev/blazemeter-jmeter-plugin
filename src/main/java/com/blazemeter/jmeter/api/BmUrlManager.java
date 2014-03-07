@@ -168,7 +168,7 @@ public class BmUrlManager {
         } catch (UnsupportedEncodingException e) {
             BmLog.error(e);
         }
-        return String.format("%s/api/latest/users/?app_key=%s&api_key=%s", SERVER_URL, app_key, userKey);
+        return String.format("%s/api/latest/users/?app_key=%s&api-key=%s", SERVER_URL, app_key, userKey);
     }
 
     public String getUserInfo(String appKey, String userKey) {

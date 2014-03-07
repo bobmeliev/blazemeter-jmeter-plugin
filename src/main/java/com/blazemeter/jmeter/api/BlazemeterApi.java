@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.api;
 
 import com.blazemeter.jmeter.api.checkers.TestsChecker;
 import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.constants.Methods;
 import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
@@ -12,6 +13,7 @@ import org.apache.http.HeaderIterator;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
@@ -62,14 +64,14 @@ public class BlazemeterApi {
         return response;
     }
 
-    private HttpResponse getResponse(String url, JSONObject data) throws IOException {
+    private HttpResponse doHTTPRequest(String method, String url, JSONObject data) throws IOException {
 
         BmLog.debug("Requesting : " + url);
-        HttpPost postRequest = new HttpPost(url);
-        postRequest.setHeader("Accept", "application/json");
-        postRequest.setHeader("Content-type", "application/json; charset=UTF-8");
+        HttpRequestBase request = method.equals(Methods.POST) ? new HttpPost(url) : new HttpGet(url);
+        request.setHeader("Accept", "application/json");
+        request.setHeader("Content-type", "application/json; charset=UTF-8");
 
-        if (data != null) {
+        if (data != null & request instanceof HttpPost) {
             StringEntity stringEntity = null;
 
             if (data.has(Constants.SAMPLES)) {
@@ -82,12 +84,13 @@ public class BlazemeterApi {
             } else {
                 stringEntity = new StringEntity(data.toString());
             }
-            postRequest.setEntity(stringEntity);
+            ((HttpPost) request).setEntity(stringEntity);
+
         }
 
         HttpResponse response = null;
         try {
-            response = new DefaultHttpClient().execute(postRequest);
+            response = new DefaultHttpClient().execute(request);
 
             int statusCode = response.getStatusLine().getStatusCode();
             String error = response.getStatusLine().getReasonPhrase();
@@ -101,12 +104,12 @@ public class BlazemeterApi {
     }
 
 
-    private JSONObject getJson(String url, JSONObject data) {
+    private JSONObject getJson(String method, String url, JSONObject data) {
         JSONObject jo = null;
         HttpResponse response = null;
         try {
 
-            response = getResponse(url, data);
+            response = doHTTPRequest(method, url, data);
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());
                 BmLog.debug(output);
@@ -161,7 +164,7 @@ public class BlazemeterApi {
         try {
             String url = this.urlManager.getUserInfo(Constants.APP_KEY, userKey);
 
-            JSONObject jo = getJson(url, null);
+            JSONObject jo = getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
                 locations = jo.getJSONArray("locations");
             }
@@ -182,8 +185,8 @@ public class BlazemeterApi {
         try {
             String url = this.urlManager.getUsers(Constants.APP_KEY, userKey);
 
-            JSONObject jo = getJson(url, null);
-            if (jo.getInt("response_code") == 200) {
+            JSONObject jo = getJson(Methods.GET, url, null);
+            if (jo.getString("id") != null) {
 
                 users = new Users(jo.getString("id"),
                         jo.getString("name"),
@@ -194,7 +197,6 @@ public class BlazemeterApi {
                         jo.getBoolean("enabled"),
                         null, null
                 );
-
                 JSONObject plan_JO = jo.getJSONObject("plan");
                 Plan plan = new Plan(plan_JO.getString("id"),
                         plan_JO.getInt("concurrency"),
@@ -207,9 +209,9 @@ public class BlazemeterApi {
                 users.setLocations(locations);
             }
         } catch (JSONException e) {
-            BmLog.error("status getting status", e);
+            BmLog.error("Error getting users: " + e);
         } catch (Throwable e) {
-            BmLog.error("status getting status", e);
+            BmLog.error("Error getting users: " + e);
         }
         return users;
     }
@@ -227,7 +229,7 @@ public class BlazemeterApi {
             return testInfo;
         }
         String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testInfo.getId());
-        JSONObject jo = getJson(url, null);
+        JSONObject jo = getJson(Methods.POST, url, null);
         try {
             testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.NotRunning : TestStatus.Running);
         } catch (JSONException je) {
@@ -256,7 +258,7 @@ public class BlazemeterApi {
         }
 
         String url = this.urlManager.testStart(Constants.APP_KEY, userKey, testId);
-        JSONObject jo = getJson(url, null);
+        JSONObject jo = getJson(Methods.POST, url, null);
         testInfo = Utils.parseTestInfo(jo);
         try {
             testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.Running : TestStatus.NotRunning);
@@ -274,7 +276,7 @@ public class BlazemeterApi {
 
         String url = this.urlManager.getTests(Constants.APP_KEY, userKey, "all");
 
-        JSONObject jo = getJson(url, null);
+        JSONObject jo = getJson(Methods.POST, url, null);
         JSONArray arr;
         try {
             String r = jo.get("response_code").toString();
@@ -326,7 +328,7 @@ public class BlazemeterApi {
         } catch (JSONException e) {
             BmLog.error(e);
         }
-        JSONObject jo = getJson(url, properties);
+        JSONObject jo = getJson(Methods.POST, url, properties);
         testInfo = Utils.parseTestInfo(jo);
 
         return testInfo;
@@ -359,7 +361,7 @@ public class BlazemeterApi {
             BmLog.error(e);
         }
 
-        getJson(url, jmxData);
+        getJson(Methods.POST, url, jmxData);
     }
 
     /*
@@ -443,7 +445,7 @@ public class BlazemeterApi {
         JSONObject obj = new JSONObject();
         try {
             obj.put(Constants.DATA, buff);
-            JSONObject jo = getJson(url, obj);
+            JSONObject jo = getJson(Methods.POST, url, obj);
             if (jo.has("file_size"))
                 fileSize = (Integer) jo.get("file_size");
             else
@@ -458,7 +460,7 @@ public class BlazemeterApi {
         try {
             JSONObject data = new JSONObject();
             data.put(Constants.SAMPLES, new JSONArray(samples));
-            getJson(callBackUrl, data);
+            getJson(Methods.POST, callBackUrl, data);
         } catch (JSONException e) {
             BmLog.error("Failed to upload samples: " + e.getMessage());
         }
@@ -496,7 +498,7 @@ public class BlazemeterApi {
             options.put("JMETER_PARAMS", jmeter_params);
 
             obj.put("options", options);
-            JSONObject jo = getJson(url, obj);
+            JSONObject jo = getJson(Methods.POST, url, obj);
             if (jo == null || jo.getInt("response_code") != 200) {
                 BmLog.error("Failed to update: " + testId);
                 BmLog.error("JSON options were sent with JSON object: " + options.toString());
@@ -534,7 +536,7 @@ public class BlazemeterApi {
         try {
             String url = this.urlManager.testStatus(Constants.APP_KEY, userKey, testId, detailed);
 
-            JSONObject jo = getJson(url, null);
+            JSONObject jo = getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
                 ti = Utils.parseTestInfo(jo);
             } else {
@@ -542,10 +544,10 @@ public class BlazemeterApi {
                 ti.setError(jo.getString("error"));
             }
         } catch (JSONException e) {
-            BmLog.error("status getting status", e);
+            BmLog.error("Error getting status:", e);
             ti.setStatus(TestStatus.Error);
         } catch (Throwable e) {
-            BmLog.error("status getting status", e);
+            BmLog.error("Error getting status:", e);
             ti.setStatus(TestStatus.Error);
         }
 
@@ -558,7 +560,7 @@ public class BlazemeterApi {
             userKey = userKey == null ? "" : userKey;
             String url = this.urlManager.getUpdate(Constants.APP_KEY, userKey, Utils.getPluginVersion().toString(true));
 
-            JSONObject jo = getJson(url, null);
+            JSONObject jo = getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
                 update = new PluginUpdate(new PluginVersion(jo.getInt("version_major"),
                         jo.getInt("version_minor"),
@@ -584,7 +586,7 @@ public class BlazemeterApi {
         String callBackUrl = null;
 
         try {
-            JSONObject jsonObject = getJson(url, null);
+            JSONObject jsonObject = getJson(Methods.POST, url, null);
             responseCode = jsonObject.get("response_code").toString();
             errorMessage = jsonObject.get("error").toString();
             callBackUrl = jsonObject.get("submit").toString();
@@ -616,6 +618,6 @@ public class BlazemeterApi {
         }
 
         String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testId);
-        getJson(url, null);
+        getJson(Methods.POST, url, null);
     }
 }
