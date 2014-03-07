@@ -3,6 +3,8 @@ package com.blazemeter.jmeter.testexecutor.notificationsImpl.users;
 import com.blazemeter.jmeter.entities.Plan;
 import com.blazemeter.jmeter.entities.Users;
 import com.blazemeter.jmeter.testexecutor.notifications.IUsersChangedNotification;
+import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import org.json.JSONArray;
 
 import javax.swing.*;
 import java.util.Dictionary;
@@ -12,9 +14,11 @@ import java.util.Dictionary;
  */
 public class UsersChangedNotificationCP implements IUsersChangedNotification {
     private JSlider numberOfUsersSlider;
+    private CloudPanel cloudPanel;
 
-    public UsersChangedNotificationCP(JSlider numberOfUsersSlider) {
+    public UsersChangedNotificationCP(JSlider numberOfUsersSlider, CloudPanel cloudPanel) {
         this.numberOfUsersSlider = numberOfUsersSlider;
+        this.cloudPanel = cloudPanel;
     }
 
     @Override
@@ -33,9 +37,8 @@ public class UsersChangedNotificationCP implements IUsersChangedNotification {
             numberOfUsersSlider.setLabelTable(labels);
 
             //set locations list
-            /*
-            JSONArray locations = userInfo.getLocations();
-            setLocations(locations);*/
+            JSONArray locations = users.getLocations();
+            cloudPanel.setLocations(locations);
         }
     }
 }

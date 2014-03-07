@@ -12,7 +12,7 @@ import com.blazemeter.jmeter.results.LogUploader;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IUserKeyNotification;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
@@ -48,7 +48,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
 
-        BmTestManager.getInstance().testUserKeyNotificationListeners.add(new ITestUserKeyNotification() {
+        BmTestManager.getInstance().userKeyNotificationListeners.add(new IUserKeyNotification() {
             @Override
             public void onTestUserKeyChanged(String userKey) {
                 setUserKey(userKey);

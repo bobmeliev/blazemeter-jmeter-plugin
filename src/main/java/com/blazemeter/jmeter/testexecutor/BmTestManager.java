@@ -38,7 +38,7 @@ public class BmTestManager {
     private static BmTestManager instance;
     private static final Object lock = new Object();
 
-    public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
+    public List<IUserKeyNotification> userKeyNotificationListeners = new ArrayList<IUserKeyNotification>();
     public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
     public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
     public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
@@ -323,7 +323,7 @@ public class BmTestManager {
 
 
     public void NotifyUserKeyChanged() {
-        for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {
+        for (IUserKeyNotification ti : userKeyNotificationListeners) {
             ti.onTestUserKeyChanged(userKey);
         }
 

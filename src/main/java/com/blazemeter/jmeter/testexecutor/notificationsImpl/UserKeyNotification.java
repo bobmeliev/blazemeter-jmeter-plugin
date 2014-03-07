@@ -5,7 +5,7 @@ import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.controllers.TestListController;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notifications.IUserKeyNotification;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 
 import javax.swing.*;
@@ -14,17 +14,17 @@ import java.util.HashMap;
 /**
  * Created by dzmitrykashlach on 12/20/13.
  */
-public class TestUserKeyNotification implements ITestUserKeyNotification {
+public class UserKeyNotification implements IUserKeyNotification {
     JButton signUpButton;
     JComboBox testIdComboBox;
     JPanel mainPanel;
     CloudPanel cloudPanel;
 
 
-    public TestUserKeyNotification(JButton signUpButton,
-                                   JComboBox testIdComboBox,
-                                   JPanel mainPanel,
-                                   CloudPanel cloudPanel) {
+    public UserKeyNotification(JButton signUpButton,
+                               JComboBox testIdComboBox,
+                               JPanel mainPanel,
+                               CloudPanel cloudPanel) {
         this.signUpButton = signUpButton;
         this.testIdComboBox = testIdComboBox;
         this.mainPanel = mainPanel;
@@ -47,9 +47,8 @@ public class TestUserKeyNotification implements ITestUserKeyNotification {
             applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
             ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo, true);
             TestListController.setNotification(testListNotification);
-//            TestListController.start(userKey);
+            bmTestManager.getUsers(true);
         } else {
-//            TestListController.stop();
             TestInfoController.stop();
         }
     }

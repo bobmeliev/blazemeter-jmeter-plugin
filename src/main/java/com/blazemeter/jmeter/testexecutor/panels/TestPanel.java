@@ -8,7 +8,7 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.*;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.RunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestUserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.UserKeyNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationTP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo.TestInfoNotificationTP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.users.UsersChangedNotificationTP;
@@ -61,11 +61,13 @@ public class TestPanel {
 
                 }
             });
-            ITestUserKeyNotification userKeyNotification = new TestUserKeyNotification(signUpButton,
+            IUserKeyNotification userKeyNotification = new UserKeyNotification(signUpButton,
                     testIdComboBox,
                     mainPanel,
                     cloudPanel);
-            BmTestManager.getInstance().testUserKeyNotificationListeners.add(userKeyNotification);
+            BmTestManager.getInstance().userKeyNotificationListeners.add(userKeyNotification);
+            IUsersChangedNotification usersChangedNotification = new UsersChangedNotificationTP(userInfoLabel, testIdComboBox);
+            BmTestManager.getInstance().usersChangedNotificationListeners.add(usersChangedNotification);
 
             signUpButton.addActionListener(new ActionListener() {
                 @Override
@@ -136,8 +138,6 @@ public class TestPanel {
                     getUserKey().
                     isEmpty());
 
-            IUsersChangedNotification usersChangedNotification = new UsersChangedNotificationTP(userInfoLabel, testIdComboBox);
-            BmTestManager.getInstance().usersChangedNotificationListeners.add(usersChangedNotification);
 
 
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);

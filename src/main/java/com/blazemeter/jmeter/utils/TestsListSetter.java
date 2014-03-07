@@ -41,7 +41,6 @@ public class TestsListSetter implements Runnable {
         if (tests != null) {
             BmTestManager bmTestManager = BmTestManager.getInstance();
             bmTestManager.setUserKeyValid(true);
-//            TestListController.start(bmTestManager.getUserKey());
             testIdComboBox.removeAllItems();
             testIdComboBox.setEnabled(true);
             testIdComboBox.addItem(Constants.NEW);
@@ -91,7 +90,6 @@ public class TestsListSetter implements Runnable {
                 testIdComboBox.setSelectedItem(Constants.EMPTY);
                 TestPanel.getTestPanel().configureMainPanel(null);
                 TestInfoController.stop();
-//                TestListController.stop();
             } else {
                 BmLog.debug("Invalid userKey was found. Tests are not received from BM server");
             }

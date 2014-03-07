@@ -206,7 +206,7 @@ public class CloudPanel extends JPanel {
         /*
           If userInfo was changed in BmTestManager, Cloud Panel will be notified about this to take appropriate reaction
          */
-        IUsersChangedNotification usersChangedNotificationCP = new UsersChangedNotificationCP(numberOfUsersSlider);
+        IUsersChangedNotification usersChangedNotificationCP = new UsersChangedNotificationCP(numberOfUsersSlider, this);
         bmTestManager.usersChangedNotificationListeners.add(usersChangedNotificationCP);
 
     }
