@@ -308,7 +308,7 @@ public class BmTestManager {
 
     public Users getUsers(boolean force) {
         String userKey = this.getUserKey();
-        if ((force & !userKey.isEmpty()) || users == null || Integer.parseInt(users.getAccess()) + 3600000 < new Date().getTime()) {
+        if (force & !userKey.isEmpty() & isUserKeyValid) {
             BmLog.info("Getting users information...");
             users = BlazemeterApi.getInstance().getUsers(this.getUserKey());
             NotifyUsersChanged(users);
