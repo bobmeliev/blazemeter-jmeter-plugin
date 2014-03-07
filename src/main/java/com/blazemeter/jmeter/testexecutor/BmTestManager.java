@@ -231,15 +231,14 @@ public class BmTestManager {
     }
 
     public TestInfo createTest(String userKey, String testName) {
-        return
-                BlazemeterApi.getInstance().createTest(userKey, testName);
+        return rpc.createTest(userKey, testName);
     }
 
     public TestInfo updateTestSettings(String userKey, TestInfo testInfo) {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(this.users, testInfo.getNumberOfUsers());
         Overrides overrides = testInfo.getOverrides();
         int engines = enginesParameters.getConsoles() + enginesParameters.getEngines() - 1;
-        TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
+        TestInfo ti = rpc.updateTestSettings(userKey,
                 testInfo.getId(),
                 testInfo.getLocation(),
                 engines,
@@ -297,7 +296,7 @@ public class BmTestManager {
         String userKey = this.getUserKey();
         if (force & !userKey.isEmpty() & isUserKeyValid) {
             BmLog.info("Getting users information...");
-            users = BlazemeterApi.getInstance().getUsers(this.getUserKey());
+            users = rpc.getUsers(this.getUserKey());
             NotifyUsersChanged(users);
         }
         return users;
