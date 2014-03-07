@@ -12,6 +12,10 @@ import java.io.File;
  * Created by dzmitrykashlach on 3/7/14.
  */
 public class JMXUploader implements Runnable {
+
+    private JMXUploader() {
+    }
+
     @Override
     public void run() {
         BmTestManager bmTestManager = BmTestManager.getInstance();
@@ -30,6 +34,16 @@ public class JMXUploader implements Runnable {
         } catch (Exception ex) {
             BmLog.error(ex);
 
+        }
+    }
+
+    public static void uploadJMX() {
+        Thread jmxUploader = new Thread(new JMXUploader());
+        jmxUploader.start();
+        try {
+            jmxUploader.join();
+        } catch (InterruptedException ie) {
+            BmLog.debug("JMX Uploader was interrupted");
         }
     }
 }

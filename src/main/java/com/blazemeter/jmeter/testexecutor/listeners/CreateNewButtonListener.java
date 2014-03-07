@@ -6,6 +6,7 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
+import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
@@ -80,7 +81,7 @@ public class CreateNewButtonListener implements ActionListener {
 
             Utils.saveJMX();
         }
-        bmTestManager.uploadJmx();
+        JMXUploader.uploadJMX();
 
     }
 }

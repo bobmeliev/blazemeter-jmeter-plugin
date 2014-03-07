@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor.listeners;
 
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
@@ -39,7 +40,7 @@ public class SaveUploadButtonListener implements ActionListener {
                 testInfo.setNumberOfUsers(1);
             }
             bmTestManager.updateTestSettings(bmTestManager.getUserKey(), bmTestManager.getTestInfo());
-            BmTestManager.getInstance().uploadJmx();
+            JMXUploader.uploadJMX();
         } catch (NullPointerException npe) {
             JMeterUtils.reportErrorToUser("Save test-plan locally before uploading");
         }

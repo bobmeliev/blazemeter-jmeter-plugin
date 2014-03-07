@@ -152,7 +152,7 @@ public class BmTestManager {
                         JMeterUtils.setProperty((String) p.getKey(), (String) p.getValue());
                     }
                 }
-                uploadJmx();
+                JMXUploader.uploadJMX();
                 HashMap<String, String> res = rpc.startTestLocal(userKey, testInfo.getId());
                 if (res.containsKey("error")) {
                     callBackUrl = "";
@@ -259,16 +259,6 @@ public class BmTestManager {
 
     public void samplesUpload(List<JSONObject> samples, String callBackUrl) {
         rpc.samplesUpload(samples, callBackUrl);
-    }
-
-    public void uploadJmx() {
-        Thread jmxUploader = new Thread(new JMXUploader());
-        jmxUploader.start();
-        try {
-            jmxUploader.join();
-        } catch (InterruptedException ie) {
-            BmLog.debug("JMX Uploader was interrupted");
-        }
     }
 
 
