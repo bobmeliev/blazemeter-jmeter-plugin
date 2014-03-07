@@ -186,7 +186,7 @@ public class BlazemeterApi {
             String url = this.urlManager.getUsers(Constants.APP_KEY, userKey);
 
             JSONObject jo = getJson(Methods.GET, url, null);
-            if (jo.getString("id") != null) {
+            if (!jo.has("error")) {
 
                 users = new Users(jo.getString("id"),
                         jo.getString("name"),

@@ -23,6 +23,7 @@ public class UsersChangedNotificationTP implements IUsersChangedNotification {
         if (users == null) {
             userInfoLabel.setText("");
             GuiUtils.clearTestInfo(testIdComboBox);
+            return;
         }
 
         userInfoLabel.setText(users.toString());
