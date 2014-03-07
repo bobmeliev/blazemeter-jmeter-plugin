@@ -36,7 +36,7 @@ public class TestEnginesParameters {
 
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 0);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 0);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 0);
     }
@@ -45,7 +45,7 @@ public class TestEnginesParameters {
     public void countParameters_1_user() {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 1);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 1);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 0);
     }
@@ -55,7 +55,7 @@ public class TestEnginesParameters {
 
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 999);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 999);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 0);
     }
@@ -64,7 +64,7 @@ public class TestEnginesParameters {
     public void countParameters_1000_users() {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 1000);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 1000);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 0);
     }
@@ -74,7 +74,7 @@ public class TestEnginesParameters {
 
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 1002);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 501);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 1);
     }
@@ -84,7 +84,7 @@ public class TestEnginesParameters {
     public void countParameters_2000_users() {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 2000);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 1000);
-        Assert.assertTrue(enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue("Expected enginesParameters.getEngineSize()=" + Constants.LARGE_ENGINE +
                 " actual enginesParameters.getEngineSize()=" + enginesParameters.getEngineSize()
                 , enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
@@ -96,7 +96,7 @@ public class TestEnginesParameters {
     public void countParameters_30000_users() {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 30000);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 1000);
-        Assert.assertTrue(enginesParameters.getConsoles() == 2);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 2);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 28);
     }
@@ -105,7 +105,7 @@ public class TestEnginesParameters {
     public void countParameters_40000_users() {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 40000);
         Assert.assertTrue(enginesParameters.getUserPerEngine() == 1000);
-        Assert.assertTrue(enginesParameters.getConsoles() == 3);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 3);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 37);
     }

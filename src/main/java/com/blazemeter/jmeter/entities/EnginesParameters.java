@@ -48,7 +48,7 @@ public class EnginesParameters {
 
         Plan plan = users.getPlan();
         int thrPerEngine = plan.getThreadsPerEngine();
-
+        this.consoles = 1;
         this.servers = numberOfUsers / thrPerEngine;
         this.engineSize.setLength(0);
         this.engineSize.append(Constants.LARGE_ENGINE);
