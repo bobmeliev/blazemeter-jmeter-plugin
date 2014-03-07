@@ -41,13 +41,14 @@ public class NumberOfUsersSliderListener implements ChangeListener {
         Users users = bmTestManager.getUsers();
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, numberOfUsers);
         consoles = Integer.valueOf(enginesParameters.getConsoles());
-        engines = Integer.valueOf(enginesParameters.getEngines());
+        engines = enginesParameters.getEngines();
         engineSize.append(enginesParameters.getEngineSize().equals(Constants.MEDIUM_ENGINE) ? "MEDIUM ENGINE(S)" : "LARGE ENGINE(S)");
         usersPerEngine = enginesParameters.getUserPerEngine();
 
         enginesDescription.removeAll();
+
         enginesDescription.setText(consoles + " CONSOLE(S) x " + usersPerEngine + "users\n"
-                + String.format("%d %s x %d users", engines, engineSize, usersPerEngine));
+                + String.format("%s %s x %d users", String.valueOf(engines), engineSize, usersPerEngine));
         numberOfUserTextBox.setText(String.valueOf(numberOfUsers));
         engineSize.setLength(0);
     }

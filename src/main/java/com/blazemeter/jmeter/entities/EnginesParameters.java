@@ -63,11 +63,11 @@ public class EnginesParameters {
                 }
             }
         }
-        if (numberOfUsers % thrPerEngine > 0) {
+        if (numberOfUsers % thrPerEngine > 0 | numberOfUsers == 0) {
             this.servers++;
         }
 
         this.engines = this.servers - this.consoles;
-        this.userPerEngine = numberOfUsers / this.servers;
+        this.userPerEngine = this.servers == 0 ? this.userPerEngine : numberOfUsers / this.servers;
     }
 }
