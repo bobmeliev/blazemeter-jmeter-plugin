@@ -7,7 +7,11 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.*;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.*;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.RunModeChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.UserKeyNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationTP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo.TestInfoNotificationTP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.users.UsersChangedNotificationTP;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -57,11 +61,13 @@ public class TestPanel {
 
                 }
             });
-            ITestUserKeyNotification userKeyNotification = new TestUserKeyNotification(signUpButton,
+            IUserKeyNotification userKeyNotification = new UserKeyNotification(signUpButton,
                     testIdComboBox,
                     mainPanel,
                     cloudPanel);
-            BmTestManager.getInstance().testUserKeyNotificationListeners.add(userKeyNotification);
+            BmTestManager.getInstance().userKeyNotificationListeners.add(userKeyNotification);
+            IUsersChangedNotification usersChangedNotification = new UsersChangedNotificationTP(userInfoLabel, testIdComboBox);
+            BmTestManager.getInstance().usersChangedNotificationListeners.add(usersChangedNotification);
 
             signUpButton.addActionListener(new ActionListener() {
                 @Override
@@ -132,8 +138,6 @@ public class TestPanel {
                     getUserKey().
                     isEmpty());
 
-            IUserInfoChangedNotification userInfoChangedNotification = new UserInfoChangedNotification(userInfoLabel, testIdComboBox);
-            BmTestManager.getInstance().userInfoChangedNotificationListeners.add(userInfoChangedNotification);
 
 
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);
@@ -157,7 +161,7 @@ public class TestPanel {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        BmTestManager.getInstance().getUserInfo(true);
+                        BmTestManager.getInstance().getUsers(true);
                     }
                 }).start();
             } else {

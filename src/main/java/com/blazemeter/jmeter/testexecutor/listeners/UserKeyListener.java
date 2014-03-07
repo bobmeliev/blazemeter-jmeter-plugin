@@ -78,7 +78,7 @@ public class UserKeyListener implements DocumentListener {
             public void run() {
                 GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
                 signUpButton.setVisible(false);
-                BmTestManager.getInstance().getUserInfo(true);
+                BmTestManager.getInstance().getUsers(true);
                 TestPanel.getTestPanel().enableMainPanelControls(true);
             }
         });

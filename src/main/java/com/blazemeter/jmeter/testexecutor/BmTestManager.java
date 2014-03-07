@@ -8,14 +8,12 @@ import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.jmeter.JMeter;
-import org.apache.jmeter.gui.GuiPackage;
-import org.apache.jmeter.services.FileServer;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,8 +28,7 @@ public class BmTestManager {
     private String propUserKey = "";
     private String userKey = "";
 
-    private long lastUpdateCheck = 0;
-    private UserInfo userInfo;
+    private Users users;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
     private boolean isUserKeyValid = true;
@@ -41,9 +38,9 @@ public class BmTestManager {
     private static BmTestManager instance;
     private static final Object lock = new Object();
 
-    public List<ITestUserKeyNotification> testUserKeyNotificationListeners = new ArrayList<ITestUserKeyNotification>();
+    public List<IUserKeyNotification> userKeyNotificationListeners = new ArrayList<IUserKeyNotification>();
     public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
-    public List<IUserInfoChangedNotification> userInfoChangedNotificationListeners = new ArrayList<IUserInfoChangedNotification>();
+    public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
     public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
     public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
 
@@ -239,7 +236,7 @@ public class BmTestManager {
     }
 
     public TestInfo updateTestSettings(String userKey, TestInfo testInfo) {
-        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(testInfo.getNumberOfUsers());
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(this.users, testInfo.getNumberOfUsers());
         Overrides overrides = testInfo.getOverrides();
         int engines = enginesParameters.getConsoles() + enginesParameters.getEngines() - 1;
         TestInfo ti = BlazemeterApi.getInstance().updateTestSettings(userKey,
@@ -265,7 +262,7 @@ public class BmTestManager {
     }
 
     public void uploadJmx() {
-        Thread jmxUploader = new Thread(new jmxUploader());
+        Thread jmxUploader = new Thread(new JMXUploader());
         jmxUploader.start();
         try {
             jmxUploader.join();
@@ -306,50 +303,27 @@ public class BmTestManager {
     }
 
 
-    public UserInfo getUserInfo() {
-        return getUserInfo(false);
-    }
-
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
-    }
-
-    public UserInfo getUserInfo(boolean force) {
+    public Users getUsers(boolean force) {
         String userKey = this.getUserKey();
-        if ((force & !userKey.isEmpty()) || userInfo == null || userInfo.getTime() + 3600000 < new Date().getTime()) {
-            BmLog.info("Getting user information...");
-            userInfo = BlazemeterApi.getInstance().getUserInfo(this.getUserKey());
-            NotifyUserInfoChanged(userInfo);
+        if (force & !userKey.isEmpty() & isUserKeyValid) {
+            BmLog.info("Getting users information...");
+            users = BlazemeterApi.getInstance().getUsers(this.getUserKey());
+            NotifyUsersChanged(users);
         }
-        return userInfo;
+        return users;
     }
 
-    class jmxUploader implements Runnable {
+    public Users getUsers() {
+        return getUsers(false);
+    }
 
-        @Override
-        public void run() {
-            FileServer fileServer = FileServer.getFileServer();
-            String projectPath = null;
-            if (fileServer.getScriptName() != null) {
-                projectPath = fileServer.getBaseDir() + "/" + fileServer.getScriptName();
-            } else if (!JMeter.isNonGUI()) {
-                projectPath = GuiPackage.getInstance().getTestPlanFile();
-            }
-            try {
-                String filename = new File(projectPath).getName();
-                BlazemeterApi.getInstance().uploadJmx(getUserKey(), testInfo.getId(), filename, projectPath);
-            } catch (NullPointerException npe) {
-                BmLog.error("JMX was not uploaded to server: test-plan is needed to be saved first ");
-            } catch (Exception ex) {
-                BmLog.error(ex);
-
-            }
-        }
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
 
     public void NotifyUserKeyChanged() {
-        for (ITestUserKeyNotification ti : testUserKeyNotificationListeners) {
+        for (IUserKeyNotification ti : userKeyNotificationListeners) {
             ti.onTestUserKeyChanged(userKey);
         }
 
@@ -377,39 +351,15 @@ public class BmTestManager {
     }
 
 
-    public void NotifyUserInfoChanged(UserInfo userInfo) {
-        for (IUserInfoChangedNotification uic : userInfoChangedNotificationListeners) {
-            uic.onUserInfoChanged(userInfo);
+    public void NotifyUsersChanged(Users users) {
+        for (IUsersChangedNotification uc : usersChangedNotificationListeners) {
+            uc.onUsersChanged(users);
         }
     }
 
-    public void checkForUpdates() {
-        long now = new Date().getTime();
-        if (lastUpdateCheck + 3600000 > now) {
-            return;
-        }
 
-        lastUpdateCheck = now;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PluginUpdate update = BlazemeterApi.getInstance().getUpdate(BmTestManager.getInstance().getUserKey());
-                if (update != null && update.getVersion().isNewerThan(Utils.getPluginVersion())) {
-                    BmLog.info(String.format("Update found from %s to %s", Utils.getPluginVersion().toString(true), update.getVersion().toString(true)));
-                    NotifyPluginUpdateReceived(update);
-                } else {
-                    BmLog.info("No update found");
-                }
-            }
-        }).start();
-    }
 
-    /*
-    Wrapper-method, which provides server URL.
-    Incapsulates BlazemeterAPI from TestPanel
-       @return String
 
-     */
     public static String getServerUrl() {
         return BmUrlManager.getServerUrl();
     }

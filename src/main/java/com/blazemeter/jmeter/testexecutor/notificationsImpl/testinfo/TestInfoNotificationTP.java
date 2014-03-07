@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.notificationsImpl;
+package com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
@@ -95,7 +95,7 @@ public class TestInfoNotificationTP implements ITestInfoNotification {
         if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
             String currentTestId = Utils.getCurrentTestId();
 
-            if(currentTestId!=null){
+            if (currentTestId != null) {
                 if (testInfo != null && !currentTestId.equals(testInfo.getId())) {
                     JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
                     TestInfoController.stop();

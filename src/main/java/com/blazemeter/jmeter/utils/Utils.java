@@ -2,10 +2,7 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.constants.Constants;
-import com.blazemeter.jmeter.entities.Overrides;
-import com.blazemeter.jmeter.entities.PluginVersion;
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
@@ -83,8 +80,8 @@ public class Utils {
         return Thread.currentThread().getThreadGroup().getName().equals("RMI Runtime");
     }
 
-    public static String getLocationId(String locationTitle) {
-        JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
+    public static String getLocationId(Users users, String locationTitle) {
+        JSONArray locations = users.getLocations();
         if (locations.length() > 0) {
             String locationId;
             try {
@@ -103,8 +100,8 @@ public class Utils {
         return "";
     }
 
-    public static String getLocationTitle(String locationId) {
-        JSONArray locations = BmTestManager.getInstance().getUserInfo().getLocations();
+    public static String getLocationTitle(Users users, String locationId) {
+        JSONArray locations = users.getLocations();
         if (locations.length() > 0) {
             String locationTitle;
             try {

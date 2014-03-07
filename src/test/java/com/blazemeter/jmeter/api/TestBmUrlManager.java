@@ -102,7 +102,7 @@ public class TestBmUrlManager {
 
     @Test
     public void getUsers() {
-        Assert.assertEquals("https://a.blazemeter.com/api/latest/users/?app_key=75bad111c06f4e10c001&api_key=881a84b35e97c4342bf11",
+        Assert.assertEquals("https://a.blazemeter.com/api/latest/users/?app_key=75bad111c06f4e10c001&api-key=881a84b35e97c4342bf11",
                 bmUrlManager.getUsers("75bad111c06f4e10c001", "881a84b35e97c4342bf11"));
 
     }

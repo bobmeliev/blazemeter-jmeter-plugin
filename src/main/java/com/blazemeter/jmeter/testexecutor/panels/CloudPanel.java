@@ -4,7 +4,8 @@ import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
-import com.blazemeter.jmeter.entities.UserInfo;
+import com.blazemeter.jmeter.entities.Users;
+import com.blazemeter.jmeter.models.LocationModel;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.EditJMXLocallyButtonListener;
 import com.blazemeter.jmeter.testexecutor.listeners.NumberOfUsersSliderListener;
@@ -12,9 +13,10 @@ import com.blazemeter.jmeter.testexecutor.listeners.RunInTheCloudListener;
 import com.blazemeter.jmeter.testexecutor.listeners.SaveUploadButtonListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
-import com.blazemeter.jmeter.testexecutor.notifications.IUserInfoChangedNotification;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.ServerStatusChangedNotificationCP;
-import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestInfoNotificationCP;
+import com.blazemeter.jmeter.testexecutor.notifications.IUsersChangedNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationCP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo.TestInfoNotificationCP;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.users.UsersChangedNotificationCP;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.Utils;
@@ -33,7 +35,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Dictionary;
 
 /**
  * This is panel, which appear after switching JMeter BLazemeter Plugin to "Run in the Cloud" mode;
@@ -73,7 +74,8 @@ public class CloudPanel extends JPanel {
         locationComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String locationId = Utils.getLocationId((String) locationComboBox.getSelectedItem());
+                Users users = BmTestManager.getInstance().getUsers();
+                String locationId = Utils.getLocationId(users, (String) locationComboBox.getSelectedItem());
                 if (!locationId.isEmpty()) {
                     BmTestManager.getInstance().getTestInfo().setLocation(locationId);
                 }
@@ -204,30 +206,8 @@ public class CloudPanel extends JPanel {
         /*
           If userInfo was changed in BmTestManager, Cloud Panel will be notified about this to take appropriate reaction
          */
-        BmTestManager.getInstance().userInfoChangedNotificationListeners.add(new IUserInfoChangedNotification() {
-            @Override
-            public void onUserInfoChanged(UserInfo userInfo) {
-                if (userInfo == null) {
-                    return;
-                } else { /*
-                    if (userInfo.getMaxUsersLimit() > 8400 && userInfo.getMaxEnginesLimit() > 14) {
-                        userInfo.setMaxUsersLimit(8400);
-                        userInfo.setMaxEnginesLimit(14);
-                    }*/
-                    //configure numberOfUserSlider depending on UserInfo
-                    numberOfUsersSlider.setMinimum(0);
-                    numberOfUsersSlider.setMaximum(userInfo.getMaxUsersLimit());
-                    numberOfUsersSlider.setMajorTickSpacing(userInfo.getMaxUsersLimit() / 4);
-                    numberOfUsersSlider.setMinorTickSpacing(userInfo.getMaxUsersLimit() / 12);
-                    Dictionary labels = numberOfUsersSlider.createStandardLabels(numberOfUsersSlider.getMajorTickSpacing());
-                    numberOfUsersSlider.setLabelTable(labels);
-
-                    //set locations list
-                    JSONArray locations = userInfo.getLocations();
-                    setLocations(locations);
-                }
-            }
-        });
+        IUsersChangedNotification usersChangedNotificationCP = new UsersChangedNotificationCP(numberOfUsersSlider, this);
+        bmTestManager.usersChangedNotificationListeners.add(usersChangedNotificationCP);
 
     }
 
@@ -236,7 +216,8 @@ public class CloudPanel extends JPanel {
      */
     public void setTestInfo(TestInfo testInfo) {
         if ("jmeter".equals(testInfo.getType())) {
-            String locationTitle = Utils.getLocationTitle(testInfo.getLocation());
+            Users users = BmTestManager.getInstance().getUsers();
+            String locationTitle = Utils.getLocationTitle(users, testInfo.getLocation());
             if (!locationTitle.isEmpty()) {
                 locationComboBox.setSelectedItem(locationTitle);
             }
@@ -379,15 +360,7 @@ public class CloudPanel extends JPanel {
         locationComboBox.setEditable(false);
         locationComboBox.setEnabled(true);
         locationComboBox.setToolTipText("Select location");
-        final DefaultComboBoxModel defaultComboBoxModel = new DefaultComboBoxModel();
-        defaultComboBoxModel.addElement("EU West (Ireland)");
-        defaultComboBoxModel.addElement("US East (Virginia)");
-        defaultComboBoxModel.addElement("US West (N.California)");
-        defaultComboBoxModel.addElement("US West (Oregon)");
-        defaultComboBoxModel.addElement("Asia Pacific (Singapore)");
-        defaultComboBoxModel.addElement("Japan (Tokyo)");
-        defaultComboBoxModel.addElement("South America (San Paulo)");
-        defaultComboBoxModel.addElement("Australia (Sydney)");
+        final DefaultComboBoxModel defaultComboBoxModel = new LocationModel();
         locationComboBox.setModel(defaultComboBoxModel);
         panel3.add(locationComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         enginesDescription = new JTextArea(Constants.EMPTY, 2, 1);
