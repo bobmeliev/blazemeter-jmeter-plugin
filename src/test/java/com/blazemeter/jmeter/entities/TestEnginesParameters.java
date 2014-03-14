@@ -79,6 +79,16 @@ public class TestEnginesParameters {
         Assert.assertTrue(enginesParameters.getEngines() == 1);
     }
 
+    @Test
+    public void countParameters_1111_user() {
+
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 1111);
+        Assert.assertTrue(enginesParameters.getUserPerEngine() == 556);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
+        Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
+        Assert.assertTrue(enginesParameters.getEngines() == 1);
+    }
+
 
     @Test
     public void countParameters_2000_users() {

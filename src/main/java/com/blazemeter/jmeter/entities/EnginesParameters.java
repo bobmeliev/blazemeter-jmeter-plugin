@@ -44,6 +44,10 @@ public class EnginesParameters {
         return engines;
     }
 
+    public int getNumberOfUsers() {
+        return numberOfUsers;
+    }
+
     private synchronized void countParameters(Users users, int numberOfUsers) {
 
         Plan plan = users.getPlan();
