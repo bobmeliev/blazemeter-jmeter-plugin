@@ -52,26 +52,46 @@ public class EnginesParameters {
 
         Plan plan = users.getPlan();
         int thrPerEngine = plan.getThreadsPerEngine();
-        this.consoles = 1;
-        this.servers = numberOfUsers / thrPerEngine;
+
+        this.servers = count_servers(this.numberOfUsers, thrPerEngine);
         this.engineSize.setLength(0);
         this.engineSize.append(Constants.LARGE_ENGINE);
+        this.numberOfUsers = re_count_users(numberOfUsers, this.servers);
+        this.consoles = count_consoles(this.servers);
+        this.engines = this.servers > 0 ? this.servers - this.consoles : 0;
+        this.userPerEngine = this.servers > 0 ? this.numberOfUsers / this.servers : this.numberOfUsers;
 
+    }
 
-        if (numberOfUsers / thrPerEngine > 0) {
-            this.servers = numberOfUsers / thrPerEngine;
-            if (this.servers / 15 > 0) {
-                this.consoles = this.servers / 15;
-                if (this.servers % 15 > 0) {
-                    this.consoles++;
-                }
+    private synchronized int count_servers(int numberOfUsers, int thrPerEngine) {
+        int servers = numberOfUsers / thrPerEngine;
+        if (numberOfUsers % thrPerEngine > 0) {
+            servers++;
+        }
+        return servers;
+    }
+
+    private synchronized int re_count_users(int numberOfUsers, int servers) {
+        if ((numberOfUsers > 1 & servers > 0) && numberOfUsers % servers != 0) {
+            int usersPerEngine = numberOfUsers / servers;
+            usersPerEngine++;
+            return usersPerEngine * servers;
+
+        } else {
+            return numberOfUsers;
+        }
+    }
+
+    private synchronized int count_consoles(int servers) {
+        int consoles = 1;
+        if (servers > 15) {
+            consoles = servers / 15;
+            if (servers % 15 > 0) {
+                consoles++;
             }
+            return consoles;
+        } else {
+            return consoles;
         }
-        if (numberOfUsers % thrPerEngine > 0 | numberOfUsers == 0) {
-            this.servers++;
-        }
-
-        this.engines = this.servers - this.consoles;
-        this.userPerEngine = this.servers == 0 ? this.userPerEngine : numberOfUsers / this.servers;
     }
 }

@@ -87,6 +87,7 @@ public class TestEnginesParameters {
         Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
         Assert.assertTrue(enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
         Assert.assertTrue(enginesParameters.getEngines() == 1);
+        Assert.assertTrue(enginesParameters.getNumberOfUsers() == 1112);
     }
 
 
@@ -101,6 +102,29 @@ public class TestEnginesParameters {
         Assert.assertTrue(enginesParameters.getEngines() == 1);
     }
 
+    @Test
+    public void countParameters_5001_users() {
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 5001);
+        Assert.assertTrue(enginesParameters.getUserPerEngine() == 834);
+        Assert.assertTrue(enginesParameters.getNumberOfUsers() == 5004);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Expected enginesParameters.getEngineSize()=" + Constants.LARGE_ENGINE +
+                " actual enginesParameters.getEngineSize()=" + enginesParameters.getEngineSize()
+                , enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
+        Assert.assertTrue(enginesParameters.getEngines() == 5);
+    }
+
+    @Test
+    public void countParameters_14255_users() {
+        EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(users, 14255);
+        Assert.assertTrue(enginesParameters.getUserPerEngine() == 951);
+        Assert.assertTrue(enginesParameters.getNumberOfUsers() == 14265);
+        Assert.assertTrue("Number of consoles = " + enginesParameters.getConsoles(), enginesParameters.getConsoles() == 1);
+        Assert.assertTrue("Expected enginesParameters.getEngineSize()=" + Constants.LARGE_ENGINE +
+                " actual enginesParameters.getEngineSize()=" + enginesParameters.getEngineSize()
+                , enginesParameters.getEngineSize().equals(Constants.LARGE_ENGINE));
+        Assert.assertTrue(enginesParameters.getEngines() == 14);
+    }
 
     @Test
     public void countParameters_30000_users() {
