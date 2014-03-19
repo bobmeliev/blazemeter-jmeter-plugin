@@ -110,6 +110,10 @@ public class BlazemeterApi {
         try {
 
             response = doHTTPRequest(method, url, data);
+            if (data != null) {
+                BmLog.debug("HTTP Request body=" + data.toString());
+            }
+
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());
                 BmLog.debug(output);
