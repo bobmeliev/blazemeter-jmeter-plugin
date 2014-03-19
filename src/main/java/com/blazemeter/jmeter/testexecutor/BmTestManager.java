@@ -237,7 +237,8 @@ public class BmTestManager {
     public TestInfo updateTestSettings(String userKey, TestInfo testInfo) {
         EnginesParameters enginesParameters = EnginesParameters.getEnginesParameters(this.users, testInfo.getNumberOfUsers());
         Overrides overrides = testInfo.getOverrides();
-        int engines = enginesParameters.getConsoles() + enginesParameters.getEngines();
+//        int engines = enginesParameters.getConsoles() + enginesParameters.getEngines();
+        int engines = enginesParameters.getEngines();
         TestInfo ti = rpc.updateTestSettings(userKey,
                 testInfo.getId(),
                 testInfo.getLocation(),
