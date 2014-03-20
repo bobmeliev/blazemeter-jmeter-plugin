@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.utils;
 
+import com.blazemeter.jmeter.constants.JsonFields;
 import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
@@ -27,16 +28,16 @@ public class TestInfoProcessor {
                 if (responseOptions != null) {
 //                    int numberOfEngines=Integer.parseInt((String)responseOptions.get("NUMBER_OF_ENGINES"));
                     int numberOfEngines = getEngines(responseOptions);
-                    int numberOfUsers = (Integer) responseOptions.get("USERS") * (numberOfEngines + 1);
+                    int numberOfUsers = (Integer) responseOptions.get(JsonFields.USERS) * (numberOfEngines + 1);
                     testInfo.setNumberOfUsers(numberOfUsers);
-                    testInfo.setType(responseOptions.getString("TEST_TYPE"));
-                    testInfo.setLocation(responseOptions.getString("LOCATION"));
+                    testInfo.setType(responseOptions.getString(JsonFields.TEST_TYPE));
+                    testInfo.setLocation(responseOptions.getString(JsonFields.LOCATION));
                     // set overrides
-                    if (responseOptions.getBoolean("OVERRIDE")) {
-                        Overrides overrides = new Overrides(responseOptions.getInt("OVERRIDE_DURATION"),
-                                responseOptions.getInt("OVERRIDE_ITERATIONS"),
-                                responseOptions.getInt("OVERRIDE_RAMP_UP"),
-                                responseOptions.getInt("OVERRIDE_THREADS"));
+                    if (responseOptions.getBoolean(JsonFields.OVERRIDE)) {
+                        Overrides overrides = new Overrides(responseOptions.getInt(JsonFields.OVERRIDE_DURATION),
+                                responseOptions.getInt(JsonFields.OVERRIDE_ITERATIONS),
+                                responseOptions.getInt(JsonFields.OVERRIDE_RAMP_UP),
+                                responseOptions.getInt(JsonFields.OVERRIDE_THREADS));
                         testInfo.setOverrides(overrides);
                     }
                 }
@@ -52,7 +53,7 @@ public class TestInfoProcessor {
     }
 
     private static int getEngines(JSONObject responseOptions) throws JSONException {
-        Object numberOfEnginesObj = responseOptions.get("NUMBER_OF_ENGINES");
+        Object numberOfEnginesObj = responseOptions.get(JsonFields.NUMBER_OF_ENGINES);
         int numberOfEngines = 0;
         if (numberOfEnginesObj instanceof String) {
             numberOfEngines = Integer.parseInt((String) numberOfEnginesObj);

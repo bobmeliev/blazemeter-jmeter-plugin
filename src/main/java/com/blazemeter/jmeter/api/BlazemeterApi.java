@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.api;
 
 import com.blazemeter.jmeter.api.checkers.TestsChecker;
 import com.blazemeter.jmeter.constants.Constants;
+import com.blazemeter.jmeter.constants.JsonFields;
 import com.blazemeter.jmeter.constants.Methods;
 import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
@@ -489,18 +490,18 @@ public class BlazemeterApi {
         JSONObject obj = new JSONObject();
         try {
             JSONObject options = new JSONObject();
-            options.put("NUMBER_OF_ENGINES", engines);//engine
-            options.put("JMETER_VERSION", Utils.getJmeterVersion());//engine
-            options.put("INSTANCE_TYPE", engineType);//engine
-            options.put("OVERRIDE", 1);
-            options.put("OVERRIDE_THREADS", usersPerEngine);//threads
-            options.put("OVERRIDE_ITERATIONS", iterations);//iter
-            options.put("OVERRIDE_RAMP_UP", rumpUp);//ranpup
-            options.put("OVERRIDE_DURATION", duration);//duration
-            options.put("LOCATION", location);
+            options.put(JsonFields.NUMBER_OF_ENGINES, engines);//engine
+            options.put(JsonFields.JMETER_VERSION, Utils.getJmeterVersion());//engine
+            options.put(JsonFields.INSTANCE_TYPE, engineType);//engine
+            options.put(JsonFields.OVERRIDE, 1);
+            options.put(JsonFields.OVERRIDE_THREADS, usersPerEngine);//threads
+            options.put(JsonFields.OVERRIDE_ITERATIONS, iterations);//iter
+            options.put(JsonFields.OVERRIDE_RAMP_UP, rumpUp);//ranpup
+            options.put(JsonFields.OVERRIDE_DURATION, duration);//duration
+            options.put(JsonFields.LOCATION, location);
             // pass Properties jmeterProperties to method;
             JSONObject jmeter_params = Utils.convertToJSON(jmeterProperties);
-            options.put("JMETER_PARAMS", jmeter_params);
+            options.put(JsonFields.JMETER_PARAMS, jmeter_params);
 
             obj.put("options", options);
             JSONObject jo = getJson(Methods.POST, url, obj);
