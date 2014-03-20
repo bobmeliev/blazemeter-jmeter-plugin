@@ -2,7 +2,9 @@ package com.blazemeter.jmeter.utils;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.constants.Constants;
-import com.blazemeter.jmeter.entities.*;
+import com.blazemeter.jmeter.entities.PluginVersion;
+import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.entities.Users;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunner;
 import com.blazemeter.jmeter.testexecutor.RemoteTestRunnerGui;
@@ -375,42 +377,6 @@ public class Utils {
         File f = new File(filename);
         FileUtils.copyURLToFile(updateURL, f);
         return true;
-    }
-
-    public static TestInfo parseTestInfo(JSONObject jsonObject) {
-        TestInfo testInfo = new TestInfo();
-        try {
-            testInfo.setId(jsonObject.getString("test_id"));
-            testInfo.setName(jsonObject.getString("test_name"));
-            TestStatus status = null;
-            if (jsonObject.has("status")) {
-                status = jsonObject.getString("status").equals("Running") ? TestStatus.Running : TestStatus.NotRunning;
-                testInfo.setStatus(status);
-            }
-            testInfo.setError(jsonObject.getString("error").equals("null") ? null : jsonObject.getString("error"));
-
-            if (jsonObject.has("options")) {
-                JSONObject responseOptions = jsonObject.getJSONObject("options");
-                if (responseOptions != null) {
-                    testInfo.setNumberOfUsers((Integer) responseOptions.get("USERS"));
-                    testInfo.setType(responseOptions.getString("TEST_TYPE"));
-                    testInfo.setLocation(responseOptions.getString("LOCATION"));
-                    // set overrides
-                    if (responseOptions.getBoolean("OVERRIDE")) {
-                        Overrides overrides = new Overrides(responseOptions.getInt("OVERRIDE_DURATION"),
-                                responseOptions.getInt("OVERRIDE_ITERATIONS"),
-                                responseOptions.getInt("OVERRIDE_RAMP_UP"),
-                                responseOptions.getInt("OVERRIDE_THREADS"));
-                        testInfo.setOverrides(overrides);
-                    }
-                }
-            }
-
-        } catch (JSONException je) {
-            BmLog.error("Error while creating TestInfo from JSON: " + je);
-        }
-
-        return testInfo;
     }
 
 

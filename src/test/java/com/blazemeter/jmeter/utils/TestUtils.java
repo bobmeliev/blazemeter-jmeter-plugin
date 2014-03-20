@@ -91,14 +91,14 @@ public class TestUtils {
         ti_expected.setId("411711");
         ti_expected.setName("load_test");
         ti_expected.setStatus(TestStatus.NotRunning);
-        ti_expected.setNumberOfUsers(690);
+        ti_expected.setNumberOfUsers(2760);
         ti_expected.setLocation("us-west-2");
         Overrides overrides = new Overrides(0, -1, 0, 230);
         ti_expected.setOverrides(overrides);
         ti_expected.setType("jmeter");
         try {
             testInfoJO = new JSONObject(str);
-            ti_actual = Utils.parseTestInfo(testInfoJO);
+            ti_actual = TestInfoProcessor.parseTestInfo(testInfoJO);
         } catch (JSONException e) {
             BmLog.error("Failed to construct TestInfoJO from locations.txt: " + e);
         }

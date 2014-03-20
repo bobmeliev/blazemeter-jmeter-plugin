@@ -7,6 +7,7 @@ import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.utils.BmLog;
+import com.blazemeter.jmeter.utils.TestInfoProcessor;
 import com.blazemeter.jmeter.utils.Utils;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
@@ -263,7 +264,7 @@ public class BlazemeterApi {
 
         String url = this.urlManager.testStart(Constants.APP_KEY, userKey, testId);
         JSONObject jo = getJson(Methods.POST, url, null);
-        testInfo = Utils.parseTestInfo(jo);
+        testInfo = TestInfoProcessor.parseTestInfo(jo);
         try {
             testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.Running : TestStatus.NotRunning);
         } catch (JSONException je) {
@@ -333,7 +334,7 @@ public class BlazemeterApi {
             BmLog.error(e);
         }
         JSONObject jo = getJson(Methods.POST, url, properties);
-        testInfo = Utils.parseTestInfo(jo);
+        testInfo = TestInfoProcessor.parseTestInfo(jo);
 
         return testInfo;
     }
@@ -511,7 +512,7 @@ public class BlazemeterApi {
                 BmLog.error("LOCATION = " + location);
 
             } else if (jo.getInt("response_code") == 200) {
-                testInfo = Utils.parseTestInfo(jo);
+                testInfo = TestInfoProcessor.parseTestInfo(jo);
             }
         } catch (JSONException e) {
             BmLog.error(e);
@@ -542,16 +543,16 @@ public class BlazemeterApi {
 
             JSONObject jo = getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
-                ti = Utils.parseTestInfo(jo);
+                ti = TestInfoProcessor.parseTestInfo(jo);
             } else {
                 ti.setStatus(jo.getInt("response_code") == 404 ? TestStatus.NotFound : TestStatus.Error);
                 ti.setError(jo.getString("error"));
             }
         } catch (JSONException e) {
-            BmLog.error("Error getting status:", e);
+            BmLog.error("Error getting status: " + e);
             ti.setStatus(TestStatus.Error);
         } catch (Throwable e) {
-            BmLog.error("Error getting status:", e);
+            BmLog.error("Error getting status: " + e);
             ti.setStatus(TestStatus.Error);
         }
 
