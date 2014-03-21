@@ -161,7 +161,7 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             BmLog.error("UserKey is not found, test results won't be uploaded to server");
             return;
         }
-        bmTestManager.setUserKeyValid(bmTestManager.getUsers() != null);
+        bmTestManager.setUserKeyValid(bmTestManager.getUsers(true) != null);
         if (!bmTestManager.isUserKeyValid()) {
             BmLog.error("UserKey is invalid, test will be started without uploading results");
             return;
@@ -224,11 +224,9 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     @Override
     public synchronized void sampleOccurred(SampleEvent sampleEvent) {
-        if (BmTestManager.isTestRunning()) {
+        if (SamplesUploader.isRunning()) {
             JSONObject sample = Utils.getJSONObject(sampleEvent);
             SamplesUploader.addSample(sample);
-        } else {
-            BmLog.debug("Sample will not be uploaded: test was not started on server or test is running in the cloud.");
         }
     }
 

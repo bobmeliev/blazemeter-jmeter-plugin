@@ -74,7 +74,7 @@ public class SamplesUploader {
                 BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
             }
         } else {
-            if (task != null && !task.isDone()) {
+            if (isRunning()) {
                 task.cancel(true);
                 BmLog.info("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
             }
@@ -87,6 +87,10 @@ public class SamplesUploader {
         } catch (InterruptedException ie) {
             BmLog.error("Failed to add sample to uploader: Interruptedexception");
         }
+    }
+
+    public static boolean isRunning() {
+        return task != null && !task.isDone();
     }
 
     private static void send(List<JSONObject> samples, String callBackUrl) {
