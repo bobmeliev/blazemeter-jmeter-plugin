@@ -199,7 +199,7 @@ public class CloudPanel extends JPanel {
         Here we apply ServerStatus to CloudPanel.
          */
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
-        IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationCP(runInTheCloud);
+        IServerStatusChangedNotification serverStatusChangedNotification = new ServerStatusChangedNotificationCP(this);
         serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
 
 

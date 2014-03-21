@@ -5,17 +5,17 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
-
-import javax.swing.*;
+import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.utils.Utils;
 
 /**
  * Created by dzmitrykashlach on 12/24/13.
  */
 public class ServerStatusChangedNotificationCP implements IServerStatusChangedNotification {
-    private JButton runInTheCloud;
+    private CloudPanel cloudPanel;
 
-    public ServerStatusChangedNotificationCP(JButton runInTheCloud) {
-        this.runInTheCloud = runInTheCloud;
+    public ServerStatusChangedNotificationCP(CloudPanel cloudPanel) {
+        this.cloudPanel = cloudPanel;
     }
 
     @Override
@@ -25,10 +25,10 @@ public class ServerStatusChangedNotificationCP implements IServerStatusChangedNo
             case AVAILABLE:
                 TestInfo testInfo = BmTestManager.getInstance().getTestInfo();
                 boolean testIsRunning = testInfo.getStatus() == TestStatus.Running;
-                runInTheCloud.setEnabled(!testIsRunning);
+                Utils.enableElements(cloudPanel, !testIsRunning);
                 break;
             case NOT_AVAILABLE:
-                runInTheCloud.setEnabled(false);
+                Utils.enableElements(cloudPanel, false);
                 break;
         }
 
