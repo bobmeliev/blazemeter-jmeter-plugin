@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,6 +68,53 @@ public class HTTPClient {
             BmLog.error("Wrong response", e);
         }
         return response;
+    }
+
+    public HttpResponse getJMX(String url) {
+        BmLog.debug("Requesting : " + url);
+        HttpGet getRequest = new HttpGet(url);
+        getRequest.setHeader("Connection", "keep-alive");
+        getRequest.setHeader("Host", BmUrlManager.SERVER_URL.substring(8, com.blazemeter.jmeter.api.BmUrlManager.SERVER_URL.length()));
+        HttpResponse response = null;
+        try {
+            response = new DefaultHttpClient().execute(getRequest);
+            int statusCode = response.getStatusLine().getStatusCode();
+            String error = response.getStatusLine().getReasonPhrase();
+            if (statusCode != 200) {
+                BmLog.error(String.format("Wrong response : %d %s", statusCode, error));
+            }
+
+        } catch (IOException ioe) {
+            BmLog.error("Wrong response", ioe);
+        }
+        return response;
+    }
+
+
+    public JSONObject getJson(String method, String url, JSONObject data) {
+        JSONObject jo = null;
+        HttpResponse response = null;
+        try {
+
+            response = doHTTPRequest(method, url, data);
+            if (data != null) {
+                BmLog.debug("HTTP Request body=\n\n\n" + data.toString() + "\n\n");
+            }
+
+            if (response != null) {
+                String output = EntityUtils.toString(response.getEntity());
+                BmLog.debug(output);
+                jo = new JSONObject(output);
+            }
+        } catch (IOException e) {
+            BmLog.error("Error while decoding Json: " + e.getMessage());
+            BmLog.debug("Error while decoding Json: " + e.getMessage());
+        } catch (JSONException e) {
+            BmLog.error("Error while decoding Json: " + e.getMessage());
+            BmLog.debug("Error while decoding Json: " + e.getMessage());
+        } finally {
+            return jo;
+        }
     }
 
 }
