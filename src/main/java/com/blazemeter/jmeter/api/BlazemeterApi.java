@@ -112,7 +112,7 @@ public class BlazemeterApi {
 
             response = doHTTPRequest(method, url, data);
             if (data != null) {
-                BmLog.debug("HTTP Request body=" + data.toString());
+                BmLog.debug("HTTP Request body=\n\n\n" + data.toString() + "\n\n");
             }
 
             if (response != null) {
