@@ -34,10 +34,15 @@ public class TestInfoProcessor {
                     testInfo.setLocation(responseOptions.getString(JsonFields.LOCATION));
                     // set overrides
                     if (responseOptions.getBoolean(JsonFields.OVERRIDE)) {
-                        Overrides overrides = new Overrides(responseOptions.getInt(JsonFields.OVERRIDE_DURATION),
-                                responseOptions.getInt(JsonFields.OVERRIDE_ITERATIONS),
-                                responseOptions.getInt(JsonFields.OVERRIDE_RAMP_UP),
-                                responseOptions.getInt(JsonFields.OVERRIDE_THREADS));
+                        Object duration = responseOptions.get(JsonFields.OVERRIDE_DURATION);
+                        Object iterations = responseOptions.get(JsonFields.OVERRIDE_ITERATIONS);
+                        Object rampUp = responseOptions.get(JsonFields.OVERRIDE_RAMP_UP);
+                        Object threads = responseOptions.get(JsonFields.OVERRIDE_THREADS);
+                        Overrides overrides = new Overrides(duration != JSONObject.NULL ? Integer.parseInt((String) duration) : 0,
+                                iterations != JSONObject.NULL ? Integer.parseInt((String) iterations) : 0,
+                                rampUp != JSONObject.NULL ? Integer.parseInt((String) rampUp) : 0,
+                                threads != JSONObject.NULL ? Integer.parseInt((String) threads) : 0
+                        );
                         testInfo.setOverrides(overrides);
                     }
                 }
