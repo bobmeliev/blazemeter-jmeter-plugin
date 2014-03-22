@@ -436,6 +436,8 @@ public class Utils {
         String currentTestId = null;
         if (!currentTest.isEmpty()) {
             currentTestId = currentTest.substring(0, currentTest.indexOf(";"));
+        } else {
+            currentTestId = "";
         }
 
         return currentTestId;
