@@ -94,10 +94,8 @@ public class TestInfoNotificationTP implements ITestInfoNotification {
 
         if ((!testInfo.getName().equals(Constants.NEW)) & (!testInfo.getName().isEmpty())) {
             String currentTestId = Utils.getCurrentTestId();
-
-            if (currentTestId != null) {
-                if (testInfo != null && !currentTestId.equals(testInfo.getId())) {
-                    JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
+            if (!currentTestId.equals(testInfo.getId())) {
+                JMeterUtils.setProperty(Constants.CURRENT_TEST, testInfo.getId() + ";" + testInfo.getName());
                     TestInfoController.stop();
 
                 } else if (currentTestId.equals(testInfo.getId()) & BmTestManager.getInstance().isUserKeyValid()) {
@@ -106,8 +104,6 @@ public class TestInfoNotificationTP implements ITestInfoNotification {
                 } else {
                     return;
                 }
-            }
-
             TestInfoController.start(testInfo.getId());
         }
 
