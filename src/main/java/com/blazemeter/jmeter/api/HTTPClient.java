@@ -22,7 +22,7 @@ public class HTTPClient {
     private static HTTPClient instance;
 
 
-    public static HTTPClient getInstance() {
+    static HTTPClient getInstance() {
         if (instance == null)
             instance = new HTTPClient();
         return instance;
@@ -97,9 +97,9 @@ public class HTTPClient {
         try {
 
             response = doHTTPRequest(method, url, data);
-            if (data != null) {
+            /*if (data != null) {
                 BmLog.debug("HTTP Request body=\n\n\n" + data.toString() + "\n\n");
-            }
+            }*/
 
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());

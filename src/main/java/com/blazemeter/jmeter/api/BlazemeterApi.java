@@ -12,11 +12,6 @@ import com.blazemeter.jmeter.utils.Utils;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.jmeter.services.FileServer;
 import org.json.JSONArray;
@@ -34,6 +29,7 @@ import java.util.Properties;
 public class BlazemeterApi {
 
     private BmUrlManager urlManager = BmUrlManager.getBmUrlManager();
+    private HTTPClient httpClient = HTTPClient.getInstance();
     private static BlazemeterApi instance;
 
     public static BlazemeterApi getInstance() {
@@ -45,100 +41,12 @@ public class BlazemeterApi {
     private BlazemeterApi() {
     }
 
-    private HttpResponse getJMX(String url) {
-        BmLog.debug("Requesting : " + url);
-        HttpGet getRequest = new HttpGet(url);
-        getRequest.setHeader("Connection", "keep-alive");
-        getRequest.setHeader("Host", BmUrlManager.SERVER_URL.substring(8, com.blazemeter.jmeter.api.BmUrlManager.SERVER_URL.length()));
-        HttpResponse response = null;
-        try {
-            response = new DefaultHttpClient().execute(getRequest);
-            int statusCode = response.getStatusLine().getStatusCode();
-            String error = response.getStatusLine().getReasonPhrase();
-            if (statusCode != 200) {
-                BmLog.error(String.format("Wrong response : %d %s", statusCode, error));
-            }
-
-        } catch (IOException ioe) {
-            BmLog.error("Wrong response", ioe);
-        }
-        return response;
-    }
-
-    private HttpResponse doHTTPRequest(String method, String url, JSONObject data) throws IOException {
-
-        BmLog.debug("Requesting : " + url);
-        HttpRequestBase request = method.equals(Methods.POST) ? new HttpPost(url) : new HttpGet(url);
-        request.setHeader("Accept", "application/json");
-        request.setHeader("Content-type", "application/json; charset=UTF-8");
-
-        if (data != null & request instanceof HttpPost) {
-            StringEntity stringEntity = null;
-
-            if (data.has(Constants.SAMPLES)) {
-                try {
-                    stringEntity = new StringEntity(data.getString(Constants.SAMPLES));
-
-                } catch (JSONException je) {
-                    BmLog.error("Failed to prepare samples for sending: " + je.getMessage());
-                }
-            } else {
-                stringEntity = new StringEntity(data.toString());
-            }
-            ((HttpPost) request).setEntity(stringEntity);
-
-        }
-
-        HttpResponse response = null;
-        try {
-            response = new DefaultHttpClient().execute(request);
-
-            int statusCode = response.getStatusLine().getStatusCode();
-            String error = response.getStatusLine().getReasonPhrase();
-            if (statusCode != 200) {
-                BmLog.error(String.format("Wrong response : %d %s", statusCode, error));
-            }
-        } catch (IOException e) {
-            BmLog.error("Wrong response", e);
-        }
-        return response;
-    }
-
-
-    private JSONObject getJson(String method, String url, JSONObject data) {
-        JSONObject jo = null;
-        HttpResponse response = null;
-        try {
-
-            response = doHTTPRequest(method, url, data);
-/*
-            if (data != null) {
-                BmLog.debug("HTTP Request body=\n\n\n" + data.toString() + "\n\n");
-            }
-*/
-
-            if (response != null) {
-                String output = EntityUtils.toString(response.getEntity());
-                BmLog.debug(output);
-                jo = new JSONObject(output);
-            }
-        } catch (IOException e) {
-            BmLog.error("Error while decoding Json: " + e.getMessage());
-            BmLog.debug("Error while decoding Json: " + e.getMessage());
-        } catch (JSONException e) {
-            BmLog.error("Error while decoding Json: " + e.getMessage());
-            BmLog.debug("Error while decoding Json: " + e.getMessage());
-        } finally {
-            return jo;
-        }
-    }
-
     private List<String> getJMXasList(String url) {
         List<String> jmx = new ArrayList<String>(2);
         String jmxScript = null;
         String jmxScriptName = null;
         try {
-            HttpResponse response = getJMX(url);
+            HttpResponse response = httpClient.getJMX(url);
             if (response != null) {
                 HeaderIterator headerIterator = response.headerIterator();
                 while (headerIterator.hasNext()) {
@@ -171,7 +79,7 @@ public class BlazemeterApi {
         try {
             String url = this.urlManager.getUserInfo(Constants.APP_KEY, userKey);
 
-            JSONObject jo = getJson(Methods.POST, url, null);
+            JSONObject jo = httpClient.getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
                 locations = jo.getJSONArray("locations");
             }
@@ -192,7 +100,7 @@ public class BlazemeterApi {
         try {
             String url = this.urlManager.getUsers(Constants.APP_KEY, userKey);
 
-            JSONObject jo = getJson(Methods.GET, url, null);
+            JSONObject jo = httpClient.getJson(Methods.GET, url, null);
             if (!jo.has("error")) {
 
                 users = new Users(jo.getString("id"),
@@ -236,7 +144,7 @@ public class BlazemeterApi {
             return testInfo;
         }
         String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testInfo.getId());
-        JSONObject jo = getJson(Methods.POST, url, null);
+        JSONObject jo = httpClient.getJson(Methods.POST, url, null);
         try {
             testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.NotRunning : TestStatus.Running);
         } catch (JSONException je) {
@@ -265,7 +173,7 @@ public class BlazemeterApi {
         }
 
         String url = this.urlManager.testStart(Constants.APP_KEY, userKey, testId);
-        JSONObject jo = getJson(Methods.POST, url, null);
+        JSONObject jo = httpClient.getJson(Methods.POST, url, null);
         testInfo = TestInfoProcessor.parseTestInfo(jo);
         try {
             testInfo.setStatus(jo.getInt("response_code") == 200 ? TestStatus.Running : TestStatus.NotRunning);
@@ -283,7 +191,7 @@ public class BlazemeterApi {
 
         String url = this.urlManager.getTests(Constants.APP_KEY, userKey, "all");
 
-        JSONObject jo = getJson(Methods.POST, url, null);
+        JSONObject jo = httpClient.getJson(Methods.POST, url, null);
         JSONArray arr;
         try {
             String r = jo.get("response_code").toString();
@@ -335,7 +243,7 @@ public class BlazemeterApi {
         } catch (JSONException e) {
             BmLog.error(e);
         }
-        JSONObject jo = getJson(Methods.POST, url, properties);
+        JSONObject jo = httpClient.getJson(Methods.POST, url, properties);
         testInfo = TestInfoProcessor.parseTestInfo(jo);
 
         return testInfo;
@@ -368,7 +276,7 @@ public class BlazemeterApi {
             BmLog.error(e);
         }
 
-        getJson(Methods.POST, url, jmxData);
+        httpClient.getJson(Methods.POST, url, jmxData);
     }
 
     /*
@@ -452,7 +360,7 @@ public class BlazemeterApi {
         JSONObject obj = new JSONObject();
         try {
             obj.put(Constants.DATA, buff);
-            JSONObject jo = getJson(Methods.POST, url, obj);
+            JSONObject jo = httpClient.getJson(Methods.POST, url, obj);
             if (jo.has("file_size"))
                 fileSize = (Integer) jo.get("file_size");
             else
@@ -467,7 +375,7 @@ public class BlazemeterApi {
         try {
             JSONObject data = new JSONObject();
             data.put(Constants.SAMPLES, new JSONArray(samples));
-            getJson(Methods.POST, callBackUrl, data);
+            httpClient.getJson(Methods.POST, callBackUrl, data);
         } catch (JSONException e) {
             BmLog.error("Failed to upload samples: " + e.getMessage());
         }
@@ -505,7 +413,7 @@ public class BlazemeterApi {
             options.put("JMETER_PARAMS", jmeter_params);
 
             obj.put("options", options);
-            JSONObject jo = getJson(Methods.POST, url, obj);
+            JSONObject jo = httpClient.getJson(Methods.POST, url, obj);
             if (jo == null || jo.getInt("response_code") != 200) {
                 BmLog.error("Failed to update: " + testId);
                 BmLog.error("JSON options were sent with JSON object: " + options.toString());
@@ -543,7 +451,7 @@ public class BlazemeterApi {
         try {
             String url = this.urlManager.testStatus(Constants.APP_KEY, userKey, testId, detailed);
 
-            JSONObject jo = getJson(Methods.POST, url, null);
+            JSONObject jo = httpClient.getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
                 ti = TestInfoProcessor.parseTestInfo(jo);
             } else {
@@ -567,7 +475,7 @@ public class BlazemeterApi {
             userKey = userKey == null ? "" : userKey;
             String url = this.urlManager.getUpdate(Constants.APP_KEY, userKey, Utils.getPluginVersion().toString(true));
 
-            JSONObject jo = getJson(Methods.POST, url, null);
+            JSONObject jo = httpClient.getJson(Methods.POST, url, null);
             if (jo.getInt("response_code") == 200) {
                 update = new PluginUpdate(new PluginVersion(jo.getInt("version_major"),
                         jo.getInt("version_minor"),
@@ -594,7 +502,7 @@ public class BlazemeterApi {
         String callBackUrl = null;
 
         try {
-            JSONObject jsonObject = getJson(Methods.POST, url, null);
+            JSONObject jsonObject = httpClient.getJson(Methods.POST, url, null);
             responseCode = jsonObject.get("response_code").toString();
             errorMessage = jsonObject.get("error").toString();
             callBackUrl = jsonObject.get("submit").toString();
@@ -626,6 +534,7 @@ public class BlazemeterApi {
         }
 
         String url = this.urlManager.testStop(Constants.APP_KEY, userKey, testId);
-        getJson(Methods.POST, url, null);
+        httpClient.getJson(Methods.POST, url, null);
     }
+
 }
