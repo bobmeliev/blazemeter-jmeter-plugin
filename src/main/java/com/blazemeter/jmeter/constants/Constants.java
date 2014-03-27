@@ -9,7 +9,7 @@ package com.blazemeter.jmeter.constants;
  */
 public interface Constants {
     // used by userKeyTextField for validation
-    public static final String USERKEY_REGEX = "\\w{3,}+";
+    public static final String USERKEY_REGEX = "\\w{20,}+";
     //used by userKeyTextField for linking with Document object
     public static final String PARENT = "parent";
     // default value of textidComboBox
