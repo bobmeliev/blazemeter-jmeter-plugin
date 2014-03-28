@@ -73,12 +73,11 @@ public class SamplesUploader {
             } catch (InterruptedException ie) {
                 BmLog.debug("Interrupted exception during finishing SamplesUploader: " + ie.getMessage());
             }
-        } else {
+        }
             if (isRunning()) {
                 task.cancel(true);
                 BmLog.info("Samples uploading is finished: " + Constants.CALLBACK_URL + "=" + callBackUrl);
             }
-        }
     }
 
     public static void addSample(JSONObject jsonObject) {
