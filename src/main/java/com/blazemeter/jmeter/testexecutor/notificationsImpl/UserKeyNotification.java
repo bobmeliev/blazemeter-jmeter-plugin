@@ -47,7 +47,6 @@ public class UserKeyNotification implements IUserKeyNotification {
             applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
             ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo, true);
             TestListController.setNotification(testListNotification);
-            bmTestManager.getUsers(true);
         } else {
             TestInfoController.stop();
         }

@@ -180,7 +180,7 @@ public class BmTestManager {
         BmLog.info("Finishing test...");
         testInfo.setStatus(TestStatus.NotRunning);
         NotifyTestInfoChanged();
-        SamplesUploader.stop(true);
+        SamplesUploader.stop(false);
         rpc.stopTest(userKey, testInfo.getId());
     }
 
@@ -297,8 +297,14 @@ public class BmTestManager {
         String userKey = this.getUserKey();
         if (force & !userKey.isEmpty() & isUserKeyValid) {
             BmLog.info("Getting users information...");
-            users = rpc.getUsers(this.getUserKey());
+            users = rpc.getUsers(this.userKey);
             NotifyUsersChanged(users);
+        }
+
+        if (users == null) {
+            this.isUserKeyValid = false;
+        } else {
+            this.isUserKeyValid = true;
         }
         return users;
     }

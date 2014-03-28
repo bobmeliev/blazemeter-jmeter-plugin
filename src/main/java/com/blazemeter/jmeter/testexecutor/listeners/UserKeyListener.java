@@ -4,6 +4,7 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
+import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -70,7 +71,14 @@ public class UserKeyListener implements DocumentListener {
     }
 
     private void process() {
+        final BmTestManager bmTestManager = BmTestManager.getInstance();
         if (!GuiUtils.validUserKeyField(userKeyTextField)) {
+            return;
+        }
+        bmTestManager.setUserKey(userKeyTextField.getText());
+        bmTestManager.getUsers(true);
+        if (!bmTestManager.isUserKeyValid()) {
+            JMeterUtils.reportErrorToUser("UserKey is invalid");
             return;
         }
         SwingUtilities.invokeLater(new Runnable() {
@@ -78,7 +86,6 @@ public class UserKeyListener implements DocumentListener {
             public void run() {
                 GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
                 signUpButton.setVisible(false);
-                BmTestManager.getInstance().getUsers(true);
                 TestPanel.getTestPanel().enableMainPanelControls(true);
             }
         });
