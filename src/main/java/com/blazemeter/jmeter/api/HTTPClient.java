@@ -97,10 +97,6 @@ public class HTTPClient {
         try {
 
             response = doHTTPRequest(method, url, data);
-            /*if (data != null) {
-                BmLog.debug("HTTP Request body=\n\n\n" + data.toString() + "\n\n");
-            }*/
-
             if (response != null) {
                 String output = EntityUtils.toString(response.getEntity());
                 BmLog.debug(output);
