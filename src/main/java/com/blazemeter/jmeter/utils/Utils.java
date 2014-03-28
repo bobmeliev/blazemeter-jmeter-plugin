@@ -405,7 +405,7 @@ public class Utils {
     }
 
     public static PluginVersion getPluginVersion() {
-        return new PluginVersion(2, 2, "0"); //number of patch
+        return new PluginVersion(2, 3, "0"); //number of patch
         //should be changed before building version for publishing
     }
 
