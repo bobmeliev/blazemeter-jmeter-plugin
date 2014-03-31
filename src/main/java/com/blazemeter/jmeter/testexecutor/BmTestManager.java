@@ -295,10 +295,16 @@ public class BmTestManager {
 
     public Users getUsers(boolean force) {
         String userKey = this.getUserKey();
-        if (force & !userKey.isEmpty() & isUserKeyValid) {
+        if (force & !userKey.isEmpty()) {
             BmLog.info("Getting users information...");
-            users = rpc.getUsers(this.getUserKey());
+            users = rpc.getUsers(this.userKey);
             NotifyUsersChanged(users);
+        }
+
+        if (users == null) {
+            this.isUserKeyValid = false;
+        } else {
+            this.isUserKeyValid = true;
         }
         return users;
     }
