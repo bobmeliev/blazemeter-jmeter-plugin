@@ -309,7 +309,8 @@ public class Utils {
         int ec = res.getErrorCount();
         int ng = res.getGroupThreads();
         int na = res.getAllThreads();
-        String hn = XML.escape(JMeterUtils.getLocalHostFullName());
+        String localHostName = JMeterUtils.getLocalHostFullName();
+        String hn = XML.escape(localHostName != null ? localHostName : "localhost");
         long in = res.getIdleTime();
 
         JSONObject httpSample = new JSONObject();
