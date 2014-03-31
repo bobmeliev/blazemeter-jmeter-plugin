@@ -295,7 +295,7 @@ public class BmTestManager {
 
     public Users getUsers(boolean force) {
         String userKey = this.getUserKey();
-        if (force & !userKey.isEmpty() & isUserKeyValid) {
+        if (force & !userKey.isEmpty()) {
             BmLog.info("Getting users information...");
             users = rpc.getUsers(this.userKey);
             NotifyUsersChanged(users);

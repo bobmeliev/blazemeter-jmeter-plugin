@@ -76,15 +76,16 @@ public class UserKeyListener implements DocumentListener {
             return;
         }
         bmTestManager.setUserKey(userKeyTextField.getText());
-        bmTestManager.getUsers(true);
-        if (!bmTestManager.isUserKeyValid()) {
-            JMeterUtils.reportErrorToUser("UserKey is invalid");
-            return;
-        }
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, userKeyTextField.getText());
+                bmTestManager.getUsers(true);
+                if (!bmTestManager.isUserKeyValid()) {
+                    JMeterUtils.reportErrorToUser("UserKey is invalid");
+                    return;
+                }
+                GuiUtils.getUserTests(testIdComboBox, mainPanel, cloudPanel, bmTestManager.getUserKey());
                 signUpButton.setVisible(false);
                 TestPanel.getTestPanel().enableMainPanelControls(true);
             }
