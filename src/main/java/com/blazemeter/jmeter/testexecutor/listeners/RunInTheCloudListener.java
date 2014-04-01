@@ -43,7 +43,7 @@ public class RunInTheCloudListener implements ActionListener {
                     "Stop test?",
                     JOptionPane.YES_NO_OPTION);
             if (dialogButton == JOptionPane.YES_OPTION) {
-                BmTestManager.getInstance().stopTest();
+                BmTestManager.getInstance().stopInTheCloud();
             }
         }
     }
