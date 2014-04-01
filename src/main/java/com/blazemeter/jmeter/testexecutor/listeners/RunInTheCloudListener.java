@@ -33,6 +33,16 @@ public class RunInTheCloudListener implements ActionListener {
                     "Start test?",
                     JOptionPane.YES_NO_OPTION);
             if (dialogButton == JOptionPane.YES_OPTION) {
+/*
+                SwingWorker swingWorker=new SwingWorker() {
+                    @Override
+                    protected Object doInBackground() throws Exception {
+                        return null;
+                    }
+                };
+                swingWorker.addPropertyChangeListener(DialogFactory.getStartProgressDialog());
+                swingWorker.firePropertyChange("button_action","PENDING","STARTED");
+              */
                 GuiUtils.startInTheCloud(cloudPanel.getNumberOfUsersSlider(),
                         cloudPanel.getDurationSpinner(),
                         cloudPanel.getIterationsSpinner(),

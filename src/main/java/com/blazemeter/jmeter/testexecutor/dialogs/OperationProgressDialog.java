@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +19,7 @@ import java.awt.event.WindowListener;
  * Time: 2:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class OperationProgressDialog extends JDialog implements WindowListener {
+public class OperationProgressDialog extends JDialog implements WindowListener, PropertyChangeListener {
     String title = null;
     String message = null;
     TestStatus event = null;
@@ -48,6 +50,13 @@ public class OperationProgressDialog extends JDialog implements WindowListener {
                 }
             }
         });
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getNewValue().equals("STARTED")) {
+            this.windowOpened(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
+        }
     }
 
     /**
