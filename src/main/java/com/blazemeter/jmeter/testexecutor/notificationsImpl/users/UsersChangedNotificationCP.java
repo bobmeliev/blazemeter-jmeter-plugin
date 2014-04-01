@@ -3,7 +3,7 @@ package com.blazemeter.jmeter.testexecutor.notificationsImpl.users;
 import com.blazemeter.jmeter.entities.Plan;
 import com.blazemeter.jmeter.entities.Users;
 import com.blazemeter.jmeter.testexecutor.notifications.IUsersChangedNotification;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 import org.json.JSONArray;
 
 import javax.swing.*;

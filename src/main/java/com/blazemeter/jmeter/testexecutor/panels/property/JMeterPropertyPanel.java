@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.panels;
+package com.blazemeter.jmeter.testexecutor.panels.property;
 
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;

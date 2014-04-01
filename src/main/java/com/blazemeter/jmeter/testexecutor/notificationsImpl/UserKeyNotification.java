@@ -6,7 +6,7 @@ import com.blazemeter.jmeter.controllers.TestListController;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IUserKeyNotification;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -47,6 +47,7 @@ public class UserKeyNotification implements IUserKeyNotification {
             applyNotificationTo.put(TestListNotification.CLOUD_PANEL, cloudPanel);
             ITestListReceivedNotification testListNotification = new TestListNotification(applyNotificationTo, true);
             TestListController.setNotification(testListNotification);
+            bmTestManager.getUsers(true);
         } else {
             TestInfoController.stop();
         }

@@ -1,7 +1,7 @@
 package com.blazemeter.jmeter.testexecutor.notificationsImpl;
 
 import com.blazemeter.jmeter.testexecutor.notifications.IRunModeChangedNotification;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
 
 import javax.swing.*;

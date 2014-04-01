@@ -4,7 +4,7 @@ import com.blazemeter.jmeter.entities.Overrides;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
@@ -62,7 +62,7 @@ public class CreateNewButtonListener implements ActionListener {
         if (bmTestManager.getIsLocalRunMode()) {
             jmeterProperties = new Properties();
             ti.setNumberOfUsers(50);
-            Overrides overrides=new Overrides(50,0,30,50);
+            Overrides overrides = new Overrides(50, 0, 30, 50);
             ti.setOverrides(overrides);
         } else {
             jmeterProperties = bmTestManager.getTestInfo().getJmeterProperties();

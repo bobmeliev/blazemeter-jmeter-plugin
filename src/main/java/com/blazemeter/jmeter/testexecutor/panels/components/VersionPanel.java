@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.panels;
+package com.blazemeter.jmeter.testexecutor.panels.components;
 
 import com.blazemeter.jmeter.api.BmUrlManager;
 import com.blazemeter.jmeter.constants.Constants;
@@ -25,8 +25,6 @@ import java.awt.*;
  */
 public class VersionPanel extends JPanel implements IPluginUpdateNotification {
 
-
-    private static VersionPanel versionPanel;
     private static JLabel connectionStatus = new JLabel();
     private JPanel panelLink;
 
@@ -130,13 +128,6 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
 
     }
 
-    public static VersionPanel getVersionPanel() {
-        if (versionPanel == null) {
-            versionPanel = new VersionPanel();
-        }
-        return versionPanel;
-    }
-
     public JPanel getPanelLink() {
         return panelLink;
     }
@@ -146,11 +137,11 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         if (update == null)
             return;
 
-        versionPanel.removeAll();
+        this.removeAll();
 
         JLabel newVersion = new JLabel(String.format("New version - %s, is available", update.getVersion().toString()));
         newVersion.setForeground(Color.WHITE);
-        versionPanel.add(newVersion);
+        this.add(newVersion);
         JLabel moreInfo = new JLabel();
         moreInfo.setText("<html><u>More info</u></html>");
         moreInfo.setToolTipText("Click here to see changes in new version");
@@ -159,14 +150,14 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         VersionMouseListener mouseListener = new VersionMouseListener(update);
         moreInfo.addMouseListener(mouseListener);
         moreInfo.setVisible(true);
-        versionPanel.add(moreInfo);
+        this.add(moreInfo);
         JLabel download = new JLabel("<html><u>Open plugin page</u></html>");
         download.setForeground(Color.WHITE);
         download.setCursor(new Cursor(Cursor.HAND_CURSOR));
         download.setToolTipText("Click here to open plugin page");
         PluginInstaller pluginInstaller = new PluginInstaller();
         download.addMouseListener(pluginInstaller);
-        versionPanel.add(download);
+        this.add(download);
 
 
     }

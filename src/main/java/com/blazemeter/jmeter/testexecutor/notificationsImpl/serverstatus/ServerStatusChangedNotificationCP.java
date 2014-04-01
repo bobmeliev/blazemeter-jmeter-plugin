@@ -5,7 +5,7 @@ import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 import com.blazemeter.jmeter.utils.Utils;
 
 /**

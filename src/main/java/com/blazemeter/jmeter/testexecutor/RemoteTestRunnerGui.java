@@ -9,7 +9,8 @@ import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
-import com.blazemeter.jmeter.testexecutor.panels.VersionPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.ComponentPanelFactory;
+import com.blazemeter.jmeter.testexecutor.panels.components.VersionPanel;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.URIOpener;
 import com.blazemeter.jmeter.utils.Utils;
@@ -117,7 +118,8 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
 
         icon.setIcon(
                 new ImageIcon(
-                        Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
+                        Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png"))
+        );
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         icon.addMouseListener(new URIOpener(BmUrlManager.getServerUrl()));
 
@@ -126,10 +128,10 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
         version.setFont(version.getFont().deriveFont(Font.PLAIN).deriveFont(14F));
         version.setForeground(Color.GRAY);
 
-        versionPanel = VersionPanel.getVersionPanel();
+        versionPanel = ComponentPanelFactory.getVersionPanel();
 
         Container innerPanel = findComponentWithBorder((JComponent) panel, EtchedBorder.class);
-        JPanel panelLink = VersionPanel.getVersionPanel().getPanelLink();
+        JPanel panelLink = ((VersionPanel) versionPanel).getPanelLink();
         if (innerPanel != null) {
 
             innerPanel.add(panelLink);

@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.panels;
+package com.blazemeter.jmeter.testexecutor.panels.property;
 
 import org.apache.jmeter.config.ConfigTestElement;
 import org.apache.jmeter.config.gui.AbstractConfigGui;
@@ -61,7 +61,7 @@ public abstract class PropertyPanel extends AbstractConfigGui
      * A button for loading properties from the jmeter.properties.
      */
 
-    PropertyPanel() {
+    protected PropertyPanel() {
         super();
         init();
     }

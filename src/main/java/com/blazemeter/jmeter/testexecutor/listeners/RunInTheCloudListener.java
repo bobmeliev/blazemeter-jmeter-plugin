@@ -1,8 +1,8 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import org.apache.jmeter.util.JMeterUtils;
 

@@ -6,9 +6,9 @@ import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.TestListNotification;
-import com.blazemeter.jmeter.testexecutor.panels.CloudPanel;
-import com.blazemeter.jmeter.testexecutor.panels.PropertyPanel;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.property.PropertyPanel;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;

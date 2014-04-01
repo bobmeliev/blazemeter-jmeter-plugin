@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.testexecutor.panels;
+package com.blazemeter.jmeter.testexecutor.panels.components;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
@@ -60,7 +60,7 @@ public class CloudPanel extends JPanel {
     private JButton saveUploadButton;
     private JButton addFilesButton;
 
-    public CloudPanel() {
+    CloudPanel() {
         createGui();
         init();
     }

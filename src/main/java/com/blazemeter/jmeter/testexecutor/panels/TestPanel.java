@@ -12,6 +12,11 @@ import com.blazemeter.jmeter.testexecutor.notificationsImpl.UserKeyNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationTP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo.TestInfoNotificationTP;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.users.UsersChangedNotificationTP;
+import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
+import com.blazemeter.jmeter.testexecutor.panels.components.ComponentPanelFactory;
+import com.blazemeter.jmeter.testexecutor.panels.property.AdvancedPropertiesPane;
+import com.blazemeter.jmeter.testexecutor.panels.property.PropertyPanel;
+import com.blazemeter.jmeter.testexecutor.panels.property.PropertyPanelFactory;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.GuiUtils;
 import com.intellij.uiDesigner.core.GridConstraints;
@@ -405,10 +410,10 @@ public class TestPanel {
         buttonGroup = new ButtonGroup();
         buttonGroup.add(runRemote);
         buttonGroup.add(runLocal);
-        cloudPanel = new CloudPanel();
+        cloudPanel = ComponentPanelFactory.getCloudPanel();
         mainPanel.add(cloudPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         cloudPanel.setVisible(false);
-        advancedPropertiesPane = new AdvancedPropertiesPane();
+        advancedPropertiesPane = PropertyPanelFactory.getAdvancedPropertiesPane();
         advancedPropertiesPane.setVisible(false);
         mainPanel.add(advancedPropertiesPane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
     }
