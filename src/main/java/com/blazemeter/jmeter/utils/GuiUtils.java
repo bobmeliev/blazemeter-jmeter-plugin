@@ -83,10 +83,13 @@ public class GuiUtils {
         return valid;
     }
 
-    public static void startInTheCloud(JSlider numberOfUsersSlider,
-                                       JSpinner durationSpinner,
-                                       JSpinner iterationsSpinner,
-                                       JSpinner rampupSpinner) {
+    public static void startInTheCloud(CloudPanel cloudPanel) {
+
+        JSlider numberOfUsersSlider = cloudPanel.getNumberOfUsersSlider();
+        JSpinner durationSpinner = cloudPanel.getDurationSpinner();
+        JSpinner iterationsSpinner = cloudPanel.getIterationsSpinner();
+        JSpinner rampupSpinner = cloudPanel.getRampupSpinner();
+
         saveCloudTest(numberOfUsersSlider,
                 durationSpinner,
                 iterationsSpinner,

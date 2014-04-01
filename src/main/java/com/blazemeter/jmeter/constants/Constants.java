@@ -46,4 +46,6 @@ public interface Constants {
     public static final String INFINITY = Character.toString('\u221e');
     public static final String MEDIUM_ENGINE = "m1.medium";
     public static final String LARGE_ENGINE = "m1.large";
+
+    public static final String BUTTON_ACTION = "button_action";
 }

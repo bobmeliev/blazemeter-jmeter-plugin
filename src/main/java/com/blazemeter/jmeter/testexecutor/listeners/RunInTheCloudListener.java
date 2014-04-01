@@ -1,9 +1,11 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.testexecutor.dialogs.DialogFactory;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
-import com.blazemeter.jmeter.utils.GuiUtils;
+import com.blazemeter.jmeter.utils.CloudTestStarter;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
@@ -33,20 +35,11 @@ public class RunInTheCloudListener implements ActionListener {
                     "Start test?",
                     JOptionPane.YES_NO_OPTION);
             if (dialogButton == JOptionPane.YES_OPTION) {
-/*
-                SwingWorker swingWorker=new SwingWorker() {
-                    @Override
-                    protected Object doInBackground() throws Exception {
-                        return null;
-                    }
-                };
-                swingWorker.addPropertyChangeListener(DialogFactory.getStartProgressDialog());
-                swingWorker.firePropertyChange("button_action","PENDING","STARTED");
-              */
-                GuiUtils.startInTheCloud(cloudPanel.getNumberOfUsersSlider(),
-                        cloudPanel.getDurationSpinner(),
-                        cloudPanel.getIterationsSpinner(),
-                        cloudPanel.getRampupSpinner());
+                CloudTestStarter cloudTestStarter = new CloudTestStarter(cloudPanel);
+                cloudTestStarter.execute();
+                cloudTestStarter.addPropertyChangeListener(DialogFactory.getStartProgressDialog());
+                cloudTestStarter.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.PENDING,
+                        SwingWorker.StateValue.STARTED);
             }
         } else {
             dialogButton = JOptionPane.showConfirmDialog(TestPanel.getTestPanel().getMainPanel(), "Are you sure that you want to stop the test? ",

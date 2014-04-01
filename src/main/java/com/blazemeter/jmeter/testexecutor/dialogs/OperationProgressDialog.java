@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.dialogs;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
@@ -45,8 +46,8 @@ public class OperationProgressDialog extends JDialog implements WindowListener, 
             public void onTestInfoChanged(TestInfo testInfo) {
                 TestStatus testStatus = testInfo.getStatus();
                 if (testStatus != null && testStatus.equals(OperationProgressDialog.this.event)) {
-                    OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
-                    BmTestManager.getInstance().testInfoNotificationListeners.remove(this);
+                    firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
+                            SwingWorker.StateValue.DONE);
                 }
             }
         });
@@ -54,8 +55,13 @@ public class OperationProgressDialog extends JDialog implements WindowListener, 
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getNewValue().equals("STARTED")) {
+        if (evt.getNewValue().equals(SwingWorker.StateValue.STARTED)) {
             this.windowOpened(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
+        }
+        if (evt.getNewValue().equals(SwingWorker.StateValue.DONE)) {
+            this.windowOpened(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
+            OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
+            BmTestManager.getInstance().testInfoNotificationListeners.remove(this);
         }
     }
 
