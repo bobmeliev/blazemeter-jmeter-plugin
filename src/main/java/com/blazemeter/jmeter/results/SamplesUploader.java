@@ -35,6 +35,7 @@ public class SamplesUploader {
     public static void startUploading(String url) {
         if (url == null) {
             BmLog.error("Cannot start SamplesUploader: server did not send callBack URL");
+            return;
         }
         callBackUrl = new StringBuilder(url);
         samplesUploaderThread = new Thread(new Runnable() {
