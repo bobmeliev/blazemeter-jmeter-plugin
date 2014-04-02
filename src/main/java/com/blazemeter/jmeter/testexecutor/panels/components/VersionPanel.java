@@ -9,9 +9,9 @@ import com.blazemeter.jmeter.testexecutor.listeners.VersionMouseListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationVP;
-import com.blazemeter.jmeter.utils.PluginInstaller;
-import com.blazemeter.jmeter.utils.URIOpener;
 import com.blazemeter.jmeter.utils.Utils;
+import com.blazemeter.jmeter.utils.mouseadapters.PluginInstaller;
+import com.blazemeter.jmeter.utils.mouseadapters.URIOpener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,8 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
 
         icon.setIcon(
                 new ImageIcon(
-                        Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png")));
+                        Utils.class.getResource("/com/blazemeter/jmeter/images/BlazemeterLogoB.png"))
+        );
         icon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         icon.addMouseListener(new URIOpener(BmUrlManager.getServerUrl()));
 

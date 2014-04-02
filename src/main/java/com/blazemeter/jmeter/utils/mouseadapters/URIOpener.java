@@ -1,6 +1,6 @@
-package com.blazemeter.jmeter.utils;
+package com.blazemeter.jmeter.utils.mouseadapters;
 
-import com.blazemeter.jmeter.api.BmUrlManager;
+import com.blazemeter.jmeter.utils.GuiUtils;
 
 import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
@@ -9,19 +9,17 @@ import java.awt.event.MouseEvent;
 /**
  * Created by dzmitrykashlach on 1/10/14.
  */
-public class PluginInstaller extends MouseAdapter {
-    public PluginInstaller() {
+public class URIOpener extends MouseAdapter {
+    protected final String uri;
+
+    public URIOpener(String aURI) {
+        uri = aURI;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-
-            try {
-                GuiUtils.navigate(BmUrlManager.getPluginPage());
-            } catch (Throwable exception) {
-                BmLog.error("Wrong URL", exception);
-            }
+            GuiUtils.navigate(uri);
         }
     }
 
@@ -40,5 +38,4 @@ public class PluginInstaller extends MouseAdapter {
     @Override
     public void mouseExited(MouseEvent e) {
     }
-
 }

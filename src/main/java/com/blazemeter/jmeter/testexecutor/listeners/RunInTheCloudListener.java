@@ -5,7 +5,8 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.dialogs.DialogFactory;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
-import com.blazemeter.jmeter.utils.CloudTestStarter;
+import com.blazemeter.jmeter.utils.background.CloudTestStarter;
+import com.blazemeter.jmeter.utils.background.CloudTestStopper;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
@@ -46,7 +47,11 @@ public class RunInTheCloudListener implements ActionListener {
                     "Stop test?",
                     JOptionPane.YES_NO_OPTION);
             if (dialogButton == JOptionPane.YES_OPTION) {
-                BmTestManager.getInstance().stopInTheCloud();
+                CloudTestStopper cloudTestStopper = new CloudTestStopper(cloudPanel);
+                cloudTestStopper.execute();
+                cloudTestStopper.addPropertyChangeListener(DialogFactory.getStopProgressDialog());
+                cloudTestStopper.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
+                        SwingWorker.StateValue.DONE);
             }
         }
     }

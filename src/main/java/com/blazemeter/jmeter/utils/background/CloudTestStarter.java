@@ -1,10 +1,11 @@
-package com.blazemeter.jmeter.utils;
+package com.blazemeter.jmeter.utils.background;
 
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
+import com.blazemeter.jmeter.utils.GuiUtils;
 
 import javax.swing.*;
 

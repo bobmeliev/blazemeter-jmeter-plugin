@@ -6,8 +6,8 @@ import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
 import com.blazemeter.jmeter.utils.GuiUtils;
-import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
+import com.blazemeter.jmeter.utils.background.JMXUploader;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
 

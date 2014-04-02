@@ -8,8 +8,8 @@ import com.blazemeter.jmeter.entities.*;
 import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.utils.BmLog;
-import com.blazemeter.jmeter.utils.JMXUploader;
 import com.blazemeter.jmeter.utils.Utils;
+import com.blazemeter.jmeter.utils.background.JMXUploader;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONObject;
@@ -352,8 +352,6 @@ public class BmTestManager {
             uc.onUsersChanged(users);
         }
     }
-
-
 
 
     public static String getServerUrl() {

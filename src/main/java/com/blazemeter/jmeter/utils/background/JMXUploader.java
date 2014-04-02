@@ -1,7 +1,8 @@
-package com.blazemeter.jmeter.utils;
+package com.blazemeter.jmeter.utils.background;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
+import com.blazemeter.jmeter.utils.BmLog;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.services.FileServer;
