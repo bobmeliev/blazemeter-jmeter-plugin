@@ -9,7 +9,7 @@ import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
-import com.blazemeter.jmeter.utils.background.JMXUploader;
+import com.blazemeter.jmeter.utils.background.runnables.JMXUploader;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONObject;
@@ -25,25 +25,28 @@ import java.util.*;
  */
 
 public class BmTestManager {
+    private static final Object lock = new Object();
+    private static boolean isTestRunning = false;
+    private static BmTestManager instance;
+    public List<IUserKeyNotification> userKeyNotificationListeners = new ArrayList<IUserKeyNotification>();
+    public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
+    public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
+    public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
+    public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
     private String propUserKey = "";
     private String userKey = "";
-
     private Users users;
     private volatile TestInfo testInfo;
     private BlazemeterApi rpc;
     private boolean isUserKeyValid = true;
     private boolean isLocalRunMode = true;
 
-    private static boolean isTestRunning = false;
-    private static BmTestManager instance;
-    private static final Object lock = new Object();
 
-    public List<IUserKeyNotification> userKeyNotificationListeners = new ArrayList<IUserKeyNotification>();
-    public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
-    public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
-    public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
-    public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
-
+    private BmTestManager() {
+        this.testInfo = new TestInfo();
+        rpc = BlazemeterApi.getInstance();
+        this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
+    }
 
     public static BmTestManager getInstance() {
         if (instance == null)
@@ -54,14 +57,6 @@ public class BmTestManager {
         return instance;
     }
 
-    public boolean isUserKeyValid() {
-        return isUserKeyValid;
-    }
-
-    public void setUserKeyValid(boolean userKeyValid) {
-        isUserKeyValid = userKeyValid;
-    }
-
     public static boolean isTestRunning() {
         return isTestRunning;
     }
@@ -70,16 +65,21 @@ public class BmTestManager {
         isTestRunning = testRunning;
     }
 
-    private BmTestManager() {
-        this.testInfo = new TestInfo();
-        rpc = BlazemeterApi.getInstance();
-        this.propUserKey = JMeterUtils.getPropDefault("blazemeter.user_key", "");
+    public static String getServerUrl() {
+        return BmUrlManager.getServerUrl();
+    }
+
+    public boolean isUserKeyValid() {
+        return isUserKeyValid;
+    }
+
+    public void setUserKeyValid(boolean userKeyValid) {
+        isUserKeyValid = userKeyValid;
     }
 
     public boolean isUserKeyFromProp() {
         return userKey.isEmpty() ? this.propUserKey != null && !this.propUserKey.isEmpty() : false;
     }
-
 
     public String startLocalTest() {
         /*
@@ -184,6 +184,9 @@ public class BmTestManager {
         rpc.stopTest(userKey, testInfo.getId());
     }
 
+    public synchronized TestInfo getTestInfo() {
+        return testInfo;
+    }
 
     public void setTestInfo(TestInfo testInfo) {
         if (testInfo == null) {
@@ -203,20 +206,15 @@ public class BmTestManager {
 
     }
 
+    public String getUserKey() {
+        return isUserKeyFromProp() ? propUserKey : userKey;
+    }
+
     public void setUserKey(String userKey) {
         if (this.userKey == null | !this.userKey.equals(userKey)) {
             this.userKey = userKey;
             NotifyUserKeyChanged();
         }
-    }
-
-
-    public synchronized TestInfo getTestInfo() {
-        return testInfo;
-    }
-
-    public String getUserKey() {
-        return isUserKeyFromProp() ? propUserKey : userKey;
     }
 
     public String getTestUrl() {
@@ -261,7 +259,6 @@ public class BmTestManager {
         rpc.samplesUpload(samples, callBackUrl);
     }
 
-
     public void runInTheCloud() {
         TestInfo testInfo = this.getTestInfo();
         if (testInfo == null) {
@@ -292,7 +289,6 @@ public class BmTestManager {
         }
     }
 
-
     public Users getUsers(boolean force) {
         String userKey = this.getUserKey();
         if (force & !userKey.isEmpty()) {
@@ -317,7 +313,6 @@ public class BmTestManager {
         this.users = users;
     }
 
-
     public void NotifyUserKeyChanged() {
         for (IUserKeyNotification ti : userKeyNotificationListeners) {
             ti.onTestUserKeyChanged(userKey);
@@ -325,13 +320,11 @@ public class BmTestManager {
 
     }
 
-
     public void NotifyTestInfoChanged() {
         for (ITestInfoNotification ti : testInfoNotificationListeners) {
             ti.onTestInfoChanged(testInfo);
         }
     }
-
 
     public void NotifyPluginUpdateReceived(PluginUpdate update) {
         for (IPluginUpdateNotification ti : pluginUpdateNotificationListeners) {
@@ -339,23 +332,16 @@ public class BmTestManager {
         }
     }
 
-
     public void NotifyRunModeChanged(boolean isLocalRunMode) {
         for (IRunModeChangedNotification rmc : runModeChangedNotificationListeners) {
             rmc.onRunModeChanged(isLocalRunMode);
         }
     }
 
-
     public void NotifyUsersChanged(Users users) {
         for (IUsersChangedNotification uc : usersChangedNotificationListeners) {
             uc.onUsersChanged(users);
         }
-    }
-
-
-    public static String getServerUrl() {
-        return BmUrlManager.getServerUrl();
     }
 
     public void getTestsAsync(String userKey, ITestListReceivedNotification notification) {

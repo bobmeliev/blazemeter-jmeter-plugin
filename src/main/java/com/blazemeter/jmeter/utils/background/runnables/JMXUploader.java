@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.background;
+package com.blazemeter.jmeter.utils.background.runnables;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
@@ -15,6 +15,16 @@ import java.io.File;
 public class JMXUploader implements Runnable {
 
     private JMXUploader() {
+    }
+
+    public static void uploadJMX() {
+        Thread jmxUploader = new Thread(new JMXUploader());
+        jmxUploader.start();
+        try {
+            jmxUploader.join();
+        } catch (InterruptedException ie) {
+            BmLog.debug("JMX Uploader was interrupted");
+        }
     }
 
     @Override
@@ -35,16 +45,6 @@ public class JMXUploader implements Runnable {
         } catch (Exception ex) {
             BmLog.error(ex);
 
-        }
-    }
-
-    public static void uploadJMX() {
-        Thread jmxUploader = new Thread(new JMXUploader());
-        jmxUploader.start();
-        try {
-            jmxUploader.join();
-        } catch (InterruptedException ie) {
-            BmLog.debug("JMX Uploader was interrupted");
         }
     }
 }

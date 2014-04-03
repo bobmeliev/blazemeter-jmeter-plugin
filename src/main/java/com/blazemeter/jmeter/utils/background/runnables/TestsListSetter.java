@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.background;
+package com.blazemeter.jmeter.utils.background.runnables;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;

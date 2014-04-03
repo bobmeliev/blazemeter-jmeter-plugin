@@ -5,8 +5,8 @@ import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.dialogs.DialogFactory;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
-import com.blazemeter.jmeter.utils.background.CloudTestStarter;
-import com.blazemeter.jmeter.utils.background.CloudTestStopper;
+import com.blazemeter.jmeter.utils.background.swingworkers.CloudTestStarter;
+import com.blazemeter.jmeter.utils.background.swingworkers.CloudTestStopper;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;

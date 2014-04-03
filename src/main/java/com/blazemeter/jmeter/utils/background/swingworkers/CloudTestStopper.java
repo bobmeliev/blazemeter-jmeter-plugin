@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.background;
+package com.blazemeter.jmeter.utils.background.swingworkers;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
