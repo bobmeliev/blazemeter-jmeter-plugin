@@ -100,11 +100,16 @@ public class TestPanel {
         }
     }
 
+    public static TestPanel getTestPanel() {
+        if (testPanel == null) {
+            testPanel = new TestPanel();
+        }
+        return testPanel;
+    }
 
     public JPanel getMainPanel() {
         return mainPanel;
     }
-
 
     public void enableMainPanelControls(boolean isEnabled) {
 
@@ -116,7 +121,6 @@ public class TestPanel {
         runLocal.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
         runRemote.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
     }
-
 
     /**
      * Here some heavy GUI listeners are initialized;
@@ -142,7 +146,6 @@ public class TestPanel {
             signUpButton.setEnabled(bmTestManager.getUserKey() == null || bmTestManager.
                     getUserKey().
                     isEmpty());
-
 
 
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);
@@ -198,6 +201,10 @@ public class TestPanel {
         }
     }
 
+    public String getUserKey() {
+        return userKeyTextField.getText();
+    }
+
     public void setUserKey(String key) {
         if (key.isEmpty()) {
             return;
@@ -205,11 +212,6 @@ public class TestPanel {
         userKeyTextField.setText(key);
         BmLog.debug("Setting user key " + key);
     }
-
-    public String getUserKey() {
-        return userKeyTextField.getText();
-    }
-
 
     public void setTestInfo(TestInfo testInfo) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
@@ -231,7 +233,6 @@ public class TestPanel {
         }
     }
 
-
     public void configureMainPanel(TestInfo testInfo) {
         boolean isRunning = (testInfo != null && testInfo.getStatus() == TestStatus.Running);
 
@@ -251,13 +252,6 @@ public class TestPanel {
         }
         testIdComboBox.setEnabled(!isRunning & testIdComboBox.getItemCount() > 0);
         reloadButton.setEnabled(!isRunning);
-    }
-
-    public static TestPanel getTestPanel() {
-        if (testPanel == null) {
-            testPanel = new TestPanel();
-        }
-        return testPanel;
     }
 
     public AdvancedPropertiesPane getAdvancedPropertiesPane() {
@@ -379,7 +373,7 @@ public class TestPanel {
         goToTestPageButton.setVisible(true);
         panel4.add(goToTestPageButton, new GridConstraints(0, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(165, -1), new Dimension(165, -1), new Dimension(165, -1), 0, false));
         final JLabel label4 = new JLabel();
-        label4.setText("Run Mode");
+        label4.setText("Test name");
         panel1.add(label4, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
         final Spacer spacer1 = new Spacer();
         panel1.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, new Dimension(80, -1), new Dimension(80, -1), new Dimension(80, -1), 0, false));
