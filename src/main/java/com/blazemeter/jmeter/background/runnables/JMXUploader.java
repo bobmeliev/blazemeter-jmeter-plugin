@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.background.runnables;
+package com.blazemeter.jmeter.background.runnables;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;

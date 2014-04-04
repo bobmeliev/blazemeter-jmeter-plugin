@@ -1,9 +1,9 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.background.runnables.JMXUploader;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.utils.Utils;
-import com.blazemeter.jmeter.utils.background.runnables.JMXUploader;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.util.JMeterUtils;
 

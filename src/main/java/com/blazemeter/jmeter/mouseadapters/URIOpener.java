@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.mouseadapters;
+package com.blazemeter.jmeter.mouseadapters;
 
 import com.blazemeter.jmeter.utils.GuiUtils;
 

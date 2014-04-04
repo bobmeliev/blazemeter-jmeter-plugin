@@ -1,9 +1,9 @@
 package com.blazemeter.jmeter.testexecutor.notificationsImpl;
 
+import com.blazemeter.jmeter.background.runnables.TestsListSetter;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.testexecutor.notifications.ITestListReceivedNotification;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
-import com.blazemeter.jmeter.utils.background.runnables.TestsListSetter;
 
 import javax.swing.*;
 import java.util.ArrayList;

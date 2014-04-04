@@ -2,6 +2,7 @@ package com.blazemeter.jmeter.testexecutor;
 
 import com.blazemeter.jmeter.api.BlazemeterApi;
 import com.blazemeter.jmeter.api.BmUrlManager;
+import com.blazemeter.jmeter.background.runnables.JMXUploader;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.*;
@@ -9,7 +10,6 @@ import com.blazemeter.jmeter.results.SamplesUploader;
 import com.blazemeter.jmeter.testexecutor.notifications.*;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
-import com.blazemeter.jmeter.utils.background.runnables.JMXUploader;
 import org.apache.jmeter.JMeter;
 import org.apache.jmeter.util.JMeterUtils;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.background.swingworkers;
+package com.blazemeter.jmeter.background.swingworkers;
 
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
@@ -8,10 +8,10 @@ import javax.swing.*;
 /**
  * Created by dzmitrykashlach on 4/1/14.
  */
-public class CloudTestStopper extends SwingWorker {
+public class TestStopper extends SwingWorker {
     private CloudPanel cloudPanel;
 
-    public CloudTestStopper(CloudPanel cloudPanel) {
+    public TestStopper(CloudPanel cloudPanel) {
         this.cloudPanel = cloudPanel;
     }
 

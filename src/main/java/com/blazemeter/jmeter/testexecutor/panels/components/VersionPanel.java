@@ -4,14 +4,14 @@ import com.blazemeter.jmeter.api.BmUrlManager;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.entities.PluginUpdate;
+import com.blazemeter.jmeter.mouseadapters.PluginInstaller;
+import com.blazemeter.jmeter.mouseadapters.URIOpener;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.listeners.VersionMouseListener;
 import com.blazemeter.jmeter.testexecutor.notifications.IPluginUpdateNotification;
 import com.blazemeter.jmeter.testexecutor.notifications.IServerStatusChangedNotification;
 import com.blazemeter.jmeter.testexecutor.notificationsImpl.serverstatus.ServerStatusChangedNotificationVP;
 import com.blazemeter.jmeter.utils.Utils;
-import com.blazemeter.jmeter.utils.mouseadapters.PluginInstaller;
-import com.blazemeter.jmeter.utils.mouseadapters.URIOpener;
 
 import javax.swing.*;
 import java.awt.*;

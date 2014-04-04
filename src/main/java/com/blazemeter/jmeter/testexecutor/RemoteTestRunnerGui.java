@@ -8,12 +8,12 @@ import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.ServerStatusController;
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
+import com.blazemeter.jmeter.mouseadapters.URIOpener;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.components.ComponentPanelFactory;
 import com.blazemeter.jmeter.testexecutor.panels.components.VersionPanel;
 import com.blazemeter.jmeter.utils.BmLog;
 import com.blazemeter.jmeter.utils.Utils;
-import com.blazemeter.jmeter.utils.mouseadapters.URIOpener;
 import org.apache.jmeter.gui.GuiPackage;
 import org.apache.jmeter.samplers.SampleResult;
 import org.apache.jmeter.testelement.TestElement;
@@ -30,11 +30,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
     private static JPanel versionPanel;
 
 
-    public static JPanel getVersionPanel() {
-        return versionPanel;
-    }
-
-
     public RemoteTestRunnerGui() {
         super();
         Utils.checkJMeterVersion();
@@ -45,6 +40,30 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
         }
         init();
         getFilePanel().setVisible(false);
+    }
+
+    public static JPanel getVersionPanel() {
+        return versionPanel;
+    }
+
+    private static Container findComponentWithBorder(JComponent panel, Class<?> aClass) {
+        for (int n = 0; n < panel.getComponentCount(); n++) {
+            if (panel.getComponent(n) instanceof JComponent) {
+                JComponent comp = (JComponent) panel.getComponent(n);
+
+                if ((comp.getBorder() != null) && aClass.isAssignableFrom(comp.getBorder().getClass())) {
+                    return comp;
+                }
+
+                Container con = findComponentWithBorder(comp, aClass);
+
+                if (con != null) {
+                    return con;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -78,7 +97,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
     public void clearGui() {
         super.clearGui();
     }
-
 
     @Override
     public void configure(TestElement element) {
@@ -166,27 +184,6 @@ public class RemoteTestRunnerGui extends AbstractVisualizer {
     public String getLabelResource() {
         return this.getClass().getCanonicalName();
     }
-
-    private static Container findComponentWithBorder(JComponent panel, Class<?> aClass) {
-        for (int n = 0; n < panel.getComponentCount(); n++) {
-            if (panel.getComponent(n) instanceof JComponent) {
-                JComponent comp = (JComponent) panel.getComponent(n);
-
-                if ((comp.getBorder() != null) && aClass.isAssignableFrom(comp.getBorder().getClass())) {
-                    return comp;
-                }
-
-                Container con = findComponentWithBorder(comp, aClass);
-
-                if (con != null) {
-                    return con;
-                }
-            }
-        }
-
-        return null;
-    }
-
 
     public void add(SampleResult sample) {
 

@@ -1,12 +1,12 @@
 package com.blazemeter.jmeter.testexecutor.listeners;
 
+import com.blazemeter.jmeter.background.swingworkers.TestStarter;
+import com.blazemeter.jmeter.background.swingworkers.TestStopper;
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
 import com.blazemeter.jmeter.testexecutor.dialogs.DialogFactory;
 import com.blazemeter.jmeter.testexecutor.panels.TestPanel;
 import com.blazemeter.jmeter.testexecutor.panels.components.CloudPanel;
-import com.blazemeter.jmeter.utils.background.swingworkers.CloudTestStarter;
-import com.blazemeter.jmeter.utils.background.swingworkers.CloudTestStopper;
 import org.apache.jmeter.util.JMeterUtils;
 
 import javax.swing.*;
@@ -36,10 +36,10 @@ public class RunInTheCloudListener implements ActionListener {
                     "Start test?",
                     JOptionPane.YES_NO_OPTION);
             if (dialogButton == JOptionPane.YES_OPTION) {
-                CloudTestStarter cloudTestStarter = new CloudTestStarter(cloudPanel);
-                cloudTestStarter.execute();
-                cloudTestStarter.addPropertyChangeListener(DialogFactory.getStartProgressDialog(cloudTestStarter));
-                cloudTestStarter.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.PENDING,
+                TestStarter testStarter = new TestStarter(cloudPanel);
+                testStarter.execute();
+                testStarter.addPropertyChangeListener(DialogFactory.getStartProgressDialog(testStarter));
+                testStarter.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.PENDING,
                         SwingWorker.StateValue.STARTED);
             }
         } else {
@@ -47,10 +47,10 @@ public class RunInTheCloudListener implements ActionListener {
                     "Stop test?",
                     JOptionPane.YES_NO_OPTION);
             if (dialogButton == JOptionPane.YES_OPTION) {
-                CloudTestStopper cloudTestStopper = new CloudTestStopper(cloudPanel);
-                cloudTestStopper.execute();
-                cloudTestStopper.addPropertyChangeListener(DialogFactory.getStopProgressDialog(cloudTestStopper));
-                cloudTestStopper.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
+                TestStopper testStopper = new TestStopper(cloudPanel);
+                testStopper.execute();
+                testStopper.addPropertyChangeListener(DialogFactory.getStopProgressDialog(testStopper));
+                testStopper.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
                         SwingWorker.StateValue.DONE);
             }
         }

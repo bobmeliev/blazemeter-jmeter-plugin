@@ -1,4 +1,4 @@
-package com.blazemeter.jmeter.utils.background.swingworkers;
+package com.blazemeter.jmeter.background.swingworkers;
 
 import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
@@ -13,10 +13,10 @@ import javax.swing.*;
 /**
  * Created by dzmitrykashlach on 4/1/14.
  */
-public class CloudTestStarter extends SwingWorker {
+public class TestStarter extends SwingWorker {
     private CloudPanel cloudPanel;
 
-    public CloudTestStarter(CloudPanel cloudPanel) {
+    public TestStarter(CloudPanel cloudPanel) {
         this.cloudPanel = cloudPanel;
     }
 
