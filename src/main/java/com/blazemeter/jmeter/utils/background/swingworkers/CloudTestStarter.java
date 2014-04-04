@@ -1,5 +1,6 @@
 package com.blazemeter.jmeter.utils.background.swingworkers;
 
+import com.blazemeter.jmeter.constants.Constants;
 import com.blazemeter.jmeter.controllers.TestInfoController;
 import com.blazemeter.jmeter.entities.TestInfo;
 import com.blazemeter.jmeter.entities.TestStatus;
@@ -33,6 +34,8 @@ public class CloudTestStarter extends SwingWorker {
         BmTestManager bmTestManager = BmTestManager.getInstance();
         TestInfoController.stop();
         bmTestManager.runInTheCloud();
+        this.firePropertyChange(Constants.BUTTON_ACTION, StateValue.STARTED,
+                StateValue.DONE);
         TestInfo testInfo = bmTestManager.getTestInfo();
         if (testInfo.getError() == null & testInfo.getStatus() == TestStatus.Running) {
             String url = bmTestManager.getTestUrl();

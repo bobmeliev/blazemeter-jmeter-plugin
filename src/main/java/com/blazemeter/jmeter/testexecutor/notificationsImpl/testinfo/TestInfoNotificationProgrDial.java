@@ -24,10 +24,9 @@ public class TestInfoNotificationProgrDial implements ITestInfoNotification {
     @Override
     public void onTestInfoChanged(TestInfo testInfo) {
         TestStatus testStatus = testInfo.getStatus();
-        if (testStatus != null && testStatus.equals(event)) {
+        if (testStatus != null && (testStatus.equals(event) & BmTestManager.isTestRunning())) {
             swingWorker.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
                     SwingWorker.StateValue.DONE);
-            BmTestManager.getInstance().getTestInfoNotificationListeners().remove(this);
         }
     }
 }

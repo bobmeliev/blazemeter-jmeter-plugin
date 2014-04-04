@@ -44,9 +44,10 @@ public class OperationProgressDialog extends JDialog implements WindowListener, 
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getNewValue().equals(SwingWorker.StateValue.STARTED)) {
             this.windowOpened(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
+            BmTestManager.getInstance().getTestInfoNotificationListeners().remove(this);
         }
         if (evt.getNewValue().equals(SwingWorker.StateValue.DONE)) {
-            this.windowOpened(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
+            this.windowClosed(new WindowEvent(this, WindowEvent.WINDOW_CLOSED));
             OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
             BmTestManager.getInstance().getTestInfoNotificationListeners().remove(this);
         }
