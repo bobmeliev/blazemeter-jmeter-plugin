@@ -1,10 +1,6 @@
 package com.blazemeter.jmeter.testexecutor.dialogs;
 
-import com.blazemeter.jmeter.constants.Constants;
-import com.blazemeter.jmeter.entities.TestInfo;
-import com.blazemeter.jmeter.entities.TestStatus;
 import com.blazemeter.jmeter.testexecutor.BmTestManager;
-import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,13 +19,12 @@ import java.beans.PropertyChangeListener;
 public class OperationProgressDialog extends JDialog implements WindowListener, PropertyChangeListener {
     String title = null;
     String message = null;
-    TestStatus event = null;
 
-    public OperationProgressDialog(String title, String message, TestStatus event) {
+
+    public OperationProgressDialog(String title, String message) {
         super();
         this.title = title;
         this.message = message;
-        this.event = event;
         JProgressBar jProgressBar = new JProgressBar();
         jProgressBar.setIndeterminate(true);
         final JOptionPane progressPane = new JOptionPane(jProgressBar, JOptionPane.INFORMATION_MESSAGE,
@@ -41,16 +36,8 @@ public class OperationProgressDialog extends JDialog implements WindowListener, 
         contentPane.add(progressPane, BorderLayout.SOUTH);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setSize(this.message.length() * 8, 130);
-        BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
-            @Override
-            public void onTestInfoChanged(TestInfo testInfo) {
-                TestStatus testStatus = testInfo.getStatus();
-                if (testStatus != null && testStatus.equals(OperationProgressDialog.this.event)) {
-                    firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
-                            SwingWorker.StateValue.DONE);
-                }
-            }
-        });
+
+
     }
 
     @Override
