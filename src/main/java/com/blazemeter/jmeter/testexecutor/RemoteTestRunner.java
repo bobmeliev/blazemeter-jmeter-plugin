@@ -48,14 +48,14 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
         serverStatusController.start();
 
-        BmTestManager.getInstance().userKeyNotificationListeners.add(new IUserKeyNotification() {
+        BmTestManager.getInstance().getUserKeyNotificationListeners().add(new IUserKeyNotification() {
             @Override
             public void onTestUserKeyChanged(String userKey) {
                 setUserKey(userKey);
             }
         });
 
-        BmTestManager.getInstance().testInfoNotificationListeners.add(new ITestInfoNotification() {
+        BmTestManager.getInstance().getTestInfoNotificationListeners().add(new ITestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 setTestInfo(testInfo);
@@ -76,13 +76,22 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
             }
         });
 
-        BmTestManager.getInstance().runModeChangedNotificationListeners.add(new IRunModeChangedNotification() {
+        BmTestManager.getInstance().getRunModeChangedNotificationListeners().add(new IRunModeChangedNotification() {
             @Override
             public void onRunModeChanged(boolean isLocalRunMode) {
                 setIsLocalRunMode(isLocalRunMode);
             }
         });
         JMeterUtils.setProperty(Constants.ATTEMPTS_TO_START_TEST, "0");
+    }
+
+    public TestInfo getTestInfo() {
+        TestInfo testInfo = new TestInfo();
+        testInfo.setId(this.getPropertyAsString(Constants.TEST_ID, ""));
+        testInfo.setName(this.getPropertyAsString(Constants.TEST_NAME, ""));
+        testInfo.setNumberOfUsers(this.getPropertyAsInt(Constants.TEST_NUMBER_OF_USERS, 0));
+        testInfo.setLocation(this.getPropertyAsString(Constants.TEST_LOCATION, "EU West (Ireland)"));
+        return testInfo;
     }
 
     public void setTestInfo(TestInfo testInfo) {
@@ -114,15 +123,6 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
 
     }
 
-    public TestInfo getTestInfo() {
-        TestInfo testInfo = new TestInfo();
-        testInfo.setId(this.getPropertyAsString(Constants.TEST_ID, ""));
-        testInfo.setName(this.getPropertyAsString(Constants.TEST_NAME, ""));
-        testInfo.setNumberOfUsers(this.getPropertyAsInt(Constants.TEST_NUMBER_OF_USERS, 0));
-        testInfo.setLocation(this.getPropertyAsString(Constants.TEST_LOCATION, "EU West (Ireland)"));
-        return testInfo;
-    }
-
     public String getUserKey() {
         return this.getPropertyAsString("userKey", "");
     }
@@ -131,14 +131,13 @@ public class RemoteTestRunner extends ResultCollector implements SampleListener,
         this.setProperty("userKey", userKey);
     }
 
-    public void setIsLocalRunMode(boolean isLocalRun) {
-        this.setProperty("isLocalRun", isLocalRun);
-    }
-
     public boolean getIsLocalRunMode() {
         return this.getPropertyAsBoolean("isLocalRun", true);
     }
 
+    public void setIsLocalRunMode(boolean isLocalRun) {
+        this.setProperty("isLocalRun", isLocalRun);
+    }
 
     public void setReportName(String reportName) {
         this.setProperty("reportName", reportName);

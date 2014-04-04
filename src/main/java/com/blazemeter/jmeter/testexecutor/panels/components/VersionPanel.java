@@ -125,7 +125,7 @@ public class VersionPanel extends JPanel implements IPluginUpdateNotification {
         serverStatusController.serverStatusChangedNotificationListeners.add(serverStatusChangedNotification);
 
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.pluginUpdateNotificationListeners.add(this);
+        bmTestManager.getPluginUpdateNotificationListeners().add(this);
 
     }
 

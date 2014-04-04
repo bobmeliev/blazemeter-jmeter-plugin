@@ -28,11 +28,11 @@ public class BmTestManager {
     private static final Object lock = new Object();
     private static boolean isTestRunning = false;
     private static BmTestManager instance;
-    public List<IUserKeyNotification> userKeyNotificationListeners = new ArrayList<IUserKeyNotification>();
-    public List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
-    public List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
-    public List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
-    public List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
+    private List<IUserKeyNotification> userKeyNotificationListeners = new ArrayList<IUserKeyNotification>();
+    private List<IRunModeChangedNotification> runModeChangedNotificationListeners = new ArrayList<IRunModeChangedNotification>();
+    private List<IUsersChangedNotification> usersChangedNotificationListeners = new ArrayList<IUsersChangedNotification>();
+    private List<IPluginUpdateNotification> pluginUpdateNotificationListeners = new ArrayList<IPluginUpdateNotification>();
+    private List<ITestInfoNotification> testInfoNotificationListeners = new ArrayList<ITestInfoNotification>();
     private String propUserKey = "";
     private String userKey = "";
     private Users users;
@@ -311,6 +311,27 @@ public class BmTestManager {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+
+    public List<ITestInfoNotification> getTestInfoNotificationListeners() {
+        return testInfoNotificationListeners;
+    }
+
+    public List<IUserKeyNotification> getUserKeyNotificationListeners() {
+        return userKeyNotificationListeners;
+    }
+
+    public List<IRunModeChangedNotification> getRunModeChangedNotificationListeners() {
+        return runModeChangedNotificationListeners;
+    }
+
+    public List<IUsersChangedNotification> getUsersChangedNotificationListeners() {
+        return usersChangedNotificationListeners;
+    }
+
+    public List<IPluginUpdateNotification> getPluginUpdateNotificationListeners() {
+        return pluginUpdateNotificationListeners;
     }
 
     public void NotifyUserKeyChanged() {

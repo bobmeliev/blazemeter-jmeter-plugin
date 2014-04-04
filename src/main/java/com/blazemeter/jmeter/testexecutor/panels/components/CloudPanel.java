@@ -190,7 +190,7 @@ public class CloudPanel extends JPanel {
         //Here should be all changes of TestInfo processed
         BmTestManager bmTestManager = BmTestManager.getInstance();
         ITestInfoNotification testInfoNotification = new TestInfoNotificationCP(this);
-        bmTestManager.testInfoNotificationListeners.add(testInfoNotification);
+        bmTestManager.getTestInfoNotificationListeners().add(testInfoNotification);
 
 
         //Processing serverStatusChangedNotification
@@ -207,7 +207,7 @@ public class CloudPanel extends JPanel {
           If userInfo was changed in BmTestManager, Cloud Panel will be notified about this to take appropriate reaction
          */
         IUsersChangedNotification usersChangedNotificationCP = new UsersChangedNotificationCP(numberOfUsersSlider, this);
-        bmTestManager.usersChangedNotificationListeners.add(usersChangedNotificationCP);
+        bmTestManager.getUsersChangedNotificationListeners().add(usersChangedNotificationCP);
 
     }
 

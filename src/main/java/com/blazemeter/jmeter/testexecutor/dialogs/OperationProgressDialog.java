@@ -48,7 +48,7 @@ public class OperationProgressDialog extends JDialog implements WindowListener, 
         if (evt.getNewValue().equals(SwingWorker.StateValue.DONE)) {
             this.windowOpened(new WindowEvent(this, WindowEvent.WINDOW_OPENED));
             OperationProgressDialog.this.windowClosed(new WindowEvent(OperationProgressDialog.this, WindowEvent.WINDOW_CLOSED));
-            BmTestManager.getInstance().testInfoNotificationListeners.remove(this);
+            BmTestManager.getInstance().getTestInfoNotificationListeners().remove(this);
         }
     }
 

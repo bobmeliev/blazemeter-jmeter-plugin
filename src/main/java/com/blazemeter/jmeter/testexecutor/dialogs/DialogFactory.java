@@ -1,6 +1,10 @@
 package com.blazemeter.jmeter.testexecutor.dialogs;
 
 import com.blazemeter.jmeter.entities.TestStatus;
+import com.blazemeter.jmeter.testexecutor.notifications.ITestInfoNotification;
+import com.blazemeter.jmeter.testexecutor.notificationsImpl.testinfo.TestInfoNotificationProgrDial;
+
+import javax.swing.*;
 
 /**
  * Created by dzmitrykashlach on 4/1/14.
@@ -12,16 +16,18 @@ public class DialogFactory {
     private static CloudTestProgressDialog stopProgressDialog;
     private static OperationProgressDialog operationProgressDialog;
 
-    public static OperationProgressDialog getStartProgressDialog() {
+    public static OperationProgressDialog getStartProgressDialog(SwingWorker swingWorker) {
         if (startProgressDialog == null) {
-            startProgressDialog = new CloudTestProgressDialog(title, message, TestStatus.Running);
+            ITestInfoNotification testInfoNotification = new TestInfoNotificationProgrDial(swingWorker, TestStatus.NotRunning);
+            startProgressDialog = new CloudTestProgressDialog(title, message, testInfoNotification);
         }
         return startProgressDialog;
     }
 
-    public static OperationProgressDialog getStopProgressDialog() {
+    public static OperationProgressDialog getStopProgressDialog(SwingWorker swingWorker) {
         if (stopProgressDialog == null) {
-            stopProgressDialog = new CloudTestProgressDialog(title, message, TestStatus.NotRunning);
+            ITestInfoNotification testInfoNotification = new TestInfoNotificationProgrDial(swingWorker, TestStatus.Running);
+            stopProgressDialog = new CloudTestProgressDialog(title, message, testInfoNotification);
         }
         return stopProgressDialog;
     }

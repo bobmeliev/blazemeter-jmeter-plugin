@@ -38,7 +38,7 @@ public class RunInTheCloudListener implements ActionListener {
             if (dialogButton == JOptionPane.YES_OPTION) {
                 CloudTestStarter cloudTestStarter = new CloudTestStarter(cloudPanel);
                 cloudTestStarter.execute();
-                cloudTestStarter.addPropertyChangeListener(DialogFactory.getStartProgressDialog());
+                cloudTestStarter.addPropertyChangeListener(DialogFactory.getStartProgressDialog(cloudTestStarter));
                 cloudTestStarter.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.PENDING,
                         SwingWorker.StateValue.STARTED);
             }
@@ -49,7 +49,7 @@ public class RunInTheCloudListener implements ActionListener {
             if (dialogButton == JOptionPane.YES_OPTION) {
                 CloudTestStopper cloudTestStopper = new CloudTestStopper(cloudPanel);
                 cloudTestStopper.execute();
-                cloudTestStopper.addPropertyChangeListener(DialogFactory.getStopProgressDialog());
+                cloudTestStopper.addPropertyChangeListener(DialogFactory.getStopProgressDialog(cloudTestStopper));
                 cloudTestStopper.firePropertyChange(Constants.BUTTON_ACTION, SwingWorker.StateValue.STARTED,
                         SwingWorker.StateValue.DONE);
             }

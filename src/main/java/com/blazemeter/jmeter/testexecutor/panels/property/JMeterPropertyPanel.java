@@ -21,7 +21,7 @@ public class JMeterPropertyPanel extends PropertyPanel {
     protected void init() {
         super.init();
         BmTestManager bmTestManager = BmTestManager.getInstance();
-        bmTestManager.testInfoNotificationListeners.add(new ITestInfoNotification() {
+        bmTestManager.getTestInfoNotificationListeners().add(new ITestInfoNotification() {
             @Override
             public void onTestInfoChanged(TestInfo testInfo) {
                 if (testInfo.getJmeterProperties() == null) {

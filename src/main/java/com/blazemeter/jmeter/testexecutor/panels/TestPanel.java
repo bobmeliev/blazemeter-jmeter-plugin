@@ -70,9 +70,11 @@ public class TestPanel {
                     testIdComboBox,
                     mainPanel,
                     cloudPanel);
-            BmTestManager.getInstance().userKeyNotificationListeners.add(userKeyNotification);
+            BmTestManager bmTestManager = BmTestManager.getInstance();
+
+            bmTestManager.getUserKeyNotificationListeners().add(userKeyNotification);
             IUsersChangedNotification usersChangedNotification = new UsersChangedNotificationTP(userInfoLabel, testIdComboBox);
-            BmTestManager.getInstance().usersChangedNotificationListeners.add(usersChangedNotification);
+            bmTestManager.getUsersChangedNotificationListeners().add(usersChangedNotification);
 
             signUpButton.addActionListener(new ActionListener() {
                 @Override
@@ -100,11 +102,16 @@ public class TestPanel {
         }
     }
 
+    public static TestPanel getTestPanel() {
+        if (testPanel == null) {
+            testPanel = new TestPanel();
+        }
+        return testPanel;
+    }
 
     public JPanel getMainPanel() {
         return mainPanel;
     }
-
 
     public void enableMainPanelControls(boolean isEnabled) {
 
@@ -116,7 +123,6 @@ public class TestPanel {
         runLocal.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
         runRemote.setEnabled(userKeyTextField.getText().equals(Constants.ENTER_YOUR_USER_KEY) ? false : isEnabled);
     }
-
 
     /**
      * Here some heavy GUI listeners are initialized;
@@ -131,7 +137,7 @@ public class TestPanel {
                     runRemote,
                     cloudPanel,
                     advancedPropertiesPane);
-            BmTestManager.getInstance().runModeChangedNotificationListeners.add(runModeChanged);
+            BmTestManager.getInstance().getRunModeChangedNotificationListeners().add(runModeChanged);
 
             RunModeListener runModeListener = new RunModeListener(runModeChanged);
 
@@ -142,7 +148,6 @@ public class TestPanel {
             signUpButton.setEnabled(bmTestManager.getUserKey() == null || bmTestManager.
                     getUserKey().
                     isEmpty());
-
 
 
             TestIdComboBoxListener comboBoxListener = new TestIdComboBoxListener(testIdComboBox, cloudPanel);
@@ -186,7 +191,7 @@ public class TestPanel {
             //Here should be all changes of TestInfo processed
             ITestInfoNotification testInfoNotification = new TestInfoNotificationTP(runLocal, runRemote,
                     advancedPropertiesPane.getjMeterPropertyPanel());
-            bmTestManager.testInfoNotificationListeners.add(testInfoNotification);
+            bmTestManager.getTestInfoNotificationListeners().add(testInfoNotification);
 
             //Processing serverStatusChangedNotification
             ServerStatusController serverStatusController = ServerStatusController.getServerStatusController();
@@ -198,6 +203,10 @@ public class TestPanel {
         }
     }
 
+    public String getUserKey() {
+        return userKeyTextField.getText();
+    }
+
     public void setUserKey(String key) {
         if (key.isEmpty()) {
             return;
@@ -205,11 +214,6 @@ public class TestPanel {
         userKeyTextField.setText(key);
         BmLog.debug("Setting user key " + key);
     }
-
-    public String getUserKey() {
-        return userKeyTextField.getText();
-    }
-
 
     public void setTestInfo(TestInfo testInfo) {
         BmTestManager bmTestManager = BmTestManager.getInstance();
@@ -231,7 +235,6 @@ public class TestPanel {
         }
     }
 
-
     public void configureMainPanel(TestInfo testInfo) {
         boolean isRunning = (testInfo != null && testInfo.getStatus() == TestStatus.Running);
 
@@ -251,13 +254,6 @@ public class TestPanel {
         }
         testIdComboBox.setEnabled(!isRunning & testIdComboBox.getItemCount() > 0);
         reloadButton.setEnabled(!isRunning);
-    }
-
-    public static TestPanel getTestPanel() {
-        if (testPanel == null) {
-            testPanel = new TestPanel();
-        }
-        return testPanel;
     }
 
     public AdvancedPropertiesPane getAdvancedPropertiesPane() {
