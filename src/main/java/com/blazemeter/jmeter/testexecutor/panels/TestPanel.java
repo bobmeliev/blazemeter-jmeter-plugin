@@ -277,6 +277,7 @@ public class TestPanel {
         panel1.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(67, 28), null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("Select Test");
+        label3.setName("SelectTestLabel");
         panel1.add(label3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(1, 4, new Insets(0, 0, 0, 0), -1, -1));
@@ -346,6 +347,7 @@ public class TestPanel {
         panel1.add(panel4, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         DefaultComboBoxModel comboBoxModel = new DefaultComboBoxModel();
         testIdComboBox = new JComboBox(comboBoxModel);
+        testIdComboBox.setName("TestSelector");
         testIdComboBox.setDoubleBuffered(true);
         testIdComboBox.setEditable(false);
         testIdComboBox.setEnabled(false);
