@@ -1,0 +1,9 @@
+Blazemeter-jmeter plugin build guide:
+
+1. Install JDK 1.6 or later.
+2. Install Apache Maven 3.0.4.
+3. Checkout GitHub repository:
+   git clone https://github.com/Blazemeter/blazemeter-jmeter-plugin.git
+
+4. run "mvn clean package";
+5. "blazemeter-jmeter-plugin-2.3.0.jar" should be found in ./target directory;
